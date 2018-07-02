@@ -118,9 +118,10 @@ var ShowVideoUtil = (function(mod) {
 				w.evalJS('loadMedia("'+videoPath+'")');
 				//w.evalJS('loadMedia("'+'http://localhost:13131/_doc/camera/'+name+'")');
 			}, false );
-			w.addEventListener('close', function(){
-				w = null;
-			}, false);
+//			w.addEventListener('close', function(){
+//				console.log('1111111111111111111111111')
+//				w = null;
+//			}, false);
 			w.show('pop-in');
 			
 //			playutil.openFileAndroid(videoPath, function(text) {
