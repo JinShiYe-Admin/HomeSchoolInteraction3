@@ -195,7 +195,7 @@
 					if(e.index == 1) {
 						var files = [];
 						//服务器地址
-						var server = "http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid=" + personal.utid;
+						var server = window.storageKeyName.TEACHERIMG + personal.utid;
 						var wt = plus.nativeUI.showWaiting();
 						var task = plus.uploader.createUpload(server, {
 							method: "POST"

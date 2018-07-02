@@ -19,6 +19,8 @@ var storageKeyName = (function(mod) {
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/';//孔工接口
+			mod.TEACHERIMG = 'http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid='; //老师上传头像
+			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
@@ -41,6 +43,8 @@ var storageKeyName = (function(mod) {
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/';//孔工接口
+			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
+			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
