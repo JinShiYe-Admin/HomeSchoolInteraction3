@@ -96,9 +96,9 @@
 				},
 				methods: {
 					modifyImg: function() {
-						if (chenkNetwork()) {
-					return;
-				}
+						if(chenkNetwork()) {
+							return;
+						}
 						if(personal.utp == 0) { //0老师，1学生，2家长
 							var btnArray = [{
 								title: "拍照"
@@ -115,9 +115,9 @@
 									case 0:
 										break;
 									case 1:
-										if (chenkNetwork()) {
-					return;
-				}
+										if(chenkNetwork()) {
+											return;
+										}
 										var cmr = plus.camera.getCamera();
 										cmr.captureImage(function(p) { //打开相机
 											plus.io.resolveLocalFileSystemURL(p, function(entry) { //拍照
@@ -137,9 +137,9 @@
 										});
 										break;
 									case 2:
-										if (chenkNetwork()) {
-					return;
-				}
+										if(chenkNetwork()) {
+											return;
+										}
 										plus.gallery.pick(function(path) { //选照片
 											_compressImage(path, function(event) { //压缩
 												uploadFile(path, index); //上传
@@ -187,7 +187,7 @@
 
 			//上传附件
 			function uploadFile(path, index) {
-				if (chenkNetwork()) {
+				if(chenkNetwork()) {
 					return;
 				}
 				var btnArray = ['否', '是'];
@@ -246,11 +246,17 @@
 
 			//上传成功设置主页和本业头像
 			function setHeadImg(result) {
-				peopleInfo.peopleHeadImg = 'http://' + result.RspData
-				personal.imgurl = 'http://' + result.RspData
+				var tempImg = '';
+				if(window.storageKeyName.key == 0) {
+					tempImg = 'http://' + result.RspData;
+				} else {
+					tempImg = 'https://' + result.RspData;
+				}
+				peopleInfo.peopleHeadImg = tempImg;
+				personal.imgurl = tempImg;
 				store.set(window.storageKeyName.PERSONALINFO, personal);
-				mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {
-					imgurl: 'http://' + result.RspData
+				mui.fire(plus.webview.currentWebview().opener(), 'setHeadImg', {
+					imgurl: tempImg
 				});
 			}
 
