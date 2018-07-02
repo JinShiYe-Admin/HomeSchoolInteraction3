@@ -175,6 +175,7 @@
 			//var persistentId; //记录persistentId
 			var multiMedia; //多媒体控件
 			var notes = document.getElementById("notes"); //输入框
+			var tempGradeList = []; //班主任身份时，获取的对应的数组
 
 			//多媒体控件
 			multiMedia = MultiMedia.multiMedia({
@@ -212,14 +213,10 @@
 				}
 				//去重
 				addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
-				//合并选择的班级ids
-				//				for(var i = 0; i < addNoticeContent.gradeArray.length; i++) {
-				//					var clsModel = addNoticeContent.gradeArray[i];
-				//					addNoticeContent.classIDs = addNoticeContent.classIDs + ',' + clsModel.clsid;
-				//				}
 				//去掉首个，
 				if(addNoticeContent.classIDs.length > 0) {
 					addNoticeContent.classIDs = addNoticeContent.classIDs.substr(1);
+					addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
 					addNoticeContent.parentsStr = addNoticeContent.parentsStr.substr(1);
 				}
 				//如果是班主任
@@ -238,6 +235,8 @@
 					postDataEncry('SchGrade', enData0, comData0, 0, function(data) {
 						events.closeWaiting();
 						if(data.RspCode == 0) {
+							tempGradeList = [].concat(data.RspData.grds);
+							console.log('tempGradeList:'+tempGradeList.length+',data.RspData.grds:'+data.RspData.grds.length);
 							for(var i = 0; i < data.RspData.grds.length; i++) {
 								var model = data.RspData.grds[i];
 								for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
@@ -248,7 +247,6 @@
 								}
 							}
 							addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
-							addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
 							//6.学校班级学生,获取选择班级中对应的人
 							getClassParents(addNoticeContent.classIDs, 0);
 						} else {
@@ -379,11 +377,89 @@
 						} else {
 							//							console.log('qqqqqqqqw');
 							addNoticeContent.parentArray = [].concat(data.RspData.clssstus);
+							//默认的班主任数据
 							if(flag == 0) {
+								//将班级ID字符串，分割为数组
+								var classidArray = classids.split(',');
+								//组成班级model数组
+								var classidArr = [];
+								for(var i = 0; i < classidArray.length; i++) {
+									var tempModel = {
+										clsid: classidArray[i],
+										parents: []
+									}
+									classidArr.push(tempModel);
+								}
 								var tempArray = [];
 								for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 									var tempModel = addNoticeContent.parentArray[i];
-
+									for(var a = 0; a < classidArr.length; a++) {
+										var tempClassModel = classidArr[a];
+										if(tempClassModel.clsid == tempModel.clsid) {
+											tempClassModel.parents.push(tempModel);
+										}
+									}
+								}
+								console.log('addNoticeContent.gradeArray:' + JSON.stringify(addNoticeContent.gradeArray)); 
+								//将没有人员的移除
+								for(var a = classidArr.length - 1; a >= 0; a--) {
+									var tempClassModel = classidArr[a];
+									if(tempClassModel.parents.length == 0) {
+										classidArr.splice(a, 1);
+									}
+								}
+								console.log('classidArr:' + JSON.stringify(classidArr)); 
+								//判断是否包含班主任身份
+								if(classidArr.length > 0) {
+									addNoticeContent.teacherFlag = 0;
+									addNoticeContent.flag = 0;
+//									addNoticeContent.gradeArray = [];
+									addNoticeContent.classIDsArray = [];
+									addNoticeContent.gradeIDsArray = [];
+									addNoticeContent.classIDs = '';
+									addNoticeContent.classStr = '';
+									addNoticeContent.parentsStr = '';
+//									addNoticeContent.gradeStr = '';
+									for(var i = 0; i < classidArr.length; i++) {
+										var classModel = classidArr[i];
+										addNoticeContent.teacherFlag = 1;
+										addNoticeContent.flag = 1;
+//										addNoticeContent.gradeArray.push(classModel.parents[0].grdid);
+										addNoticeContent.classIDsArray.push(classModel.parents[0].clsid);
+										addNoticeContent.gradeIDsArray.push(classModel.parents[0].grdid);
+										addNoticeContent.classIDs = addNoticeContent.classIDs + ',' + classModel.clsid;
+										addNoticeContent.classStr = addNoticeContent.classStr + ',' + classModel.parents[0].clsname;
+										addNoticeContent.parentsStr = addNoticeContent.parentsStr + ';' + classModel.parents[0].clsname + '全部家长';
+									}
+									//去重
+//									addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
+									//去掉首个，
+									if(addNoticeContent.classIDs.length > 0) {
+										addNoticeContent.classIDs = addNoticeContent.classIDs.substr(1);
+										addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
+										addNoticeContent.parentsStr = addNoticeContent.parentsStr.substr(1);
+									}
+//									for(var i = 0; i < tempGradeList.length; i++) {
+//										var model = tempGradeList[i];
+//										console.log('model.grdid:'+model.grdid);
+//										for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
+//											var tempGrade0 = addNoticeContent.gradeArray[a];
+//											console.log('model.grdid:'+model.grdid+',tempGrade0:'+tempGrade0);
+//											if(model.grdid == tempGrade0) {
+//												console.log('5555555555555555555555555555');
+//												addNoticeContent.gradeStr = addNoticeContent.gradeStr + ',' + model.grdname;
+//											}
+//										}
+//									}
+//									addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
+								} else {
+									addNoticeContent.classIDsArray = [];
+									addNoticeContent.gradeIDsArray = [];
+									addNoticeContent.gradeStr = '请选择';
+									addNoticeContent.classStr = '请选择';
+									addNoticeContent.parentsStr = '请选择';
+									addNoticeContent.flag = 0;
+									addNoticeContent.parentArray = [];
 								}
 							}
 						}
