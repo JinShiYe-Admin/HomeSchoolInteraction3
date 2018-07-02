@@ -39,7 +39,7 @@ var storageKeyName = (function(mod) {
 			//	---七牛空间和接口---开发---end---
 			break;
 		case 1: //部署外网
-			mod.SCHOOLID = 100005;//学校ID
+			mod.SCHOOLID = 100102;//学校ID
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/';//孔工接口

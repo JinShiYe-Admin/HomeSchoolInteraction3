@@ -175,26 +175,26 @@
 			//var persistentId; //记录persistentId
 			var multiMedia; //多媒体控件
 			var notes = document.getElementById("notes"); //输入框
-			
+
 			//多媒体控件
-				multiMedia = MultiMedia.multiMedia({
-					MultiMediaId: 'MultiMedia', //存放多媒体对象控件的id
-					Key: store.get(window.storageKeyName.PERSONALINFO).utid, //utid
-					Picture: true, //是否显示图片图标
-					Audio: true, //是否显示音频图标
-					Video: true, //是否显示视频图标
-					TotalPicture: 9, //图片的个数
-					TotalAudio: 1, //音频的个数
-					TotalVideo: 1, //视频的个数
-				});
-				//显示发送短信按钮
-				document.getElementById('senMSN').style.display = 'inherit';
-				//设置底部卡片上边距-15px→10px;
-				document.getElementById("bootom-card").style.marginTop = "10px";
-			
+			multiMedia = MultiMedia.multiMedia({
+				MultiMediaId: 'MultiMedia', //存放多媒体对象控件的id
+				Key: store.get(window.storageKeyName.PERSONALINFO).utid, //utid
+				Picture: true, //是否显示图片图标
+				Audio: true, //是否显示音频图标
+				Video: true, //是否显示视频图标
+				TotalPicture: 9, //图片的个数
+				TotalAudio: 1, //音频的个数
+				TotalVideo: 1, //视频的个数
+			});
+			//显示发送短信按钮
+			document.getElementById('senMSN').style.display = 'inherit';
+			//设置底部卡片上边距-15px→10px;
+			document.getElementById("bootom-card").style.marginTop = "10px";
+
 			mui.plusReady(function() {
 				init();
-				
+
 				initListener(); //初始化监听
 				//判断是否包含班主任身份
 				for(var i = 0; i < personal.clss.length; i++) {
@@ -250,7 +250,7 @@
 							addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
 							addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
 							//6.学校班级学生,获取选择班级中对应的人
-							getClassParents(addNoticeContent.classIDs);
+							getClassParents(addNoticeContent.classIDs, 0);
 						} else {
 							mui.toast(data.RspTxt, "cancel");
 						}
@@ -294,11 +294,11 @@
 							});
 						} else if(flag == 2) { //家长
 							var tempArray = [];
-							for (var i = 0; i < addNoticeContent.parentArray.length; i++) {
+							for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 								var tempModel = addNoticeContent.parentArray[i];
 								var tempModel1 = {
-									clsid:tempModel.clsid,
-									stuid:tempModel.stuid,
+									clsid: tempModel.clsid,
+									stuid: tempModel.stuid,
 								}
 								tempArray.push(tempModel1);
 							}
@@ -321,7 +321,7 @@
 				addNoticeContent.classIDs = tempData.classIDs;
 				if(tempData.classIDs.length > 0) {
 					//6.学校班级学生,获取选择班级中对应的人
-					getClassParents(tempData.classIDs);
+					getClassParents(tempData.classIDs, 1);
 					addNoticeContent.parentsStr = tempData.classShow.replace(/;/g, '全部家长;');
 					addNoticeContent.parentsStr = addNoticeContent.parentsStr.replace(/全部班级/g, '');
 					addNoticeContent.parentsStr = addNoticeContent.parentsStr + '全部家长';
@@ -357,8 +357,8 @@
 				addNoticeContent.parentArray = [].concat(tempData.parentsArray);
 			});
 
-			//6.学校班级学生,获取选择班级中对应的人
-			var getClassParents = function(classids) {
+			//6.学校班级学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
+			var getClassParents = function(classids, flag) {
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
@@ -379,6 +379,13 @@
 						} else {
 							//							console.log('qqqqqqqqw');
 							addNoticeContent.parentArray = [].concat(data.RspData.clssstus);
+							if(flag == 0) {
+								var tempArray = [];
+								for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
+									var tempModel = addNoticeContent.parentArray[i];
+
+								}
+							}
 						}
 					} else {
 						mui.toast(data.RspTxt, "cancel");
@@ -405,7 +412,7 @@
 			 */
 			function init() {
 				events.blurBack();
-				
+
 				multiMedia.initEvent();
 				/**
 				 * 播放视频
@@ -486,7 +493,7 @@
 			 * @param {Object} encImg 附件缩略图地址
 			 */
 			function addNote(wd, encType, encAddr, encImg, encLen) {
-				console.log('encImg:'+encImg);
+				console.log('encImg:' + encImg);
 				var temp0 = [];
 				var temp1 = [];
 				var temp2 = [];
@@ -527,7 +534,7 @@
 					schoolId: personal.schid, //学校ID，统一部署的时候，学校ID传000000
 					noticeContent: addNoticeContent.content, //内容
 					noticEncName: encName, //附件名称，竖杠隔开
-					noticeEncImgAddr:encImg,//附件缩略图地址，竖杠隔开
+					noticeEncImgAddr: encImg, //附件缩略图地址，竖杠隔开
 					noticeEncAddr: encAddr, //附件地址，竖杠隔开
 					smsSync: addNoticeContent.msgFlag, //是否短信同步，先填0
 					sendManId: personal.utid, //发布人ID
