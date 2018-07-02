@@ -1,0 +1,141 @@
+/*
+ * 音频的显示和播放音频的popover
+ */
+
+.audio-area {
+	line-height: 45px;
+}
+
+.audio-area .audio-triangle {
+	/*三角形*/
+	height: 0px;
+	width: 0px;
+	border: 9px solid #E4E4E4;
+	border-color: transparent #E4E4E4 transparent transparent;
+}
+
+.audio-area .audio-triangle-out {
+	/*外面的三角形*/
+	position: absolute;
+	top: 12px;
+	left: -19px;
+}
+
+.audio-area .audio-triangle-in {
+	/*里面的三角形*/
+	position: absolute;
+	top: 12px;
+	left: -18px;
+	border-color: transparent white transparent transparent;
+}
+
+.audio-area .audio-button {
+	/*音频主体*/
+	padding: 0px;
+	height: 45px;
+	margin-left: 10px;
+	border-color: #E4E4E4;
+}
+
+.audio-area .audio-time {
+	/*音频时间*/
+	position: absolute;
+	color: #808080;
+	right: 10px;
+	top: 0px;
+	line-height: 45px;
+}
+
+.audio-area .audio-icon {
+	/*音频图标*/
+	color: #808080;
+	position: absolute;
+	font-size: 20px !important;
+	top: 0px;
+	left: 0px;
+	line-height: 40px;
+	margin-top: 3px;
+	margin-left: 10px;
+}
+
+.audio-area .mui-btn-grey,
+.audio-area .mui-btn-grey.mui-active:enabled,
+.audio-area .mui-btn-grey:enabled:active {
+	background-color: white;
+	border-color: #E4E4E4;
+}
+
+.audio-show-popover {
+	width: 70%;
+	background-color: white;
+	margin-left: 15%;
+	text-align: center;
+	box-shadow: 0px 1px 5px rgba(136, 136, 136, 0.5);
+}
+
+.audio-show-popover .mui-icon-mic {
+	color: #808080;
+}
+
+.audio-show-popover .audio-canvas {
+	position: absolute;
+	left: 15%;
+}
+
+.audio-show-popover .icon-guanbi {
+	position: absolute;
+	right: 15%;
+	margin-right: 10px;
+	margin-top: 10px;
+	font-size: 25px;
+	color: #808080;
+}
+
+.audio-show-popover .audio-time {
+	color: #323232;
+	font-size: 17px;
+}
+
+.audio-show-popover .audio-control {
+	margin-top: 17px;
+}
+
+.audio-show-popover .audio-control-background {
+	display: inline-block;
+	background: #B7B7B7;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+
+.audio-show-popover .audio-control-play div {
+	/*播放视频*/
+	border-radius: initial;
+	background-color: transparent;
+	height: 0px;
+	width: 0px;
+	margin-top: 10px;
+	margin-left: 20px;
+	border: 15px solid white;
+	border-color: transparent transparent transparent white;
+}
+
+.audio-show-popover .audio-control-play {
+	display: none;
+}
+
+.audio-show-popover .audio-control-pause div {
+	position: absolute;
+	height: 28px;
+	width: 5px;
+	background-color: white;
+	margin-top: 11px;
+}
+
+.audio-show-popover .audio-control-pause div:nth-child(1) {
+	margin-left: 17px;
+}
+
+.audio-show-popover .audio-control-pause div:nth-child(2) {
+	margin-left: 28px;
+}

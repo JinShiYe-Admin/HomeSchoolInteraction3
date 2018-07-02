@@ -1,0 +1,39 @@
+/*科教样式*/
+
+.secedu-body {
+	/*内容*/
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.secedu-title {
+	/*标题*/
+	word-break: break-all;
+	font-size: 16px;
+	color: #323232;
+}
+
+.secedu-from {
+	/*来源*/
+	word-break: break-all;
+	margin-top: 5px;
+	font-size: 12px;
+	color: #B7B7B7;
+}
+
+.mui-row {
+	margin-top: 3px;
+}
+
+.mui-col-sm-4 {
+	padding: 2px;
+}
+
+.mui-col-sm-4 img {
+	width: 100%;
+}
+
+.mui-table-view-cell:before,
+.mui-table-view-cell:after {
+	left: 0px;
+}

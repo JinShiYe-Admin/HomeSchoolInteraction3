@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.flex-container {
+				display: flex;
+			}
+			/* 以下为辅助样式 */
+			
+			.flex-container {
+				flex-wrap: wrap;
+				background-color: white;
+			}
+			
+			.flex-container .flex-item {
+				/*padding: 20px;*/
+				background-color: white;
+			}
+			
+			.flex-container .flex-item1 {
+				margin-right: 10px;
+				background-color: white;
+			}
+			
+			.flex-container .flex-item:first-child {
+				background-color: white;
+			}
+			
+			.flex-container .flex-item:last-child {
+				background-color: white;
+			}
+			
+			.className {
+				font-size: 16px;
+				color: #333333;
+			}
+			
+			.stuName {
+				font-size: 15px;
+				color: #666666;
+				width: 150px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">选择家长</h1>
+			<a @click="addNotice()" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
+		</header>
+		<div class="mui-content" style="background: white;" id="classListData" v-if="flag>0">
+			<div class="mui-input-row mui-checkbox mui-left" style="margin-top: 10px;margin-bottom: 5px;">
+				<label class="className">全选</label>
+				<input v-model="selectFlag" name="checkbox1" type="checkbox" @click="clickAll">
+			</div>
+
+			<ul class="mui-table-view" v-for="(classModel,index) in classListArray">
+				<li v-if="classModel.showFlag>0" class="mui-table-view-cell">
+				<!--<li class="mui-table-view-cell">-->
+					<div style="width: 50%;height: 40px;margin-top: 5px;" class="flex-item">
+						<div class="mui-input-row mui-checkbox mui-left" style="margin-top: -10px;height: 30px;">
+							<label class="className">{{classModel.clsname}}</label>
+							<input v-model="classModel.flag" name="checkbox1" type="checkbox" @click="clickClass(classModel)">
+						</div>
+					</div>
+					<div class="flex-container" style="padding-left: 20px;">
+						<div class="mui-input-row mui-checkbox mui-left" v-for="(stuModel,index) in classModel.stuArray">
+							<label class="stuName" style="width: 160px;">{{stuModel.stuname}}<a class="" style="color: #ff9966;">[订]</a></label>
+							<input v-model="stuModel.flag" name="checkbox1" type="checkbox" @click="clickStu(classModel,stuModel)">
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<!--<script src="../../js/publicProtocol.js"></script>-->
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			var parentsArray = []; //所选家长列表
+			var tempArr = [];
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				parentsArray = curPage.parentArray;
+				//将ids分割成数组
+				tempArr = curPage.classIDs.split(",");
+
+				//4.学校班级
+				getClassList();
+			});
+
+			//页面总数据
+			var classListData = new Vue({
+				el: "#classListData",
+				data: {
+					flag: 0, //是否获取到数据
+					selectFlag: 0, //是否全选
+					classListArray: [], //获取到的总数据
+					selectArray: [] //选择的数据
+				},
+				methods: {
+					clickAll: function() { //全选
+						//点击全选按钮
+						clickSelectAll(classListData.selectFlag);
+					},
+					clickClass: function(classModel) {
+						//点击年级
+						clickClassLi(classModel);
+					},
+					clickStu: function(classModel, stuModel) {
+						//点击班级
+						clickStuLi(classModel, stuModel);
+					}
+				}
+			});
+
+			//点击全选按钮,flag--0取消全选，1全选
+			var clickSelectAll = function(flag) {
+				for(var i = 0; i < classListData.classListArray.length; i++) {
+					var classModel = classListData.classListArray[i];
+					if(classModel.showFlag == 0) {
+
+					} else {
+						classModel.flag = flag;
+						for(var a = 0; a < classModel.stuArray.length; a++) {
+							var stuModel = classModel.stuArray[a];
+							stuModel.flag = flag;
+						}
+					}
+				}
+			}
+
+			//点击年级
+			var clickClassLi = function(classModel) {
+				for(var a = 0; a < classModel.stuArray.length; a++) {
+					var stuModel = classModel.stuArray[a];
+					stuModel.flag = classModel.flag;
+				}
+				//判断是否全选、取消全选
+				selectAllOrNo();
+			}
+
+			//点击班级
+			var clickStuLi = function(classModel, stuModel) {
+				var tempFlag = 0;
+				for(var a = 0; a < classModel.stuArray.length; a++) {
+					var stuModel1 = classModel.stuArray[a];
+					if(stuModel1.flag == 1) {
+						tempFlag++;
+					}
+				}
+				if(tempFlag == classModel.stuArray.length) {
+					classModel.flag = 1;
+				} else {
+					classModel.flag = 0;
+				}
+				//判断是否全选、取消全选
+				selectAllOrNo();
+			}
+
+			//判断是否全选、取消全选
+			var selectAllOrNo = function() {
+				var tempFlag = 0;
+				for(var i = 0; i < classListData.classListArray.length; i++) {
+					var classModel = classListData.classListArray[i];
+					if(classModel.flag == 1) {
+						tempFlag++;
+					}
+				}
+				if(tempFlag == classListData.classListArray.length) {
+					classListData.selectFlag = 1
+				} else {
+					classListData.selectFlag = 0;
+				}
+			}
+
+			//head
+			var tempVue = new Vue({
+				el: "#tempVue",
+				data: {
+
+				},
+				methods: {
+					addNotice: function() {
+						var tempStu = ''; //显示用的家长
+						var tempStuArray = []; //选择的家长数组
+						var tempGradeArray = [];//判断年级是否全部选择用
+						//循环所有数据
+						for(var i = 0; i < classListData.classListArray.length; i++) {
+							var classModel = classListData.classListArray[i];
+							//判断班级所在的年级，是否全部选择
+							var sumGrade = 0;
+							var selectGrade = 0;
+							for(var m = 0; m < classListData.classListArray.length; m++) {
+								var classModel1 = classListData.classListArray[m];
+								if(classModel.grdid == classModel1.grdid) {
+									sumGrade++;
+									if(classModel1.flag == 1) {
+										selectGrade++;
+									}
+								}
+							}
+							if(selectGrade > 0) {
+								if(sumGrade == selectGrade && classModel.stuArray.length > 0) {
+									if (IsInArray(tempGradeArray,classModel.grdid)) {//存在
+										
+									} else{
+										tempStu = tempStu + ';' + classModel.grdname + '全部班级家长';
+										tempGradeArray.push(classModel.grdid);
+									}
+								} else {
+									if(classModel.flag == 1) {
+										tempStu = tempStu + ';' + classModel.clsname + '全部家长';
+									}
+								}
+							}
+
+							var tempMMM = 0;
+							var tempNNN = 0;
+							for(var a = 0; a < classModel.stuArray.length; a++) {
+								var stuModel = classModel.stuArray[a];
+								if(stuModel.flag == 1) {
+									if(tempMMM == 0 && classModel.flag == 0) {
+										tempMMM++;
+										tempStu = tempStu + ';' + classModel.clsname + '：';
+									}
+									tempStuArray.push(stuModel);
+								}
+								if(classModel.flag == 0 && stuModel.flag == 1) {
+									if(tempNNN == 0) {
+										tempNNN++;
+										tempStu = tempStu + stuModel.stuname;
+									} else {
+										tempStu = tempStu + '、' + stuModel.stuname;
+									}
+								}
+							}
+						}
+						if(tempStuArray.length > 0) {
+							tempStu = tempStu.substr(1);
+						} else {
+							mui.toast('请选择家长');
+							return;
+						}
+
+						mui.fire(plus.webview.currentWebview().opener(), 'selectStudents', {
+							parentsShow: tempStu,
+							parentsArray: tempStuArray
+						});
+						mui.back();
+					}
+				}
+			});
+
+			//判断数组中，是否包含某个值
+			function IsInArray(arr, val) {　　
+				var testStr = ',' + arr.join(",") + ",";　　
+				return testStr.indexOf("," + val + ",") != -1;
+			}
+
+			//4.学校班级
+			var getClassList = function() {
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid, //系统所分配的应用ID
+					isfinish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
+				}
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('SchClass', enData0, comData0, 0, function(data) {
+					events.closeWaiting();
+					if(data.RspCode == 0) {
+						for(var i = 0; i < data.RspData.clss.length; i++) {
+							var tempClassModel = data.RspData.clss[i];
+							//如果当前的班级，是班主任身份的，显示，否则不显示
+							tempClassModel.showFlag = 0;
+							for(var m = 0; m < tempArr.length; m++) {
+								if(tempClassModel.clsid == tempArr[m]) {
+									tempClassModel.flag = 0;
+									tempClassModel.stuArray = [];
+
+									//循环个人信息中，班主任身份的班级，这个界面，只显示选择的班级，并且是班主任身份
+									for(var n = 0; n < personal.clss.length; n++) {
+										var classModel = personal.clss[n];
+										if(classModel.isms == 1 && classModel.clsid == tempArr[m]) {
+											tempClassModel.showFlag++;
+										}
+									}
+									classListData.classListArray.push(tempClassModel);
+								}
+							}
+						} //6.学校班级学生,获取选择班级中对应的人
+						getClassParents(curPage.classIDs);
+					} else {
+						mui.toast(data.RspTxt, "cancel");
+					}
+				});
+			}
+
+			//6.学校班级学生,获取选择班级中对应的人
+			var getClassParents = function(classids) {
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid, //系统所分配的应用ID
+					classids: classids //需要查询的班级ID,多个代码用英文逗号隔开
+				}
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('ClassStu', enData0, comData0, 0, function(data) {
+					events.closeWaiting();
+					if(data.RspCode == 0) {
+						classListData.flag = 1;
+						console.log('data:' + JSON.stringify(data));
+						for(var i = 0; i < data.RspData.clssstus.length; i++) {
+							var stuModel = data.RspData.clssstus[i];
+							//							stuModel.flag = 0;
+							//判断上个界面，是否选择
+							var tempClassFlag = 0;
+							for(var m = 0; m < parentsArray.length; m++) {
+								var tempParentModel = parentsArray[m];
+								if(tempParentModel.stuid == stuModel.stuid) {
+									tempClassFlag++;
+								}
+							}
+							if(tempClassFlag == 0) {
+								stuModel.flag = 0; //默认未选择
+							} else {
+								stuModel.flag = 1; //选择
+							}
+							for(var a = 0; a < classListData.classListArray.length; a++) {
+								var classModel = classListData.classListArray[a];
+								if(classModel.clsid == stuModel.clsid) {
+									classModel.grdname = stuModel.grdname;
+									classModel.stuArray.push(stuModel);
+								}
+							}
+						}
+						//刚进入页面得到数据时，判断全部的勾选状态
+						allDataSelect();
+					} else {
+						mui.toast(data.RspTxt, "cancel");
+					}
+				});
+			}
+
+			//刚进入页面得到数据时，判断全部的勾选状态
+			var allDataSelect = function() {
+				var tempFlag = 0;
+				for(var i = 0; i < classListData.classListArray.length; i++) {
+					var classModel = classListData.classListArray[i];
+					var tempFalg0 = 0;
+					//循环得到的班级列表
+					for(var a = 0; a < classModel.stuArray.length; a++) {
+						var stuModel = classModel.stuArray[a];
+						if(stuModel.flag == 1) {
+							tempFalg0++;
+						}
+					}
+					if(tempFalg0 == classModel.stuArray.length && classModel.stuArray.length > 0) {
+						classModel.flag = 1;
+						tempFlag++;
+					} else {
+						classModel.flag = 0;
+					}
+				}
+				if(tempFlag == classListData.classListArray.length) {
+					classListData.selectFlag = 1;
+				} else {
+					classListData.selectFlag = 0;
+				}
+			}
+		</script>
+	</body>
+
+</html>

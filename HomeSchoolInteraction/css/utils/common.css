@@ -1,0 +1,370 @@
+/**
+ * 共同的样式
+ */
+
+
+/*去掉导航条阴影*/
+
+.mui-bar-nav {
+	box-shadow: none;
+	height: 45px;
+}
+
+.common-background-bar {
+	/*背景颜色*/
+	background: white;
+}
+
+.common-color-white {
+	/*颜色*/
+	color: white;
+}
+
+.common-color-darkgray {
+	/*颜色*/
+	color: darkgray;
+}
+
+.common-font-family-Regular {
+	/*字体样式*/
+	font-family: '微软雅黑 Regular', '微软雅黑';
+}
+
+.common-font-family-Bold {
+	/*字体样式*/
+	font-family: '微软雅黑 Bold', '微软雅黑';
+}
+
+@font-face {
+	font-family: fangzheng;
+	src: url(../../fonts/fangzheng.ttf) format('truetype');
+}
+
+.mui-content {
+	font-family: fangzheng;
+}
+
+.title-text-pull-right {
+	/*顶部导航右侧文字*/
+	position: absolute;
+	font-size: 14px;
+	line-height: 45px;
+	right: 10px;
+	padding: 0px;
+	font-weight: 500;
+	float: right;
+	color: white;
+}
+
+.title-text-pull-left {
+	/*顶部导航左侧文字*/
+	font-size: 14px;
+	line-height: 44px;
+	position: absolute;
+	left: 10px;
+	padding: 0px;
+	font-weight: 500;
+	float: left;
+	color: white;
+}
+
+
+/*header统一样式*/
+
+header:last-of-type {
+	/*背景颜色*/
+	background: #13b7f6;
+	font-family: '微软雅黑 Bold', '微软雅黑';
+}
+
+
+/*header中的icon 白色*/
+
+header a {
+	color: white;
+}
+
+
+/*标题为白色*/
+
+h1:last-of-type {
+	color: white;
+}
+
+
+/*字体font-size：62.5%*/
+
+html {
+	font-size: 62.5%;
+}
+
+
+/**常规大小*/
+
+body {
+	font-size: 1.318rem;
+	font-style: normal;
+}
+
+
+/**粗体字体大小*/
+
+b {
+	font-size: 1.2rem;
+	color: #000000;
+}
+
+::-webkit-input-placeholder {
+	/* Chrome/Opera/Safari */
+	font-size: 1.5rem;
+}
+
+
+/**段落字体大小*/
+
+p {
+	font-size: 1.2rem;
+}
+
+
+/**最小字体*/
+
+
+/*small{font-size:1.2rem}*/
+
+
+/*1.9rem为标题 */
+
+h4 {
+	font-size: 1.8rem
+}
+
+
+/*1.7rem为副标题 */
+
+h5 {
+	font-size: 1.7rem
+}
+
+
+/*1.6为中间字体大小*/
+
+h6 {
+	font-size: 1.5rem
+}
+
+
+/*分情况来做,不是所有页面都需要字体随着屏幕大小改变而改变的.*/
+
+@media only screen and (min-width:320px) and (max-width:359px) {
+	html {
+		font-size: 50% !important;
+	}
+}
+
+
+/*三星大屏幕机最低宽度:note2-note3,S2-S4*/
+
+@media only screen and (min-width:360px) and (max-width:384px) {
+	html {
+		font-size: 64% !important;
+	}
+}
+
+
+/*Iphone6,Iphone6plus*/
+
+@media only screen and (min-width:385px) and (max-width:435px) {
+	html {
+		font-size: 82.5% !important;
+	}
+}
+
+
+/**更大设备*/
+
+@media only screen and (min-width:436px) {
+	html {
+		font-size: 92% !important;
+	}
+}
+
+
+/**更大设备*/
+
+
+/*@media only screen and (min-width:757px) and (max-width:1000px) {
+    html{font-size:100% !important;}
+}*/
+
+
+/*body>div>div:last-of-type{
+	background-color: white;
+}*/
+
+
+/*2倍宽度*/
+
+.twice-line {
+	height: 4.8rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+
+/**
+ * 一行
+ */
+
+.single-line {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.double-line {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	/*white-space: nowrap;*/
+	display: -webkit-box;
+	/*设置弹性盒模型*/
+	-webkit-line-clamp: 2;
+	/*文本占的行数,如果要设置2行加...则设置为2*/
+	-webkit-box-orient: vertical;
+	/*子代元素垂直显示*/
+}
+
+.triple-line {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	/*white-space: nowrap;*/
+	display: -webkit-box;
+	/*设置弹性盒模型*/
+	-webkit-line-clamp: 3;
+	/*文本占的行数,如果要设置2行加...则设置为2*/
+	-webkit-box-orient: vertical;
+	/*子代元素垂直显示*/
+}
+
+.background-white {
+	background-color: white;
+}
+
+
+/*body>div>div>div :last-of-type{
+	background-color: white;
+}*/
+
+header>a {
+	padding-top: 12px;
+	font-size: 14px;
+}
+
+.post-icon:last-of-type {
+	padding-top: 1.2rem;
+	font-size: 1.5rem;
+}
+
+.display-none:last-of-type {
+	display: none;
+}
+
+
+/*block*/
+
+.display-block {
+	display: block;
+}
+
+
+/*inline-block*/
+
+.display-inlineBlock {
+	display: inline-block;
+}
+
+
+/*分割线色值*/
+
+.mui-table-view-cell:after {
+	left: 0px;
+	background-color: #dedfe0;
+}
+
+
+/*分割线色值*/
+
+.mui-table-view-divider:after {
+	background-color: #dedfe0;
+}
+
+
+/*分割线色值*/
+
+
+/*.mui-table-view-divider:before {
+	background-color: #dedfe0;
+}*/
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+	color: #00A5E0;
+	border-bottom: 2px solid #00A5E0;
+}
+
+
+/*底部评论套装*/
+
+.input-footerContainer {
+	width: 100%;
+	position: fixed;
+	padding-top: 10px;
+	bottom: 0;
+	background-color: white;
+	border-top: solid thin darkgray;
+}
+
+.input-footerContainer .input-text {
+	width: 80%;
+}
+
+.input-footerContainer .send-icon {
+	width: 18%;
+	text-align: center;
+}
+
+.right-in {
+	animation-duration: 0.2s;
+	animation-name: sliderightin;
+	animation-timing-function: ease-in;
+}
+
+.left-in {
+	animation-duration: 0.2s;
+	animation-name: sliderleftin;
+	animation-timing-function: ease-in;
+}
+
+@keyframes sliderleftin {
+	from {
+		margin-left: -100%;
+		width: 100%;
+	}
+	to {
+		margin-left: 0%;
+		width: 100%;
+	}
+}
+
+@keyframes sliderightin {
+	from {
+		margin-left: 100%;
+		width: 100%;
+	}
+	to {
+		margin-left: 0%;
+		width: 100%;
+	}
+}

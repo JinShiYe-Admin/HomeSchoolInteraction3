@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>套餐详情--订购</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			[v-cloak]{
+				visibility: hidden;
+			}
+			.head-portrait {
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				margin-bottom: 10px;
+				padding: 3px;
+				border: 1px #ECECEC solid;
+			}
+			
+			.title-info {
+				padding: 30px 0 5px 0;
+				text-align: center;
+				background: #fff;
+			}
+			
+			.title-footer{
+				background: #fff;
+				margin: -40px 10px 0 10px;
+			}
+			
+			.user-title{
+				font-size: 18px;
+				color: #333333;
+				font-weight: bold;
+			}
+			
+			.user-title-body{
+				text-align: left;
+				margin: 0 10px;
+				color: #6d6d6d;
+				text-indent: 2em;
+			}
+			
+			.user-title-footer{
+				text-align: left;
+				margin: 10px 10px 0;
+			}
+			
+			.ul-btn{
+				display: inline;
+				vertical-align: middle;
+				float: right;
+				height: 24px;
+				padding: 2px 12px;
+				background: #33CCFF;
+				color: #fff;
+				border: none;
+			}
+			.ul-p{
+				width: 30%;
+				color: #00CFBD;
+				display: inline;
+				vertical-align: middle;
+				font-size: 13px;
+			}
+			
+			.ul-p-right{
+				width: 15%;
+				display: inline;
+				color: #00CFBD;
+				float: right;
+				vertical-align: middle;
+				font-size: 13px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<h1 class="mui-title"  style="color: white;">套餐详情</h1>
+		</header>
+		<div  class="mui-content">
+	    	<div id='orders'>
+	    		<div class="mui-row title-info">
+	    			 <img  v-cloak class="head-portrait" :src=imgUrl />
+	    			 <p v-cloak class="user-title">{{title}}</p>
+	    			 <p v-cloak class="user-title-body">{{titleBody}}</p>
+	    			 <div v-cloak class="user-title-footer">
+	    			 	<p class="ul-p">资费金额：{{expenses}}</p>
+					 	<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
+	    			 </div>
+	    		</div>
+			</div>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh2.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material2.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/jquery-1.8.3.min.js"></script>
+		<script src="../../js/publicProtocol.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal********:' + JSON.stringify(personal));
+			
+			mui.init();
+			
+			var  orders;
+			mui.plusReady(function() {
+					curPage = utils.getDataFromUrl(window.location.href);
+					orders =new Vue({
+						el:'#orders'
+						,data:{
+							imgUrl:curPage.imgUrl
+							,title:curPage.title
+							,titleBody:curPage.titleBody
+							,expenses:curPage.expenses
+							,endTime:curPage.endTime
+							,orderState:curPage.orderState
+							
+						}
+					});
+			});
+			
+		</script> 
+	</body>
+
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>课程首页</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-ellipsis{}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<!--<a href="javascript:mine.isMineShow=true;" class="mui-icon  mui-pull-left"><img style="width: 26px;height: 26px;border-radius: 50%;" src="../../img/login/headImg.png" /></a>-->
+			<h1 class="mui-title common-color-white common-font-family-Bold" style="color: white;">课程</h1>
+		</header>
+		<div class="mui-content" style="background: white;" id="classListData">
+			<ul class="mui-table-view" style="margin-top: 0px;">
+				<li class="mui-table-view-cell mui-media" v-for="(classModel,index) in classArray">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="http://placehold.it/40x30">
+						<div class="mui-media-body">
+							{{classModel.className}}
+							<button @click="clickBtn(classModel)" v-if="classModel.flag ==0" type="button" class="mui-btn mui-btn-success mui-btn-outlined" style="float: right;margin-top: 5px;">定制</button>
+							<button v-else="" @click="clickBtn(classModel)" type="button" class="mui-btn mui-btn-outlined" style="float: right;margin-top: 5px;">已定制</button>
+							<p class="mui-ellipsis">{{classModel.classDetail}}</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var classListData = new Vue({
+				el: "#classListData",
+				data: {
+					flag: 0, //0刷新，1加载更多
+					classArray: [
+					{
+						flag:0,
+						className:'口语评测',
+						classDetail:'口语评测是一款测试学生们英语口语的课程。'
+					},
+					{
+						flag:0,
+						className:'虚拟实验',
+						classDetail:'虚拟实验课程是为了帮助学生们完成一些在现实中无法完成或危险性太大的实现。'
+					},
+					{
+						flag:0,
+						className:'本地优课',
+						classDetail:'本地优课课程是为学生们筛选出的一些优质课程。'
+					},
+					{
+						flag:0,
+						className:'继续教育',
+						classDetail:'继续教育继续教育继续教育继续教育继续教育继续教育'
+					},
+					{
+						flag:1,
+						className:'口语评测',
+						classDetail:'口语评测是一款测试学生们英语口语的课程。'
+					},
+					{
+						flag:0,
+						className:'虚拟实验',
+						classDetail:'虚拟实验课程是为了帮助学生们完成一些在现实中无法完成或危险性太大的实现。'
+					},
+					{
+						flag:1,
+						className:'本地优课',
+						classDetail:'本地优课课程是为学生们筛选出的一些优质课程。'
+					},
+					{
+						flag:0,
+						className:'继续教育',
+						classDetail:'继续教育继续教育继续教育继续教育继续教育继续教育'
+					},
+					{
+						flag:0,
+						className:'虚拟实验',
+						classDetail:'虚拟实验课程是为了帮助学生们完成一些在现实中无法完成或危险性太大的实现。'
+					},
+					{
+						flag:1,
+						className:'本地优课',
+						classDetail:'本地优课课程是为学生们筛选出的一些优质课程。'
+					},
+					{
+						flag:0,
+						className:'继续教育',
+						classDetail:'继续教育继续教育继续教育继续教育继续教育继续教育'
+					}
+					], //通知列表数组
+					pageIndex: 1 //第几页
+				},
+				methods: {
+					clickBtn:function(model){
+						if (model.flag==0) {
+							model.flag =1;
+						} else{
+							model.flag =0;
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

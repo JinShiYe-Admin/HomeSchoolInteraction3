@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-bar-nav {
+				background-color: #00CFBD;
+			}
+			
+			.head-img {
+				width: 140px;
+				height: 140px;
+				margin: 0 auto;
+			}
+			
+			.bottom-text {
+				position: fixed;
+				margin-left: auto;
+				margin-right: auto;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">关于我们</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-row" style="background: #fff;padding: 20px 0;">
+				<center>
+					<img class="mui-media-object head-img" id="head-img" src="../../img/login/headImg.png">
+					<p id="version" class='mui-ellipsis'>账号:hellomui</p>
+				</center>
+			</div>
+			<div class="mui-row" style="margin-top: 15px;">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell" id="qqqq">
+						<a href="javaScript:void(0)" class="mui-navigate-right">功能介绍</a>
+					</li>
+					<li class="mui-table-view-cell" id="wwww">
+						<a href="javaScript:void(0)" class="mui-navigate-right">公司介绍</a>
+					</li>
+					<li class="mui-table-view-cell" id="eeee">
+						<a href="javaScript:void(0)" class="mui-navigate-right">帮助</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-row bottom-text">
+			<p class='mui-ellipsis'>Copyright&copy;2006-2018</p>
+			<p class='mui-ellipsis'>山东金视野教育科技股份有限公司</p>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script type="text/javascript">
+			mui.init()
+
+			mui.plusReady(function() {
+					plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+						console.log('应用版本号:' + plus.runtime.version + ',资源升级版本号:' + inf.version)
+						$('#version').html('校讯通' + inf.version)
+					});
+			});
+
+			document.getElementById('qqqq').addEventListener('tap', function() {
+				mui.toast('功能暂未开放');
+			});
+			document.getElementById('wwww').addEventListener('tap', function() {
+				mui.toast('功能暂未开放');
+			});
+			document.getElementById('eeee').addEventListener('tap', function() {
+				mui.toast('功能暂未开放');
+			});
+		</script>
+	</body>
+
+</html>

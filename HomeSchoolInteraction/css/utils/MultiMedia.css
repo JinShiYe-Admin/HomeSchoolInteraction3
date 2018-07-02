@@ -1,0 +1,141 @@
+/*多媒体控件样式*/
+
+#MultiMedia_Picture_Header,
+#MultiMedia_Tuku_Header,
+#MultiMedia_Audio_Header,
+#MultiMedia_Video_Header {
+	font-size: 30px;
+	/*background: wheat;*/
+	margin-left: 15px;
+	color: #b7b7b7;
+	padding: 0px;
+}
+
+#MultiMedia_Picture_Header,
+{
+	/*相机*/
+	padding-top: 2px;
+	padding-left: 0px;
+}
+
+
+/*#MultiMedia_Video_Header{*/
+
+
+/*视频*/
+
+
+/*}*/
+
+#MultiMedia_Audio_Header {
+	/*语音*/
+	padding-top: 1px;
+}
+
+.multimedia-body {
+	background-color: white;
+}
+
+.multimedia-header {
+	/*图标*/
+	padding-top: 7px;
+	padding-bottom: 5px;
+	background-color: white;
+}
+
+.multimedia-picture-area {
+	/*图片区域*/
+	float: left;
+}
+
+.multimedia-picture {
+	/*图片*/
+	overflow: hidden;
+	/*background-color: red;*/
+	position: relative;
+}
+
+.multimedia-picture-delete {
+	/*删除图片*/
+	position: absolute;
+	z-index: 2;
+}
+
+.multimedia-video-play {
+	/*播放视频*/
+	position: absolute;
+	width: 55px;
+	height: 55px;
+}
+
+.multimedia-audio-area {
+	padding: 5px;
+	line-height: 45px;
+}
+
+.multimedia-audio-triangle {
+	/*三角形*/
+	height: 0px;
+	width: 0px;
+	border: 9px solid #E4E4E4;
+	border-color: transparent #E4E4E4 transparent transparent;
+}
+
+.multimedia-audio-triangle-out {
+	/*外面的三角形*/
+	position: absolute;
+	top: 12px;
+	left: -19px;
+}
+
+.multimedia-audio-triangle-in {
+	/*里面的三角形*/
+	position: absolute;
+	top: 12px;
+	left: -18px;
+	border-color: transparent white transparent transparent;
+}
+
+.multimedia-audio-button {
+	/*音频主体*/
+	padding: 0px;
+	height: 45px;
+	margin-left: 10px;
+	border-color: #E4E4E4;
+}
+
+.multimedia-audio-time {
+	/*音频时间*/
+	position: absolute;
+	color: #808080;
+	right: 5px;
+	top: 0px;
+	line-height: 45px;
+}
+
+.multimedia-audio-icon {
+	/*音频图标*/
+	color: #808080;
+	position: absolute;
+	font-size: 20px !important;
+	top: 0px;
+	left: 0px;
+	line-height: 40px;
+	margin-top: 3px;
+	margin-left: 10px;
+}
+
+.multimedia-audio-icon-closeempty {
+	/*音频删除图标*/
+	color: white;
+	background-color: #1DB8F1;
+	border-radius: 50%;
+	font-size: 20px;
+	margin-left: 20px;
+}
+
+.mui-btn-grey.mui-active:enabled,
+.mui-btn-grey:enabled:active {
+	background-color: white;
+	border-color: #E4E4E4;
+}

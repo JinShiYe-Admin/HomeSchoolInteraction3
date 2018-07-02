@@ -1,0 +1,84 @@
+
+.img-div{
+	position: relative;
+	width: 25%;
+	float: left;
+	text-align: center;
+}
+.img-div img{
+	padding-top: 0.5rem;
+	width: 80%;
+}
+.icon-guanbi{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.img-container{
+	min-height: 200px;
+}
+
+p img {
+	max-width: 100%;
+	height: auto;
+}
+.icon-jixiaofenshuchaxun:before{
+	padding-left: 1rem;
+}
+.teachers-container,.subjects-container{
+	display: inline-block;
+	width: 90%;
+}
+.receive-container{
+	position: relative;
+}
+.btn-publish{
+	position: absolute;
+	top: .2rem;
+	right: .5rem;
+}
+.receiver-name:last-of-type{
+	color: ;
+}
+.receiver-class:last-of-type{
+	color: #8f8f94;
+	font-size: 1rem;
+}
+.recerver-:last-of-type{
+	color: #DEDFE0;
+}
+.pAnswer-picContainer{
+	position: relative;
+}
+.pAnswer-pic{
+	position: fixed;
+	bottom: 4rem;
+	left: 35%;
+	width: 30%;
+	padding: 5%;
+	border: solid #cae4ec 2px;
+	border-radius: 50%;
+	background-color: white;
+}
+.receive-teachers:last-of-type,.publish-subjects:last-of-type{
+	font-size: 1.2rem;
+	color: color: #8F8F94;;
+}
+.receive-container{
+	background-color: white;
+}
+body,.mui-content{
+	background-color: #eef5f8;
+}
+
+.temWork-teaHint{
+	background-image: url(../../image/homework/temWork-teaHint.png);
+}
+.temWork-stuHint{
+	background-image: url(../../image/homework/temWork-stuHint.png);
+}
+.temWork-stuHint,.temWork-teaHint{
+	background-size: 80%;
+	background-repeat: no-repeat;
+	background-position: center;
+}

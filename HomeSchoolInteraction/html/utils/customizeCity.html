@@ -1,0 +1,663 @@
+<!--
+	作者：444811716@qq.com
+	时间：2017-01-13
+	描述：订制城市
+-->
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>订制城市</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/common.css" />
+		<style>
+			body,
+			.mui-content {
+				background: white;
+			}
+			
+			.mui-table-view:before,
+			.mui-table-view:after,
+			.mui-table-view-cell:after {
+				height: 0px;
+			}
+			
+			.mui-table-view {
+				text-align: center;
+			}
+			
+			.mui-table-view-cell {
+				/*box-shadow: 0px 1px 5px #888888;*/
+				border: 1px solid #D9D9D9;
+				border-radius: 5px;
+				padding: ;
+				padding: 6px;
+				color: #323232
+			}
+			
+			.city-p {
+				width: 100%;
+				background: #E6E6E6;
+				padding: 5px;
+				margin-bottom: 0px;
+				color: #9D9D9D;
+				text-align: left;
+			}
+			
+			.city-select {
+				border: 1px solid #12B8F6;
+			}
+			
+			.mui-col-xs-4 {
+				padding: 5px 10px;
+			}
+			
+			.city-my {
+				position: absolute;
+				height: 1px;
+				width: 50%;
+				background-color: #E4E4E4;
+				margin-top: 10px;
+			}
+			
+			.city-my-point {
+				position: absolute;
+				width: 7px;
+				height: 7px;
+				background-color: #E4E4E4;
+				border-radius: 50%;
+				margin-top: 7px;
+			}
+			
+			#myCityTitle .city-my:nth-child(2) {
+				right: 5px;
+			}
+			
+			.city-delete {
+				width: 20px;
+				border-radius: 50%;
+				position: absolute;
+				right: 3px;
+				top: -4px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title" style="color: white;"></h1>
+			<div id="commit" class="title-text-pull-right">提交</div>
+		</header>
+		<div class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<ul id="table" class="mui-table-view" style="visibility:hidden ;">
+					<div id="myCityTitle" class="city-p" style="visibility: hidden;background-color: white;text-align: center;color:#323232;">
+						<div class="city-my"></div>
+						<div class="city-my"></div>
+						<div class="city-my-point"></div>
+						<div class="city-my-point"></div>
+						<div id="myCityTitle_1" style="display: inline;">已选城市</div>
+					</div>
+					<div id="myCity" class="mui-row" style="visibility: hidden;">
+					</div>
+					<div id="userCityTitle" class="city-p" style="display: none;">当前城市</div>
+					<div id="userCity" class="mui-row" style="display: none;">
+						<!--<div class="mui-col-xs-4 mui-col-sm-4">
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-media-body mui-ellipsis">济南市济南市济南市济南市济南市</div>
+							</li>
+						</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-media-body mui-ellipsis">济南市济南市济南市济南市济南市</div>
+							</li>
+						</div>-->
+					</div>
+					<div id="allCity">
+						<div class="city-p">山东省</div>
+						<div id="City_37" class=" mui-row">
+							<!--<div class="mui-col-xs-4 mui-col-sm-4">
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-media-body mui-ellipsis">济南市济南市济南市济南市济南市</div>
+							</li>
+						</div>
+						<div class="mui-col-xs-4 mui-col-sm-4">
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-media-body mui-ellipsis">济南市济南市济南市济南市济南市</div>
+							</li>
+						</div>-->
+						</div>
+						<div class="city-p">湖北省</div>
+						<div id="City_42" class=" mui-row">
+						</div>
+						<div class="city-p">广西壮族自治区</div>
+						<div id="City_45" class=" mui-row">
+						</div>
+						<div class="city-p">海南省</div>
+						<div id="City_46" class=" mui-row">
+						</div>
+					</div>
+				</ul>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/publicProtocolNew.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/storageKeyName.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script type="text/javascript">
+			var main = null; //获取当前窗体对象
+			var cities = []; //传值的当前已经选择的城市
+			var cityArray = []; //获取到的所有城市
+			var commitCities = []; //提交的城市
+			var selectId = ''; //修改账号地区时记录选择的元素id（acode）
+			var pInfo = store.get(window.storageKeyName.PERSONALINFO);
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			init();
+
+			/**
+			 * 初始化已选城市区域
+			 */
+			function init() {
+				var titleWidth = document.getElementById("myCityTitle").offsetWidth;
+				var titleNameWidth = document.getElementById("myCityTitle_1").offsetWidth;
+				////console.log(titleWidth + ' ' + titleNameWidth);
+				var cityLine = document.querySelectorAll('.city-my');
+				var cityPoint = document.querySelectorAll('.city-my-point');
+				var width = parseInt(titleWidth / 2 - titleNameWidth);
+				cityLine[0].style.width = width + 'px';
+				cityLine[1].style.width = width + 'px';
+				cityPoint[0].style.left = width + 7 + 'px';
+				cityPoint[1].style.right = width + 7 + 'px';
+			}
+
+			mui.init();
+			mui.plusReady(function() {
+				var wd = events.showWaiting();
+				initData();
+				initListener();
+				initScroll();
+				//41.获取某个区域下的所有子区域或查询城市
+				requestAllCity(wd);
+			});
+
+			/**
+			 * 初始化数据
+			 */
+			function initData() {
+				main = plus.webview.currentWebview(); //获取当前窗体对象
+				cities = main.data.cities;
+				//console.log('订制城市：' + JSON.stringify(main.data));
+				//main.data = {
+				//	id: '0',//0科教，1展现，uarea账号地区
+				//	webid: '../scienceeducation/scienceeducation_home.html', //id对应webview的id
+				//	cities: eduArray //已经定制的城市数组
+				//}
+
+				if(main.data.id == 'uarea') { //uarea账号地区
+					document.getElementById("title").innerText = '所在地';
+					selectId = main.data.cities[0].acode;
+					document.getElementById("myCityTitle").style.display = 'none';
+					document.getElementById("myCity").style.display = 'none';
+				} else {
+					document.getElementById("title").innerText = '订制城市';
+					document.getElementById("myCityTitle").style.visibility = 'visible';
+					document.getElementById("myCity").style.visibility = 'visible';
+					for(var i = 0; i < main.data.cities.length; i++) {
+						if(main.data.cities[i].acode != 0 && main.data.cities[i].acode != 1) {
+							addChooseCity(main.data.cities[i]);
+						}
+					}
+					var cityDel = document.querySelectorAll('.city-delete');
+					if(cityDel.length == 0) {
+						document.getElementById("myCityTitle").style.display = 'none';
+					}
+				}
+				document.getElementById("table").style.visibility = 'visible';
+			}
+
+			/**
+			 * 初始化监听
+			 */
+			function initListener() {
+				//点击城市
+				mui('#allCity').on('tap', '.mui-table-view-cell', function() {
+					var classNameArry = this.getAttribute('class').split(' ');
+					var select = false; //被点击的城市是否是选择的
+					for(var i = 0; i < classNameArry.length; i++) {
+						if(classNameArry[i] == 'city-select') {
+							select = true;
+							break;
+						}
+					}
+
+					if(main.data.id == '0' || main.data.id == '1') { //0科教，1展现
+						if(select) {
+							this.className = 'mui-table-view-cell mui-media';
+							var chooseCity = document.getElementById("choose_" + this.id);
+							chooseCity.parentNode.removeChild(chooseCity);
+						} else {
+							if(main.data.id == '1' && mui('.city-select').length > 9) {
+								mui.toast('最多只允许订制10个城市');
+							} else if(main.data.id == '0' && mui('.city-select').length > 19) {
+								mui.toast('最多只允许订制20个城市');
+							} else {
+								this.className = 'mui-table-view-cell mui-media city-select';
+								addChooseCity({
+									acode: this.id,
+									aname: this.innerText
+								});
+							}
+						}
+						var cityDel = document.querySelectorAll('.city-delete');
+						if(cityDel.length == 0) {
+							document.getElementById("myCityTitle").style.display = 'none';
+						} else {
+							document.getElementById("myCityTitle").style.display = 'inline-block';
+						}
+					} else if(main.data.id == 'uarea') { //uarea账号地区
+						if(!select) {
+							if(document.getElementById(selectId)) {
+								document.getElementById(selectId).setAttribute('class', 'mui-table-view-cell mui-media');
+							}
+							this.className = 'mui-table-view-cell mui-media city-select';
+							selectId = this.id;
+						}
+					}
+				});
+
+				//已选城市的删除按钮
+				mui('#myCity').on('tap', '.city-delete', function() {
+					var parent = this.parentNode;
+					var code = parent.id.replace('choose_', '');
+					var cell = document.getElementById(code);
+					if(cell) {
+						document.getElementById(code).className = 'mui-table-view-cell mui-media';
+					}
+					parent.parentNode.removeChild(parent);
+					var cityDel = document.querySelectorAll('.city-delete');
+					if(cityDel.length == 0) {
+						document.getElementById("myCityTitle").style.display = 'none';
+					}
+				});
+
+				//点击提交
+				document.getElementById('commit').addEventListener('tap', function() {
+					var self = this;
+					self.disabled = true;
+					var tempCities = []; //选取的城市
+					commitCities = [];
+					var tempCityArray = cityArray;
+					var localCity = []; //存到本地的城市，游客使用
+					var selector;
+					if(main.data.id == '0' || main.data.id == '1') { //0科教，1展现
+						selector = '#myCity .mui-table-view-cell';
+					} else if(main.data.id == 'uarea') {
+						selector = '#allCity .city-select';
+					}
+					//获取被选中的元素
+					mui(selector).each(function(index, element) {
+						var elementAcode = element.getAttribute('data-acode'); //城市代码
+						mui.each(tempCityArray, function(index2, element2) {
+							if(elementAcode == element2.acode) {
+								tempCities.push(element2);
+								element2.index = commitCities.length;
+								commitCities.push(element2); //设置提交的城市
+								var local = {
+									acode: element2.acode,
+									aname: element2.aname
+								}
+								if(main.data.id == '1') {
+									local.aflag = 0;
+								}
+								localCity.push(local);
+								return false;
+							}
+						});
+					});
+					for(var i in commitCities) {
+						commitCities[i].totalNo = commitCities.length;
+					}
+					//console.log('commitCities:' + JSON.stringify(commitCities));
+
+					if(main.data.id == '0' || main.data.id == '1') { //0科教，1展现
+						var tempCodeArray = [];
+						var tempNameArray = [];
+						for(var m in tempCities) {
+							var tempModel = tempCities[m];
+							tempCodeArray.push(tempModel.acode);
+							tempNameArray.push(tempModel.aname);
+						}
+						//将数组改为字符串
+						var tempStr = '';
+						for(var m in tempCities) {
+							var tempModel = tempCities[m];
+							var tempStr1 = tempModel.acode + '_' + tempModel.aname;
+							tempCities.splice(m, 1, tempStr1);
+							tempStr = tempCities.join('|');
+						}
+						//						console.log('tempStr00000:' + tempStr);
+						if(!parseInt((pInfo.utid))) {
+							var citiesInfo = {
+								type: main.data.id,
+								cities: commitCities
+							};
+							//记录游客订制的城市
+							if(main.data.id == '0') { //科教
+								store.set(window.storageKeyName.SECITY, localCity);
+							} else if(main.data.id == '1') { //展现
+								store.set(window.storageKeyName.SHOWCITY, localCity);
+							}
+							//							events.fireToPageNone(main.data.webid, 'customizeCity', citiesInfo);
+							mui.fire(plus.webview.currentWebview().opener(), 'customizeCity', citiesInfo);
+							mui.toast('订制城市成功');
+							mui.back();
+						} else {
+							//43.用户修改或添加区域阅读设置
+							//							requestCitySetting(tempStr);
+
+							var tempCode = tempCodeArray.join(',');
+							var tempName = tempNameArray.join(',');
+							//							console.log('tempCode:' + tempCode);
+							//							console.log('tempName:' + tempName);
+							//9.新增定制城市
+							addPersonCity(tempCode, tempName);
+						}
+					} else if(main.data.id == 'uarea') { //uarea账号地区
+						if(commitCities.length == 0 || commitCities[0].acode == pInfo.uarea.acode) {
+							mui.back();
+						} else {
+							var procode = ''; //省份代码
+							var proname = ''; //省份名称
+							var acode = commitCities[0].acode; //城市代码
+							var aname = commitCities[0].aname; //城市名称
+							procode = acode.substring(0, 2);
+							//acode=acode.substring(2, 4);
+							switch(procode) {
+								case '37':
+									proname = '山东省';
+									break;
+								case '42':
+									proname = '湖北省';
+									break;
+								case '45':
+									proname = '广西壮族自治区';
+									break;
+								case '46':
+									proname = '海南省';
+									break;
+								default:
+									break;
+							}
+							procode = procode + '0000';
+							var commitSrt = procode + ' ' + acode + '|' + proname + ' ' + aname;
+							//console.log(commitSrt);
+							uareaPostReUinf(commitSrt);
+						}
+					}
+					setTimeout(function() {
+						self.disabled = false;
+					}, 1500);
+				});
+			}
+
+			/**
+			 * 初始化滚动
+			 */
+			function initScroll() {
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui(".mui-scroll-wrapper").scroll({
+					scrollY: true, //是否竖向滚动
+					scrollX: false, //是否横向滚动
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration, //阻尼系数,系数越小滑动越灵敏
+					bounce: true, //是否启用回弹
+				});
+			}
+
+			/**
+			 * 当前城市
+			 * @param {Object} data
+			 */
+			function addBeforeCity(data) {
+				var div = document.createElement('div');
+				div.className = 'mui-col-xs-4 mui-col-sm-4'
+				div.innerHTML = '<li class="mui-table-view-cell mui-media">\
+									  <div class="mui-media-body mui-ellipsis">' + data.aname + '</div>\
+								   </li>';
+				document.getElementById("userCity").appendChild(div);
+			}
+
+			/**
+			 * 更多城市
+			 * @param {Object} id 省份代码
+			 * @param {Object} data 数据
+			 */
+			function addAllCity(id, data) {
+				var div = document.createElement('div');
+				var select = '';
+				if(data.select) {
+					select = 'city-select';
+				}
+				div.className = 'mui-col-xs-4 mui-col-sm-4'
+				div.innerHTML = '<li id="' + data.acode + '" class="mui-table-view-cell mui-media ' + select + '" data-acode="' + data.acode + '">\
+									  <div class="mui-media-body mui-ellipsis">' + data.aname + '</div>\
+								   </li>';
+				document.getElementById("City_" + id).appendChild(div)
+			}
+
+			/**
+			 * 增加已选择的城市
+			 */
+			function addChooseCity(data) {
+				////console.log('addChooseCity '+JSON.stringify(data));
+				var div = document.createElement('div');
+				div.id = 'choose_' + data.acode;
+				div.className = 'mui-col-xs-4 mui-col-sm-4'
+				div.innerHTML = '<li class="mui-table-view-cell mui-media" data-acode="' + data.acode + '">\
+									  <div class="mui-media-body mui-ellipsis">' + data.aname + '</div>\
+								</li>\
+								<img src="../../img/utils/delete.png" class="city-delete" />';
+				document.getElementById("myCity").insertBefore(div, document.getElementById("myAllCity"));
+			}
+
+			//41.获取某个区域下的所有子区域或查询城市
+			function requestAllCity(wd) {
+				//				var wd = wd || events.showWaiting();
+				//				//所需参数
+				//				var comData = {
+				//					vtp: '3', //0(获取省份),1(获取城市),2(获取区县),3获取所有城市,4模糊查询城市
+				//					vvl: '' //查询的值(acode节点编码,查询所有省份或城市留空,模糊查询城市填写查询值)
+				//				};
+				//				//41.获取某个区域下的所有子区域或查询城市
+				//				postDataPro_PostArea(comData, wd, function(data) {
+				//					cityArray = data.RspData;
+				//					//console.log('所有子区域或查询城市:' + JSON.stringify(data));
+				//					if(data.RspCode == 0) {
+				//						var tempArry = cities;
+				//						mui.each(cityArray, function(index, element) {
+				//							//遍历，然后判断是否是之前选择的城市，修改选中状态
+				//							var proAcode = element.acode.substring(0, 2); //截取省份代码
+				//							if(proAcode == '37' || proAcode == '42' || proAcode == '45' || proAcode == '46') {
+				//								//山东，湖北，广西，海南
+				//								var select = 0; //默认为不选中
+				//								for(var m in tempArry) {
+				//									var tempModel = tempArry[m];
+				//									if(element.acode == tempModel.acode) {
+				//										select = 1; //选中
+				//										tempArry.splice(m, 1); //去掉已选中了的
+				//									}
+				//								}
+				//								element.select = select;
+				//								////console.log('addAllCity:' + JSON.stringify(element));
+				//								addAllCity(proAcode, element);
+				//							}
+				//						});
+				//					} else {
+				//						mui.toast(data.RspTxt);
+				//					}
+				//					wd.close();
+				//				});
+
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid, //系统所分配的应用ID
+					type: 3, //类型,0获取省份,1获取城市,2获取区县,3获取所有城市,4获取某个城市信息
+					areano: '' //区域代码,获取type:1,2,4时必填(填写相关区域代码),其他留空
+				}
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('SysArea', enData0, comData0, 0, function(data) {
+					events.closeWaiting();
+					cityArray = data.RspData.sysarea;
+					//console.log('所有子区域或查询城市:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						var tempArry = cities;
+						mui.each(cityArray, function(index, element) {
+							if(element.acode.substring(0, 4) == personal.areano.substring(0, 4)) {
+								personal.uarea = element;
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								if(personal.utid != 0) { //用户显示当前城市
+									document.getElementById("userCityTitle").style.display = 'block';
+									document.getElementById("userCity").style.display = 'inline';
+									addBeforeCity(personal.uarea);
+								}
+							}
+							//遍历，然后判断是否是之前选择的城市，修改选中状态
+							var proAcode = element.acode.substring(0, 2); //截取省份代码
+							if(proAcode == '37' || proAcode == '42' || proAcode == '45' || proAcode == '46') {
+								//山东，湖北，广西，海南
+								var select = 0; //默认为不选中
+								for(var m in tempArry) {
+									var tempModel = tempArry[m];
+									if(element.acode == tempModel.acode) {
+										select = 1; //选中
+										tempArry.splice(m, 1); //去掉已选中了的
+									}
+								}
+								element.select = select;
+								////console.log('addAllCity:' + JSON.stringify(element));
+								addAllCity(proAcode, element);
+							}
+						});
+					} else {
+						mui.toast(data.RspTxt);
+					}
+					wd.close();
+
+				});
+			}
+
+			//9.新增定制城市
+			var addPersonCity = function(cityCodes, cityNames) {
+				var tempData = {
+					userId: personal.utid, //登录人ID
+					cityCodes: cityCodes, //定制城市Code,多个的情况用英文逗号隔开
+					cityNames: cityNames //定制城市名称,多个的情况用英文逗号隔开
+				}
+				events.showWaiting();
+				addPersonCityPro(tempData, function function_name(data) {
+					events.closeWaiting();
+					console.log('9data:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						var citiesInfo = {
+							type: main.data.id,
+							cities: commitCities
+						};
+						//						events.fireToPageNone(main.data.webid, 'customizeCity', citiesInfo);
+						mui.fire(plus.webview.currentWebview().opener(), 'customizeCity', citiesInfo);
+						mui.toast('订制城市成功');
+						mui.back();
+
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+
+			//43.用户修改或添加区域阅读设置
+			function requestCitySetting(str) {
+				var wd = events.showWaiting();
+				//所需参数
+				var comData = {
+					vvl: str, //定制城市组合，城市代码_城市名称|城市代码_城市名称|.....
+					vvl1: main.data.id //定制城市频道,0科教频道,1展示频道,其他待定
+				};
+				//43.用户修改或添加区域阅读设置
+				postDataPro_PostUTcityA(comData, wd, function(data) {
+					//console.log('用户修改或添加区域阅读设置:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						var citiesInfo = {
+							type: main.data.id,
+							cities: commitCities
+						};
+						events.fireToPageNone(main.data.webid, 'customizeCity', citiesInfo);
+						mui.toast('订制城市成功');
+						mui.back();
+					} else {
+						mui.toast(data.RspTxt);
+					}
+					wd.close();
+				});
+			}
+
+			//6.用户修改各项用户信息
+			function uareaPostReUinf(vvl) {
+				var wd = events.showWaiting();
+				//所需参数
+				var comData = {
+					vtp: 'uarea', //uimg(头像),utxt(签名),unick(昵)称,usex(性别),uemail(邮件),uphone(手机绑定)uphoneq(手机解绑),uemailq(邮件解绑),uname(账号,只能修改一次,且只能字母开头,字母与数字,定了就不能修改),uarea(区域,值(省代码 市代码 区代码|省名称 市名称 区名称))
+					vvl: vvl //值(省代码 市代码 区代码|省名称 市名称 区名称)
+				}
+				//6.用户修改各项用户信息
+				postDataPro_PostReUinf(comData, wd, function(data) {
+					//console.log('6.用户修改各项用户信息success:RspCode:' + data.RspCode + ',RspData:' + JSON.stringify(data.RspData) + ',RspTxt:' + data.RspTxt);
+					if(data.RspCode == 0) {
+						mui.toast('修改成功');
+						//解析省市代码
+						var tempArray = vvl.split('|');
+						if(tempArray.length > 0) {
+							var temp0 = tempArray[0].split(' ');
+							var temp1 = tempArray[1].split(' ');
+							var model_area = {
+								procode: temp0[0], //省份code，自己添加的参数
+								proname: temp1[0], //省份名称，自己添加的参数
+								acode: temp0[1], //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
+								aname: temp1[1], //节点名称--城市名称
+								atype: '' //节点类型,0省1城市2区县
+							}
+							pInfo.uarea = model_area;
+						}
+						store.set(window.storageKeyName.PERSONALINFO, pInfo);
+						events.fireToPageNone(main.data.webid, 'infoChanged');
+						mui.back();
+					} else {
+						mui.toast(data.RspTxt);
+					}
+					wd.close();
+				});
+			}
+		</script>
+	</body>
+
+</html>

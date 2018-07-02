@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/icons-extra.css">
+		<style>
+			body,
+			.mui-content {
+				background: #fff;
+				color: #fff;
+			}
+			
+			header.mui-bar {
+				display: none;
+			}
+			
+			.mui-bar-nav~.mui-content {
+				padding: 0;
+			}
+			
+			.title {
+				margin: 35px 15px 10px;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 1em;
+				font-size: 14px;
+				line-height: 24px;
+			}
+			
+			.head-portrait {
+				width: 130px;
+				height: 130px;
+				border-radius: 50%;
+				margin-bottom: 10px;
+			}
+			
+			.user-info {
+				padding: 30px 0 30px 0;
+				text-align: center;
+				background: #fff;
+			}
+			
+			.btns {
+				background: #fff;
+				height: 100%;
+			}
+			
+			.user-text {
+				font-size: 20px;
+				color: #333333;
+			}
+			
+			.mui-table-view-cell {
+				color: #333333;
+			}
+			
+			.mui-icon,
+			.mui-icon-extra {
+				color: #00A5E0;
+			}
+			
+			.out-btn {
+				position: absolute;
+				bottom: 50px;
+				margin: 0 10%;
+				width: 80%;
+				height: 40px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="mine">
+			<div class="mui-row">
+				<div class="user-info">
+					<img v-on:click="clickHeadImg()" class="head-portrait" :src=userImg />
+					<p class="user-text">{{userName}}</p>
+				</div>
+			</div>
+			<div class="mui-row" style="background: #EEEEEE;height: 20px;"></div>
+			<div class="mui-row btns">
+				<ul class="mui-table-view">
+					<li v-for="setting in settings" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)">
+						<a class="mui-navigate-right">
+							<span :class="setting.cls"></span> {{setting.name}}
+						</a>
+					</li>
+				</ul>
+				<button id="close-btn" @click="quitLogin" type="button" class="mui-btn mui-btn-danger out-btn" style="padding: 5px 20px;">退出登录</button>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//关闭back、menu按键监听，这样侧滑主界面会自动获得back和memu的按键事件，仅在主界面处理按键逻辑即可；
+			mui.init({
+				keyEventBind: {
+					backbutton: false,
+					menubutton: false
+				}
+			});
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var main = null;
+			mui.plusReady(function() {
+				main = plus.webview.currentWebview().opener();
+
+				window.addEventListener('mine_setHeadImg', function(data) {
+					mine.userImg = data.detail.imgurl;
+					mui.fire(plus.webview.currentWebview().opener(), 'home_setHeadImg', {
+						imgurl: data.detail.imgurl
+					});
+				});
+			});
+			
+			var mine = new Vue({
+					el: "#mine",
+					data: {
+						userName: personal.utname,
+						userImg: setImg(personal.imgurl),
+						settings: [{
+							name: "密码修改",
+							icon: "",
+							href: "",
+							tempID: 0,
+							cls: 'mui-icon mui-icon-locked'
+						}, {
+							name: "我的订购",
+							icon: "",
+							href: "",
+							tempID: 1,
+							cls: 'mui-icon-extra mui-icon-extra-cart'
+						},{
+							name: "关于我们",
+							icon: "",
+							href: "",
+							tempID: 2,
+							cls: 'mui-icon mui-icon-info'
+						}],
+						isMineShow: false //屏蔽或显示我的界面
+					},
+					methods: {
+						quitLogin: function() { //退出登录
+							closeMenu();
+							hideMenu();
+						},
+						jumpToDetail: function(setting) {
+							hideMenu();
+							this.isMineShow = false;
+							if(setting.tempID == 0) {
+								var tempModel = {
+									flag: 0 //0是主动修改密码，1是判断是默认密码，自动让修改
+								}
+								utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+							} else if(setting.tempID == 1) {
+								utils.mOpenWithData("../../html/order/orderList.html", setting);
+							} else if(setting.tempID == 2) {
+								utils.mOpenWithData("../../html/mine/about.html", setting);
+							}
+						},
+						clickHeadImg: function() {
+							this.isMineShow = false;
+							hideMenu();
+							utils.mOpenWithData("../../html/mine/headImg.html", {});
+						}
+					}
+				});
+
+			function hideMenu() {
+				mui.fire(plus.webview.currentWebview().opener(), 'hideMenu', {
+					hide: true
+				});
+			}
+
+			function closeMenu() {
+				//获取个人信息
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				//解绑个推
+				var info = plus.push.getClientInfo();
+				var tempBindData = {
+					appId: info.appid,
+					alias: personal.utid,
+					cid: info.clientid
+				}
+				unbindPro(tempBindData, function function_name(data) {
+					if(data.RspCode == 0) {} else {}
+				});
+				//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+				utils.setBadgeNumber(0, 0);
+
+				//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
+				store.remove(window.storageKeyName.PERSONALINFO);
+				//				plus.webview.open('../../html/login/loginIndex.html');
+				plus.webview.open('../../html/login/firstPage1.html');
+				var curr = plus.webview.currentWebview();
+				var wvs = plus.webview.all();
+				for(var i = 0, len = wvs.length; i < len; i++) {
+					//关闭除login页面外的其他页面
+					if(wvs[i].getURL().indexOf('firstPage1.html') != -1) {
+						//					if(wvs[i].getURL().indexOf('loginIndex.html') != -1) {
+						continue;
+					}
+					plus.webview.close(wvs[i]);
+				}
+				curr.close();
+			}
+
+			//左滑显示出来的菜单，只需监听右滑，然后将菜单关闭即可；在该菜单上左滑，不做任何操作；
+			window.addEventListener("swiperight", closeMenu);
+
+			document.getElementById("close-btn").addEventListener('tap', closeMenu);
+		</script>
+	</body>
+
+</html>

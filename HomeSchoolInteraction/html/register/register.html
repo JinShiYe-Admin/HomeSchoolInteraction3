@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			body{
+				width:100%;
+    			height:100%;
+				background: #EEEEEE url(../../img/register/bgimg.png) no-repeat fixed top;
+			}
+			.mui-content {
+			    background-color: transparent;
+			}
+			
+			.mui-bar-nav {
+			    top: 0;
+			    -webkit-box-shadow: 0 1px 6px #ccc;
+			    box-shadow: 0 0 #ccc;
+			}
+			.register-form{
+				margin-top: 70px;
+			}
+			
+			.mui-input-row{
+				padding: 2px 8%;
+			}
+			
+			.mui-input-row label {
+			    font-family: 'Helvetica Neue',Helvetica,sans-serif;
+			    line-height: 1.1;
+			    float: left;
+			    width: 20%;
+			    padding: 11px 15px;
+			}
+			
+			.mui-input-row label~input{
+			    float: right;
+			    width: 80%;
+			    margin-bottom: 0;
+			    padding-left: 0;
+			    border: 0;
+			}
+			
+			.mui-input-row:after {
+			    position: absolute;
+			    right: 12%;
+			    bottom: 0;
+			    top:35px;
+			    left: 21%;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			}
+			
+			.mui-title{
+				color: #00CFBD;
+				font-size: 20px;
+				font-weight: 600;
+			}
+			
+			.check{
+				text-align: right;
+				margin-right: 12%;
+				font-size:12px ;
+			}
+			.regbtnbox{
+				margin-top: 40px;
+				padding: 0px 12%;
+			}
+			
+			.regbtn{
+				background: #00cfba;
+				border:none;
+				border-radius: 25px;
+				height: 40px;
+				padding-top: 8px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:transparent;">
+			<a  class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: black;"></a>
+			<h1 class="mui-title" >注册</h1>
+		</header>
+		<div id="register" class="mui-content">
+			<form id="registerForm" class="register-form">
+				<div class="mui-input-row">
+					<label style="margin-top: -6px;"><image src="../../img/register/phone.png" style="width: 30px;height: 30px;" /></label>
+					<input id='phoneNumber' name='phoneNumber' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
+				</div>
+	
+				<div class="mui-input-row ">
+					<label style="margin-top: -6px;"><image src="../../img/register/idencode.png" style="width: 30px;height: 30px;" /></label>
+					<input id='idenCode' name="idenCode" type="number" class="mui-input-clear mui-input " placeholder="请输入验证码">
+					<button id='idenCodebtn' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfba; border:none;border-radius: 25px;height: 25px;width: 90px;font-size: 12px;padding: 7px 15px;margin-top: -35px;right: 5%;">发送验证码</button>
+				</div>
+				 
+				<div class="mui-input-row">
+					<label style="margin-top: -6px;"><image src="../../img/register/username.png" style="width: 30px;height: 30px;" /></label>
+					<input id='userName' name="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
+				</div>
+	
+				<div class="mui-input-row">
+					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
+					<input id='password' name="password" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div> 
+	
+				<div class="mui-input-row">
+					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
+					<input id='confirmPassword' name="confirmPassword" type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
+				</div>
+			</form>
+			<div class="check">
+				<input @click="checked" id="checkBox" type="checkbox" style="vertical-align:middle;"/><label  for="checkBox" style="vertical-align:middle;">我已阅读并接受</label><a href="javascript:;;">《注册协议》</a>
+			</div>
+			<div class="regbtnbox">
+				<button id='regbtn' :disabled="isDisabled" type="button" class="mui-btn mui-btn-block mui-btn-primary regbtn">立即注册</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/utils/vue.js"></script>
+	<!--加密-->
+	<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+	<!---->
+	<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+	<script src='../../js/libs/crypto-js/require.js'></script>
+	<script src='../../js/utils/signHmacSHA1.js'></script>
+	<script src='../../js/libs/jquery.js'></script>
+	<script src="../../js/publicProtocolNew.js"></script>
+	<script src='../../js/utils/sortSign.js'></script>
+	<script src="../../js/storageKeyName.js"></script>
+	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/events.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.plusReady(function() {
+		});
+		
+		var register =new Vue({
+			el:'#register'
+			,data:{
+				isDisabled:true
+			}
+			,methods:{
+				checked:function(){
+					this.isDisabled=!this.isDisabled
+				}
+			}
+		});
+		
+	</script>
+
+</html>

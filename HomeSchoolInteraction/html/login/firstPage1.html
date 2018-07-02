@@ -1,0 +1,248 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript">
+		</script>
+
+	</head>
+
+	<body>
+
+		<!--<div style="background-image:url(../../img/ios_1242-2208.png);background-position: center; background-size: cover;background-repeat: no-repeat;" class="mui-fullscreen" style="width: 100%;height: 100%;"></div>-->
+	</body>
+	<!--加密-->
+	<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+	<!---->
+	<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+	<script src='../../js/libs/crypto-js/require.js'></script>
+	<script src='../../js/utils/signHmacSHA1.js'></script>
+	<script src='../../js/libs/jquery.js'></script>
+	<script src="../../js/publicProtocolNew.js"></script>
+	<script src='../../js/utils/sortSign.js'></script>
+	<script src="../../js/storageKeyName.js"></script>
+	<script src="../../js/jquery-weui.min.js"></script>
+	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/utils/events.js"></script>
+	<script type="text/javascript">
+		mui.init({
+				statusBarBackground: '#00CFBD'
+			});
+		//		$(function() {
+		//			
+		//		});
+		var tempModel = {};
+		var loginFlag = 0; //0自动登录，1不自动登录//判断上次有没有登录，如果登录，就不执行登录协议
+		mui.plusReady(function() {
+			tempModel = {
+				uuid: plus.device.uuid,
+				appid: plus.runtime.appid
+			}
+			if (tempModel.uuid=='') {
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				tempModel.uuid = publicPar.uuid;
+				tempModel.appid = publicPar.appid;
+			}
+			
+			setUUID();
+			document.addEventListener("netchange", wainshow, false);
+
+			function wainshow() {
+				if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+					mui.toast("网络异常，请检查网络设置！");
+				} else {
+					mui.toast("已接入网络");
+					//判断上次有没有登录，如果登录，就不执行登录协议
+					if(loginFlag == 0) {
+						loginFlag = 1;
+						setUUID();
+					}
+				}
+			}
+		});
+		document.addEventListener("plusready", function() {
+			message = document.getElementById("message");
+			// 监听点击消息事件
+			plus.push.addEventListener("click", function(msg) {
+				// 判断是从本地创建还是离线推送的消息
+				switch(msg.payload) {
+					case "LocalMSG":
+						outSet("点击本地创建消息启动：");
+						break;
+					default:
+						outSet("点击离线推送消息启动：");
+						break;
+				}
+				// 提示点击的内容
+				plus.ui.alert(msg.content);
+				// 处理其它数据
+				logoutPushMsg(msg);
+			}, false);
+			// 监听在线消息事件
+			plus.push.addEventListener("receive", function(msg) {
+				//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+				utils.setBadgeNumber(2,0);
+				if(msg.aps) { // Apple APNS message
+					outSet("接收到在线APNS消息：");
+				} else {
+					outSet("接收到在线透传消息：");
+				}
+				logoutPushMsg(msg);
+			}, false);
+		}, false);
+
+		/**
+		 * 获取本地推送标识信息
+		 */
+		function getPushInfo() {
+			var info = plus.push.getClientInfo();
+			outSet("获取客户端推送标识信息：");
+			outLine("id: " + info.id);
+			outLine("token: " + info.token);
+			outLine("clientid: " + info.clientid);
+			outLine("appid: " + info.appid);
+			outLine("appkey: " + info.appkey);
+		}
+
+		//login登录
+		var loginPro = function(tempName, tempPW) {
+			var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+			//握手
+			var enData0 = {};
+			//不需要加密的数据
+			var comData0 = {
+				uuid: publicPar.uuid, //用户设备号
+				shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+				appid: publicPar.appid //系统所分配的应用ID
+			};
+			events.showWaiting();
+			//发送网络请求，data为网络返回值
+			postDataEncry('ShakeHand', enData0, comData0, 0, function(data) {
+				console.log('2121212');
+				if(data.RspCode == 0) {
+					store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+					var enData1 = {
+						uid: tempName, //用户账号
+						pw: tempPW //用户密码
+					};
+					//不需要加密的数据
+					var comData1 = {
+						uuid: publicPar.uuid, //用户设备号
+						shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+						appid: publicPar.appid, //系统所分配的应用ID
+						schid: storageKeyName.SCHOOLID, //学校ID
+						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+					};
+					//登录
+					postDataEncry('Login', enData1, comData1, 0, function(data1) {
+						events.closeWaiting();
+						if(data1.RspCode == 0) {
+							loginFlag = 1;
+							if(data1.RspData.dpts == null) {
+								data1.RspData.dpts = [];
+							}
+							if(data1.RspData.grds == null) {
+								data1.RspData.grds = [];
+							}
+							if(data1.RspData.clss == null) {
+								data1.RspData.clss = [];
+							}
+							if(data1.RspData.subs == null) {
+								data1.RspData.subs = [];
+							}
+							//									if (data1.RspData.clss.length>0) {
+							//										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
+							//									}
+							if(data1.RspData.urolestr == null) {
+								data1.RspData.urolestr = '00000000000000000000000000000';
+							}
+							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
+								data1.RspData.imgurl = '../../img/login/headImg.png';
+							}
+							data1.RspData.userName0 = tempName;
+							data1.RspData.password0 = tempPW;
+							var model_area = {
+								procode: '00', //省份code，自己添加的参数
+								proname: '全国', //省份名称，自己添加的参数
+								acode: '000000', //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
+								aname: '全国', //节点名称--城市名称
+								atype: '' //节点类型,0省1城市2区县
+							}
+							data1.RspData.uarea = model_area; //用户区域,省代码 市代码|省名称 市名称
+							store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
+							var personal = store.get(window.storageKeyName.PERSONALINFO);
+							console.log('personal000:' + JSON.stringify(personal));
+
+							var info = plus.push.getClientInfo();
+							var tempBindData = {
+								appId: info.appid,
+								alias: data1.RspData.utid,
+								cid: info.clientid
+							}
+							bindPro(tempBindData, function function_name(data) {
+								//									events.closeWaiting();
+								if(data.RspCode == 0) {
+									//										utils.mOpenWithData("../../index.html", {});
+								} else {
+									//											mui.toast(data.RspTxt);
+								}
+							});
+							if(personal.utid=='0'){//无权限
+//								plus.webview.open('../../index2.html');
+								utils.hrefSessionStorage('../../html/login/index2.html', {});
+							}else{
+//								utils.mOpenWithData("../../index.html", personal);
+								utils.hrefSessionStorage('../../html/login/index.html', {});
+							}
+						} else if(data1.RspCode == 5){//用户名或密码不正确
+							store.set(window.storageKeyName.PERSONALINFO, {});
+							setUUID();
+						} else {
+							mui.toast(data1.RspTxt);
+						}
+					});
+				} else {
+//					setUUID();
+					mui.toast(data.RspTxt);
+				}
+			});
+
+		}
+
+		//从ios原生得到信息
+		var setUUID = function() {
+//			if(loginFlag == 0) {
+				//判断上次是否登录过，自动登录
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				if(personal) {
+					if(personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
+						//login登录
+						loginPro('00000000000', '000000');
+					} else {
+						if (personal.userName00) {
+							//login登录
+							loginPro(personal.userName0, personal.password0);
+						}else{
+							loginPro('00000000000', '000000');
+						}
+					}
+				} else {
+					loginPro('00000000000', '000000');
+				}
+//			} else {
+//
+//			}
+		}
+	</script>
+
+</html>

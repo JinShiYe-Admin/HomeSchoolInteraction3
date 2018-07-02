@@ -1,0 +1,87 @@
+/**
+ * 输入内容父控件div
+ */
+.input-content {
+	width: 100%;
+	height: 25rem;
+	background-color: white;
+	border-color: #E4E4E4;
+}
+.extras-info{
+	margin-top: -22px;
+	padding-top: 20px;
+	height: 5rem;
+	background-color: white;
+}
+
+/**
+ * 输入内容样式
+ */
+textarea {
+	border-radius: 5px 5px 0 0;
+	border-color: transparent;
+	border-bottom-color: lightgray;
+	width: 100%;
+	height: 20rem;
+}
+/**
+ * 拍照、添加文件样式
+ */
+
+.take_pic,
+.take_camero,
+.get_gallery,
+.get_record {
+	width: 6rem;
+	height: 4rem;
+	padding-left: 1rem;
+	padding-top: 0.7rem;
+	float: left;
+	margin-top: -15px;
+}
+/**
+ * 样式
+ */
+div>.icon-xiangji:before,
+.icon-xiangce:before,
+.icon-tuku:before,
+.icon-shipin:before,
+.icon-xiangji1:before,
+.icon-yuyin3:before {
+	font-size: 3.0rem;
+	color: #B7B7B7;
+}
+.img-div{
+	position: relative;
+	width: 25%;
+	float: left;
+	text-align: center;
+}
+/*.img-div img{
+	padding-top: 0.5rem;
+	width: 80%;
+}*/
+.icon-guanbi{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.img-div{
+	position: relative;
+	width: 25%;
+	float: left;
+	text-align: center;
+	background-color: transparent;
+}
+.img-div img{
+	width: 100%;
+	height: 100%;
+}
+.icon-guanbi{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+.imgs-extras{
+	background-color: transparent;
+}

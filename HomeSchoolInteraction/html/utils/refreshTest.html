@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/utils/common.css" rel="stylesheet" />
+		<link href="../../css/iconfont/iconfont.css" rel="stylesheet" />
+		<link href="../../css/qiuzhi/qiuzhi-inviteAnswer.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">全部回答</h1>
+		</header>
+		<div id="refreshContainer" class="mui-content mui-fullscreen" style="z-index:0">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul id="list-container" class="mui-table-view">
+
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<!--<script src="../../js/utils/h5fresh.js"></script>-->
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/publicProtocol.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/storageKeyName.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/publicQiuzhiProtocol.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var ExpertsInfo; //专家详细页传来的 专家信息
+			var pageIndex = 1; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var answerArray = []; //回答总数组
+
+			mui.init();
+
+			mui.plusReady(function() {
+				//从专家页面传值
+				window.addEventListener('qiuzhi-expertAllAnswer', function(event) {
+					//赋值
+					ExpertsInfo = event.detail.data;
+					//console.log('专家回答页传值：' + JSON.stringify(ExpertsInfo));
+					//清除节点
+					document.getElementById('list-container').innerHTML = "";
+					//24.获取某个用户的回答列表
+					getAnswersByUser(ExpertsInfo.UserId);
+				});
+
+				//阻尼系数、初始化刷新加载更多
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				//上拉下拉注册
+				mui(".mui-scroll-wrapper .mui-scroll").pullToRefresh({
+					down: {
+						callback: function() {
+							//清除节点
+							document.getElementById('list-container').innerHTML = "";
+							var self = this;
+							//console.log("下拉刷新");
+							pageIndex = 1;
+							flagRef = 0;
+							//24.获取某个用户的回答列表
+							getAnswersByUser(ExpertsInfo.UserId);
+							setTimeout(function() {
+								//结束下拉刷新
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						callback: function() {
+							var self = this;
+							//console.log("上拉加载更多");
+							flagRef = 1;
+							if(pageIndex <= totalPageCount) {
+								//24.获取某个用户的回答列表
+								getAnswersByUser(ExpertsInfo.UserId);
+								setTimeout(function() {
+									//结束下拉刷新
+									self.endPullUpToRefresh();
+									if(mui(".mui-table-view-cell").length < 10) {
+										mui(".mui-pull-loading")[0].innerHTML = "";
+									}
+								}, 1000);
+							} else {
+								//结束下拉刷新
+								self.endPullUpToRefresh();
+								mui(".mui-pull-loading")[0].innerHTML = "没有更多了";
+							}
+						}
+					}
+				});
+
+			});
+
+			//24.获取某个用户的回答列表
+			function getAnswersByUser(userId) {
+				//需要加密的数据
+				var comData = {
+					userId: userId, //用户ID
+					pageIndex: pageIndex, //当前页数
+					pageSize: '10' //每页记录数,传入0，获取总记录数
+				};
+				// 等待的对话框
+				var wd = events.showWaiting();
+				//24.获取某个用户的回答列表
+				postDataQZPro_getAnswersByUser(comData, wd, function(data) {
+					wd.close();
+					//console.log('24.获取某个用户的回答列表:' + data.RspCode + ',RspData:' + JSON.stringify(data.RspData) + ',RspTxt:' + data.RspTxt);
+					if(data.RspCode == 0) {
+						//总页数
+						totalPageCount = data.RspData.TotalPage;
+						pageIndex++;
+						if(flagRef == 0) { //刷新
+							answerArray = data.RspData.Data;
+						} else { //加载更多
+							//合并数组
+							answerArray = answerArray.concat(data.RspData.Data);
+						}
+						setAnswerRecord(data.RspData.Data);
+						if(mui(".mui-table-view-cell").length < 10) {
+							mui(".mui-pull-loading")[0].innerHTML = "";
+						}
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			};
+
+			/**
+			 * 放置邀请回答记录数据
+			 * @param {Object} list 回答记录数据
+			 */
+			var setAnswerRecord = function(list) {
+				var listContainer = document.getElementById('list-container');
+				for(var i in list) {
+					createList(listContainer, list[i])
+				}
+			}
+			/**
+			 * 拼接回答记录
+			 * @param {Object} listContainer
+			 * @param {Object} record
+			 */
+			var createList = function(listContainer, record) {
+				var li = document.createElement('li');
+				li.className = 'mui-table-view-cell';
+				//拼接显示
+				li.innerHTML = "<div><p><span>" + record.AskTitle + "</span></p></div>";
+				listContainer.appendChild(li);
+			}
+		</script>
+	</body>
+
+</html>

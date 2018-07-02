@@ -1,0 +1,477 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/common.css" />
+		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
+		<link rel="stylesheet" href="../../css/utils/MultiMedia.css" />
+		<link rel="stylesheet" href="../../css/utils/preview.css" />
+		<link rel="stylesheet" href="../../css/utils/audiopopover.css" />
+		<link rel="stylesheet" href="../../css/utils/notice-img.css" />
+		<style type="text/css">
+			.img-wrap {
+				width: 40%;
+				/* 这里设置占屏幕宽度百分比 */
+				margin: 0 auto;
+			}
+			/* 创建一个正方形容器 */
+			
+			.img-container {
+				width: 100%;
+				height: 0px;
+				padding-bottom: 100%;
+				overflow: hidden; 
+				margin: 0;
+				position: relative;
+			}
+			/* 采用绝对定位 */
+			
+			.img-wrap img {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.record-imge {
+				width: 100%;
+			}
+			
+			.record-picture {
+				overflow: hidden;
+				position: relative;
+				float: left;
+				text-align: center;
+			}
+			
+			.record-picture-num {
+				/*剩余图片数量*/
+				position: absolute;
+				color: white;
+				background-color: rgba(0, 0, 0, .3);
+				width: 100%;
+				font-size: 25px;
+			}
+			
+			.show-all {
+				display: none;
+				color: #CCCCCC;
+				font-size: 1.4rem;
+			}
+			
+			.mui-pull-bottom-wrapper {
+				/*底部加载更多区域*/
+				background-color: white;
+			}
+			/*.record-video {*/
+			/*视频区域*/
+			/*height: 149px;*/
+			/*}*/
+			
+			.video-thumb {
+				/*视频缩略图*/
+				width: 50%;
+				visibility: hidden;
+			}
+			
+			.video-play {
+				/*播放按钮*/
+				position: absolute;
+				visibility: hidden;
+			}
+			
+			.video-time {
+				/*视频时间*/
+				position: absolute;
+				color: white;
+				right: 52%;
+				bottom: 10px;
+				visibility: hidden;
+			}
+			
+			.mui-popover {
+				width: 100%;
+				height: 0px;
+				border-radius: initial;
+				background-color: transparent;
+				border: none;
+				box-shadow: none;
+			}
+			
+			.mui-backdrop {
+				background-color: transparent;
+			}
+			
+			.mui-icon-camera {
+				color: #A9A9A9;
+				margin-left: 3%;
+				position: absolute;
+				line-height: 37px;
+				margin-top: 2px;
+			}
+			
+			.slider-list {
+				font-size: 15px;
+			}
+			
+			.peopleImg {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+			}
+			
+			.replyName {
+				font-size: 13px;
+				color: #333333;
+			}
+			
+			.replyTime {
+				font-size: 12px;
+				color: #999999;
+			}
+			
+			.replyContent {
+				font-size: 13px;
+				color: #333333;
+			}
+			
+			.mui-grid-view {
+				border: 0px;
+			}
+			
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				color: #00CFBD;
+				border-bottom: 2px solid #00CFBD;
+			}
+			
+			.tb-width{
+				width: 100%;
+				height: 170px;
+				margin-bottom:10px;
+			}
+			
+			.videoImg{
+				position:absolute;
+				vertical-align: middle;
+				height: 150px;
+				width: 200px;
+				left: 0;
+				top: 0;
+			}
+			.videoImg2{
+				position:absolute;
+				height: 55px;
+				width:55px;
+				left: 75px;
+				top: 50px; 
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">通知详情</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab" id="noticeReplyContent" style="background: white;">
+			<div style="padding-top: 5px;">
+				<input v-model="content" maxlength="200" type="text" style="border: 0px;margin-bottom: 0px;margin-left: 5px;width: 75%;font-size: 16px;color: #999999;" placeholder="请输入要回复的内容" />
+				<button v-on:click.stop="replyContent()" type="button" class="" style="width: 20%;margin-top: 2px;border: 0px;font-size: 18px;color: #00cfbd;">回复</button>
+			</div>
+		</nav>  
+		<div class="mui-content" id="noticeDetailData" v-if="flag>0" style="background: white;">
+			<p style="color: black;padding: 10px;font-size: 14px;color: #333333;word-break: break-all;">{{noticesDetail.NoticeContent}}</p>
+			<!--<p class="" style="height: 10px;background-color: #f2f2f2;"></p>-->
+			<div id="" v-show="noticesDetail.NoticeEncAddr.length>0">
+				<div class="" v-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==2">
+					<ul class="mui-table-view mui-grid-view">
+						<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr" >
+								<table border="0" cellpadding="0" cellspacing="0" class="tb-width">
+									  <tr class="tb-width">
+									    <td class="tb-width" style="position:relative;">
+												<img style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;"  class="videoImg" :src=noticesDetail.NoticeEncImgAddr onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'">
+												<img class="videoImg2" src="../../img/utils/playvideo.png" @tap="playVideo">
+										</td>
+									  </tr>
+								</table>
+						</li>
+					</ul>
+				</div>
+				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==1">
+					<ul class="mui-table-view mui-grid-view">
+						<li class="mui-table-view-cell mui-media" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+							<a href="#">
+								<div class="notice-one-img" style=" overflow: hidden;">
+									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==2">
+					<ul class="mui-table-view mui-grid-view">
+						<li class="mui-table-view-cell mui-media mui-col-xs-5 mui-col-sm-5" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+							<a href="#">
+								<div class="notice-two-img" style=" overflow: hidden;">
+									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length>=3">
+					<ul class="mui-table-view mui-grid-view">
+						<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+							<a href="#" style="margin: -10px 0 0 -20px;">
+								<!--<img class="notice-more-img" data-preview-src="" :src=picModel>-->
+								<div class="notice-more-img" style=" overflow: hidden;">
+									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<p style="margin:0px auto;padding-top:5px;padding-right: 10px;font-size:12px;overflow:hidden;text-align:right;">{{noticesDetail.SendManName}} | {{noticesDetail.SendTime}}</p>
+			<div id="sliderSegmentedControl" class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary">
+				<a id="item1" class="mui-control-item mui-active readPeople slider-list" href="#ReplyArray">
+					回复({{noticesDetail.ReplyArray.length}})
+				</a>
+				<a id="item2" class="mui-control-item readPeople slider-list" href="#ReadArray">
+					已浏览({{noticesDetail.ReadArray.length}})
+				</a>
+				<a id="item2" class="mui-control-item readPeople slider-list" href="#NoReadArray">
+					未浏览({{noticesDetail.NoReadArray.length}})
+				</a>
+			</div> 
+			<!--滑动内容-->
+			<div class="mui-slider-group" style="min-height: 100px;">
+				<div id="ReplyArray" class="mui-slider-item mui-control-content mui-active">
+					<ul class="mui-table-view" v-for="(model,index) in noticesDetail.ReplyArray">
+						<li class="mui-table-view-cell">
+							<div class="mui-media-body replyName">
+								<img v-if="model.ReplyManImg==null||model.ReplyManImg==''" class="mui-media-object mui-pull-left peopleImg" src='../../img/noImgPerson.jpg'> {{model.ReplyManName}}
+								<img v-else="" class="mui-media-object mui-pull-left peopleImg" :src=model.ReplyManImg> {{model.ReplyManName}}
+								<p class="mui-ellipsis replyTime">{{model.ReplyTime}}</p>
+								<p class="replyContent" style="padding-left: 52px;word-break: break-all;">{{model.ReplyContent}}</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div id="ReadArray" class="mui-slider-item mui-control-content">
+					<ul class="mui-table-view" v-for="(model,index) in noticesDetail.ReadArray">
+						<li class="mui-table-view-cell">
+							<a href="javascript:;">
+								<img v-if="model.ReceiveManImg==null||model.ReceiveManImg==''" class="mui-media-object mui-pull-left peopleImg" src='../../img/noImgPerson.jpg'>
+								<img v-else="" class="mui-media-object mui-pull-left peopleImg" :src=model.ReceiveManImg>
+								<div class="mui-media-body replyName">
+									{{model.ReceiveManName}}的家长
+									<p class="mui-ellipsis replyTime">{{model.ReadTime}}</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div id="NoReadArray" class="mui-slider-item mui-control-content">
+					<ul class="mui-table-view" v-for="(model,index) in noticesDetail.NoReadArray">
+						<li class="mui-table-view-cell">
+							<a href="javascript:;">
+								<img v-if="model.ReceiveManImg==null||model.ReceiveManImg==''" class="mui-media-object mui-pull-left peopleImg" src='../../img/noImgPerson.jpg'>
+								<img v-else="" class="mui-media-object mui-pull-left peopleImg" :src=model.ReceiveManImg>
+								<div class="mui-media-body replyName" style="padding-top: 10px;">
+									{{model.ReceiveManName}}的家长
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div id="videoPopover" class="mui-popover">
+			<video id="video" style="position: absolute;z-index: 999;">
+				您的浏览器不支持 video 标签。
+			</video>
+		</div>
+		
+		<div id="MultiMedia">
+			<div id="audioPopover" class="mui-popover">
+				<div id="audio_show" class="audio-show-popover">
+					<span id="audio_icon" class="mui-icon mui-icon-mic audio-icon"></span>
+					<canvas id="audio_canvas" class="audio-canvas"></canvas>
+					<span id="audio_close" class="mui-icon iconfont icon-guanbi"></span>
+					<div id="audio_time" class="audio-time">00:00</div>
+					<div id="audio_control" class="audio-control">
+						<div id="audio_play" class="audio-control-background audio-control-play">
+							<div></div>
+						</div>
+						<div id="audio_pause" class="audio-control-background audio-control-pause">
+							<div></div>
+							<div></div>
+						</div>
+					</div>
+					<audio id="audio_audio" autoplay="autoplay" preload="auto"></audio>
+				</div>
+			</div>
+			<script src="../../js/mui.min.js"></script>
+			<script src="../../js/utils/vue.min.js"></script>
+			<script src="../../js/utils/utils.js"></script>
+			<script src="../../js/utils/events.js"></script>
+			<script src="../../js/libs/jquery.js"></script>
+			<script src="../../js/publicProtocolNew.js"></script>
+			<!--<script src="../../js/publicProtocol.js"></script>-->
+			<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+
+			<script src='../../js/libs/crypto-js/require.js'></script>
+			<script src='../../js/utils/signHmacSHA1.js'></script>
+			<script src='../../js/utils/sortSign.js'></script>
+			<script src="../../js/storageKeyName.js"></script>
+			<script src="../../js/utils/store.js"></script>
+
+			<script type="text/javascript" src="../../js/utils/events.js"></script>
+			<script type="text/javascript" src="../../js/mui.zoom.js"></script>
+			<script type="text/javascript" src="../../js/mui.previewimage.js"></script>
+			<script type="text/javascript" src="../../js/mui.pullToRefresh.js"></script>
+			<script type="text/javascript" src="../../js/mui.pullToRefresh.material.js"></script>
+			<script type="text/javascript" src="../../js/utils/playutil.js"></script>
+			<script type="text/javascript" src="../../js/utils/showvideoutil.js"></script>
+			<script type="text/javascript" src="../../js/utils/showaudio.js"></script>
+			<script type="text/javascript">
+				mui.init();
+				//获取个人信息
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				var curPage = {};
+				var previewImage; //查看图片的控件
+				mui.plusReady(function() {
+					//初始化图片查看控件
+					previewImage = mui.previewImage();
+					ShowVideoUtil.initVideo(document.getElementById('video'),1);
+					ShowAudioUtil.initAudioPopover({
+						show: document.getElementById("audio_show"),
+						icon: document.getElementById("audio_icon"),
+						canvas: document.getElementById("audio_canvas"),
+						play: document.getElementById("audio_play"),
+						pause: document.getElementById("audio_pause"),
+						time: document.getElementById("audio_time"),
+						audio: document.getElementById("audio_audio")
+					});
+					curPage = utils.getDataFromUrl(window.location.href);
+					console.log('2222:' + JSON.stringify(curPage));
+					//5.通过ID获取学校通知（同时阅读通知和通知回复）
+					getNoticesDetail(curPage);
+				});
+
+				var noticeDetailData = new Vue({
+					el: "#noticeDetailData",
+					data: {
+						flag: 0, //
+						noticesDetail: {
+						} //获取到的详情
+					},
+					methods: {
+						playVideo: function() {
+							console.log('playVideo:'+noticeDetailData.noticesDetail.NoticeEncAddr);
+							console.log('playVideo:'+noticeDetailData.noticesDetail.NoticeEncAddr[0]);
+							ShowVideoUtil.showVideo(document.getElementById("video"), 'videoPopover', noticeDetailData.noticesDetail.NoticeEncAddr[0], noticeDetailData.noticesDetail.NoticeEncImgAddr);
+						}
+					},mounted:function(){
+						console.log('加载完了')
+					}
+				});
+				//点击图片的数字
+				mui('#list').on('tap', '.record-picture-num', function() {
+					previewImage.open(document.getElementById("img_" + this.getAttribute('data-id')));
+				});
+
+				document.getElementById("")
+
+				//5.通过ID获取学校通知（同时阅读通知和通知回复）
+				var getNoticesDetail = function(model) {
+					var tempData = {
+						noticeId: model.NoticeId, //通知ID
+						receiveManId: personal.utid //阅读人ID
+					}
+					events.showWaiting();
+					getNoticeByIdPro(tempData, function function_name(data) {
+						events.closeWaiting();
+						console.log('data:' + JSON.stringify(data));
+						if(data.RspCode == 0) {
+							noticeDetailData.flag = 1;
+							data.RspData.SendTime = modifyTimeFormat(data.RspData.SendTime);
+							if(data.RspData.NoticeEncAddr.length > 0) {
+								data.RspData.NoticeEncAddr = data.RspData.NoticeEncAddr.split('|');
+								//判断附件的格式,1图片，2视频
+								if(data.RspData.NoticeEncAddr.length == 1) {
+									var urlArr = data.RspData.NoticeEncAddr[0].split('.');
+									var urlLast = urlArr[urlArr.length - 1];
+									urlLast=urlLast.toLowerCase();
+									console.log('urlLast:' + urlLast);
+									if(urlLast == 'mp4' || urlLast == 'avi' || urlLast == 'mpg' || urlLast == 'vob' || urlLast == 'mov' || urlLast == 'flv' || urlLast == 'wmv') {
+										data.RspData.encFlag = 2;
+									} else {
+										data.RspData.encFlag = 1;
+									}
+								} else {
+									data.RspData.encFlag = 1;
+								}
+							} else {
+								data.RspData.encFlag = 0;
+							}
+							data.RspData.ReplyArray.reverse();
+							noticeDetailData.noticesDetail = data.RspData;
+						} else {
+							mui.toast(data.RspTxt);
+						}
+					});
+				}
+
+				//3.回复学校通知(同时增加回复未读)
+				var noticeReplyContent = new Vue({
+					el: "#noticeReplyContent",
+					data: {
+						content: ''
+					},
+					methods: {
+						replyContent: function() {
+							if(noticeReplyContent.content.trim().length == 0) {
+								mui.toast("请输入回复内容", "cancel");
+								return;
+							}
+							if(noticeReplyContent.content.length > 200) {
+								mui.toast("回复内容不能超过200字", "cancel");
+								return;
+							}
+							//3.回复学校通知(同时增加回复未读)
+							var tempData1 = {
+								noticeId: curPage.NoticeId, //通知ID
+								replyManId: personal.utid, //回复人ID
+								replyManCode: personal.uid, //回复人账号
+								replyManName: personal.utname, //回复人姓名
+								replyManImg: personal.imgurl, //回复人头像
+								replyContent: noticeReplyContent.content //回复内容
+							}
+							events.showWaiting();
+							//3.回复学校通知(同时增加回复未读)
+							addNoticeReplyPro(tempData1, function function_name(data) {
+								events.closeWaiting();
+								if(data.RspCode == 0) {
+									noticeReplyContent.content = '';
+									mui.toast('成功');
+									//5.通过ID获取学校通知（同时阅读通知和通知回复）
+									getNoticesDetail(curPage);
+								} else {
+									mui.toast(data.RspTxt);
+								}
+							});
+						}
+					}
+				});
+			</script>
+	</body>
+
+</html>

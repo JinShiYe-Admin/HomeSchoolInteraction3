@@ -1,0 +1,156 @@
+<!--
+	作者：444811716@qq.com
+	时间：2017-01-17
+	描述：打开链接
+-->
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/common.css" />
+		<style>
+			body,
+			.mui-content {
+				background-color: white;
+			}
+
+			#news_title {
+				font-size: 20px;
+				color: #323232;
+				font-weight: 200;
+				text-align: center;
+				line-height: 34px;
+				padding: 10px 10px 0 10px;
+				letter-spacing: 1px;
+				word-break: break-all;
+			}
+
+			#news_tips {
+				font-size: 15px;
+				color: #B7B7B7;
+				text-align: center;
+				margin: 10px 10px;
+				word-break: break-all;
+			}
+
+			#news_content {
+				margin: 0 10px;
+			}
+
+			#news_content div{
+				color: #3E3E3E;
+				font-size: 15px;
+				letter-spacing: 1px;
+				line-height: 26px;
+				word-spacing: 28px;
+			}
+			#news_content div p{
+				color: #3E3E3E;
+				font-size: 15px;
+				letter-spacing: 1px;
+				line-height: 26px;
+				word-spacing: 28px;
+			}
+
+			#news_content div p img {
+				width: 100%;
+				height: initial;
+			}
+
+			#news_content div>p {
+				text-indent: 32px;
+			}
+			#news_content div>p img{
+				margin-left: -32px;
+			}
+			img{
+				width: 100%;
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">新闻详情</h1>
+		</header>
+		<div class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div id="news_title"></div>
+				<div id="news_tips"></div>
+				<div id="news_content"></div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/events.js"></script>
+		<script type="text/javascript" src="../../js/publicProtocol.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				gestureConfig: {
+					doubletap: true, //默认为false
+				},
+				beforeback: function() {
+					document.getElementById("news_title").innerText = "";
+					document.getElementById("news_tips").innerText = "";
+					document.getElementById("news_content").innerHTML = "";
+					mui(".mui-scroll-wrapper").scroll().scrollTo(0, 0, 100);
+					return true;
+				}
+			});
+			mui.plusReady(function() {
+				console.log('11111111');
+				events.fireToPageNone('sciedu_home.html', 'detailReady');
+				setListeners();
+			});
+
+			function setListeners() {
+				window.addEventListener("scieduItemInfo", function(e) {
+					console.log("list传过来的新闻信息:", e.detail.data);
+					setConetent(e.detail.data);
+				});
+				document.getElementById('title').addEventListener('doubletap', function() {
+					mui(".mui-scroll-wrapper").scroll().scrollTo(0, 0, 100);
+				});
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui(".mui-scroll-wrapper").scroll({
+					scrollY: true, //是否竖向滚动
+					scrollX: false, //是否横向滚动
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration, //阻尼系数,系数越小滑动越灵敏
+					bounce: false, //是否启用回弹
+				});
+			}
+
+			function setConetent(item) {
+				document.getElementById("news_title").innerText = item.title;
+				document.getElementById("news_tips").innerText = item.tips;
+				var wd = events.showWaiting();
+				var comData = {
+					top: '1', //每页行数，
+					vvl: item.acode.substring(0, 4) + "|" + item.tabid, //查询的区域代码,省份截取城市代码前两位,城市截取城市代码的前4位
+					vvl1: '1' //页码,获取第几页
+				};
+				//45.通过区域代码获取对应区域的分页新闻
+				postDataPro_PostTnews(comData, wd, function(data) {
+					console.log('45 PostTnews', data.RspData.dt[0].content);
+					if(data.RspCode == 0) {
+						if(data.RspData.dt[0] && data.RspData.dt[0].content != undefined && data.RspData.dt[0].content != null) {
+							document.getElementById("news_content").innerHTML = data.RspData.dt[0].content;
+						}
+					} else {
+						mui.toast(data.RspTxt);
+					}
+					wd.close();
+				});
+			}
+		</script>
+	</body>
+
+</html>
