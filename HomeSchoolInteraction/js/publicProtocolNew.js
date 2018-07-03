@@ -237,6 +237,7 @@ var jQAjaxPost = function(url, data, callback) {
 					utoken: personal.utoken,
 					appid: publicParameter.appid,
 					schid: personal.schid,
+					utp:personal.utp,
 					utname: personal.utname
 				};
 				//令牌续订
