@@ -40,7 +40,7 @@ var MultiMedia = (function($, mod) {
 		//初始化
 		this.init();
 		this.initData();
-//		this.initEvent();
+		//		this.initEvent();
 	}
 
 	var proto = MultiMedia.prototype; //属性使您有能力向对象添加属性和方法。
@@ -109,9 +109,9 @@ var MultiMedia = (function($, mod) {
 			this.data.VideoArray = [];
 			this.data.VideoWith = parseInt(document.getElementById(this.options.Id).offsetWidth * 0.2);
 			this.data.VideoMarginLeft = parseInt(document.getElementById(this.options.Id).offsetWidth * 0.04);
-		}  
+		}
 	}
-	 
+
 	//初始化监听
 	proto.initEvent = function() {
 		////console.log('MultiMedia-initEvent');
@@ -139,8 +139,8 @@ var MultiMedia = (function($, mod) {
 			document.getElementById('MultiMedia_Audio_Header').addEventListener('tap', function() {
 				mui.toast('暂时不支持录制音频');
 				return;
-//				document.activeElement.blur();
-//				self.initAudioEvent();
+				//				document.activeElement.blur();
+				//				self.initAudioEvent();
 			});
 
 			//录制完成的回调
@@ -248,26 +248,31 @@ var MultiMedia = (function($, mod) {
 					case 0: //取消
 						break;
 					case 1: //录像
-						if(plus.os.name == 'Android'){
+						if(plus.os.name == 'Android') {
 							var cmr = plus.camera.getCamera();
-							cmr.startVideoCapture(function(p){
-								plus.io.resolveLocalFileSystemURL(p, function(entry){
+							cmr.startVideoCapture(function(p) {
+								plus.io.resolveLocalFileSystemURL(p, function(entry) {
 									if(self.data.VideoNum > 0) {
 										var wd = events.showWaiting('处理中...');
 										self.data.VideoNum--;
-									console.log('录制视频成功 ' + entry.toLocalURL());
+										console.log('录制视频成功 ' + entry.toLocalURL());
 										self.addVideos(entry.toLocalURL(), function() {
 											wd.close();
 										});
 									}
-	//								createItem(entry);
-								}, function(e){
-									console.log('读取录像文件错误：'+e.message);
-								} );
-							}, function(e){
-								console.log('失败：'+e.message);
-							}, {filename:'_doc/camera/'+new Date().getTime()+'.mp4',index:0});
-						}else if(plus.os.name == 'iOS'){
+									//								createItem(entry);
+								}, function(e) {
+									console.log('读取录像文件错误：' + e.message);
+								});
+							}, function(e) {
+								console.log('失败：' + e.message);
+							}, {
+								filename: '_doc/camera/' + new Date().getTime() + '.mp4',
+								index: 0
+							});
+							// 拍摄10s后自动完成 
+							setTimeout(cmr.stopVideoCapture(), 10000);
+						} else if(plus.os.name == 'iOS') {
 							RecordVideo.recordVideo({}, function(fpath) {
 								if(self.data.VideoNum > 0) {
 									var wd = events.showWaiting('处理中...');

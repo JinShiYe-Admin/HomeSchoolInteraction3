@@ -40,6 +40,12 @@
 			.mui-content>.mui-table-view:first-child {
 				margin-top: -1px;
 			}
+			
+			.mui-pull-caption {
+				font-size: 14px; //字体大小
+				color: #666666;
+				font-weight:normal;
+			}
 		</style>
 	</head>
 
@@ -65,10 +71,9 @@
 								<image v-if="noticeModel.SendManImg==null" src='../../img/noImgPerson.jpg' style="width: 15px;height: 15px;border-radius: 50%;vertical-align: middle;" />
 								<image v-else="" :src=noticeModel.SendManImg style="width: 15px;height: 15px;border-radius: 50%;vertical-align: middle;" />
 								<span class="nameTime">{{noticeModel.SendManName}}  {{noticeModel.SendTime}}</span>
-
 							</div>
 							<div id="" v-if="noticeModel.ReadCnt==0&&noticeModel.ReplyCnt==0&&noticeModel.SendManId==personal.utid&&noticeModel.SmsSync==0" style="float: right;margin-right: 10px;margin-top: -23px">
-								<button @click.stop="deleteNotice(noticeModel)" type="button" style="width: 50px;border: 0px;font-size: 12px;color: #ff6666;">删除</button>
+								<button @click.stop="deleteNotice(noticeModel)" type="button" class="mui-btn mui-btn-danger mui-btn-outlined" style="width: 50px;border: 1px;font-size: 12px;color: #ff6666;">删除</button>
 							</div>
 							<div id="" v-else="" style="float: right;margin-right: 10px;margin-top: -22px;">
 								<image src='../../img/homeSchool/lookCount.png' style="width: 10px;height: 10px;border-radius: 50%;" />
@@ -144,7 +149,7 @@
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
-//				mui('#noticelistData').pullRefresh().refresh(true);
+				//				mui('#noticelistData').pullRefresh().refresh(true);
 				noticelistData.flag = 0;
 				noticelistData.pageIndex = 1;
 				//4.获取学校通知列表

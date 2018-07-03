@@ -58,6 +58,10 @@
 			.mui-table-view-cell {
 				min-height: 44px;
 			}
+			
+			.mui-checkbox input[type=checkbox]:checked:before {
+				color: #00cfbd;
+			}
 		</style>
 	</head>
 
@@ -236,7 +240,7 @@
 						events.closeWaiting();
 						if(data.RspCode == 0) {
 							tempGradeList = [].concat(data.RspData.grds);
-							console.log('tempGradeList:'+tempGradeList.length+',data.RspData.grds:'+data.RspData.grds.length);
+							console.log('tempGradeList:' + tempGradeList.length + ',data.RspData.grds:' + data.RspData.grds.length);
 							for(var i = 0; i < data.RspData.grds.length; i++) {
 								var model = data.RspData.grds[i];
 								for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
@@ -400,7 +404,7 @@
 										}
 									}
 								}
-								console.log('addNoticeContent.gradeArray:' + JSON.stringify(addNoticeContent.gradeArray)); 
+								console.log('addNoticeContent.gradeArray:' + JSON.stringify(addNoticeContent.gradeArray));
 								//将没有人员的移除
 								for(var a = classidArr.length - 1; a >= 0; a--) {
 									var tempClassModel = classidArr[a];
@@ -408,23 +412,23 @@
 										classidArr.splice(a, 1);
 									}
 								}
-								console.log('classidArr:' + JSON.stringify(classidArr)); 
+								console.log('classidArr:' + JSON.stringify(classidArr));
 								//判断是否包含班主任身份
 								if(classidArr.length > 0) {
 									addNoticeContent.teacherFlag = 0;
 									addNoticeContent.flag = 0;
-//									addNoticeContent.gradeArray = [];
+									//									addNoticeContent.gradeArray = [];
 									addNoticeContent.classIDsArray = [];
 									addNoticeContent.gradeIDsArray = [];
 									addNoticeContent.classIDs = '';
 									addNoticeContent.classStr = '';
 									addNoticeContent.parentsStr = '';
-//									addNoticeContent.gradeStr = '';
+									//									addNoticeContent.gradeStr = '';
 									for(var i = 0; i < classidArr.length; i++) {
 										var classModel = classidArr[i];
 										addNoticeContent.teacherFlag = 1;
 										addNoticeContent.flag = 1;
-//										addNoticeContent.gradeArray.push(classModel.parents[0].grdid);
+										//										addNoticeContent.gradeArray.push(classModel.parents[0].grdid);
 										addNoticeContent.classIDsArray.push(classModel.parents[0].clsid);
 										addNoticeContent.gradeIDsArray.push(classModel.parents[0].grdid);
 										addNoticeContent.classIDs = addNoticeContent.classIDs + ',' + classModel.clsid;
@@ -432,26 +436,26 @@
 										addNoticeContent.parentsStr = addNoticeContent.parentsStr + ';' + classModel.parents[0].clsname + '全部家长';
 									}
 									//去重
-//									addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
+									//									addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
 									//去掉首个，
 									if(addNoticeContent.classIDs.length > 0) {
 										addNoticeContent.classIDs = addNoticeContent.classIDs.substr(1);
 										addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
 										addNoticeContent.parentsStr = addNoticeContent.parentsStr.substr(1);
 									}
-//									for(var i = 0; i < tempGradeList.length; i++) {
-//										var model = tempGradeList[i];
-//										console.log('model.grdid:'+model.grdid);
-//										for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
-//											var tempGrade0 = addNoticeContent.gradeArray[a];
-//											console.log('model.grdid:'+model.grdid+',tempGrade0:'+tempGrade0);
-//											if(model.grdid == tempGrade0) {
-//												console.log('5555555555555555555555555555');
-//												addNoticeContent.gradeStr = addNoticeContent.gradeStr + ',' + model.grdname;
-//											}
-//										}
-//									}
-//									addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
+									//									for(var i = 0; i < tempGradeList.length; i++) {
+									//										var model = tempGradeList[i];
+									//										console.log('model.grdid:'+model.grdid);
+									//										for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
+									//											var tempGrade0 = addNoticeContent.gradeArray[a];
+									//											console.log('model.grdid:'+model.grdid+',tempGrade0:'+tempGrade0);
+									//											if(model.grdid == tempGrade0) {
+									//												console.log('5555555555555555555555555555');
+									//												addNoticeContent.gradeStr = addNoticeContent.gradeStr + ',' + model.grdname;
+									//											}
+									//										}
+									//									}
+									//									addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
 								} else {
 									addNoticeContent.classIDsArray = [];
 									addNoticeContent.gradeIDsArray = [];
