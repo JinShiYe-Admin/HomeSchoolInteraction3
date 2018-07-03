@@ -218,8 +218,8 @@
 						<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr" >
 								<div class="box">
 									<div class="img-box">
-										<img src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;"/>
-										<img :src=noticesDetail.NoticeEncImgAddr  style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;"  />
+										<img id="playVideoImg" src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;"/>
+										<img :src=noticesDetail.NoticeEncImgAddr  style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 20%;-moz-background-size:100% 100%;" onload="" />
 									</div>
 								</div>
 						</li>
@@ -230,7 +230,7 @@
 						<li class="mui-table-view-cell mui-media" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
 							<a href="#">
 								<div class="notice-one-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
 								</div>
 							</a>
 						</li>
@@ -241,7 +241,7 @@
 						<li class="mui-table-view-cell mui-media mui-col-xs-5 mui-col-sm-5" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
 							<a href="#">
 								<div class="notice-two-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
 								</div>
 							</a>
 						</li>
@@ -253,7 +253,7 @@
 							<a href="#" style="margin: -10px 0 0 -20px;">
 								<!--<img class="notice-more-img" data-preview-src="" :src=picModel>-->
 								<div class="notice-more-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
 								</div>
 							</a>
 						</li>
@@ -261,8 +261,9 @@
 				</div>
 			</div>
 
-			<p style="margin:0px auto;padding-top:5px;padding-right: 10px;font-size:12px;overflow:hidden;text-align:right;">{{noticesDetail.SendManName}} | {{noticesDetail.SendTime}}</p>
-			<div id="sliderSegmentedControl" class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary">
+			<p style="margin:0px auto 5px;padding-top:5px;padding-right: 10px;font-size:12px;overflow:hidden;text-align:right;">{{noticesDetail.SendManName}} | {{noticesDetail.SendTime}}</p>
+			<div style="width: 100%;height: 10px;background: #f2f2f2;"></div>
+			<div id="sliderSegmentedControl" class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary" style="margin-top: 5px;">
 				<a id="item1" class="mui-control-item mui-active readPeople slider-list" href="#ReplyArray">
 					回复({{noticesDetail.ReplyArray.length}})
 				</a>
