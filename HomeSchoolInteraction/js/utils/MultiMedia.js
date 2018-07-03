@@ -270,8 +270,6 @@ var MultiMedia = (function($, mod) {
 								filename: '_doc/camera/' + new Date().getTime() + '.mp4',
 								index: 0
 							});
-							// 拍摄10s后自动完成 
-							setTimeout(cmr.stopVideoCapture(), 10000);
 						} else if(plus.os.name == 'iOS') {
 							RecordVideo.recordVideo({}, function(fpath) {
 								if(self.data.VideoNum > 0) {

@@ -218,8 +218,8 @@
 						<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr" >
 								<div class="box">
 									<div class="img-box">
-										<img id="playVideoImg" src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;"/>
-										<img :src=noticesDetail.NoticeEncImgAddr  style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 20%;-moz-background-size:100% 100%;" onload="" />
+										<img id="playVideoImg" src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;visibility: hidden;"/>
+										<img :src=noticesDetail.NoticeEncImgAddr  style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 20%;-moz-background-size:100% 100%;" onload="document.getElementById('playVideoImg').style.visibility='visible'" />
 									</div>
 								</div>
 						</li>
