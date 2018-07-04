@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+	<!--  我的订购：订单列表   -->
 	<head>
 		<meta charset="utf-8">
 		<title>Hello MUI</title>
@@ -75,7 +75,7 @@
 				</div>
 				<div v-else  v-cloak class="mui-scroll">
 				 	<ul class="mui-table-view">
-						<li aaa="1" v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
+						<li  v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 							<a href="javascript:;">
 								<img class="mui-media-object mui-pull-left" :src=item.imgUrl style="width: 90px;height:90px;">
 								<div class="mui-media-body">
@@ -83,11 +83,11 @@
 									<p class='mui-ellipsis'>{{item.titleBody}}</p> 
 									<div v-if="item.orderState == 1" style="margin-top: 5px;">
 										<p class="ul-p" style="color:#00CFBD">{{item.expenses}}</p>
-										<button aaa="2" class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
+										<button  class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
 									</div>
 									<div v-else style="margin-top: 5px;">
 										<p class="ul-p">结束时间：{{item.endTime}}</p>
-										<button aaa="2"  class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
+										<button   class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
 									</div>
 								</div>
 							</a>
@@ -179,7 +179,10 @@
 						
 					}
 					,btnClick:function(item){
-						console.log('button与li点击事件冲突吗？'+JSON.stringify(item))
+						if(item.orderState==1)
+							utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", item);
+						else
+							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
 					}
 				}
 			});

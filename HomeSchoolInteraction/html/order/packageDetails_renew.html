@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-
+	<!-- 套餐详情：续费  -->
 	<head>
 		<meta charset="utf-8">
-		<title>套餐详情--续费 </title>
+		<title> </title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -133,7 +133,7 @@
 	    			 <p v-cloak class="user-title-body">{{titleBody}}</p>
 	    			 <div v-cloak class="user-title-footer">
 	    			 	<p class="ul-p">结束时间：{{endTime}}</p>
-					 	<button class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
+					 	<button class="ul-btn" class="mui-btn mui-btn-mini" onclick="packageRenew()">套餐续费</button>
 					 	<p class="ul-p-right">{{expenses}}</p>
 	    			 </div>
 	    		</div>
@@ -204,9 +204,10 @@
 			}
 			
 			var  renew;
+			var curPageData;
 			mui.plusReady(function() {
-					curPage = utils.getDataFromUrl(window.location.href);
-					console.log('curPage********:' + JSON.stringify(curPage));
+					curPageData = utils.getDataFromUrl(window.location.href);
+					console.log('curPage********:' + JSON.stringify(curPageData));
 					renew =new Vue({
 						el:'#renews'
 						,data:{
@@ -228,16 +229,22 @@
 								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
 								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
 							]
-							,imgUrl:curPage.imgUrl
-							,title:curPage.title
-							,titleBody:curPage.titleBody
-							,expenses:curPage.expenses
-							,endTime:curPage.endTime
-							,orderState:curPage.orderState
+							,imgUrl:curPageData.imgUrl
+							,title:curPageData.title
+							,titleBody:curPageData.titleBody
+							,expenses:curPageData.expenses
+							,endTime:curPageData.endTime
+							,orderState:curPageData.orderState
 							
 						}
 					});
 			});
+			
+			//套餐续订
+			function packageRenew(){
+				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+			}
+			
 			
 			function getRenewList(){  
 				console.log("获取订购列表")
