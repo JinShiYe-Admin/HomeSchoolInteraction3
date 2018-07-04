@@ -161,11 +161,32 @@ var xhrPost = function(url, commonData, callback,flag) {
 				var urlArr = url.split('/');
 				var success_data = JSON.parse(this.responseText);
 				console.log('XHRP-Success:', JSON.stringify(success_data));
-				if(success_data.RspCode == 0013) {
-					callback({
-						RspCode: 404,
-						RspData: null,
-						RspTxt: "用户没有登录或超时,关闭当前页,重新从企业管理端登录."
+				if(success_data.RspCode == 10) { //令牌过期
+					//续订令牌
+					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+					var personal = store.get(window.storageKeyName.PERSONALINFO);
+					//需要参数
+					var comData = {
+						uuid: publicParameter.uuid,
+						utid: personal.utid,
+						utoken: personal.utoken,
+						appid: publicParameter.appid,
+						schid: personal.schid,
+						utp: personal.utp,
+						utname: personal.utname
+					};
+					//令牌续订
+					postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+						if(data1.RspCode == 0) {
+							var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+							tempInfo00.utoken = data1.RspData;
+							store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
+							commonData.token = data1.RspData;
+							delete commonData.sign;
+							xhrPost(url, commonData, function(data2) {
+								callback(data2);
+							});
+						}
 					});
 				} else {
 					callback(success_data);
@@ -246,9 +267,7 @@ var jQAjaxPost = function(url, data, callback) {
 						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 						tempInfo00.utoken = data1.RspData;
 						store.set(window.storageKeyName.PERSONALINFO,tempInfo00);
-//						jQAjaxPost(url, data, callback);
 						var urlArr = url.split('/');
-//						console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', JSON.stringify(tempData));
 						var tempData = JSON.parse(data);
 						tempData.utoken = data1.RspData;
 						delete tempData.sign;
@@ -291,15 +310,36 @@ var tempPro = function(url,data0, callback) {
 				var urlArr = url.split('/');
 				var success_data = JSON.parse(this.responseText);
 				console.log('XHRP-Success:', JSON.stringify(success_data));
-				if(success_data.RspCode == 0013) {
-					callback({
-						RspCode: 404,
-						RspData: null,
-						RspTxt: "用户没有登录或超时,关闭当前页,重新从企业管理端登录."
-					});
-				} else {
-					callback(success_data);
-				}
+				if(success_data.RspCode == 10) { //令牌过期
+				//续订令牌
+				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				//需要参数
+				var comData = {
+					uuid: publicParameter.uuid,
+					utid: personal.utid,
+					utoken: personal.utoken,
+					appid: publicParameter.appid,
+					schid: personal.schid,
+					utp: personal.utp,
+					utname: personal.utname
+				};
+				//令牌续订
+				postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+						tempInfo00.utoken = data1.RspData;
+						store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
+						//						data0.utoken = data1.RspData;
+						delete data0.sign;
+						tempPro(url, data0, function(data2) {
+							callback(data2);
+						});
+					}
+				});
+			} else {
+				callback(success_data);
+			}
 			} else {
 				callback({
 					RspCode: 404,

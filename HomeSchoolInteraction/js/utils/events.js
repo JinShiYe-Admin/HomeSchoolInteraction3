@@ -48,7 +48,7 @@ window.onerror = function(errorMessage, scriptURI, lineNumber, columnNumber, err
 			console.log("界面id:" + plus.webview.currentWebview().id);
 			plus.nativeUI.alert('当前界面加载出现错误', function() {
 				console.log("界面id:" + webId);
-				plus.webview.close(webId, utils.getAniClose());
+				plus.webview.close(webId, events.getAniClose());
 			}, 'ERROR', '确定');
 		} else {
 			plus.nativeUI.toast('当前界面加载出现错误');
