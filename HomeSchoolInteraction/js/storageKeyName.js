@@ -2,10 +2,10 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 0; //0,开发;1,部署外网
+	mod.key = 1; //0,开发;1,部署外网
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 0) {
+		if(mod.key === 1) {
 			var argus = hint;
 			if(typeof(object)!=='undefined') {
 				argus = hint + JSON.stringify(object);
@@ -20,7 +20,7 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/';//孔工接口
 			mod.TEACHERIMG = 'http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid='; //老师上传头像
-			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';
+			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';//安卓升级地址
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
@@ -41,10 +41,10 @@ var storageKeyName = (function(mod) {
 		case 1: //部署外网
 			mod.SCHOOLID = 100102;//学校ID
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
-			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/';//顾工接口
+			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net:8443/SchoolCommunicationService/';//孔工接口
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
-			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';
+			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/xxt/versionCode.xml';//安卓升级地址
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
