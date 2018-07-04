@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+	<!-- 套餐订购 支付页 -->
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			[v-cloak] {  
+			    visibility: hidden;  
+			}
+			
+			body{
+				background: #F2F2F2;
+			}
+			
+			.mui-row{
+				background: #FFF;
+			}
+			
+			.mui-table-view .mui-media-object {
+			    max-width: 100px;
+			}
+			
+			.mui-table-view .mui-media-object.mui-pull-left {
+			     margin-right: 5px; 
+			}
+			
+			
+			.mui-ellipsis-title{
+				font-size: 18px;
+				color: #000;
+				overflow:hidden;
+				word-break:break-all;
+				display:-webkit-box;
+				-webkit-line-clamp:2;
+				-webkit-box-orient:vertical;
+				white-space: normal;
+			}
+			
+		    .mui-ellipsis {
+		    	margin: 5px 0 0 0;
+			    height: 43px;
+			    overflow:hidden;
+				word-break:break-all;
+				display:-webkit-box;
+				-webkit-line-clamp:2;
+				-webkit-box-orient:vertical;
+				white-space: normal;
+			}
+			
+			.ul-btn{
+				display: inline;
+				vertical-align: middle;
+				float: right;
+				height: 24px;
+				padding: 2px 12px;
+				background: #33CCFF;
+				color: #fff;
+				border: none;
+			}
+			.ul-p{
+				width: 30%;
+				display: inline;
+				vertical-align: middle;
+				font-size: 12px;
+			}
+			
+			a {
+			    text-decoration: none;
+			    color: #000000; 
+			}
+			
+			.mui-content-padded {
+			    margin:10px 10px 10px 16px;
+			}
+			
+			select {
+				color: #8f8f94;
+			}
+			
+			.line:before {
+			    position: absolute;
+			    top: 0;
+			    right: 0;
+			    left: 15px;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.2);
+			    transform: scaleY(.2);
+			    background-color: #c8c7cc;
+			}
+			
+			.wxImg{
+				width: 30px;
+			}
+			
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {
+			    font-size: 25px;
+			}
+			
+			.check{
+				text-align: left;
+				font-size:15px ;
+				margin:10px 0 100px 5%;
+			}
+			
+			.bottom-row{
+				position: fixed;
+				bottom: 0;
+				z-index: 20180704;
+				background: #FFFFFF;
+				width: 100%;
+				height: 50px;
+			}
+			
+			.pay-btn-je{
+				height: 50px;
+				border: 0px;
+				text-align: left;
+			}
+			
+			.pay-btn{
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
+				border-radius: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<h1 class="mui-title"  style="color: white;">套餐订购</h1>
+		</header>
+		<div  class="mui-content">
+	    	<div id='orderDetail'>
+	    		<div class="mui-row">
+	    			 <ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left"  v-cloak :src=imgUrl style="width: 90px;height:90px;">
+								<div class="mui-media-body">
+									<p class='mui-ellipsis-title'  v-cloak>{{title}}</p>
+									<p class='mui-ellipsis'  v-cloak>{{titleBody}}</p> 
+								</div>
+								<div style="margin-top: 5px;"  v-cloak>
+										<p class="ul-p" style="color:#FF6600">缴费金额：{{expenses}}</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+	    		</div>
+			</div>
+			<div id='orderData'>
+				<form id="orderForm">
+					<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">功能1附加信息</h5>
+						<div class="mui-input-row line">
+							<a class="mui-navigate-right">
+								<label>用户类型</label>
+								<select class="mui-btn-block" multiple="multiple" size="5">
+									<option value="" disabled selected>请选择用户类型</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+									<option value="item-3">item-3</option>
+									<option value="item-4">item-4</option>
+									<option value="item-5">item-5</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+									<option value="item-3">item-3</option>
+									<option value="item-4">item-4</option>
+									<option value="item-5">item-5</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+									<option value="item-3">item-3</option>
+									<option value="item-4">item-4</option>
+									<option value="item-5">item-5</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<a class="mui-navigate-right">
+								<label>学段</label>
+								<select class="mui-btn-block">
+									<option value="" disabled selected>请选择学段</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<a class="mui-navigate-right">
+								<label>年级</label>
+								<select class="mui-btn-block">
+									<option value="" disabled selected>请选择年级</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+								</select>
+							</a>
+						</div>
+		    		</div>
+		    		
+		    		<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">功能2附加信息</h5>
+						<div class="mui-input-row line">
+							<a class="mui-navigate-right">
+								<label>科目名称</label>
+								<select class="mui-btn-block">
+									<option value="" disabled selected>请选择科目名称</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row">
+							<a class="mui-navigate-right">
+								<label>教版</label>
+								<select class="mui-btn-block">
+									<option value="" disabled selected>请选择教版</option>
+									<option value="item-1">item-1</option>
+									<option value="item-2">item-2</option>
+								</select>
+							</a>
+						</div>
+		    		</div>
+		    		
+		    		<div class="mui-row" style="margin-top: 5px;">
+		    			<div class="mui-input-row" style="margin-top: 5px;">
+							<a class="mui-navigate-right">
+								<label>时长</label>
+								<select class="mui-btn-block">
+									<option value="" disabled selected>请选择时长</option>
+									<option value="1">1个月</option>
+									<option value="3">3个月</option>
+									<option value="6">半年</option>
+									<option value="12">一整年</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">0</span>元</label>
+						</div>
+		    		</div>
+		    		
+		    		<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">请选择支付方式</h5>
+						<div class="mui-input-row mui-radio line" @click="radioClick">
+								<label style="width: 100%;">
+									<img src="../../img/homeSchool/wxpay.png" class="wxImg" style="vertical-align: middle;"/>
+									<span  style="vertical-align: middle;">微信支付</span>
+								</label>
+								<input name="radio1" type="radio" style="margin-top: 10px;" :checked="radioChecked">
+						</div>
+		    		</div>
+		    		
+		    		<div class="check">
+						<input @click="checkboxClick" id="checkBox" type="checkbox" style="vertical-align:middle;"/><label  for="checkBox" style="vertical-align:middle;">我已阅读并接受</label><a style="color: #007aff;vertical-align: middle;" href="javascript:;;">《注册协议》</a>
+					</div>
+		    		
+	    		</form>
+	    		<div class="mui-row bottom-row">
+	    			<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
+	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">0</span>元
+	    				<span id="zffs" style="font-size:10px;color: #8f8f94;">&ensp;|&ensp;微信支付</span>
+	    			</button>
+		    		<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" :disabled="isDisabled">确认支付</button>
+		    	</div>
+	    	</div>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh2.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material2.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/jquery-1.8.3.min.js"></script>
+		<script src="../../js/publicProtocol.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal********:' + JSON.stringify(personal));
+			
+			mui.init();
+			
+			var curPageData;
+			var orderDetail;
+			var orderData;
+			mui.plusReady(function() {
+					curPageData = utils.getDataFromUrl(window.location.href);
+					console.log(JSON.stringify(curPageData));
+					orderDetail =new Vue({
+						el:'#orderDetail'
+						,data:{
+							imgUrl:curPageData.imgUrl
+							,title:curPageData.title
+							,titleBody:curPageData.titleBody
+							,expenses:curPageData.expenses
+						}
+					})
+					
+					orderData =new Vue({
+						el:'#orderData'
+						,data:{
+							radioChecked:false
+							,chekcboxChecked:false
+							,isDisabled:true
+						}
+						,methods:{
+							radioClick:function(){
+								this.radioChecked=!this.radioChecked
+								if(this.radioChecked==false)
+									this.isDisabled =true
+								else if(this.radioChecked==true && this.chekcboxChecked==true)
+									this.isDisabled =false
+							}
+							,checkboxClick:function(){
+								this.chekcboxChecked=!this.chekcboxChecked
+								if(this.chekcboxChecked==false)
+									this.isDisabled =true
+								else if(this.chekcboxChecked==true && this.radioChecked==true)
+									this.isDisabled =false
+							}
+						}
+					})
+			});
+			
+		</script> 
+	</body>
+
+</html>

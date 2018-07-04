@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-
+	<!--  套餐详情：立即订购   -->
 	<head>
 		<meta charset="utf-8">
-		<title>套餐详情--订购</title>
+		<title></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -92,7 +92,7 @@
 	    			 <p v-cloak class="user-title-body">{{titleBody}}</p>
 	    			 <div v-cloak class="user-title-footer">
 	    			 	<p class="ul-p">资费金额：{{expenses}}</p>
-					 	<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
+					 	<button class="ul-btn" class="mui-btn mui-btn-mini" onclick="placeOrder()">立即订购</button>
 	    			 </div>
 	    		</div>
 			</div>
@@ -117,21 +117,27 @@
 			mui.init();
 			
 			var  orders;
+			var curPageData;
 			mui.plusReady(function() {
-					curPage = utils.getDataFromUrl(window.location.href);
+					curPageData = utils.getDataFromUrl(window.location.href);
 					orders =new Vue({
 						el:'#orders'
 						,data:{
-							imgUrl:curPage.imgUrl
-							,title:curPage.title
-							,titleBody:curPage.titleBody
-							,expenses:curPage.expenses
-							,endTime:curPage.endTime
-							,orderState:curPage.orderState
+							imgUrl:curPageData.imgUrl
+							,title:curPageData.title
+							,titleBody:curPageData.titleBody
+							,expenses:curPageData.expenses
+							,endTime:curPageData.endTime
+							,orderState:curPageData.orderState
 							
 						}
 					});
 			});
+			
+			//套餐订购
+			function placeOrder(){
+				utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", curPageData);
+			}
 			
 		</script> 
 	</body>
