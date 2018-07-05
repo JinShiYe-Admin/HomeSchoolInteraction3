@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<!--  我的订购：订单列表   -->
+
 	<head>
 		<meta charset="utf-8">
 		<title>Hello MUI</title>
@@ -9,42 +10,41 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
 		<style type="text/css">
-			[v-cloak] {  
-			    display: none;  
+			[v-cloak] {
+				display: none;
 			}
 			
 			.mui-table-view .mui-media-object {
-			    max-width: 100px;
+				max-width: 100px;
 			}
 			
 			.mui-table-view .mui-media-object.mui-pull-left {
-			     margin-right: 5px; 
+				margin-right: 5px;
 			}
 			
-			
-			.mui-ellipsis-title{
+			.mui-ellipsis-title {
 				font-size: 18px;
 				color: #000;
-				overflow:hidden;
-				word-break:break-all;
-				display:-webkit-box;
-				-webkit-line-clamp:2;
-				-webkit-box-orient:vertical;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
 				white-space: normal;
 			}
 			
-		    .mui-ellipsis {
-		    	margin: 5px 0 0 0;
-			    height: 43px;
-			    overflow:hidden;
-				word-break:break-all;
-				display:-webkit-box;
-				-webkit-line-clamp:2;
-				-webkit-box-orient:vertical;
+			.mui-ellipsis {
+				margin: 5px 0 0 0;
+				height: 43px;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
 				white-space: normal;
 			}
 			
-			.ul-btn{
+			.ul-btn {
 				display: inline;
 				vertical-align: middle;
 				float: right;
@@ -54,7 +54,8 @@
 				color: #fff;
 				border: none;
 			}
-			.ul-p{
+			
+			.ul-p {
 				width: 30%;
 				display: inline;
 				vertical-align: middle;
@@ -64,30 +65,30 @@
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;"> 
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
-			<h1 class="mui-title"  style="color: white;">我的订购</h1>
+			<h1 class="mui-title" style="color: white;">我的订购</h1>
 		</header>
 		<div id='scroll' class="mui-content">
-	    	<div id='orders'>
-	    		<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
-					<img src="../../img/homeSchool/noData.png" style="width: 200px;"/>
+			<div id='orders'>
+				<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
+					<img src="../../img/homeSchool/noData.png" style="width: 200px;" />
 				</div>
-				<div v-else  v-cloak class="mui-scroll">
-				 	<ul class="mui-table-view">
-						<li  v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
+				<div v-else v-cloak class="mui-scroll">
+					<ul class="mui-table-view">
+						<li v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" :src=item.imgUrl style="width: 90px;height:90px;">
+								<img class="mui-media-object mui-pull-left" src='../../img/login/headImg.png' style="width: 90px;height:90px;">
 								<div class="mui-media-body">
-									<p class='mui-ellipsis-title'>{{item.title}}</p>
-									<p class='mui-ellipsis'>{{item.titleBody}}</p> 
-									<div v-if="item.orderState == 1" style="margin-top: 5px;">
-										<p class="ul-p" style="color:#00CFBD">{{item.expenses}}</p>
-										<button  class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
+									<p class='mui-ellipsis-title'>{{item.cnname}}</p>
+									<p class='mui-ellipsis'>{{item.busnote}}</p>
+									<div v-if="item.orderFlag == 0" style="margin-top: 5px;">
+										<p class="ul-p" style="color:#00CFBD">{{item.feecode}}元/{{item.busmonth}}月</p>
+										<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
 									</div>
 									<div v-else style="margin-top: 5px;">
 										<p class="ul-p">结束时间：{{item.endTime}}</p>
-										<button   class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
+										<button class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
 									</div>
 								</div>
 							</a>
@@ -96,104 +97,159 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../js/mui.js"></script>
-		<script src="../../js/utils/vue.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh2.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh.material2.js"></script>
-		<script src="../../js/utils/vconsole.min.js"></script>
-		<script src="../../js/utils/jquery-1.8.3.min.js"></script>
-		<script src="../../js/publicProtocol.js"></script>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
 		<script src='../../js/libs/crypto-js/require.js'></script>
 		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
 		<script>
-			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			console.log('personal:' + JSON.stringify(personal));
-			
-			mui.init({
-				pullRefresh: {
-					container: '#scroll',
-					down: {
-						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-						height: '50px', //可选,默认50px.下拉刷新控件的高度,
-						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
-						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-						auto: false,
-						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-					},
-					up: { 
-						height: 50, //可选.默认50.触发上拉加载拖动距离
-						contentrefresh: "<span class='mui-spinner'></span>正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-					}
-				}
-			});
-			
-			function pulldownRefresh() {
-				orders.flag = 0;
-				orders.pageIndex = 1;
-				orders.canTap=false;
-				getOrderList();
-			}
-			
-			function pullupRefresh() {
-				if(orders.canTap){
-					orders.flag = 1;
-					getOrderList();
-				}
-			}
-			
+			var personal;
+			var publicParameter;
+
+			//			mui.init({
+			//				pullRefresh: {
+			//					container: '#scroll',
+			//					down: {
+			//						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+			//						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+			//						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+			//						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+			//						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+			//						auto: true,
+			//						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			//					},
+			//					up: {
+			//						height: 50, //可选.默认50.触发上拉加载拖动距离
+			//						contentrefresh: "<span class='mui-spinner'></span>正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+			//						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+			//						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			//					}
+			//				}
+			//			});
+
+			//			function pulldownRefresh() {
+			//				orders.flag = 0;
+			//				orders.pageIndex = 1;
+			//				orders.canTap = false;
+			//				getOrderList();
+			//			}
+			//
+			//			function pullupRefresh() {
+			//				if(orders.canTap) {
+			//					orders.flag = 1;
+			//					getOrderList();
+			//				}
+			//			}
+
 			mui.plusReady(function() {
+				//获取个人信息
+				personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				//获取套餐表
+				getOrderList();
 			});
-			
-			var orders =new Vue({
-				el:'#orders'
-				,data:{
-					orderList:[
-						{imgUrl:'../../img/login/headImg.png',title:'家校互动2018新款基础套餐1',titleBody:'2018新款基础套餐是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司',expenses:'10元/月',endTime:'',orderState:1}
-						,{imgUrl:'../../img/login/headImg.png',title:'家校互动2018新款基础套餐2',titleBody:'2018新款基础套餐是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司',expenses:'10元/月',endTime:'2018-7-2',orderState:2}
-						,{imgUrl:'../../img/login/headImg.png',title:'家校互动2018新款基础套餐3长一点',titleBody:'2018新款基础套餐是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司',expenses:'10元/月',endTime:'',orderState:1}
-						,{imgUrl:'../../img/login/headImg.png',title:'家校互动2018新款基础套餐4长一点再长一点',titleBody:'2018新款基础套餐是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司',expenses:'10元/月',endTime:'',orderState:1}
-						,{imgUrl:'../../img/login/headImg.png',title:'家校互动2018新款基础套餐5长一点再长一点再长一点再长一点再长一点',titleBody:'2018新款基础套餐是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司是我们公司',expenses:'10元/月',endTime:'2018-7-2',orderState:2}	  
-					]
-					,flag: 0 //0刷新，1加载更多
-					,pageIndex: 1 //当前页数
-					,canTap:true //下拉刷新时，上拉加载能否使用 true
-				}
-				,methods:{
-					toMealDetails:function(event,item){
-						var _event=event.target;
-				        if($(_event).attr('class') =='ul-btn') {//点击li下的button
-				        	 this.$options.methods.btnClick(item);
-				        }else { //点击li标签
-				        	if(item.orderState==1)
+
+			var orders = new Vue({
+				el: '#orders',
+				data: {
+					orderList: [],
+					flag: 0, //0刷新，1加载更多
+					pageIndex: 1, //当前页数
+					canTap: true //下拉刷新时，上拉加载能否使用 true
+				},
+				methods: {
+					toMealDetails: function(event, item) {
+						var _event = event.target;
+						if($(_event).attr('class') == 'ul-btn') { //点击li下的button
+							this.$options.methods.btnClick(item);
+						} else { //点击li标签
+							if(item.orderFlag == 0)
 								utils.mOpenWithData("../../html/order/packageDetails_order.html", item);
 							else
 								utils.mOpenWithData("../../html/order/packageDetails_renew.html", item);
-				        } 
-						
-					}
-					,btnClick:function(item){
-						if(item.orderState==1)
+						}
+					},
+					btnClick: function(item) {
+						if(item.orderFlag == 0)
 							utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", item);
 						else
 							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
 					}
 				}
 			});
-			
-			//获取订单列表
-			function getOrderList(){
-				console.log('获取我的订购list')
-				mui('#scroll').pullRefresh().endPulldownToRefresh();
-				mui('#scroll').pullRefresh().endPullupToRefresh(); 
+
+			////获取套餐表
+			function getOrderList() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					bustp: '0', //套餐类型,0全部,1基本套餐,2CP套餐
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('SysBus', enData1, comData1, 0, function(data1) {
+					console.log('SysBus:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						//主动添加是否订购字段
+						for (var i = 0; i < data1.RspData.sysbus.length; i++) {
+							var tempModel = data1.RspData.sysbus[i];
+							tempModel.orderFlag = 0;
+						}
+						orders.orderList = [].concat(data1.RspData.sysbus);
+						//用户已订购套餐及功能扩展栏目
+						getUserBusFunc();
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+				//				console.log('获取我的订购list');
+				//				mui('#scroll').pullRefresh().endPulldownToRefresh();
+				//				mui('#scroll').pullRefresh().endPullupToRefresh();
 			}
-		</script> 
+			//用户已订购套餐及功能扩展栏目
+			function getUserBusFunc(){
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+					console.log('GetUserBusFunc:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+//						orders.orderList = [].concat(data1.RspData.sysbus);
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+		</script>
 	</body>
 
 </html>
