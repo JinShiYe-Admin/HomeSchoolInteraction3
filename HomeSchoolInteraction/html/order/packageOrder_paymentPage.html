@@ -111,7 +111,7 @@
 			.bottom-row{
 				position: fixed;
 				bottom: 0;
-				z-index: 20180704;
+				z-index: 3;
 				background: #FFFFFF;
 				width: 100%;
 				height: 50px;
@@ -129,6 +129,31 @@
 				height: 50px;
 				border-radius: 0;
 			}
+			
+			input::-webkit-input-placeholder {
+		         color: #8f8f94;
+     		}
+			
+			.spanCheck{
+			    width: 65%;
+			}
+			
+			/*弹出层样式*/
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			.mui-popover {
+				height: 300px;
+			}
+			
+			
+			
 		</style>
 	</head>
 
@@ -137,7 +162,7 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
 			<h1 class="mui-title"  style="color: white;">套餐订购</h1>
 		</header>
-		<div  class="mui-content">
+		<div class="mui-content">
 	    	<div id='orderDetail'>
 	    		<div class="mui-row">
 	    			 <ul class="mui-table-view">
@@ -163,40 +188,41 @@
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>用户类型</label>
-								<select class="mui-btn-block" multiple="multiple" size="5">
-									<option value="" disabled selected>请选择用户类型</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-									<option value="item-3">item-3</option>
-									<option value="item-4">item-4</option>
-									<option value="item-5">item-5</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-									<option value="item-3">item-3</option>
-									<option value="item-4">item-4</option>
-									<option value="item-5">item-5</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-									<option value="item-3">item-3</option>
-									<option value="item-4">item-4</option>
-									<option value="item-5">item-5</option>
-								</select>
+								<template v-if='yhlx.lx=="one"'>
+									<select name="" class="mui-btn-block">
+										<option value="" disabled selected>请选择用户类型</option>
+										<option value="item.value" v-for='item in yhlx.data'>{{item.name}}</option>
+									</select>
+								</template>
+								<template v-else>
+									<a href="#yhlx" >
+										<input id="yhlxInput" type="text" name="" placeholder="请选择用户类型" style="width: 65%;margin-bottom:0; border:0;padding: 0;color: #8f8f94;"/>
+										<input id="yhlxHidden" type="hidden" name="yhlx"/>
+									</a>
+								</template>
 							</a>
 						</div>
 						<div class="mui-input-row">
 							<a class="mui-navigate-right">
 								<label>学段</label>
-								<select class="mui-btn-block">
-									<option value="" disabled selected>请选择学段</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-								</select>
+								<template v-if='xd.lx=="one"'>
+									<select name="xd" class="mui-btn-block">
+										<option value="" disabled selected>请选择学段</option>
+										<option value="item.value" v-for='item in xd.data'>{{item.name}}</option>
+									</select>
+									</template>
+								<template v-else>
+									<a href="#xd" >
+										<input id="xdInput" type="text" name="" placeholder="请选择学段" style="width: 65%;margin-bottom:0; border:0;padding: 0;color: #8f8f94;"/>
+										<input id="xdHidden" type="hidden" name="xd"/>
+									</a>
+								</template>
 							</a>
 						</div>
 						<div class="mui-input-row">
 							<a class="mui-navigate-right">
 								<label>年级</label>
-								<select class="mui-btn-block">
+								<select name="" class="mui-btn-block">
 									<option value="" disabled selected>请选择年级</option>
 									<option value="item-1">item-1</option>
 									<option value="item-2">item-2</option>
@@ -210,7 +236,7 @@
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>科目名称</label>
-								<select class="mui-btn-block">
+								<select name="" class="mui-btn-block">
 									<option value="" disabled selected>请选择科目名称</option>
 									<option value="item-1">item-1</option>
 									<option value="item-2">item-2</option>
@@ -220,7 +246,7 @@
 						<div class="mui-input-row">
 							<a class="mui-navigate-right">
 								<label>教版</label>
-								<select class="mui-btn-block">
+								<select name="" class="mui-btn-block">
 									<option value="" disabled selected>请选择教版</option>
 									<option value="item-1">item-1</option>
 									<option value="item-2">item-2</option>
@@ -233,7 +259,7 @@
 		    			<div class="mui-input-row" style="margin-top: 5px;">
 							<a class="mui-navigate-right">
 								<label>时长</label>
-								<select class="mui-btn-block">
+								<select name="" class="mui-btn-block">
 									<option value="" disabled selected>请选择时长</option>
 									<option value="1">1个月</option>
 									<option value="3">3个月</option>
@@ -254,12 +280,12 @@
 									<img src="../../img/homeSchool/wxpay.png" class="wxImg" style="vertical-align: middle;"/>
 									<span  style="vertical-align: middle;">微信支付</span>
 								</label>
-								<input name="radio1" type="radio" style="margin-top: 10px;" :checked="radioChecked">
+								<input name="" type="radio" style="margin-top: 10px;" :checked="radioChecked">
 						</div>
 		    		</div>
 		    		
 		    		<div class="check">
-						<input @click="checkboxClick" id="checkBox" type="checkbox" style="vertical-align:middle;"/><label  for="checkBox" style="vertical-align:middle;">我已阅读并接受</label><a style="color: #007aff;vertical-align: middle;" href="javascript:;;">《注册协议》</a>
+						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="vertical-align:middle;"/><label  for="checkBox" style="vertical-align:middle;">我已阅读并接受</label><a style="color: #007aff;vertical-align: middle;" href="javascript:;;">《注册协议》</a>
 					</div>
 		    		
 	    		</form>
@@ -270,6 +296,53 @@
 	    			</button>
 		    		<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" :disabled="isDisabled">确认支付</button>
 		    	</div>
+		    	
+		    	<!--用户类型多选列表-->
+		    	<div id="yhlx" v-if="yhlx.lx=='more'" class="mui-popover">
+					<div class="mui-popover-arrow"></div>
+					<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
+						<div class="mui-scroll">
+							<form>
+								<ul class="mui-table-view" :maxCheck=yhlx.max>
+									<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in yhlx.data">
+										<div class="mui-input-row mui-checkbox mui-right">
+											<label>{{item.name}}</label>
+											<input :name=index :value=item.value type="checkbox" >
+										</div>
+									</li>
+								</ul>
+							</form>
+						</div>
+					</div>
+					<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
+						<button class="mui-btn mui-btn-primary" style="width: 25%;" onclick="hidePop(this)">确定</button>
+					</div>
+				</div>
+		    	
+		    	<!--学段多选列表-->
+		    	<div id="xd" v-if="xd.lx=='more'" class="mui-popover">
+					<div class="mui-popover-arrow"></div>
+					<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
+						<div class="mui-scroll">
+							<form>
+								<ul class="mui-table-view" :maxCheck=xd.max>
+									<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in xd.data">
+										<div class="mui-input-row mui-checkbox mui-right">
+											<label>{{item.name}}</label>
+											<input :name=index :value=item.value type="checkbox" >
+										</div>
+									</li>
+								</ul>
+							</form>
+						</div>
+					</div>
+					<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
+						<button class="mui-btn mui-btn-primary" style="width: 25%;" onclick="hidePop(this)">确定</button>
+					</div>
+				</div>
+				
+				<!--其他多选列表-->
+				
 	    	</div>
 		</div>
 		<script src="../../js/mui.js"></script>
@@ -309,10 +382,12 @@
 					
 					orderData =new Vue({
 						el:'#orderData'
-						,data:{
+						,data:{ 
 							radioChecked:false
 							,chekcboxChecked:false
 							,isDisabled:true
+							,yhlx:{lx:'one',max:1,data:[{name:'张三',value:'1'},{name:'李四',value:'2'},{name:'王五',value:'3'}]} //测试
+							,xd:{lx:'more',max:2,data:[{name:'张六',value:'4'},{name:'李七',value:'5'},{name:'王九',value:'6'}]} //测试
 						}
 						,methods:{
 							radioClick:function(){
@@ -333,6 +408,56 @@
 					})
 			});
 			
+			
+			//隐藏弹出层
+			function hidePop(domDiv){
+//				var params = $(domDiv).parent().parent().find('form').serializeObject();
+//				console.log(JSON.stringify(params));
+				//遍历已勾选的input的key 和value
+				var name=[];
+				var value=[];
+				var max=$(domDiv).parent().parent().find('ul').attr('maxCheck');
+				$(domDiv).parent().parent().find('li').each(function() { 
+					if($(this).find('input').prop("checked")){
+						name.push($(this).find('label').text());
+						value.push($(this).find('input').val());
+					}
+				})
+				if(value.length>max){
+					mui.toast('最多选'+max+'个');
+					return;
+				}
+				var id=$(domDiv).parent().parent().attr("id");
+				document.getElementById(id+'Input').value=name;
+				document.getElementById(id+'Hidden').value=value;
+				mui('#'+id).popover('toggle');
+			}
+			
+			//将输入表单中的内容，转为obj
+			$.fn.serializeObject = function() {
+				var o = {};
+				var a = this.serializeArray();
+				$.each(a, function() {
+					if(o[this.name] !== undefined) {
+						if(!o[this.name].push) {
+							o[this.name] = [o[this.name]];
+						}
+						o[this.name].push(this.value || '');
+					} else {
+						o[this.name] = this.value || '';
+					}
+				});
+				return o;
+			};
+			
+			mui('.mui-scroll-wrapper').scroll();
+//			mui('body').on('shown', '.mui-popover', function(e) {
+//				console.log('shown', e.detail.id);//detail为当前popover元素
+//			});
+//			mui('body').on('hidden', '.mui-popover', function(e) {
+//				console.log('hidden', e.detail.id);//detail为当前popover元素
+//				
+//			});
 		</script> 
 	</body>
 
