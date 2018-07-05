@@ -155,6 +155,10 @@
 			.mui-popover {
 				height: 300px;
 			}
+			
+			.mui-checkbox input[type=checkbox]:checked:before {
+				color: #00cfbd;
+			}
 		</style>
 	</head>
 
@@ -189,72 +193,13 @@
 						<div class="mui-input-row line" v-for="fextModel in sysfuncModel.fext">
 							<a class="mui-navigate-right">
 								<label>{{fextModel.itemname}}</label>
-								<!--<template v-if='sysfuncList.lx=="one"'>-->
-									<select name="" class="mui-btn-block">
-										<option value="" disabled selected>请选择{{fextModel.itemname}}类型</option>
-										<option value="item.value" v-for='item in fextModel.itemsons'>{{item}}</option>
-									</select>
-								<!--</template>
-								<template v-else>
-									<a href="#sysfuncList">
-										<input id="sysfuncListInput" type="text" name="" placeholder="请选择用户类型" style="width: 65%;margin-bottom:0; border:0;padding: 0;color: #8f8f94;" />
-										<input id="sysfuncListHidden" type="hidden" name="sysfuncList" />
-									</a>
-								</template>-->
+								<a :href="'#'+sysfuncModel.fid+fextModel.itemcode">
+									<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname" style="width: 50%;color: #8f8f94;border:0;margin-top: 5px;" />
+									<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" name="sysfuncList" />
+								</a>
 							</a>
 						</div>
-						<!--<div class="mui-input-row">
-							<a class="mui-navigate-right">
-								<label>学段</label>
-								<template v-if='xd.lx=="one"'>
-									<select name="xd" class="mui-btn-block">
-										<option value="" disabled selected>请选择学段</option>
-										<option value="item.value" v-for='item in xd.data'>{{item.name}}</option>
-									</select>
-								</template>
-								<template v-else>
-									<a href="#xd">
-										<input id="xdInput" type="text" name="" placeholder="请选择学段" style="width: 65%;margin-bottom:0; border:0;padding: 0;color: #8f8f94;" />
-										<input id="xdHidden" type="hidden" name="xd" />
-									</a>
-								</template>
-							</a>
-						</div>
-						<div class="mui-input-row">
-							<a class="mui-navigate-right">
-								<label>年级</label>
-								<select name="" class="mui-btn-block">
-									<option value="" disabled selected>请选择年级</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-								</select>
-							</a>
-						</div>-->
 					</div>
-
-					<!--<div class="mui-row" style="margin-top: 5px;">
-						<h5 class="mui-content-padded">功能2附加信息</h5>
-						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
-								<label>科目名称</label>
-								<select name="" class="mui-btn-block">
-									<option value="" disabled selected>请选择科目名称</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-								</select>
-							</a>
-						</div>
-						<div class="mui-input-row">
-							<a class="mui-navigate-right">
-								<label>教版</label>
-								<select name="" class="mui-btn-block">
-									<option value="" disabled selected>请选择教版</option>
-									<option value="item-1">item-1</option>
-									<option value="item-2">item-2</option>
-								</select>
-							</a>
-						</div>
-					</div>-->
 
 					<div class="mui-row" style="margin-top: 5px;">
 						<div class="mui-input-row" style="margin-top: 5px;">
@@ -300,50 +245,30 @@
 				</div>
 
 				<!--用户类型多选列表-->
-				<div id="sysfuncList" v-if="sysfuncList.lx=='more'" class="mui-popover">
-					<div class="mui-popover-arrow"></div>
-					<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
-						<div class="mui-scroll">
-							<form>
-								<ul class="mui-table-view" :maxCheck=sysfuncList.max>
-									<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in sysfuncList.data">
-										<div class="mui-input-row mui-checkbox mui-right">
-											<label>{{item.name}}</label>
-											<input :name=index :value=item.value type="checkbox">
-										</div>
-									</li>
-								</ul>
-							</form>
+				<div v-for="sysfuncModel in sysfuncList">
+					<div v-for="fextModel in sysfuncModel.fext">
+						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover">
+							<div class="mui-popover-arrow"></div>
+							<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
+								<div class="mui-scroll">
+									<form>
+										<ul class="mui-table-view" :maxCheck=fextModel.itemsonsc>
+											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons">
+												<div class="mui-input-row mui-checkbox mui-right">
+													<label>{{item}}</label>
+													<input :name=index :value=item type="checkbox">
+												</div>
+											</li>
+										</ul>
+									</form>
+								</div>
+							</div>
+							<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
+								<button class="mui-btn mui-btn-primary" style="width: 25%;background: #00CFBD;border: 0px;" onclick="hidePop(this)">确定</button>
+							</div>
 						</div>
 					</div>
-					<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
-						<button class="mui-btn mui-btn-primary" style="width: 25%;" onclick="hidePop(this)">确定</button>
-					</div>
 				</div>
-
-				<!--学段多选列表-->
-				<div id="xd" v-if="xd.lx=='more'" class="mui-popover">
-					<div class="mui-popover-arrow"></div>
-					<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
-						<div class="mui-scroll">
-							<form>
-								<ul class="mui-table-view" :maxCheck=xd.max>
-									<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in xd.data">
-										<div class="mui-input-row mui-checkbox mui-right">
-											<label>{{item.name}}</label>
-											<input :name=index :value=item.value type="checkbox">
-										</div>
-									</li>
-								</ul>
-							</form>
-						</div>
-					</div>
-					<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
-						<button class="mui-btn mui-btn-primary" style="width: 25%;" onclick="hidePop(this)">确定</button>
-					</div>
-				</div>
-
-				<!--其他多选列表-->
 
 			</div>
 		</div>
@@ -415,9 +340,9 @@
 					}
 				}
 			});
-			
+
 			//套餐功能及扩展栏目
-			var getSysBusFunc = function(){
+			var getSysBusFunc = function() {
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
@@ -434,9 +359,9 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						//将sysfunc[0].fext[0].itemsons转化为数组
-						for (var i = 0; i < data1.RspData.sysfunc.length; i++) {
+						for(var i = 0; i < data1.RspData.sysfunc.length; i++) {
 							var tempModel0 = data1.RspData.sysfunc[i];
-							for (var a = 0; a < tempModel0.fext.length; a++) {
+							for(var a = 0; a < tempModel0.fext.length; a++) {
 								var tempModel1 = tempModel0.fext[a];
 								tempModel1.itemsons = tempModel1.itemsons.split(',');
 							}
@@ -467,8 +392,8 @@
 					return;
 				}
 				var id = $(domDiv).parent().parent().attr("id");
-				document.getElementById(id + 'Input').value = name;
-				document.getElementById(id + 'Hidden').value = value;
+				document.getElementById(id + 'input0').value = name;
+				document.getElementById(id + 'input1').value = value;
 				mui('#' + id).popover('toggle');
 			}
 
