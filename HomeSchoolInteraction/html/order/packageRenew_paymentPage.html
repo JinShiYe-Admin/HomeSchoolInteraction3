@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<!-- 套餐续订 支付页 -->
+
 	<head>
 		<meta charset="utf-8">
 		<title></title>
@@ -9,48 +10,49 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
 		<style type="text/css">
-			[v-cloak]{
+			[v-cloak] {
 				visibility: hidden;
 			}
-			.head-portrait {
-				width: 100px;
-				height: 100px;
-				border-radius: 50%;
-				margin-bottom: 10px;
-				padding: 3px;
-				border: 1px #ECECEC solid;
+			
+			body {
+				background: #F2F2F2;
 			}
 			
-			.title-info {
-				padding: 30px 0 5px 0;
-				text-align: center;
-				background: #fff;
+			.mui-row {
+				background: #FFF;
 			}
 			
-			.title-footer{
-				background: #fff;
-				margin: -40px 10px 0 10px;
+			.mui-table-view .mui-media-object {
+				max-width: 100px;
 			}
 			
-			.user-title{
+			.mui-table-view .mui-media-object.mui-pull-left {
+				margin-right: 5px;
+			}
+			
+			.mui-ellipsis-title {
 				font-size: 18px;
-				color: #333333;
-				font-weight: bold;
+				color: #000;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				white-space: normal;
 			}
 			
-			.user-title-body{
-				text-align: left;
-				margin: 0 10px;
-				color: #6d6d6d;
-				text-indent: 2em;
+			.mui-ellipsis {
+				margin: 5px 0 0 0;
+				height: 43px;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				white-space: normal;
 			}
 			
-			.user-title-footer{
-				text-align: left;
-				margin: 10px 10px 0;
-			}
-			
-			.ul-btn{
+			.ul-btn {
 				display: inline;
 				vertical-align: middle;
 				float: right;
@@ -60,69 +62,382 @@
 				color: #fff;
 				border: none;
 			}
-			.ul-p{
+			
+			.ul-p {
 				width: 30%;
-				color: #00CFBD;
 				display: inline;
 				vertical-align: middle;
-				font-size: 13px;
+				font-size: 12px;
 			}
 			
-			.ul-p-right{
-				width: 15%;
-				display: inline;
-				color: #00CFBD;
-				float: right;
-				vertical-align: middle;
-				font-size: 13px;
+			a {
+				text-decoration: none;
+				color: #000000;
 			}
+			
+			.mui-content-padded {
+				margin: 10px 10px 10px 16px;
+			}
+			
+			select {
+				color: #8f8f94;
+			}
+			
+			.line:before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.2);
+				transform: scaleY(.2);
+				background-color: #c8c7cc;
+			}
+			
+			.wxImg {
+				width: 30px;
+			}
+			
+			.mui-checkbox input[type=checkbox]:before,
+			.mui-radio input[type=radio]:before {
+				font-size: 25px;
+			}
+			
+			.check {
+				text-align: left;
+				font-size: 15px;
+				margin: 10px 0 100px 0;
+			}
+			
+			.bottom-row {
+				position: fixed;
+				bottom: 0;
+				z-index: 3;
+				background: #FFFFFF;
+				width: 100%;
+				height: 50px;
+			}
+			
+			.pay-btn-je {
+				height: 50px;
+				border: 0px;
+				text-align: left;
+			}
+			
+			.pay-btn {
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
+				border-radius: 0;
+			}
+			
+			input::-webkit-input-placeholder {
+				color: #8f8f94;
+			}
+			
+			
+			.mui-input-row label~select{
+				font-size: 14px;
+				margin-left: 13px;
+			}
+			
+			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			   float: left;
+			}
+			
+			.mui-input-row label {
+			    width: 28%;
+			}
+			
+			.spanCheck {
+				width: 65%;
+			}
+			
+			
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+			    color: #00cfbd;
+			}
+			
+			
+			.xyCheck input[type=checkbox]:before {
+			    content: '\e411';
+			}
+			.xyCheck input[type=checkbox]:checked:before {
+			    content: '\e442';
+			}
+			
+			
+			.mui-input-row label~input {
+			    float: left;
+			    font-size: 14px;
+			    color: #8f8f94;
+			    margin-left: 14px;
+			}
+			
+			
 		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;"> 
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
-			<h1 class="mui-title"  style="color: white;">套餐续订</h1>
+			<h1 class="mui-title" style="color: white;">套餐续订</h1>
 		</header>
-		<div  class="mui-content">
-	    	<div id='orders'>
-	    		2222222222222222222
-	    		<!--<div class="mui-row title-info">
-	    			 <img  v-cloak class="head-portrait" :src=imgUrl />
-	    			 <p v-cloak class="user-title">{{title}}</p>
-	    			 <p v-cloak class="user-title-body">{{titleBody}}</p>
-	    			 <div v-cloak class="user-title-footer">
-	    			 	<p class="ul-p">资费金额：{{expenses}}</p>
-					 	<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
-	    			 </div>
-	    		</div>-->
+		<div class="mui-content">
+			<div id='orderDetail'>
+				<div class="mui-row">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" v-cloak :src=orderDetail.imgUrl style="width: 90px;height:90px;">
+								<div class="mui-media-body">
+									<p class='mui-ellipsis-title' v-cloak>{{orderDetail.cnname}}</p>
+									<p class='mui-ellipsis' v-cloak>{{orderDetail.busnote}}</p>
+								</div>
+								<div style="margin-top: 5px;" v-cloak>
+									<p class="ul-p" style="color:#FF6600">缴费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div id='orderData'>
+				<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">原订购信息</h5>
+						<div class="mui-input-row line">
+							<a class="mui-navigate-right">
+								<label>缴费金额</label>
+								<input type="text" value="120元" disabled/>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<a class="mui-navigate-right">
+								<label>订购时间</label>
+								<input type="text" value="2018-07-06" disabled/>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<a class="mui-navigate-right">
+								<label>结束时间</label>
+								<input type="text" value="2019-07-06" disabled/>
+							</a>
+						</div>
+				</div>
+				<form id="orderForm">
+					<div class="mui-row" style="margin-top: 5px;">
+						<div class="mui-input-row" style="margin-top: 5px;">
+							<a class="mui-navigate-right">
+								<label>时长</label>
+								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
+									<option value="" disabled selected>请选择时长</option>
+									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
+								</select>
+							</a>
+						</div>
+						<div class="mui-input-row line">
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费时间：2018-09-09</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">新结束时间：2020-07-06</label>
+						</div>
+					</div>
+
+					<div class="mui-row" style="margin-top: 5px;">
+						<h5 class="mui-content-padded">请选择支付方式</h5>
+						<div class="mui-input-row mui-radio line" @click="radioClick">
+							<label style="width: 100%;">
+									<img src="../../img/homeSchool/wxpay.png" class="wxImg" style="vertical-align: middle;"/>
+									<span  style="vertical-align: middle;">微信支付</span>
+								</label>
+							<input name="" type="radio" style="margin-top: 10px;" :checked="radioChecked">
+						</div>
+					</div>
+
+					<div class="check mui-checkbox mui-left">
+						<label for="checkBox" style="padding-left:45px;margin-top: 6px;">我已阅读并接受<a style="color: #00CFBD;" href="javascript:;;">《注册协议》</a></label>
+						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
+					</div>
+
+				</form>
+				<div class="mui-row bottom-row">
+					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
+	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">{{feem}}</span>元
+	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
+	    			</button>
+					<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
+				</div>
 			</div>
 		</div>
-		<script src="../../js/mui.js"></script>
-		<script src="../../js/utils/vue.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh2.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh.material2.js"></script>
-		<script src="../../js/utils/vconsole.min.js"></script>
-		<script src="../../js/utils/jquery-1.8.3.min.js"></script>
-		<script src="../../js/publicProtocol.js"></script>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
 		<script src='../../js/libs/crypto-js/require.js'></script>
 		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
-			
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			mui.init();
-			
+
+			var curPageData;
+			var orderDetail;
+			var orderData;
+			var univlent;//单价
+			var monthList=[];//月份集合
 			mui.plusReady(function() {
-					curPageData = utils.getDataFromUrl(window.location.href);
-					console.log(JSON.stringify(curPageData))
+				var _data=utils.getDataFromUrl(window.location.href);
+				orderDetail.orderDetail = _data;
+				orderDetail.orderDetail.imgUrl = '../../img/login/headImg.png';
+				//计算可以订购的时长  为月份数组 start
+				univlent=_data.feecode;
+				var month=_data.busmonth;
+				var num =36/month;
+				for(var i=1;i<=num;i++){
+					monthList.push(month*i)
+				}
+				//end
+				
+				//套餐功能及扩展栏目
+				getSysBusFunc();
 			});
+
+			var orderDetail = new Vue({
+				el: '#orderDetail',
+				data: {
+					orderDetail: {}
+				}
+			});
+
+			var orderData = new Vue({
+				el: '#orderData',
+				data: {
+					radioChecked: false,//是否选择支付方式
+					chekcboxChecked: false,//注册协议是否阅读
+					isDisabled: true,//支付按钮是否关闭
+					sysfuncList: [], //附加信息
+					monthList: monthList,
+					servm:0,//订购套餐总月数
+					feem:0//订购套餐总费用
+				},
+				methods: {
+					radioClick: function() {
+						this.radioChecked = !this.radioChecked
+						if(this.radioChecked == true)
+							$('#zffs').html('&ensp;|&ensp;微信支付');
+						if(this.radioChecked == false){
+							this.isDisabled = true
+							$('#zffs').html('');
+						}else if(this.radioChecked == true && this.chekcboxChecked == true)
+							this.isDisabled = false
+					},
+					checkboxClick: function() {
+						this.chekcboxChecked = !this.chekcboxChecked
+						if(this.chekcboxChecked == false)
+							this.isDisabled = true
+						else if(this.chekcboxChecked == true && this.radioChecked == true)
+							this.isDisabled = false
+					},
+					gradeChange:function(e){//月份下拉选选中事件
+						 var domDiv=e.target;
+						 var selectTime=$(domDiv).val();
+						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
+						 this.feem=(selectTime*1*univlent*1).toFixed(2);
+					},
+					payAction:function(){//支付
+						if(this.servm==0){
+							mui.toast('您还没有选择时长')
+						}else{
+							var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+							var comData0 = {
+								uuid: publicParameter.uuid, //用户设备号
+								appid: publicParameter.appid, //系统所分配的应用ID
+								uid: personal.utid, //用户ID
+								servid:'',//套餐代码
+								servm: this.servm, //订购总月数
+								feem: this.feem, //订购花费
+								dnote:'',//备注
+								recutname:personal.utname,//操作者姓名
+								frmtype:'',//操作类型
+								funclist:{
+									fcode:'',//功能代码
+									itemcode:'',//栏目代码
+									itemsons:''//栏目选择子集
+								},//订购的扩展参数
+								utoken: personal.utoken, //用户令牌
+								sign:''//其他参数按照规则产生的签名
+							};
+							console.log(JSON.stringify(orderData.sysfuncList))
+							console.log(JSON.stringify(comData0))
+						}
+					}
+				}
+			});
+
+			//套餐功能及扩展栏目
+			var getSysBusFunc = function() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					fcodes: orderDetail.orderDetail.fcodes, //功能代码串,留空为全部,多个用逗号隔开
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('SysBusFunc', enData1, comData1, 0, function(data1) {
+					console.log('SysBusFunc:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						//将sysfunc[0].fext[0].itemsons转化为数组
+						for(var i = 0; i < data1.RspData.sysfunc.length; i++) {
+							var tempModel0 = data1.RspData.sysfunc[i];
+							for(var a = 0; a < tempModel0.fext.length; a++) {
+								var tempModel1 = tempModel0.fext[a];
+								tempModel1.itemsons = tempModel1.itemsons.split(',');
+							}
+						}
+						orderData.sysfuncList = [].concat(data1.RspData.sysfunc);
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+
+//			//将输入表单中的内容，转为obj
+//			$.fn.serializeObject = function() {
+//				var o = {};
+//				var a = this.serializeArray();
+//				$.each(a, function() {
+//					if(o[this.name] !== undefined) {
+//						if(!o[this.name].push) {
+//							o[this.name] = [o[this.name]];
+//						}
+//						o[this.name].push(this.value || '');
+//					} else {
+//						o[this.name] = this.value || '';
+//					}
+//				});
+//				return o;
+//			};
 			
-		</script> 
+		</script>
 	</body>
 
 </html>

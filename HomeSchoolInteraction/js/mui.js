@@ -6305,6 +6305,7 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
 			style.top = top + 'px';
 		if (typeof left !== 'undefined')
 			style.left = left + 'px';
+		style.background ='#393D49';	
 	};
 	var calPosition = function(popover, anchor, isActionSheet) {
 		if (!popover || !anchor) {
@@ -6373,7 +6374,8 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
 		} else if (position === 'middle') {
 			arrow.setAttribute('style', 'display:none');
 		}
-		setStyle(popover, 'block', pTop, pLeft);
+//		setStyle(popover, 'block', pTop, pLeft);
+		setStyle(popover, 'block',  Math.max((wHeight - pHeight) / 2 + window.pageYOffset, 0),Math.max((wWidth - pWidth) / 2 + window.pageXOffset, 0));
 	};
 
 	$.createMask = function(callback) {
