@@ -136,44 +136,43 @@
 				color: #8f8f94;
 			}
 			
-			
-			.mui-input-row label~select{
+			.mui-input-row label~select {
 				font-size: 14px;
 				margin-left: 13px;
 			}
 			
-			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
-			   float: left;
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				float: left;
 			}
 			
 			.mui-input-row label {
-			    width: 28%;
+				width: 28%;
 			}
 			
 			.spanCheck {
 				width: 65%;
 			}
 			
-			
-			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
-			    color: #00cfbd;
+			.mui-checkbox input[type=checkbox]:checked:before,
+			.mui-radio input[type=radio]:checked:before {
+				color: #00cfbd;
 			}
-			
 			
 			.xyCheck input[type=checkbox]:before {
-			    content: '\e411';
+				content: '\e411';
 			}
+			
 			.xyCheck input[type=checkbox]:checked:before {
-			    content: '\e442';
+				content: '\e442';
 			}
-			
-			
 			
 			.mui-table-view-cell.mui-active {
-			    background-color: #393D49;
+				background-color: #393D49;
 			}
 			
-			.mui-popover-arrow{
+			.mui-popover-arrow {
 				display: none;
 			}
 		</style>
@@ -185,7 +184,7 @@
 			<h1 class="mui-title" style="color: white;">套餐订购</h1>
 		</header>
 		<div class="mui-content">
-			<div id='orderDetail'>
+			<div id='orderDetailData'>
 				<div class="mui-row">
 					<ul class="mui-table-view">
 						<li class="mui-table-view-cell mui-media">
@@ -257,21 +256,20 @@
 	    			</button>
 					<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
 				</div>
-				
-				
+
 				<!--用户类型多选列表-->
 				<div v-for="sysfuncModel in sysfuncList">
 					<div v-for="fextModel in sysfuncModel.fext">
 						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover" ref="scrollBox" style="height: 300px;">
 							<div class="mui-popover-arrow" style="display: none;"></div>
-							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;" >
+							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;">
 								<div class="mui-scroll">
 									<form>
 										<ul class="mui-table-view" style="background: #393D49;color: #fff;" :maxCheck=fextModel.itemsonsc>
 											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons">
 												<div class="mui-input-row mui-checkbox mui-right">
 													<label style="width: 100%;">{{item}}</label>
-													<input  :name=index :value=item type="checkbox">
+													<input :name=index :value=item type="checkbox">
 												</div>
 											</li>
 										</ul>
@@ -285,7 +283,7 @@
 					</div>
 				</div>
 
-			</div> 
+			</div>
 		</div>
 		<script type="text/javascript" src="../../js/mui.js"></script>
 		<script type="text/javascript" src="../../js/utils/vue.js"></script>
@@ -313,29 +311,28 @@
 			mui.init();
 
 			var curPageData;
-			var orderDetail;
 			var orderData;
-			var univlent;//单价
-			var monthList=[];//月份集合
+			var univlent; //单价
+			var monthList = []; //月份集合
 			mui.plusReady(function() {
-				var _data=utils.getDataFromUrl(window.location.href);
-				orderDetail.orderDetail = _data;
-				orderDetail.orderDetail.imgUrl = '../../img/login/headImg.png';
+				var _data = utils.getDataFromUrl(window.location.href);
+				orderDetailData.orderDetail = _data;
+				orderDetailData.orderDetail.imgUrl = '../../img/login/headImg.png';
 				//计算可以订购的时长  为月份数组 start
-				univlent=_data.feecode;
-				var month=_data.busmonth;
-				var num =36/month;
-				for(var i=1;i<=num;i++){
-					monthList.push(month*i)
+				univlent = _data.feecode;
+				var month = _data.busmonth;
+				var num = 36 / month;
+				for(var i = 1; i <= num; i++) {
+					monthList.push(month * i)
 				}
 				//end
-				
+
 				//套餐功能及扩展栏目
 				getSysBusFunc();
 			});
 
-			var orderDetail = new Vue({
-				el: '#orderDetail',
+			var orderDetailData = new Vue({
+				el: '#orderDetailData',
 				data: {
 					orderDetail: {}
 				}
@@ -344,23 +341,23 @@
 			var orderData = new Vue({
 				el: '#orderData',
 				data: {
-					radioChecked: false,//是否选择支付方式
-					chekcboxChecked: false,//注册协议是否阅读
-					isDisabled: true,//支付按钮是否关闭
+					radioChecked: false, //是否选择支付方式
+					chekcboxChecked: false, //注册协议是否阅读
+					isDisabled: true, //支付按钮是否关闭
 					sysfuncList: [], //附加信息
 					monthList: monthList,
-					servm:0,//订购套餐总月数
-					feem:0//订购套餐总费用
+					servm: 0, //订购套餐总月数
+					feem: 0 //订购套餐总费用
 				},
 				methods: {
 					radioClick: function() {
 						this.radioChecked = !this.radioChecked
 						if(this.radioChecked == true)
 							$('#zffs').html('&ensp;|&ensp;微信支付');
-						if(this.radioChecked == false){
+						if(this.radioChecked == false) {
 							this.isDisabled = true
 							$('#zffs').html('');
-						}else if(this.radioChecked == true && this.chekcboxChecked == true)
+						} else if(this.radioChecked == true && this.chekcboxChecked == true)
 							this.isDisabled = false
 					},
 					checkboxClick: function() {
@@ -370,80 +367,105 @@
 						else if(this.chekcboxChecked == true && this.radioChecked == true)
 							this.isDisabled = false
 					},
-					hidePop:function(e,parms){//隐藏弹窗
-							var domDiv=e.target;
-							//遍历已勾选的input的key 和value
-							var name = [];
-							var value = [];
-							var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
-							$(domDiv).parent().parent().find('li').each(function() {
-								if($(this).find('input').prop("checked")) {
-									name.push($(this).find('label').text());
-									value.push($(this).find('input').val());
-								}
-							})
-							if(value.length > max) {
-								mui.toast('最多选' + max + '个');
-								return;
+					hidePop: function(e, parms) { //隐藏弹窗
+						var domDiv = e.target;
+						//遍历已勾选的input的key 和value
+						var name = [];
+						var value = [];
+						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
+						$(domDiv).parent().parent().find('li').each(function() {
+							if($(this).find('input').prop("checked")) {
+								name.push($(this).find('label').text());
+								value.push($(this).find('input').val());
 							}
-							var id = $(domDiv).parent().parent().attr("id");
-							if(name.length==0||value.length==0){
-								var label =$('#'+id+ 'label').html();
-								document.getElementById(id + 'input0').value = '请选择'+label;
-								document.getElementById(id + 'input1').value = [];
-								parms.checked='';
-								Vue.delete(parms,'checked');
-							}else{
-								document.getElementById(id + 'input0').value = name;
-								document.getElementById(id + 'input1').value = value;
-								parms.checked=value.join(',');
-							}
-							
-//							console.log(JSON.stringify(parms))
-							mui('#' + id).popover('toggle');
+						})
+						if(value.length > max) {
+							mui.toast('最多选' + max + '个');
+							return;
+						}
+						var id = $(domDiv).parent().parent().attr("id");
+						if(name.length == 0 || value.length == 0) {
+							var label = $('#' + id + 'label').html();
+							document.getElementById(id + 'input0').value = '请选择' + label;
+							document.getElementById(id + 'input1').value = [];
+							parms.checked = '';
+							Vue.delete(parms, 'checked');
+						} else {
+							document.getElementById(id + 'input0').value = name;
+							document.getElementById(id + 'input1').value = value;
+							parms.checked = value.join(',');
+						}
+
+						//							console.log(JSON.stringify(parms))
+						mui('#' + id).popover('toggle');
 					},
-					gradeChange:function(e){//月份下拉选选中事件
-						 var domDiv=e.target;
-						 var selectTime=$(domDiv).val();
-						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
-						 this.feem=(selectTime*1*univlent*1).toFixed(2);
+					gradeChange: function(e) { //月份下拉选选中事件
+						var domDiv = e.target;
+						var selectTime = $(domDiv).val();
+						this.servm = $(domDiv).find("option:selected").attr('monthnum');
+						this.feem = (selectTime * 1 * univlent * 1).toFixed(2);
 					},
-					payAction:function(){//支付
-						if(this.servm==0){
+					payAction: function() { //支付
+						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
-						}else{
+						} else {
+							//循环得到附加信息
+							var funcArray = [];
+							for(var i = 0; i < orderData.sysfuncList.length; i++) {
+								var sysfuncModel = orderData.sysfuncList[i];
+								for(var a = 0; a < sysfuncModel.fext.length; a++) {
+									var fextModel = sysfuncModel.fext[a];
+									if(fextModel.checked && fextModel.checked.length > 0) {
+										var tempModel = {
+											fcode: sysfuncModel.fcode, //功能代码
+											itemcode: fextModel.itemcode, //栏目代码
+											itemsons: fextModel.checked //栏目选择子集
+										}
+										funcArray.push(tempModel);
+									}
+								}
+							}
+							console.log('funcArray:' + JSON.stringify(funcArray));
 							var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-							var comData0 = {
+							var enData1 = {};
+							var comData1 = {
 								uuid: publicParameter.uuid, //用户设备号
 								appid: publicParameter.appid, //系统所分配的应用ID
-								uid: personal.utid, //用户ID
-								servid:'',//套餐代码
+								uid: personal.uid, //用户ID
+								servid: orderDetailData.orderDetail.serviceid, //套餐代码
 								servm: this.servm, //订购总月数
 								feem: this.feem, //订购花费
-								dnote:'',//备注
-								recutname:personal.utname,//操作者姓名
-								frmtype:'',//操作类型
-								funclist:{
-									fcode:'',//功能代码
-									itemcode:'',//栏目代码
-									itemsons:''//栏目选择子集
-								},//订购的扩展参数
-								utoken: personal.utoken, //用户令牌
-								sign:''//其他参数按照规则产生的签名
-							};
-							console.log(JSON.stringify(orderData.sysfuncList))
-							console.log(JSON.stringify(comData0))
+								dnote: '', //备注
+								recutname: personal.utname, //操作者姓名
+								frmtype: 'APP自订', //操作类型,来自APP代订,PC代订,APP自订,PC自订
+//								funclist: arrayToStr(funcArray), //订购的扩展参数
+								funclist: [], //订购的扩展参数
+								utoken: personal.utoken //用户令牌
+							}
+							console.log('orderData.sysfuncList:' + JSON.stringify(orderData.sysfuncList));
+							console.log('comData0:' + JSON.stringify(comData1));
+							events.showWaiting();
+							//发送网络请求，data为网络返回值----4.用户订购套餐
+							postDataEncry('UserFee', enData1, comData1, 0, function(data1) {
+								console.log('UserFee:' + JSON.stringify(data1));
+								events.closeWaiting();
+								if(data1.RspCode == 0) {
+									
+								} else {
+									mui.toast(data1.RspTxt);
+								}
+							});
 						}
 					}
 				},
-				 watch: {
-				      sysfuncList: function() {
-				       		mui('.mui-scroll-wrapper').scroll();
-				        	setTimeout(function() {
-								mui('.mui-scroll-wrapper').scroll();
-							}, 2000);
-				      }
-				  }
+				watch: {
+					sysfuncList: function() {
+						mui('.mui-scroll-wrapper').scroll();
+						setTimeout(function() {
+							mui('.mui-scroll-wrapper').scroll();
+						}, 2000);
+					}
+				}
 			});
 
 			//套餐功能及扩展栏目
@@ -452,7 +474,7 @@
 				//不需要加密的数据
 				var comData1 = {
 					uuid: publicParameter.uuid, //用户设备号
-					fcodes: orderDetail.orderDetail.fcodes, //功能代码串,留空为全部,多个用逗号隔开
+					fcodes: orderDetailData.orderDetail.fcodes, //功能代码串,留空为全部,多个用逗号隔开
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
@@ -478,7 +500,6 @@
 					}
 				});
 			}
-
 		</script>
 	</body>
 
