@@ -167,21 +167,15 @@
 			    content: '\e442';
 			}
 			
-			/*弹出层样式*/
 			
-			.mui-popover {
-				height: 300px;
-			}
-			
-			.mui-popover-arrow{
-				display: none;
-			}
 			
 			.mui-table-view-cell.mui-active {
 			    background-color: #393D49;
 			}
 			
-			
+			.mui-popover-arrow{
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -215,7 +209,7 @@
 						<h5 class="mui-content-padded">功能{{index1+1}}附加信息</h5>
 						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
 							<a class="mui-navigate-right">
-								<label>{{fextModel.itemname}}</label>
+								<label :id="sysfuncModel.fid+fextModel.itemcode+'label'">{{fextModel.itemname}}</label>
 								<a :href="'#'+sysfuncModel.fid+fextModel.itemcode">
 									<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
 									<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
@@ -268,8 +262,8 @@
 				<!--用户类型多选列表-->
 				<div v-for="sysfuncModel in sysfuncList">
 					<div v-for="fextModel in sysfuncModel.fext">
-						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover" ref="scrollBox">
-							<div class="mui-popover-arrow"></div>
+						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover" ref="scrollBox" style="height: 300px;">
+							<div class="mui-popover-arrow" style="display: none;"></div>
 							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;" >
 								<div class="mui-scroll">
 									<form>
@@ -393,11 +387,18 @@
 								return;
 							}
 							var id = $(domDiv).parent().parent().attr("id");
-							if(name.length==0||value.length==0){}else{
+							if(name.length==0||value.length==0){
+								var label =$('#'+id+ 'label').html();
+								document.getElementById(id + 'input0').value = '请选择'+label;
+								document.getElementById(id + 'input1').value = [];
+								parms.checked='';
+								Vue.delete(parms,'checked');
+							}else{
 								document.getElementById(id + 'input0').value = name;
 								document.getElementById(id + 'input1').value = value;
+								parms.checked=value.join(',');
 							}
-							parms.checked=value.join(',');
+							
 //							console.log(JSON.stringify(parms))
 							mui('#' + id).popover('toggle');
 					},
