@@ -100,43 +100,133 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../js/mui.js"></script>
-		<script src="../../js/utils/vue.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh2.js"></script>
-		<script src="../../js/utils/mui.pullToRefresh.material2.js"></script>
-		<script src="../../js/utils/vconsole.min.js"></script>
-		<script src="../../js/utils/jquery-1.8.3.min.js"></script>
-		<script src="../../js/publicProtocol.js"></script>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
 		<script src='../../js/libs/crypto-js/require.js'></script>
 		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
 
 			mui.init();
-
+			var wxChannel = null; // 微信支付
+			var aliChannel = null; // 支付宝支付
+			var channel = null;
+			var ALIPAYSERVER = 'https://jsypay.jiaobaowang.net/jsypay/alipay/sys/aliappserver.ashx';
+			var WXPAYSERVER = 'http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';
 			var orders;
 			var curPageData;
 			mui.plusReady(function() {
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
 				orders.orderDetail.imgUrl = '../../img/login/headImg.png';
+
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					console.log('channels=' + JSON.stringify(channels));
+					for(var i in channels) {
+						var temp = channels[i];
+						if(temp.id == 'alipay') {
+							aliChannel = temp;
+						} else if(temp.id == 'wxpay') {
+							wxChannel = temp;
+						}
+					}
+				}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+				});
 			});
 
 			var orders = new Vue({
 				el: '#orders',
 				data: {
-					orderDetail:{}
+					orderDetail: {}
 				}
 			});
 
 			//套餐订购
 			function placeOrder() {
-				utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", orders.orderDetail);
+				//				utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", orders.orderDetail);
+				pay('wxpay');
 			}
+
+			//2. 发起支付请求
+			function pay(id) {
+				// 从服务器请求支付订单
+				var PAYSERVER = '';
+				if(id == 'alipay') {
+					PAYSERVER = ALIPAYSERVER;
+					channel = aliChannel;
+				} else if(id == 'wxpay') {
+					PAYSERVER = WXPAYSERVER;
+					channel = wxChannel;
+				} else {
+					plus.nativeUI.alert("不支持此支付通道！", null, "");
+					return;
+				}
+				console.log('channel', channel);
+				var data0 = {
+					body: "111",
+					attach: "222",
+					uid: "15288857367",
+					total_fee: 1,
+					goods_tag: "qqq",
+					product_id: "www",
+					frmtype: "APP"
+				}
+				var xhr = new XMLHttpRequest();
+				xhr.open("post", PAYSERVER, true);
+				xhr.timeout = 10000; //10秒超时
+				xhr.contentType = 'application/json;';
+				xhr.onload = function(e) {
+					console.log("XHRP:onload:", JSON.stringify(e));
+					console.log('this.readyState:', this.readyState);
+					console.log('this.status', this.status);
+					if(this.readyState === 4 && this.status === 200) {
+						var data = xhr.responseText;
+						console.log("XHRP:data0:", data);
+//						data = '{"appid":"wx0411fa6a39d61297","noncestr":"r2yRFFO7J34coR7P","package":"Sign=WXPay","partnerid":"1230636401","prepayid":"wx06104022152789138809505e1936188754","timestamp":1530844822,"sign":"D46A842C2D84CFD7A24EBEC733628C55"}';
+						console.log("XHRP:data1:", data);
+						plus.payment.request(channel, data, function(result) {
+							//console.log('result=' + JSON.stringify(result));
+							alert("result=" + JSON.stringify(result));
+							plus.nativeUI.alert("支付成功！", function() {
+								
+							});
+						}, function(error) {
+							//console.log('error' + JSON.stringify(error));
+							plus.nativeUI.alert("支付失败：" + error.code);
+						});
+					} else {
+//[LOG] : XHRP:data0:"{\"appid\":\"wx272c9b4a4ac2e9ac\",\"noncestr\":\"8f7187e70536497193603c110fe27ec3\",\"package\":\"Sign=WXPay\",\"partnerid\":\"1469015302\",\"prepayid\":\"wx06104517706339b3825369703337060851\",\"sign\":\"B8614E0B6BF28E7C283115FAE9649223\",\"timestamp\":\"1530845118\"}"
+//[LOG] : XHRP:data1:"{\"appid\":\"wx0411fa6a39d61297\",\"noncestr\":\"r2yRFFO7J34coR7P\",					\"package\":\"Sign=WXPay\",\"partnerid\":\"1230636401\",\"prepayid\":\"wx06104022152789138809505e1936188754\",\"timestamp\":1530844822,\"sign\":\"D46A842C2D84CFD7A24EBEC733628C55\"}"
+
+					}
+				}
+				xhr.ontimeout = function(e) {
+					console.log("XHRP:ontimeout222:", e);
+
+				};
+				xhr.onerror = function(e) {
+					console.log("XHRP:onerror111:", e);
+
+				};
+				xhr.send(JSON.stringify(data0));
+			};
 		</script>
 	</body>
 

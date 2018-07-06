@@ -119,42 +119,7 @@
 		<script>
 			var personal;
 			var publicParameter;
-
-			//			mui.init({
-			//				pullRefresh: {
-			//					container: '#scroll',
-			//					down: {
-			//						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-			//						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-			//						height: '50px', //可选,默认50px.下拉刷新控件的高度,
-			//						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
-			//						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-			//						auto: true,
-			//						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-			//					},
-			//					up: {
-			//						height: 50, //可选.默认50.触发上拉加载拖动距离
-			//						contentrefresh: "<span class='mui-spinner'></span>正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-			//						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-			//						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-			//					}
-			//				}
-			//			});
-
-			//			function pulldownRefresh() {
-			//				orders.flag = 0;
-			//				orders.pageIndex = 1;
-			//				orders.canTap = false;
-			//				getOrderList();
-			//			}
-			//
-			//			function pullupRefresh() {
-			//				if(orders.canTap) {
-			//					orders.flag = 1;
-			//					getOrderList();
-			//				}
-			//			}
-
+			var pays = {};
 			mui.plusReady(function() {
 				//获取个人信息
 				personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -162,7 +127,147 @@
 				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				//获取套餐表
 				getOrderList();
+				// 获取支付通道
+				plus.payment.getChannels(function(channels) {
+					var content = document.getElementById('dcontent');
+					for(var i in channels) {
+						var channel = channels[i];
+						if(channel.id == 'qhpay' || channel.id == 'qihoo') { // 过滤掉不支持的支付通道：暂不支持360相关支付
+							continue;
+						}
+						pays[channel.id] = channel;
+						checkServices(channel);
+					}
+				}, function(e) {
+					console.log('获取支付通道失败：' + e.message);
+				});
 			});
+
+			// 检测是否安装支付服务
+			function checkServices(pc) {
+				if(!pc.serviceReady) {
+					var txt = null;
+					switch(pc.id) {
+						case 'alipay':
+							txt = '检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？';
+							break;
+						default:
+							txt = '系统未安装“' + pc.description + '”服务，无法完成支付，是否立即安装？';
+							break;
+					}
+					plus.nativeUI.confirm(txt, function(e) {
+						if(e.index == 0) {
+							pc.installService();
+						}
+					}, pc.description);
+				}
+			}
+			var w = null;
+//			var PAYSERVER = 'http://demo.dcloud.net.cn/payment/?payid=';
+			//			var ALIPAYSERVER = 'https://jsypay.jiaobaowang.net/jsypay/alipay/sys/aliappserver.ashx';
+						var PAYSERVER = 'http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';
+			// 支付
+			function pay(id) {
+				//				if(w) {
+				//					return;
+				//				} //检查是否请求订单中
+				//				if(id === 'appleiap') {
+				//					console.log('应用内支付');
+				//					clicked('payment_iap.html');
+				//					return;
+				//				}
+				//				console.log('----- 请求支付 -----');
+				//				var url = PAYSERVER;
+				//				if(id == 'alipay' || id == 'wxpay') {
+				//					url += id;
+				//				} else {
+				//					plus.nativeUI.alert('当前环境不支持此支付通道！', null, '捐赠');
+				//					return;
+				//				}
+				//				var appid = plus.runtime.appid;
+				//				if(navigator.userAgent.indexOf('StreamApp') >= 0) {
+				//					appid = 'Stream';
+				//				}
+				//				url += '&appid=' + appid + '&total=';
+				//
+				//				w = plus.nativeUI.showWaiting();
+				//				//请求支付订单
+				//				var xhr = new XMLHttpRequest();
+				//				xhr.onreadystatechange = function() {
+				//					switch(xhr.readyState) {
+				//						case 4:
+				//							w.close();
+				//							w = null;
+				//							if(xhr.status == 200) {
+				//								console.log('----- 请求订单成功 -----');
+				//								console.log(xhr.responseText);
+				//								var order = xhr.responseText;
+				//								console.log('pays[id]:' + JSON.stringify(pays[id]));
+				//								console.log('order:' + order);
+				//								plus.payment.request(pays[id], order, function(result) {
+				//									console.log('----- 支付成功 -----');
+				//									console.log(JSON.stringify(result));
+				//									plus.nativeUI.alert('支付成功：感谢你的支持，我们会继续努力完善产品。', function() {
+				//										back();
+				//									}, '捐赠');
+				//								}, function(e) {
+				//									console.log('----- 支付失败 -----');
+				//									console.log('[' + e.code + ']：' + e.message);
+				//									plus.nativeUI.alert('更多错误信息请参考支付(Payment)规范文档：http://www.html5plus.org/#specification#/specification/Payment.html', null, '支付失败：' + e.code);
+				//								});
+				//							} else {
+				//								console.log('----- 请求订单失败 -----');
+				//								console.log(xhr.status);
+				//								plus.nativeUI.alert('获取订单信息失败！', null, '捐赠');
+				//							}
+				//							break;
+				//						default:
+				//							break;
+				//					}
+				//				}
+				//				xhr.open('GET', url + 0.1);
+				//				console.log('请求支付订单：' + url + 0.1);
+				//				xhr.send();
+
+				var data0 = {
+					body: "111",
+					attach: "222",
+					uid: "15288857367",
+					total_fee: 1,
+					goods_tag: "qqq",
+					product_id: "www",
+					frmtype: "APP"
+				}
+				var xhr = new XMLHttpRequest();
+				xhr.open("post", PAYSERVER, true);
+				xhr.timeout = 10000; //10秒超时
+				xhr.contentType = 'application/json;';
+				xhr.onload = function(e) {
+					console.log("XHRP:onload:", JSON.stringify(e));
+					console.log('this.readyState:', this.readyState);
+					console.log('this.status', this.status);
+					if(this.readyState === 4 && this.status === 200) {
+						var order = xhr.responseText;
+						console.log('pays[id]:' + JSON.stringify(pays[id]));
+						console.log('order:' + order);
+						order = '{"appid":"wx0411fa6a39d61297","noncestr":"r2yRFFO7J34coR7P","package":"Sign=WXPay","partnerid":"1230636401","prepayid":"wx06104022152789138809505e1936188754","timestamp":1530844822,"sign":"D46A842C2D84CFD7A24EBEC733628C55"}';
+						plus.payment.request(pays[id], order, function(result) {
+							console.log('----- 支付成功 -----');
+							console.log(JSON.stringify(result));
+							plus.nativeUI.alert('支付成功：感谢你的支持，我们会继续努力完善产品。', function() {
+								back();
+							}, '捐赠');
+						}, function(e) {
+							console.log('----- 支付失败 -----');
+							console.log('[' + e.code + ']：' + e.message);
+							plus.nativeUI.alert('更多错误信息请参考支付(Payment)规范文档：http://www.html5plus.org/#specification#/specification/Payment.html', null, '支付失败：' + e.code);
+						});
+					} else {
+						alert("获取订单信息失败！");
+					}
+				}
+				xhr.send(JSON.stringify(data0));
+			}
 
 			var orders = new Vue({
 				el: '#orders',
@@ -178,17 +283,19 @@
 						if($(_event).attr('class') == 'ul-btn') { //点击li下的button
 							this.$options.methods.btnClick(item);
 						} else { //点击li标签
-							if(item.orderFlag == 0)
-								utils.mOpenWithData("../../html/order/packageDetails_order.html", item);
-							else
-								utils.mOpenWithData("../../html/order/packageDetails_renew.html", item);
+//							pay('wxpay');
+														if(item.orderFlag == 0)
+															utils.mOpenWithData("../../html/order/packageDetails_order.html", item);
+														else
+															utils.mOpenWithData("../../html/order/packageDetails_renew.html", item);
 						}
 					},
 					btnClick: function(item) {
-						if(item.orderFlag == 0)
-							utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", item);
-						else
-							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
+//						pay('wxpay');
+												if(item.orderFlag == 0)
+													utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", item);
+												else
+													utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
 					}
 				}
 			});
@@ -211,7 +318,7 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						//主动添加是否订购字段
-						for (var i = 0; i < data1.RspData.sysbus.length; i++) {
+						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
 							var tempModel = data1.RspData.sysbus[i];
 							tempModel.orderFlag = 0;
 						}
@@ -222,12 +329,9 @@
 						mui.toast(data1.RspTxt);
 					}
 				});
-				//				console.log('获取我的订购list');
-				//				mui('#scroll').pullRefresh().endPulldownToRefresh();
-				//				mui('#scroll').pullRefresh().endPullupToRefresh();
 			}
 			//用户已订购套餐及功能扩展栏目
-			function getUserBusFunc(){
+			function getUserBusFunc() {
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
@@ -243,7 +347,7 @@
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-//						orders.orderList = [].concat(data1.RspData.sysbus);
+						//						orders.orderList = [].concat(data1.RspData.sysbus);
 					} else {
 						mui.toast(data1.RspTxt);
 					}
