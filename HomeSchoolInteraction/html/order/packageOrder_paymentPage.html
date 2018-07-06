@@ -107,7 +107,7 @@
 			.check {
 				text-align: left;
 				font-size: 15px;
-				margin: 10px 0 100px 5%;
+				margin: 10px 0 100px 0;
 			}
 			
 			.bottom-row {
@@ -136,29 +136,52 @@
 				color: #8f8f94;
 			}
 			
+			
+			.mui-input-row label~select{
+				font-size: 14px;
+				margin-left: 13px;
+			}
+			
+			.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			   float: left;
+			}
+			
+			.mui-input-row label {
+			    width: 28%;
+			}
+			
 			.spanCheck {
 				width: 65%;
 			}
+			
+			
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+			    color: #00cfbd;
+			}
+			
+			
+			.xyCheck input[type=checkbox]:before {
+			    content: '\e411';
+			}
+			.xyCheck input[type=checkbox]:checked:before {
+			    content: '\e442';
+			}
+			
 			/*弹出层样式*/
-			
-			#topPopover {
-				position: fixed;
-				top: 16px;
-				right: 6px;
-			}
-			
-			#topPopover .mui-popover-arrow {
-				left: auto;
-				right: 6px;
-			}
 			
 			.mui-popover {
 				height: 300px;
 			}
 			
-			.mui-checkbox input[type=checkbox]:checked:before {
-				color: #00cfbd;
+			.mui-popover-arrow{
+				display: none;
 			}
+			
+			.mui-table-view-cell.mui-active {
+			    background-color: #393D49;
+			}
+			
+			
 		</style>
 	</head>
 
@@ -188,14 +211,14 @@
 			</div>
 			<div id='orderData'>
 				<form id="orderForm">
-					<div class="mui-row" style="margin-top: 5px;" v-for="sysfuncModel in sysfuncList">
-						<h5 class="mui-content-padded">功能1附加信息</h5>
-						<div class="mui-input-row line" v-for="fextModel in sysfuncModel.fext">
+					<div class="mui-row" style="margin-top: 5px;" v-for="(sysfuncModel,index1) in sysfuncList">
+						<h5 class="mui-content-padded">功能{{index1+1}}附加信息</h5>
+						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
 							<a class="mui-navigate-right">
 								<label>{{fextModel.itemname}}</label>
 								<a :href="'#'+sysfuncModel.fid+fextModel.itemcode">
-									<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname" style="width: 50%;color: #8f8f94;border:0;margin-top: 5px;" />
-									<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" name="sysfuncList" />
+									<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
+									<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
 								</a>
 							</a>
 						</div>
@@ -205,17 +228,14 @@
 						<div class="mui-input-row" style="margin-top: 5px;">
 							<a class="mui-navigate-right">
 								<label>时长</label>
-								<select name="" class="mui-btn-block">
+								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
 									<option value="" disabled selected>请选择时长</option>
-									<option value="1">1个月</option>
-									<option value="3">3个月</option>
-									<option value="6">半年</option>
-									<option value="12">一整年</option>
+									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
 								</select>
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">0</span>元</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
 						</div>
 					</div>
 
@@ -230,49 +250,50 @@
 						</div>
 					</div>
 
-					<div class="check">
-						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="vertical-align:middle;" /><label for="checkBox" style="vertical-align:middle;">我已阅读并接受</label>
-						<a style="color: #007aff;vertical-align: middle;" href="javascript:;;">《注册协议》</a>
+					<div class="check mui-checkbox mui-left">
+						<label for="checkBox" style="padding-left:45px;margin-top: 6px;">我已阅读并接受<a style="color: #00CFBD;" href="javascript:;;">《注册协议》</a></label>
+						<input @click="checkboxClick" id="checkBox" name="" type="checkbox" style="left: 15px;" />
 					</div>
 
 				</form>
 				<div class="mui-row bottom-row">
 					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
-	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">0</span>元
-	    				<span id="zffs" style="font-size:10px;color: #8f8f94;">&ensp;|&ensp;微信支付</span>
+	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">{{feem}}</span>元
+	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
 	    			</button>
-					<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" :disabled="isDisabled">确认支付</button>
+					<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>
 				</div>
-
+				
+				
 				<!--用户类型多选列表-->
 				<div v-for="sysfuncModel in sysfuncList">
 					<div v-for="fextModel in sysfuncModel.fext">
-						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover">
+						<div :id="sysfuncModel.fid+fextModel.itemcode" class="mui-popover" ref="scrollBox">
 							<div class="mui-popover-arrow"></div>
-							<div class="mui-scroll-wrapper" style="margin: 7px 0 45px 0;">
+							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;" >
 								<div class="mui-scroll">
 									<form>
-										<ul class="mui-table-view" :maxCheck=fextModel.itemsonsc>
+										<ul class="mui-table-view" style="background: #393D49;color: #fff;" :maxCheck=fextModel.itemsonsc>
 											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons">
 												<div class="mui-input-row mui-checkbox mui-right">
-													<label>{{item}}</label>
-													<input :name=index :value=item type="checkbox">
+													<label style="width: 100%;">{{item}}</label>
+													<input  :name=index :value=item type="checkbox">
 												</div>
 											</li>
 										</ul>
 									</form>
 								</div>
 							</div>
-							<div class="mui-input-row" style="height:37px;top:263px;border-radius: 3px;z-index: 20180704;background: #F7F7F7;">
-								<button class="mui-btn mui-btn-primary" style="width: 25%;background: #00CFBD;border: 0px;" onclick="hidePop(this)">确定</button>
+							<div class="mui-input-row" style=";height:45px;top:255px;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; z-index: 20180704;background: #fff;">
+								<button class="mui-btn mui-btn-primary" style="display: block;margin:5px auto 0;float: none; width: 25%;background: #00CFBD;border: 0px;" @click="hidePop($event,fextModel)">确定</button>
 							</div>
 						</div>
 					</div>
 				</div>
 
-			</div>
+			</div> 
 		</div>
-		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/mui.js"></script>
 		<script type="text/javascript" src="../../js/utils/vue.js"></script>
 		<!--加密-->
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -300,9 +321,21 @@
 			var curPageData;
 			var orderDetail;
 			var orderData;
+			var univlent;//单价
+			var monthList=[];//月份集合
 			mui.plusReady(function() {
-				orderDetail.orderDetail = utils.getDataFromUrl(window.location.href);
+				var _data=utils.getDataFromUrl(window.location.href);
+				orderDetail.orderDetail = _data;
 				orderDetail.orderDetail.imgUrl = '../../img/login/headImg.png';
+				//计算可以订购的时长  为月份数组 start
+				univlent=_data.feecode;
+				var month=_data.busmonth;
+				var num =36/month;
+				for(var i=1;i<=num;i++){
+					monthList.push(month*i)
+				}
+				//end
+				
 				//套餐功能及扩展栏目
 				getSysBusFunc();
 			});
@@ -317,18 +350,23 @@
 			var orderData = new Vue({
 				el: '#orderData',
 				data: {
-					radioChecked: false,
-					chekcboxChecked: false,
-					isDisabled: true,
+					radioChecked: false,//是否选择支付方式
+					chekcboxChecked: false,//注册协议是否阅读
+					isDisabled: true,//支付按钮是否关闭
 					sysfuncList: [], //附加信息
-					xd: {} //测试
+					monthList: monthList,
+					servm:0,//订购套餐总月数
+					feem:0//订购套餐总费用
 				},
 				methods: {
 					radioClick: function() {
 						this.radioChecked = !this.radioChecked
-						if(this.radioChecked == false)
+						if(this.radioChecked == true)
+							$('#zffs').html('&ensp;|&ensp;微信支付');
+						if(this.radioChecked == false){
 							this.isDisabled = true
-						else if(this.radioChecked == true && this.chekcboxChecked == true)
+							$('#zffs').html('');
+						}else if(this.radioChecked == true && this.chekcboxChecked == true)
 							this.isDisabled = false
 					},
 					checkboxClick: function() {
@@ -337,8 +375,74 @@
 							this.isDisabled = true
 						else if(this.chekcboxChecked == true && this.radioChecked == true)
 							this.isDisabled = false
+					},
+					hidePop:function(e,parms){//隐藏弹窗
+							var domDiv=e.target;
+							//遍历已勾选的input的key 和value
+							var name = [];
+							var value = [];
+							var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
+							$(domDiv).parent().parent().find('li').each(function() {
+								if($(this).find('input').prop("checked")) {
+									name.push($(this).find('label').text());
+									value.push($(this).find('input').val());
+								}
+							})
+							if(value.length > max) {
+								mui.toast('最多选' + max + '个');
+								return;
+							}
+							var id = $(domDiv).parent().parent().attr("id");
+							if(name.length==0||value.length==0){}else{
+								document.getElementById(id + 'input0').value = name;
+								document.getElementById(id + 'input1').value = value;
+							}
+							parms.checked=value.join(',');
+//							console.log(JSON.stringify(parms))
+							mui('#' + id).popover('toggle');
+					},
+					gradeChange:function(e){//月份下拉选选中事件
+						 var domDiv=e.target;
+						 var selectTime=$(domDiv).val();
+						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
+						 this.feem=(selectTime*1*univlent*1).toFixed(2);
+					},
+					payAction:function(){//支付
+						if(this.servm==0){
+							mui.toast('您还没有选择时长')
+						}else{
+							var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+							var comData0 = {
+								uuid: publicParameter.uuid, //用户设备号
+								appid: publicParameter.appid, //系统所分配的应用ID
+								uid: personal.utid, //用户ID
+								servid:'',//套餐代码
+								servm: this.servm, //订购总月数
+								feem: this.feem, //订购花费
+								dnote:'',//备注
+								recutname:personal.utname,//操作者姓名
+								frmtype:'',//操作类型
+								funclist:{
+									fcode:'',//功能代码
+									itemcode:'',//栏目代码
+									itemsons:''//栏目选择子集
+								},//订购的扩展参数
+								utoken: personal.utoken, //用户令牌
+								sign:''//其他参数按照规则产生的签名
+							};
+							console.log(JSON.stringify(orderData.sysfuncList))
+							console.log(JSON.stringify(comData0))
+						}
 					}
-				}
+				},
+				 watch: {
+				      sysfuncList: function() {
+				       		mui('.mui-scroll-wrapper').scroll();
+				        	setTimeout(function() {
+								mui('.mui-scroll-wrapper').scroll();
+							}, 2000);
+				      }
+				  }
 			});
 
 			//套餐功能及扩展栏目
@@ -367,61 +471,13 @@
 							}
 						}
 						orderData.sysfuncList = [].concat(data1.RspData.sysfunc);
+						mui('.mui-scroll-wrapper').scroll();
 					} else {
 						mui.toast(data1.RspTxt);
 					}
 				});
 			}
 
-			//隐藏弹出层
-			function hidePop(domDiv) {
-				//				var params = $(domDiv).parent().parent().find('form').serializeObject();
-				//				console.log(JSON.stringify(params));
-				//遍历已勾选的input的key 和value
-				var name = [];
-				var value = [];
-				var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
-				$(domDiv).parent().parent().find('li').each(function() {
-					if($(this).find('input').prop("checked")) {
-						name.push($(this).find('label').text());
-						value.push($(this).find('input').val());
-					}
-				})
-				if(value.length > max) {
-					mui.toast('最多选' + max + '个');
-					return;
-				}
-				var id = $(domDiv).parent().parent().attr("id");
-				document.getElementById(id + 'input0').value = name;
-				document.getElementById(id + 'input1').value = value;
-				mui('#' + id).popover('toggle');
-			}
-
-			//将输入表单中的内容，转为obj
-			$.fn.serializeObject = function() {
-				var o = {};
-				var a = this.serializeArray();
-				$.each(a, function() {
-					if(o[this.name] !== undefined) {
-						if(!o[this.name].push) {
-							o[this.name] = [o[this.name]];
-						}
-						o[this.name].push(this.value || '');
-					} else {
-						o[this.name] = this.value || '';
-					}
-				});
-				return o;
-			};
-
-			mui('.mui-scroll-wrapper').scroll();
-			//			mui('body').on('shown', '.mui-popover', function(e) {
-			//				console.log('shown', e.detail.id);//detail为当前popover元素
-			//			});
-			//			mui('body').on('hidden', '.mui-popover', function(e) {
-			//				console.log('hidden', e.detail.id);//detail为当前popover元素
-			//				
-			//			});
 		</script>
 	</body>
 
