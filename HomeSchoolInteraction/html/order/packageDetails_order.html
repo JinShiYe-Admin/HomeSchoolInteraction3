@@ -124,31 +124,11 @@
 			console.log('personal********:' + JSON.stringify(personal));
 
 			mui.init();
-			var wxChannel = null; // 微信支付
-			var aliChannel = null; // 支付宝支付
-			var channel = null;
-			var alipayUrl = window.storageKeyName.ALIPAYSERVER;
-			var wechatPayUrl = window.storageKeyName.WXPAYSERVER;
 			var orders;
 			var curPageData;
 			mui.plusReady(function() {
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
 				orders.orderDetail.imgUrl = '../../img/login/headImg.png';
-
-				// 获取支付通道
-				plus.payment.getChannels(function(channels) {
-					console.log('channels=' + JSON.stringify(channels));
-					for(var i in channels) {
-						var temp = channels[i];
-						if(temp.id == 'alipay') {
-							aliChannel = temp;
-						} else if(temp.id == 'wxpay') {
-							wxChannel = temp;
-						}
-					}
-				}, function(e) {
-					alert("获取支付通道失败：" + e.message);
-				});
 			});
 
 			var orders = new Vue({
@@ -160,93 +140,7 @@
 
 			//套餐订购
 			function placeOrder() {
-				//				utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", orders.orderDetail);
-				pay('wxpay');
-			}
-
-			//2. 发起支付请求
-			function pay(id) {
-				// 从服务器请求支付订单
-				var PAYSERVER = '';
-				if(id == 'alipay') {
-					PAYSERVER = alipayUrl;
-					channel = aliChannel;
-				} else if(id == 'wxpay') {
-					PAYSERVER = wechatPayUrl;
-					channel = wxChannel;
-				} else {
-					plus.nativeUI.alert("不支持此支付通道！", null, "");
-					return;
-				}
-				console.log('channel', channel);
-				var data0 = {
-					body: "111",
-					attach: "222",
-					uid: "15288857367",
-					total_fee: 1,
-					goods_tag: "qqq",
-					product_id: "www",
-					frmtype: "APP"
-				}
-				var xhr = new XMLHttpRequest();
-				xhr.open("post", PAYSERVER, true);
-				xhr.timeout = 10000; //10秒超时
-				xhr.contentType = 'application/json;';
-				xhr.onload = function(e) {
-					console.log("XHRP:onload:", JSON.stringify(e));
-					console.log('this.readyState:', this.readyState);
-					console.log('this.status', this.status);
-					if(this.readyState === 4 && this.status === 200) {
-						var data = xhr.responseText;
-						plus.payment.request(channel, data, function(result) {
-							//console.log('result=' + JSON.stringify(result));
-							alert("result=" + JSON.stringify(result));
-							plus.nativeUI.alert("支付成功！", function() {
-								
-							});
-						}, function(error) {
-							//console.log('error' + JSON.stringify(error));
-							plus.nativeUI.alert("支付失败：" + error.code);
-						});
-					} else {
-						
-					}
-				}
-				xhr.ontimeout = function(e) {
-					console.log("XHRP:ontimeout222:", e);
-
-				};
-				xhr.onerror = function(e) {
-					console.log("XHRP:onerror111:", e);
-
-				};
-				xhr.send(JSON.stringify(data0));
-			};
-			
-			//主动获取支付结果，14.微信扫码支付结果查询
-			var payResult = function(){
-				var data0 = {
-					out_trade_no:''//订单编号
-				}
-				var xhr = new XMLHttpRequest();
-				xhr.open("post", window.storageKeyName.SEARCHPAYSESULT, true);
-				xhr.timeout = 10000; //10秒超时
-				xhr.contentType = 'application/json;';
-				xhr.onload = function(e) {
-					if(this.readyState === 4 && this.status === 200) {
-						var data = xhr.responseText;
-						
-					} else {
-						
-					}
-				}
-				xhr.ontimeout = function(e) {
-					console.log("XHRP:ontimeout222:", e);
-				};
-				xhr.onerror = function(e) {
-					console.log("XHRP:onerror111:", e);
-				};
-				xhr.send(JSON.stringify(data0));
+				utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", orders.orderDetail);
 			}
 		</script>
 	</body>
