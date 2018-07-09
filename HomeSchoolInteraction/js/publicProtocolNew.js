@@ -22,13 +22,13 @@ function generateUUID() {
 //设置头像，如果有，用本身的，没有给默认值
 function setImg(imgURL) {
 	var tempUrl = '';
-	if (imgURL==null||imgURL.length==0) {
+	if(imgURL == null || imgURL.length == 0) {
 		tempUrl = '../../img/login/headImg.png';
-	} else{
+	} else {
 		var myDate = new Date();
 		tempUrl = imgURL + '?' + myDate.getTime();
 	}
-//	console.log('tempUrl000:'+tempUrl);
+	//	console.log('tempUrl000:'+tempUrl);
 	return tempUrl;
 }
 
@@ -56,27 +56,6 @@ var postDataEncry = function(url, encryData, commonData, flag, callback) {
 	var tempUrl = window.storageKeyName.INTERFACEGU;
 	url = tempUrl + url;
 	console.log('url:', url);
-	
-//	for(var item in commonData) {
-//		if (commonData[item] instanceof Array) {
-//			console.log('commonData[item]:'+JSON.stringify(commonData[item]));
-//			var tempArray = [];
-//			for (var i = 0; i < commonData[item].length; i++) {
-//				var tempModel = commonData[item][i];
-//				var temp0 = JSON.stringify(tempModel);
-//				console.log('temp2:'+temp0);
-//				tempArray.push(temp0);
-//			}
-//			var tempStr = arrayToStr1(tempArray);
-//			console.log('tempStr:'+tempStr);
-//			var tempStr1 = tempStr.toString();
-//			console.log('tempStr1:'+tempStr1);
-//			var reg = new RegExp('"','g');
-//			var a = tempStr.replace(reg,'');
-//			console.log('a:'+a);
-//			commonData[item] = JSON.stringify(commonData[item]);
-//		}
-//	};
 	//拼接登录需要的签名
 	var signTemp = postDataEncry1(encryData, commonData, flag);
 	console.log('signTemp000:' + signTemp);
@@ -93,14 +72,38 @@ var postDataEncry = function(url, encryData, commonData, flag, callback) {
 		jQAjaxPost(url, JSON.stringify(tempData), callback);
 	});
 }
+
+var postDataEncry2 = function(url, encryData, commonData, flag, callback) {
+	checkNewWork(callback);
+	var tempUrl = window.storageKeyName.INTERFACEGU;
+	url = tempUrl + url;
+	console.log('url:', url);
+	//拼接登录需要的签名
+	var signTemp = postDataEncry1(encryData, commonData, flag);
+	console.log('signTemp000:' + signTemp);
+	//生成签名，返回值sign则为签名
+	signHmacSHA1.sign(signTemp, 'jsy309', function(sign) {
+		//组装发送握手协议需要的data
+		//合并对象
+		var tempData = $.extend(encryData, commonData);
+		//添加签名
+		tempData.sign = sign;
+		// 等待的对话框
+		var urlArr = url.split('/');
+		console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', tempData);
+		var tempStr = JSON.stringify(tempData).replace(/\\/g, "");
+		console.log('tempStr:' + tempStr);
+		jQAjaxPost(url, tempStr, callback);
+	});
+}
 //修改数组，改变格式
 var arrayToStr1 = function(array) {
-	if (array == null) {
+	if(array == null) {
 		return '[]'
 	}
 	var tempStr = '';
 	tempStr = array.join(',');
-	tempStr = '['+'' + tempStr+'' + ']';
+	tempStr = '[' + '' + tempStr + '' + ']';
 	return tempStr;
 }
 
@@ -129,19 +132,19 @@ var postDataEncry1 = function(encryData, commonData, flag) {
 	};
 	var arr1 = [];
 	for(var item in commonData) {
-//		if (typeof commonData[item] == Object) {
-//		if (commonData[item] instanceof Array) {
-//			console.log('000');
-//			arr1.push(item + '=' + JSON.stringify(commonData[item])+'');
-//		} else{
-//			console.log('001');
-//			arr1.push(item + '=' + commonData[item]);
-//		}
-		arr1.push(item + '=' + commonData[item]);
+		//		if (typeof commonData[item] == Object) {
+		if(commonData[item] instanceof Array) {
+			console.log('000');
+			arr1.push(item + '=' + JSON.stringify(commonData[item]) + '');
+		} else {
+			console.log('001');
+			arr1.push(item + '=' + commonData[item]);
+		}
+		//		arr1.push(item + '=' + commonData[item]);
 	};
 	//合并数组
 	var signArr = arr0.concat(arr1);
-	console.log('signArr:'+signArr);
+	console.log('signArr:' + signArr);
 	//拼接登录需要的签名
 	var signTemp = signArr.sort().join('&');
 	return signTemp;
@@ -149,12 +152,12 @@ var postDataEncry1 = function(encryData, commonData, flag) {
 
 //修改数组，改变格式
 var arrayToStr = function(array) {
-	if (array == null) {
+	if(array == null) {
 		return '[]'
 	}
 	var tempStr = '';
 	tempStr = array.join('","');
-	tempStr = '['+'"' + tempStr+'"' + ']';
+	tempStr = '[' + '"' + tempStr + '"' + ']';
 	return tempStr;
 }
 
@@ -164,10 +167,10 @@ var arrayToStr = function(array) {
  * @param {Object} data 数据
  * @param {Object} callback 回调
  */
-var xhrPost = function(url, commonData, callback,flag) {
+var xhrPost = function(url, commonData, callback, flag) {
 	checkNewWork(callback);
 	console.log('XHRP-Url:', url);
-//	console.log('XHRP-Data:', commonData);
+	//	console.log('XHRP-Data:', commonData);
 	//拼接登录需要的签名
 	var signTemp = postDataEncry1({}, commonData, 0);
 	console.log('signTemp000:' + signTemp);
@@ -252,16 +255,16 @@ var xhrPost = function(url, commonData, callback,flag) {
 	});
 }
 
-var checkNewWork = function(callback){
+var checkNewWork = function(callback) {
 	if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 		//console.log('没有网络');
 		var data = {
-				RspCode: '404',
-				RspData: '',
-				RspTxt: '网络异常，请检查网络设置！'
-			}
+			RspCode: '404',
+			RspData: '',
+			RspTxt: '网络异常，请检查网络设置！'
+		}
 
-			callback(data);
+		callback(data);
 		return;
 	}
 }
@@ -269,7 +272,7 @@ var checkNewWork = function(callback){
 var jQAjaxPost = function(url, data, callback) {
 	checkNewWork(callback);
 	console.log('jQAP-Url:', url);
-	console.log('jQAP-Data:', data);
+	console.log('jQAP-Data:' + data);
 	jQuery.ajax({
 		url: url,
 		type: "POST",
@@ -280,7 +283,7 @@ var jQAjaxPost = function(url, data, callback) {
 		async: true,
 		success: function(success_data) { //请求成功的回调
 			console.log('jQAP-Success:', success_data);
-			if (success_data.RspCode == 6) {//令牌过期
+			if(success_data.RspCode == 6) { //令牌过期
 				//续订令牌
 				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -291,7 +294,7 @@ var jQAjaxPost = function(url, data, callback) {
 					utoken: personal.utoken,
 					appid: publicParameter.appid,
 					schid: personal.schid,
-					utp:personal.utp,
+					utp: personal.utp,
 					utname: personal.utname
 				};
 				//令牌续订
@@ -299,19 +302,19 @@ var jQAjaxPost = function(url, data, callback) {
 					if(data1.RspCode == 0) {
 						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 						tempInfo00.utoken = data1.RspData;
-						store.set(window.storageKeyName.PERSONALINFO,tempInfo00);
+						store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
 						var urlArr = url.split('/');
 						var tempData = JSON.parse(data);
 						tempData.utoken = data1.RspData;
 						delete tempData.sign;
-						console.log('urlArr:'+urlArr[urlArr.length - 1]);
-						console.log('data:'+JSON.stringify(tempData));
+						console.log('urlArr:' + urlArr[urlArr.length - 1]);
+						console.log('data:' + JSON.stringify(tempData));
 						postDataEncry(urlArr[urlArr.length - 1], {}, tempData, 0, function(data2) {
 							callback(data2);
 						});
-					} 
+					}
 				});
-			} else{
+			} else {
 				callback(success_data);
 			}
 		},
@@ -328,22 +331,22 @@ var jQAjaxPost = function(url, data, callback) {
 	});
 }
 
-var tempPro = function(url,data0, callback) {
+var tempPro = function(url, data0, callback) {
 	checkNewWork(callback);
 	console.log('data0:' + JSON.stringify(data0));
 	var xhr = new XMLHttpRequest();
-		xhr.open("post", url, true);
-		xhr.timeout = 10000; //10秒超时
-		xhr.contentType = 'application/json;';
-		xhr.onload = function(e) {
-			console.log("XHRP:onload:", JSON.stringify(e));
-			console.log('this.readyState:', this.readyState);
-			console.log('this.status', this.status);
-			if(this.readyState === 4 && this.status === 200) {
-				var urlArr = url.split('/');
-				var success_data = JSON.parse(this.responseText);
-				console.log('XHRP-Success:', JSON.stringify(success_data));
-				if(success_data.RspCode == 10) { //令牌过期
+	xhr.open("post", url, true);
+	xhr.timeout = 10000; //10秒超时
+	xhr.contentType = 'application/json;';
+	xhr.onload = function(e) {
+		console.log("XHRP:onload:", JSON.stringify(e));
+		console.log('this.readyState:', this.readyState);
+		console.log('this.status', this.status);
+		if(this.readyState === 4 && this.status === 200) {
+			var urlArr = url.split('/');
+			var success_data = JSON.parse(this.responseText);
+			console.log('XHRP-Success:', JSON.stringify(success_data));
+			if(success_data.RspCode == 10) { //令牌过期
 				//续订令牌
 				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -373,49 +376,49 @@ var tempPro = function(url,data0, callback) {
 			} else {
 				callback(success_data);
 			}
-			} else {
-				callback({
-					RspCode: 404,
-					RspData: null,
-					RspTxt: "网络连接失败,请重新尝试一下"
-				});
-			}
+		} else {
+			callback({
+				RspCode: 404,
+				RspData: null,
+				RspTxt: "网络连接失败,请重新尝试一下"
+			});
 		}
-		xhr.ontimeout = function(e) {
-			console.log("XHRP:ontimeout222:", e);
-			callback({
-				RspCode: 404,
-				RspData: null,
-				RspTxt: "网络连接失败,请重新尝试一下"
-			});
-		};
-		xhr.onerror = function(e) {
-			console.log("XHRP:onerror111:", e);
-			callback({
-				RspCode: 404,
-				RspData: null,
-				RspTxt: "网络连接失败,请重新尝试一下"
-			});
-		};
-		xhr.send(JSON.stringify(data0));
+	}
+	xhr.ontimeout = function(e) {
+		console.log("XHRP:ontimeout222:", e);
+		callback({
+			RspCode: 404,
+			RspData: null,
+			RspTxt: "网络连接失败,请重新尝试一下"
+		});
+	};
+	xhr.onerror = function(e) {
+		console.log("XHRP:onerror111:", e);
+		callback({
+			RspCode: 404,
+			RspData: null,
+			RspTxt: "网络连接失败,请重新尝试一下"
+		});
+	};
+	xhr.send(JSON.stringify(data0));
 }
 //1.绑定
 var bindPro = function(data0, callback) {
 	var url = 'http://jbyj.jiaobaowang.net/GeTuiPushServer/bind';
-	tempPro(url,data0, callback);
-//	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
-//	data0 = extendParameter(data0);
-//	xhrPost('http://jbyj.jiaobaowang.net/GeTuiPushServer/bind', data0, callback);
+	tempPro(url, data0, callback);
+	//	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
+	//	data0 = extendParameter(data0);
+	//	xhrPost('http://jbyj.jiaobaowang.net/GeTuiPushServer/bind', data0, callback);
 
 }
 
 //1.解绑
 var unbindPro = function(data0, callback) {
-//	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
-//	data0 = extendParameter(data0);
-//	xhrPost('http://jbyj.jiaobaowang.net/GeTuiPushServer/unbind', data0, callback);
+	//	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
+	//	data0 = extendParameter(data0);
+	//	xhrPost('http://jbyj.jiaobaowang.net/GeTuiPushServer/unbind', data0, callback);
 	var url = 'http://jbyj.jiaobaowang.net/GeTuiPushServer/unbind';
-	tempPro(url,data0, callback);
+	tempPro(url, data0, callback);
 }
 
 //合并参数
