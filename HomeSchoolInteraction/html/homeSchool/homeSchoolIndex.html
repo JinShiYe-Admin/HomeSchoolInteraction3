@@ -194,6 +194,40 @@
 			//							left: '-70%'
 			//						});
 			mui.plusReady(function() {
+				if(mui.os.android){
+					var info = plus.push.getClientInfo();
+					//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
+					//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
+					//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
+					//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
+					plus.push.addEventListener( "receive", function( msg ) {
+							//放置安卓角标
+							var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+							var context = plus.android.runtimeMainActivity();
+							ShortcutBadger.applyCount(context, 1);
+	//						console.log('msg.title========'+JSON.stringify(msg))
+							//设置通知栏消息
+						    var options = {cover:false,sound:'system'};
+						    plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
+	
+				    } ,false);
+					plus.push.addEventListener( "click", function ( msg ) {
+						//清空app角标
+						 var context = plus.android.runtimeMainActivity();
+						 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+						 ShortcutBadger.removeCount(context);
+	//					console.log('msg:'+JSON.stringify(msg))
+						console.log('appname:'+msg.title)
+						console.log('title:'+msg.content)
+						console.log('body:'+JSON.stringify(msg.payload))
+						console.log('body.title:'+JSON.parse(msg.payload).title)
+						console.log('body.content:'+JSON.parse(msg.payload).content)
+						console.log('body.payload:'+JSON.parse(msg.payload).payload)
+					} ,false); 
+					
+				}
+				
+				
 				//安卓的连续点击两次退出程序
 //				alert('Hbuildr版本：8.8.3，运行版本:'+plus.runtime.version)
 				var backButtonPress = 0;
@@ -534,6 +568,21 @@
 			slider.slider({
 				interval: 5000
 			});
+			
+			if(mui.os.android){
+				//监听收到通知后，没通过标题栏而是点击app图标进入app的事件，官方用语叫：应用切换到前台运行事件 
+				document.addEventListener("plusready", onPlusReady, false); 
+				function onPlusReady(){
+					document.addEventListener("resume", onAppReume, false);
+				}
+				function onAppReume(){
+					console.log("Application foreground!");
+					//清空app角标
+					 var context = plus.android.runtimeMainActivity();
+					 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+					 ShortcutBadger.removeCount(context);
+				}
+			}
 		</script>
 	</body>
 
