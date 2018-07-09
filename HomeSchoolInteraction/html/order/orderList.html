@@ -78,17 +78,17 @@
 					<ul class="mui-table-view">
 						<li v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 							<a href="javascript:;">
-								<img class="mui-media-object mui-pull-left" src='../../img/login/headImg.png' style="width: 90px;height:90px;">
+								<img class="mui-media-object mui-pull-left" :src=item.busimg style="width: 90px;height:90px;">
 								<div class="mui-media-body">
 									<p class='mui-ellipsis-title'>{{item.cnname}}</p>
 									<p class='mui-ellipsis'>{{item.busnote}}</p>
-									<div v-if="item.orderFlag == 0" style="margin-top: 5px;">
-										<p class="ul-p" style="color:#00CFBD">{{item.feecode}}元/{{item.busmonth}}月</p>
-										<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
+									<div v-if="item.orderFlag==1" style="margin-top: 5px;">
+										<p class="ul-p">结束时间：{{item.etime}}</p>
+										<button class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
 									</div>
 									<div v-else style="margin-top: 5px;">
-										<p class="ul-p">结束时间：{{item.endTime}}</p>
-										<button class="ul-btn" class="mui-btn mui-btn-mini">套餐续费</button>
+										<p class="ul-p" style="color:#00CFBD">{{item.feecode}}元/{{item.busmonth}}月</p>
+										<button class="ul-btn" class="mui-btn mui-btn-mini">立即订购</button>
 									</div>
 								</div>
 							</a>
@@ -157,7 +157,7 @@
 				}
 			});
 
-			//获取套餐表
+			//3.12.获取套餐表
 			function getOrderList() {
 				var enData1 = {};
 				//不需要加密的数据
@@ -178,6 +178,7 @@
 						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
 							var tempModel = data1.RspData.sysbus[i];
 							tempModel.orderFlag = 0;
+							tempModel.busimg = setImg(tempModel.busimg);
 						}
 						orders.orderList = [].concat(data1.RspData.sysbus);
 						//用户已订购套餐及功能扩展栏目
@@ -187,7 +188,7 @@
 					}
 				});
 			}
-			//用户已订购套餐及功能扩展栏目
+			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
 				var enData1 = {};
 				//不需要加密的数据
@@ -204,7 +205,23 @@
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-						//						orders.orderList = [].concat(data1.RspData.sysbus);
+						if(data1.RspData.userbus) {
+							//循环找到对应的套餐代码数据，合并
+							for(var i = 0; i < orders.orderList.length; i++) {
+								var orderModel = orders.orderList[i];
+								console.log('orderModel.serviceid:' + orderModel.serviceid);
+								for(var a = 0; a < data1.RspData.userbus.length; a++) {
+									var userBusModel = data1.RspData.userbus[a];
+									console.log('userBusModel.servid:' + userBusModel.servid);
+									if(orderModel.serviceid == userBusModel.servid) {
+										console.log('hebing');
+										orderModel = $.extend(orderModel, userBusModel);
+										orderModel.orderFlag = 1;
+									}
+								}
+							}
+							console.log('GetUserBusFunc合并后:' + JSON.stringify(orders.orderList));
+						}
 					} else {
 						mui.toast(data1.RspTxt);
 					}

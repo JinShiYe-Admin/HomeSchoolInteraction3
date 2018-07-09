@@ -71,6 +71,7 @@ var events = (function(mod) {
 		var re = new RegExp(regu);
 		return re.test(str);
 	}
+
 	/**
 	 * 打开新界面
 	 * @param {Object} targetPage 目标界面
@@ -632,17 +633,17 @@ var events = (function(mod) {
 	 */
 	mod.readyToPage = function(isReady, url, lisetener, data) {
 		console.log("是否已准备变形：" + isReady);
-//		if(isReady) {
-			//console.log("要传递的数据：" + JSON.stringify(data));
-			setTimeout(function() {
-				mod.fireToPageWithData(url, lisetener, data);
-			}, 500)
-			
-//		} else {
-//			setTimeout(function() {
-//				mod.readyToPage(isReady, url, lisetener, data);
-//			}, 500)
-//		}
+		//		if(isReady) {
+		//console.log("要传递的数据：" + JSON.stringify(data));
+		setTimeout(function() {
+			mod.fireToPageWithData(url, lisetener, data);
+		}, 500)
+
+		//		} else {
+		//			setTimeout(function() {
+		//				mod.readyToPage(isReady, url, lisetener, data);
+		//			}, 500)
+		//		}
 	}
 
 	/**
