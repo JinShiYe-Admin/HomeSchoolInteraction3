@@ -56,6 +56,28 @@ var postDataEncry = function(url, encryData, commonData, flag, callback) {
 	var tempUrl = window.storageKeyName.INTERFACEGU;
 	url = tempUrl + url;
 	console.log('url:', url);
+	
+	for(var item in commonData) {
+		 
+		if (commonData[item] instanceof Array) {
+			console.log('commonData[item]:'+JSON.stringify(commonData[item]));
+//			var tempArray = [];
+//			for (var i = 0; i < commonData[item].length; i++) {
+//				var tempModel = commonData[item][i];
+//				var temp0 = JSON.stringify(tempModel);
+//				console.log('temp2:'+temp0);
+//				tempArray.push(temp0);
+//			}
+//			var tempStr = arrayToStr1(tempArray);
+//			console.log('tempStr:'+tempStr);
+//			var tempStr1 = tempStr.toString();
+//			console.log('tempStr1:'+tempStr1);
+//			var reg = new RegExp('"','g');
+//			var a = tempStr.replace(reg,'');
+//			console.log('a:'+a);
+			commonData[item] = JSON.stringify(commonData[item]);
+		}
+	};
 	//拼接登录需要的签名
 	var signTemp = postDataEncry1(encryData, commonData, flag);
 	console.log('signTemp000:' + signTemp);
@@ -68,9 +90,19 @@ var postDataEncry = function(url, encryData, commonData, flag, callback) {
 		tempData.sign = sign;
 		// 等待的对话框
 		var urlArr = url.split('/');
-		console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', JSON.stringify(tempData));
+		console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', tempData);
 		jQAjaxPost(url, JSON.stringify(tempData), callback);
 	});
+}
+//修改数组，改变格式
+var arrayToStr1 = function(array) {
+	if (array == null) {
+		return '[]'
+	}
+	var tempStr = '';
+	tempStr = array.join(',');
+	tempStr = '['+'' + tempStr+'' + ']';
+	return tempStr;
 }
 
 //拼接参数
@@ -98,14 +130,15 @@ var postDataEncry1 = function(encryData, commonData, flag) {
 	};
 	var arr1 = [];
 	for(var item in commonData) {
-//		if (typeof commonData[item] == 'string') {
-//			console.log('000');
-//			arr1.push(item + '="' + commonData[item]+'"');
-//		} else{
-//			console.log('001');
-//			arr1.push(item + '=' + commonData[item]);
-//		}
-		arr1.push(item + '=' + commonData[item]);
+//		if (typeof commonData[item] == Object) {
+		if (commonData[item] instanceof Array) {
+			console.log('000');
+			arr1.push(item + '=' + JSON.stringify(commonData[item])+'');
+		} else{
+			console.log('001');
+			arr1.push(item + '=' + commonData[item]);
+		}
+//		arr1.push(item + '=' + commonData[item]);
 	};
 	//合并数组
 	var signArr = arr0.concat(arr1);
