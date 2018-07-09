@@ -444,11 +444,6 @@
 
 			//4.用户订购套餐
 			var UserFeeFunc = function() {
-				signTemp = 'appid=HBuilder&dnote=11&feem=0&frmtype=APP自订&funclist=[{"fcode":"sdfd2","itemcode":"prd","itemsons":"2"},{"fcode":"sdfd2","itemcode":"grd","itemsons":"2002,2004"}]&recutname=zhao123&servid=100003&servm=12&uid=15288857367&utoken=RaguplSYVc/d/71OJ2aorLVP0Iw=&uuid=D68E780E-EFD2-4AAC-BA29-ED64AF0EDD7A';
-				//生成签名，返回值sign则为签名
-				signHmacSHA1.sign(signTemp, 'jsy309', function(sign) {
-					console.log('sign:' + sign);
-				});
 				//循环得到附加信息
 				var funcArray = [];
 				for(var i = 0; i < orderData.sysfuncList.length; i++) {
@@ -461,6 +456,7 @@
 								itemcode: fextModel.itemcode, //栏目代码
 								itemsons: fextModel.checked //栏目选择子集
 							}
+//							var tempStr = '{"fcode":"'+sysfuncModel.fcode+'","itemcode":"'+fextModel.itemcode+'","itemsons":"'+fextModel.checked+'"}';
 							funcArray.push(tempModel);
 						}
 					}
@@ -478,7 +474,7 @@
 					dnote: '11', //备注
 					recutname: personal.utname, //操作者姓名
 					frmtype: 'APP自订', //操作类型,来自APP代订,PC代订,APP自订,PC自订
-					funclist: funcArray, //订购的扩展参数
+					funclist:'['+ funcArray.join(',')+']', //订购的扩展参数
 					utoken: personal.utoken //用户令牌
 				}
 				console.log('orderData.sysfuncList:' + JSON.stringify(orderData.sysfuncList));
