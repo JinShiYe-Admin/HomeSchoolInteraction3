@@ -202,9 +202,14 @@
 					//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
 					plus.push.addEventListener( "receive", function( msg ) {
 							//放置安卓角标
-							var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-							var context = plus.android.runtimeMainActivity();
-							ShortcutBadger.applyCount(context, 1);
+							try{
+								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+								var context = plus.android.runtimeMainActivity();
+								ShortcutBadger.applyCount(context, 1);
+							}
+							catch(err){
+								console.log('类加载出错：'+err)
+							}
 	//						console.log('msg.title========'+JSON.stringify(msg))
 							//设置通知栏消息
 						    var options = {cover:false,sound:'system'};
@@ -213,9 +218,14 @@
 				    } ,false);
 					plus.push.addEventListener( "click", function ( msg ) {
 						//清空app角标
-						 var context = plus.android.runtimeMainActivity();
-						 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-						 ShortcutBadger.removeCount(context);
+						try{
+							 var context = plus.android.runtimeMainActivity();
+							 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+							 ShortcutBadger.removeCount(context);
+						}
+						catch(err){
+							console.log('类加载出错：'+err)
+						}
 	//					console.log('msg:'+JSON.stringify(msg))
 						console.log('appname:'+msg.title)
 						console.log('title:'+msg.content)
@@ -578,9 +588,15 @@
 				function onAppReume(){
 					console.log("Application foreground!");
 					//清空app角标
-					 var context = plus.android.runtimeMainActivity();
-					 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-					 ShortcutBadger.removeCount(context);
+					try {
+						 var context = plus.android.runtimeMainActivity();
+						 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+						 ShortcutBadger.removeCount(context);
+					}
+					catch(err){
+						console.log('类加载出错：'+err)
+					}
+					
 				}
 			}
 		</script>
