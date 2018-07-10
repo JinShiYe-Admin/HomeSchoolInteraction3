@@ -71,6 +71,27 @@ var events = (function(mod) {
 		var re = new RegExp(regu);
 		return re.test(str);
 	}
+	
+		//短信群发
+	mod.SendSmsForMobiles = function(mobiles,content) {
+		console.log('mobiles:'+mobiles);
+		console.log('content:'+content);
+		var personal = store.get(window.storageKeyName.PERSONALINFO);
+		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+		var enData0 = {};
+		//不需要加密的数据
+		var comData0 = {
+			uuid: publicParameter.uuid, //用户设备号
+			utoken: personal.utoken, //用户令牌
+			content: content, //发送的内容,不超过300汉字
+			mobiles: mobiles, //手机号码组,多个用逗号隔开
+			appid: publicParameter.appid //系统所分配的应用ID
+		}
+		//发送网络请求，data为网络返回值
+		postDataEncry('SendSms', enData0, comData0, 0, function(data) {
+			
+		});
+	}
 
 	/**
 	 * 打开新界面

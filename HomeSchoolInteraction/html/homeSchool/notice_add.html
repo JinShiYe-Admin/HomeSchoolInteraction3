@@ -578,12 +578,14 @@
 				var temp1 = [];
 				var temp2 = [];
 				var temp3 = [];
+				var temp4 = [];
 				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 					var stuModel = addNoticeContent.parentArray[i];
 					temp0.push(stuModel.stuid);
 					temp1.push(stuModel.stuname);
 					temp2.push(stuModel.stuno);
 					temp3.push('');
+					
 				}
 				if(temp0.length == 0) {
 					mui.toast('选择的接收人为空');
@@ -632,8 +634,14 @@
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						addNoticeContent.content = '';
+						if(temp4.length > 0&&addNoticeContent.msgFlag == 1) {
+							var tempMobiles = temp4.join(',').toString();
+							events.SendSmsForMobiles(tempMobiles, addNoticeContent.content);
+						}
 						mui.toast('成功');
-						mui.back();
+						setTimeout(function() {
+							mui.back();
+						}, 1000);
 					} else {
 						document.getElementById("finish").disabled = false;
 						mui.toast(data.RspTxt);
