@@ -304,6 +304,7 @@
 		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/payUtil.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
@@ -333,19 +334,7 @@
 				//套餐功能及扩展栏目
 				getSysBusFunc();
 				// 获取支付通道
-				plus.payment.getChannels(function(channels) {
-					console.log('channels=' + JSON.stringify(channels));
-					for(var i in channels) {
-						var temp = channels[i];
-						if(temp.id == 'alipay') {
-							aliChannel = temp;
-						} else if(temp.id == 'wxpay') {
-							wxChannel = temp;
-						}
-					}
-				}, function(e) {
-					alert("获取支付通道失败：" + e.message);
-				});
+				appPay.getChannels();
 			});
 
 			var orderDetailData = new Vue({
@@ -426,9 +415,13 @@
 						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
 						} else {
-							//							pay('wxpay');
-							//4.用户订购套餐
-							UserFeeFunc();
+							order();
+							//调起支付
+//							appPay.pay(appPay.wxpay,function success(){
+//								UserFeeFunc
+//							},function fail(err){
+//								plus.nativeUI.alert("支付失败：" + err);
+//							});
 						}
 					}
 				},
@@ -443,7 +436,7 @@
 			});
 
 			//4.用户订购套餐
-			var UserFeeFunc = function() {
+			var order = function() {
 				//循环得到附加信息
 				var funcArray = [];
 				for(var i = 0; i < orderData.sysfuncList.length; i++) {
@@ -460,37 +453,19 @@
 						}
 					}
 				}
-				console.log('funcArray:' + JSON.stringify(funcArray));
-				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-				var enData1 = {};
-				var comData1 = {
-					uuid: publicParameter.uuid, //用户设备号
-					appid: publicParameter.appid, //系统所分配的应用ID
-					uid: personal.uid, //用户ID
-					servid: orderDetailData.orderDetail.serviceid, //套餐代码
-					servm: orderData.servm*1, //订购总月数
-					feem: orderData.feem*1, //订购花费
-					dnote: '11', //备注
-					recutname: personal.utname, //操作者姓名
-					frmtype: 'APP自订', //操作类型,来自APP代订,PC代订,APP自订,PC自订
-					funclist:funcArray, //订购的扩展参数
-					utoken: personal.utoken //用户令牌
+				var data={
+					servid:orderDetailData.orderDetail.serviceid,//套餐代码
+					servm:orderData.servm*1, //订购总月数
+					feem:orderData.feem*1,//订购花费
+					funclist:funcArray//订购的扩展参数
 				}
-				console.log('orderData.sysfuncList:' + JSON.stringify(orderData.sysfuncList));
-				console.log('comData0:' + JSON.stringify(comData1));
-				events.showWaiting();
-				//发送网络请求，data为网络返回值----4.用户订购套餐
-				postDataEncry2('UserFee', enData1, comData1, 0, function(data1) {
-					console.log('UserFee:' + JSON.stringify(data1));
-					events.closeWaiting();
-					if(data1.RspCode == 0) {
-						
-					} else {
-						mui.toast(data1.RspTxt);
-					}
+				appPay.UserFeeFunc(data,function success(){
+					mui.toast('套餐订购成功');
+				},function fail(err){
+					mui.toast(err);
 				});
 			}
-
+ 
 			//套餐功能及扩展栏目
 			var getSysBusFunc = function() {
 				var enData1 = {};
@@ -523,92 +498,8 @@
 					}
 				});
 			}
-			//2. 发起支付请求
-			function pay(id) {
-				// 从服务器请求支付订单
-				var PAYSERVER = '';
-				if(id == 'alipay') {
-					PAYSERVER = alipayUrl;
-					channel = aliChannel;
-				} else if(id == 'wxpay') {
-					PAYSERVER = wechatPayUrl;
-					channel = wxChannel;
-				} else {
-					plus.nativeUI.alert("不支持此支付通道！", null, "");
-					return;
-				}
-				console.log('channel', channel);
-				var data0 = {
-					body: orderDetailData.orderDetail.cnname, //商品名称
-					attach: orderDetailData.orderDetail.note, //附加描述,最好填写,以区分
-					uid: personal.uid, //订购的注册账户
-					total_fee: 1, //人民币商品总价,以分为单位
-					goods_tag: orderDetailData.orderDetail.bustype.toString(), //商品标签,商品分类标签,根据实际情况填写
-					product_id: orderDetailData.orderDetail.feecode, //商品代码,根据实际情况填写:如套餐填写套餐编码
-					frmtype: "APP" //订购客户端,发起订购的设备:如PC,APP等
-				}
-				console.log(JSON.stringify(data0));
-				var xhr = new XMLHttpRequest();
-				xhr.open("post", PAYSERVER, true);
-				xhr.timeout = 10000; //10秒超时
-				xhr.contentType = 'application/json;';
-				xhr.onload = function(e) {
-					console.log("XHRP:onload:", JSON.stringify(e));
-					console.log('this.readyState:', this.readyState);
-					console.log('this.status', this.status);
-					if(this.readyState === 4 && this.status === 200) {
-						var data = xhr.responseText;
-						plus.payment.request(channel, data, function(result) {
-							//console.log('result=' + JSON.stringify(result));
-							alert("result=" + JSON.stringify(result));
-							plus.nativeUI.alert("支付成功！", function() {
-								//4.用户订购套餐
-								UserFeeFunc();
-							});
-						}, function(error) {
-							//console.log('error' + JSON.stringify(error));
-							plus.nativeUI.alert("支付失败：" + error.code);
-						});
-					} else {
+			
 
-					}
-				}
-				xhr.ontimeout = function(e) {
-					console.log("XHRP:ontimeout222:", e);
-
-				};
-				xhr.onerror = function(e) {
-					console.log("XHRP:onerror111:", e);
-
-				};
-				xhr.send(JSON.stringify(data0));
-			};
-
-			//主动获取支付结果，14.微信扫码支付结果查询
-			var payResult = function() {
-				var data0 = {
-					out_trade_no: '' //订单编号
-				}
-				var xhr = new XMLHttpRequest();
-				xhr.open("post", window.storageKeyName.SEARCHPAYSESULT, true);
-				xhr.timeout = 10000; //10秒超时
-				xhr.contentType = 'application/json;';
-				xhr.onload = function(e) {
-					if(this.readyState === 4 && this.status === 200) {
-						var data = xhr.responseText;
-
-					} else {
-
-					}
-				}
-				xhr.ontimeout = function(e) {
-					console.log("XHRP:ontimeout222:", e);
-				};
-				xhr.onerror = function(e) {
-					console.log("XHRP:onerror111:", e);
-				};
-				xhr.send(JSON.stringify(data0));
-			}
 		</script>
 	</body>
 
