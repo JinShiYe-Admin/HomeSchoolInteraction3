@@ -19,7 +19,8 @@
 				background: #f2f2f2;
 				padding-top: 7px;
 			}
-			.p-show3{
+			
+			.p-show3 {
 				color: #f96161;
 				font-size: 12px;
 				height: 15px;
@@ -91,14 +92,46 @@
 				color: #00CFBD;
 			}
 			
-			.mui-table-view-cell:after {
-				height: 1px;
-			}
-			
 			.selectUserName {
 				font-size: 14px;
 				color: #666666;
 				padding-top: 12px;
+			}
+			
+			.mui-input-group::before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 10px;
+				height: 0px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+			
+			.mui-input-group .mui-input-row::after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 15px;
+				height: 0px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+			
+			.mui-input-group::after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 0px;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
 			}
 		</style>
 	</head>
@@ -127,31 +160,25 @@
 				<img src="../../img/homeSchool/noData.png" style="width: 200px;" />
 			</div>
 			<div v-else v-cloak class="mui-scroll">
-				<ul class="mui-table-view" style="position: relative;margin-bottom: 100px;">
-				<li class="mui-table-view-cell" v-for="userBusModel in orderList">
-					<a class="userNameclass">
-						{{userBusModel.cname}}
-					</a>
-					<!--<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-radio mui-left">
-							<input name="radio" type="radio">金山中学初一1601班李*芳（男）
-						</li>
-						<li class="mui-table-view-cell mui-radio mui-left">
-							<input name="radio" type="radio">金山中学初一1601班李*芳（男）金山中学初一1601班李*芳（男）
-						</li>
-					</ul>-->
-					<template v-for="stuModel in userStuList ">
-						<li class="mui-table-view-cell mui-radio mui-left selectUserName">
-							<input name="radio" type="radio">{{stuModel.schname}}{{stuModel.grdname}}{{stuModel.clsname}}{{stuModel.stuname}}({{stuModel.sexName}})
-						</li>
-					</template>
-				</li>
-			</ul>
+				<div class="mui-row" style="margin-bottom: 81px;">
+					<div id="" v-for="userBusModel in orderList">
+						<p class="p-show1"></p>
+						<a class="mui-content-padded userNameclass">{{userBusModel.cname}}</a>
+						<form class="mui-input-group" v-for="stuModel in userBusModel.stuList">
+							<div class="mui-input-row mui-radio mui-left" @tap="clickStu(userBusModel,stuModel)">
+								<label class="selectUserName">{{stuModel.schname}}{{stuModel.grdname}}{{stuModel.clsname}}{{stuModel.stuname}}({{stuModel.sexName}})</label>
+								<!--<input name="radio1" type="radio" checked>-->
+								<input v-if="stuModel.selectStu==0" name="radio1" type="radio">
+								<input v-else="" name="radio1" type="radio" checked>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 
 			<nav class="mui-bar mui-bar-tab" style="margin-top: 5px;">
 				<p class="p-show3">*如果没有您要选的学生请联系班主任</p>
-				<p class="weui-btn weui-btn_blue">确定</p>
+				<p @click="sureFunc" class="weui-btn weui-btn_blue">确定</p>
 			</nav>
 		</div>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
@@ -184,8 +211,6 @@
 				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				//4.1.用户已订购套餐及功能扩展栏目
 				getUserBusFunc();
-				//4.6.获取用户手机关联的学生列表
-				getUserMstu();
 				userBusData.peopleMsg = personal;
 			});
 
@@ -194,10 +219,36 @@
 				data: {
 					orderList: [], //已订购的套餐
 					userStuList: [], //关联的学生列表
-					peopleMsg:{}
+					peopleMsg: {}
 				},
 				methods: {
-
+					sureFunc: function() {
+						for(var i = 0; i < userBusData.orderList.length; i++) {
+							var tempStuModel = userBusData.orderList[i];
+							for (var a = 0; a < tempStuModel.stuList.length; a++) {
+								var tempModel = tempStuModel.stuList[a];
+								console.log('tempModel:' + tempModel.selectStu);
+							}
+						}
+					},
+					clickStu:function(userBusModel,stuModel){
+						console.log('stuModel.selectStu:'+stuModel.selectStu);
+						if (stuModel.selectStu ==0) {
+							stuModel.selectStu =1;
+//							for (var i = 0; i < userBusModel.stuList.length; i++) {
+//								var tempUserModel = userBusModel.stuList[i];
+//								console.log('tempUserModel.selectStu:'+tempUserModel.selectStu);
+//								console.log('stuModel.selectStu:'+stuModel.selectStu);
+//								if (tempUserModel.stuid == stuModel.stuid) {
+//									tempUserModel.selectStu =1;
+//								} else{
+//									tempUserModel.selectStu =0;
+//								}
+//							}
+						} else{
+							stuModel.selectStu =0;
+						}
+					}
 				}
 			});
 
@@ -218,9 +269,15 @@
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-						if(data1.RspData.userbus) {
+						if(data1.RspData) {
+							for (var i = 0; i < data1.RspData.userbus.length; i++) {
+								var tempModel = data1.RspData.userbus[i];
+								tempModel.stuList = [];
+							}
 							userBusData.orderList = [].concat(data1.RspData.userbus);
 						}
+						//4.6.获取用户手机关联的学生列表
+						getUserMstu();
 					} else {
 						mui.toast(data1.RspTxt);
 					}
@@ -247,6 +304,7 @@
 						if(data1.RspData.stus) {
 							for(var i = 0; i < data1.RspData.stus.length; i++) {
 								var tempStuModel = data1.RspData.stus[i];
+								tempStuModel.selectStu = 0;
 								if(tempStuModel.sex == 0) {
 									tempStuModel.sexName = '女';
 								} else {
@@ -254,6 +312,12 @@
 								}
 							}
 							userBusData.userStuList = [].concat(data1.RspData.stus);
+							//塞入每个套餐中
+							for (var i = 0; i < userBusData.orderList.length; i++) {
+								var tempModel = userBusData.orderList[i];
+//								tempModel.stuList = data1.RspData.stus.concat();
+								tempModel.stuList = data1.RspData.stus.slice();
+							}
 						}
 					} else {
 						mui.toast(data1.RspTxt);
