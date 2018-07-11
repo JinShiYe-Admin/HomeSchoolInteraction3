@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+	<!--  创建学生账号   -->
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+			
+			.mui-content{
+				background: #FFF;
+			}
+			
+			.line:before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.2);
+				transform: scaleY(.2);
+				background-color: #c8c7cc;
+			}
+			
+			.head-img{
+				width: 50px;
+				height:50px;
+				border-radius: 100%;
+			}
+			
+			.mui-media-body{
+				margin-left: 60px;
+			}
+			
+			.mui-media-body p{
+				color: #000;
+			}
+			
+			.mui-ellipsis-title{
+				font-size: 14px;
+				margin-bottom: 5px;
+			}
+			
+			.row-title{
+				background: #F2F2F2;
+			}
+			
+			.mui-content-padded{
+				margin-left: 15px;
+			}
+			
+			.mui-content-padded-title{
+				font-size: 14px;
+				color: #ff9900;
+				margin:10px 0 10px 15px;
+			}
+			
+			.mui-table-view-cell{
+				font-size: 14px;
+			}
+			
+			input[disabled]{
+				color:#000;opacity:1;
+			}
+			
+			input::-webkit-input-placeholder {
+		         font-size: 14px;
+       	    }
+       	    
+       	    .mui-input-row label {
+       	    	padding:11px 0 11px 10px !important;
+			    width: 23%;
+			    font-size: 14px;
+			    line-height: 1.4;
+			}
+		    .mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			    float: left;
+			    width: 53%;
+			    font-size: 14px;
+			    padding: 10px 0;
+			}
+			
+			.xggl-btn,.jccf-btn{
+				background: transparent !important;
+				color:#00CFBD !important;
+				border: 1px solid #00CFBD !important;
+				height: 25px !important; 
+				width: 20% !important; 
+				font-size: 12px !important;
+				padding: 5px 10px !important;
+				margin-top: 8px !important;
+				right: 2% !important;
+			}
+		    
+		    .zhycz_div{
+		    	vertical-align: middle;
+		    	float: right;
+		    	background: transparent !important;
+				color:#FE6D6E !important;
+				font-size: 11px !important;
+				border: 0 !important;
+				height: 25px !important; 
+				width: 23% !important; 
+				padding: 5px 5px !important;
+				margin-top: 6px !important;
+				right: 2% !important;
+		    }
+		    
+		    .bcz-img {
+		    	vertical-align: middle;
+			    width: 12px;
+			    height: 12px;
+			}
+		    .mui-icon-clear{
+		    	display: none;
+		    }
+		    
+		    .bottom-row {
+				position: fixed;
+				bottom: 0;
+				z-index: 3;
+				background: #FFFFFF;
+				width: 100%;
+				height: 50px;
+			}
+			
+			.pay-btn {
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
+				border-radius: 0;
+			}
+		    
+		    /*div row line*/ 
+		    .mui-input-group:before {
+		    	left: 15px;
+			    transform: scaleY(.3);
+			}
+		    .mui-input-group:after {
+		    	left: 15px;
+			    transform: scaleY(.0);
+			}
+			.mui-input-row:after {
+				left: 15px;
+			    transform: scaleY(.3);
+			}
+			.mui-table-view:before {
+			    left: 15px;
+			    transform: scaleY(.3);
+			}
+			.mui-table-view:after {
+			    transform: scaleY(.3);
+			}
+			/*ul line*/	
+		    .mui-table-view-cell:after {
+			    height: 0px;
+			}
+			
+		     /*input radio*/
+			.mui-radio input[type=radio]:before {
+				font-size: 20px;
+				line-height: 1.4;
+			    content: '\e411';
+			}
+			
+			.mui-checkbox input[type=checkbox]:checked:before, .mui-radio input[type=radio]:checked:before {
+				font-size: 20px;
+				line-height: 1.5;
+			    color: #00CFBD;
+			}
+			
+			.mui-table-view-cell.mui-checkbox.mui-left, .mui-table-view-cell.mui-radio.mui-left {
+				margin-left: 15px;
+			    padding-left: 50px;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<h1 class="mui-title" style="color: white;">创建学生账号</h1>
+		</header>
+		<div id='scroll' class="mui-content">
+			<div class="mui-row">
+				<h5 class="mui-content-padded">家长信息</h5>
+				<div class="mui-input-row line">
+					<div style="margin: 10px 0 0 15px;">
+						<img class="mui-media-object mui-pull-left head-img" src="../../img/homeSchool/u296.png">
+						<div class="mui-media-body">
+							<p class='mui-ellipsis-title'>王家长</p>
+							<p class='mui-ellipsis'>132****2233</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-row row-title" style="height: 34px;">
+				<h5 class="mui-content-padded-title">套餐关联的学生信息</h5>
+			</div>
+			<div id="info">
+				<!--TODO v-for item in list-->
+				<div class="mui-row" style="margin-top: 10px;">
+					<h5 class="mui-content-padded">套餐A</h5>
+					<form id="form123" class="mui-input-group">
+						<div class="mui-input-row">
+							<label>关联学生</label>
+							<input  name='glxs' type="text" class="mui-input-clear stu-name" value="金山中学初一1601班李*芳（男）" disabled/>
+							<button  type="button" class="mui-btn mui-btn-block mui-btn-primary xggl-btn" @click="modifyStu($event)">修改关联</button>
+						</div>
+						<div class="mui-input-row">
+							<label>账号</label>
+							<input type="text" class="mui-input-clear" placeholder="请输入学生账号" value="1234567891234567891234567" v-on:input='inputFunc($event)'/>
+							<button  v-show='checkedShow' @click="checkeAccount($event)" type="button" class="mui-btn mui-btn-block mui-btn-primary jccf-btn">检查</button>
+							<div  v-show='warningShow'  class="zhycz_div"><img src="../../img/homeSchool/warning.png" class="bcz-img"/> 账号已存在</div>
+						</div> 
+						<!--<div class="mui-input-row">
+							<label>确认密码</label>
+							<input id="confirmPassword" name='confirmPassword' type="password" class="mui-input-clear" placeholder="请输入确认密码" />
+						</div>-->
+					</form>
+					<ul class="mui-table-view" style="display: none;">
+						<li class="mui-table-view-cell mui-radio mui-left" @click='checkStu($event)'>
+							<input name="radio" type="radio">金山中学初一1601班李*芳（男）
+						</li>
+						<li class="mui-table-view-cell mui-radio mui-left" @click='checkStu($event)'>
+							<input name="radio" type="radio">金正恩金正恩金正恩金正恩金正恩金正恩金正恩
+						</li>
+					</ul>
+				</div>
+				<!--<div class="mui-row" style="margin-top: 10px;">
+					<h5 class="mui-content-padded">套餐C</h5>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-radio mui-left">
+							<input name="radio" type="radio">金山中学初一1601班李*芳（男）
+						</li>
+						<li class="mui-table-view-cell mui-radio mui-left">
+							<input name="radio" type="radio">金山中学初一1601班李*芳（男）金山中学初一1601班李*芳（男）
+						</li>
+					</ul>
+				</div>-->
+				<div class="mui-row bottom-row">
+					<button class="mui-btn mui-btn-primary mui-col-xs-12 mui-col-sm-12 pay-btn" @click="payAction()" :disabled="isDisabled">确&emsp;定</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script>
+			var personal;
+			var publicParameter;
+			var info ;
+			mui.plusReady(function() {
+				//获取个人信息
+				personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				info =new Vue({ 
+					el:'#info',
+					data:{
+						checkedShow:true,
+						warningShow:false,
+						isDisabled:true
+					},
+					methods:{
+						checkeAccount:function(ev){//检查账号是否重复
+							var value=$(ev.target).parent().find('input').val();
+							if(!value==''){//输入框有值
+								//TODO 检查账号是否重复
+								this.checkedShow=false
+								this.warningShow=true
+							}
+						},
+						inputFunc:function(ev){//input输入框事件
+							var value=$(ev.target).val();
+							if(value==''){
+								this.checkedShow=true
+								this.warningShow=false
+							}
+						},
+						modifyStu:function(ev){//修改关联
+							var btnArray = ['取消', '确认'];
+							mui.confirm('您确定要修改关联学生吗？', '校讯通', btnArray, function(e) {
+								if (e.index == 1) {
+									var a =$(ev.target).parent().parent().find('input[type=text]');
+									$(a).each(function(){//清空form 的值
+										$(this).val(''); 
+									})
+									$(ev.target).parent().parent().css('display','none');
+									$(ev.target).parent().parent().parent().find('ul').css('display','inherit');
+									this.isDisabled=true;
+								} 
+							})
+						},
+						checkStu:function(ev){//li点击选中学生
+							var text=$(ev.target).text().trim();
+							var btnArray = ['取消', '确认'];
+							mui.confirm('您确定要关联	'+text+'	吗？', '校讯通', btnArray, function(e) {
+								if (e.index == 1) {
+									$(ev.target).parent().css('display','none');
+									$(ev.target).parent().parent().find('form').css('display','inherit');
+									$(ev.target).parent().parent().find('form').find('input[class="mui-input-clear stu-name"]').val(text)
+									this.isDisabled=false;
+								} 
+							})
+						}
+					} 
+				});
+			});
+		</script>
+	</body>
+
+</html>

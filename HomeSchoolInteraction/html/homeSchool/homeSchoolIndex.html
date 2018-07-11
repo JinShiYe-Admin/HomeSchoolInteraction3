@@ -210,10 +210,14 @@
 							catch(err){
 								console.log('类加载出错：'+err)
 							}
-	//						console.log('msg.title========'+JSON.stringify(msg))
+							console.log('msg.title========'+JSON.stringify(msg))
 							//设置通知栏消息
 						    var options = {cover:false,sound:'system'};
-						    plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
+						    if(JSON.parse(msg.content).body==undefined){//非标准json格式
+						    	plus.push.createMessage(msg.content, msg.content, options );
+						    }else{//使用封装的标准json格式
+						    	plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
+						    }
 	
 				    } ,false);
 					plus.push.addEventListener( "click", function ( msg ) {
