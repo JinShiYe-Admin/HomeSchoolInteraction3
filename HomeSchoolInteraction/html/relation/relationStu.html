@@ -161,13 +161,12 @@
 			</div>
 			<div v-else v-cloak class="mui-scroll">
 				<div class="mui-row" style="margin-bottom: 81px;">
-					<div id="" v-for="userBusModel in orderList">
+					<div id="" v-for="(userBusModel,index) in orderList">
 						<p class="p-show1"></p>
 						<a class="mui-content-padded userNameclass">{{userBusModel.cname}}</a>
-						<form class="mui-input-group" v-for="stuModel in userBusModel.stuList">
-							<div class="mui-input-row mui-radio mui-left" @tap="clickStu(userBusModel,stuModel)">
+						<form class="mui-input-group" v-for="(stuModel,index1) in userBusModel.stuList">
+							<div class="mui-input-row mui-radio mui-left" @tap.stop="clickStu(userBusModel,stuModel)">
 								<label class="selectUserName">{{stuModel.schname}}{{stuModel.grdname}}{{stuModel.clsname}}{{stuModel.stuname}}({{stuModel.sexName}})</label>
-								<!--<input name="radio1" type="radio" checked>-->
 								<input v-if="stuModel.selectStu==0" name="radio1" type="radio">
 								<input v-else="" name="radio1" type="radio" checked>
 							</div>
@@ -214,6 +213,14 @@
 				userBusData.peopleMsg = personal;
 			});
 
+			function copyObj(obj) {
+				let res = {}
+				for(var key in obj) {
+					res[key] = obj[key]
+				}
+				return res
+			}
+
 			var userBusData = new Vue({
 				el: '#userBusData',
 				data: {
@@ -223,31 +230,31 @@
 				},
 				methods: {
 					sureFunc: function() {
-						for(var i = 0; i < userBusData.orderList.length; i++) {
-							var tempStuModel = userBusData.orderList[i];
-							for (var a = 0; a < tempStuModel.stuList.length; a++) {
-								var tempModel = tempStuModel.stuList[a];
-								console.log('tempModel:' + tempModel.selectStu);
-							}
-						}
+						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
+						//						for(var i = 0; i < userBusData.orderList.length; i++) {
+						//							var tempStuModel = userBusData.orderList[i];
+						//							for(var a = 0; a < tempStuModel.stuList.length; a++) {
+						//								var tempModel = tempStuModel.stuList[a];
+						//								console.log('tempModel:' + tempModel.selectStu);
+						//							}
+						//						}
 					},
-					clickStu:function(userBusModel,stuModel){
-						console.log('stuModel.selectStu:'+stuModel.selectStu);
-						if (stuModel.selectStu ==0) {
-							stuModel.selectStu =1;
-//							for (var i = 0; i < userBusModel.stuList.length; i++) {
-//								var tempUserModel = userBusModel.stuList[i];
-//								console.log('tempUserModel.selectStu:'+tempUserModel.selectStu);
-//								console.log('stuModel.selectStu:'+stuModel.selectStu);
-//								if (tempUserModel.stuid == stuModel.stuid) {
-//									tempUserModel.selectStu =1;
-//								} else{
-//									tempUserModel.selectStu =0;
-//								}
-//							}
-						} else{
-							stuModel.selectStu =0;
+					clickStu: function(userBusModel, stuModel) {
+						if(stuModel.selectStu == 0) {
+							for(var i = 0; i < userBusModel.stuList.length; i++) {
+								var tempUserModel = userBusModel.stuList[i];
+								console.log('tempUserModel.selectStu:' + tempUserModel.selectStu);
+								console.log('stuModel.selectStu:' + stuModel.selectStu);
+								if(tempUserModel.stuid == stuModel.stuid) {
+									tempUserModel.selectStu = 1;
+								} else {
+									tempUserModel.selectStu = 0;
+								}
+							}
+						} else {
+							stuModel.selectStu = 0;
 						}
+						console.log('userBusData.orderList11:' + JSON.stringify(userBusData.orderList));
 					}
 				}
 			});
@@ -270,7 +277,7 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
-							for (var i = 0; i < data1.RspData.userbus.length; i++) {
+							for(var i = 0; i < data1.RspData.userbus.length; i++) {
 								var tempModel = data1.RspData.userbus[i];
 								tempModel.stuList = [];
 							}
@@ -313,10 +320,11 @@
 							}
 							userBusData.userStuList = [].concat(data1.RspData.stus);
 							//塞入每个套餐中
-							for (var i = 0; i < userBusData.orderList.length; i++) {
+							for(var i = 0; i < userBusData.orderList.length; i++) {
+								var tempArray = data1.RspData.stus.concat();
 								var tempModel = userBusData.orderList[i];
-//								tempModel.stuList = data1.RspData.stus.concat();
-								tempModel.stuList = data1.RspData.stus.slice();
+								//vue深拷贝
+								tempModel.stuList = JSON.parse(JSON.stringify(tempArray));
 							}
 						}
 					} else {
