@@ -204,6 +204,11 @@
 				}
 			}
 			
+			window.addEventListener('refresh', function(data) {
+				console.log(data.detail.newEtime);
+				renew.curPageData.etime=data.detail.newEtime;
+			});		
+			
 			var  renew;
 			var curPageData;
 			mui.plusReady(function() {
