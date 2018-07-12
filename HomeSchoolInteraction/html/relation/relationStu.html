@@ -231,13 +231,22 @@
 				methods: {
 					sureFunc: function() {
 						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
-						//						for(var i = 0; i < userBusData.orderList.length; i++) {
-						//							var tempStuModel = userBusData.orderList[i];
-						//							for(var a = 0; a < tempStuModel.stuList.length; a++) {
-						//								var tempModel = tempStuModel.stuList[a];
-						//								console.log('tempModel:' + tempModel.selectStu);
-						//							}
-						//						}
+						var tempSelectFlag = 0;
+						for(var i = 0; i < userBusData.orderList.length; i++) {
+							var tempStuModel = userBusData.orderList[i];
+							for(var a = 0; a < tempStuModel.stuList.length; a++) {
+								var tempModel = tempStuModel.stuList[a];
+								console.log('tempModel:' + tempModel.selectStu);
+								if (tempModel.selectStu == 1) {
+									tempSelectFlag++;
+								}
+							}
+						}
+						if (tempSelectFlag == 0) {
+							mui.toast('请给套餐选择对应的学生');
+						}else{
+							
+						}
 					},
 					clickStu: function(userBusModel, stuModel) {
 						if(stuModel.selectStu == 0) {
@@ -270,7 +279,6 @@
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				events.showWaiting();
-				//获取验证码
 				//发送网络请求，data为网络返回值
 				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
@@ -302,7 +310,6 @@
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				events.showWaiting();
-				//获取验证码
 				//发送网络请求，data为网络返回值
 				postDataEncry('UserMstu', enData1, comData1, 0, function(data1) {
 					console.log('UserMstu:' + JSON.stringify(data1));
@@ -327,6 +334,31 @@
 								tempModel.stuList = JSON.parse(JSON.stringify(tempArray));
 							}
 						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+			
+			//4.7.关联用户与学生
+			function getUnUserStu(stuid,forid) {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utid: personal.utid, //用户ID
+					stuid: stuid, //学生ID
+					forid: forid, //订购记录ID,用户订购套餐记录ID
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('UnUserStu', enData1, comData1, 0, function(data1) {
+					console.log('UnUserStu:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						
 					} else {
 						mui.toast(data1.RspTxt);
 					}
