@@ -388,17 +388,9 @@
 
 			//年月日加减
 			function addMonths(date,months){
-				console.log("date======"+date)
 		       var d=new Date(date);
-		       var year=Math.floor((d.getMonth()*1+months*1)/12);
-		       console.log("year======"+year)
-		       console.log('d.getMonth()===='+d.getMonth())
-		       console.log(parseInt(d.getMonth())+parseInt(months))
-		       var y=d.getFullYear()+year*1; 
-		       console.log("d.getFullYear()==="+d.getFullYear())
-		       console.log("y======"+y)
 		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
-		       
+		       var y=d.getFullYear()
 		       var m=d.getMonth()+1; 
 		       var d=d.getDate(); 
 		       return getNowFormatDate(y,m,d); 
@@ -406,7 +398,6 @@
 
 			//获取当前日期
 			function getNowFormatDate(years,months,days) {
-				console.log("years======"+years+",months======"+months+",days======"+days)
 				  var date = new Date();
 				  var seperator1 = ".";
 				  var year ='';
