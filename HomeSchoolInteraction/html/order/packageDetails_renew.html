@@ -60,6 +60,7 @@
 				vertical-align: middle;
 				float: right;
 				height: 24px;
+				margin-top: -2px;
 				padding: 2px 12px;
 				background: #33CCFF;
 				color: #fff;
@@ -73,7 +74,7 @@
 			}
 			
 			.ul-p-right{
-				width: 15%;
+				width: 25%;
 				display: inline;
 				color: #00CFBD;
 				float: right;
@@ -128,13 +129,13 @@
 		<div id="scroll"  class="mui-content">
 	    	<div id='renews'>
 	    		<div class="mui-row title-info">
-	    			 <img v-cloak  class="head-portrait" :src=imgUrl />
-	    			 <p v-cloak class="user-title">{{title}}</p>
-	    			 <p v-cloak class="user-title-body">{{titleBody}}</p>
+	    			 <img v-cloak  class="head-portrait" :src=curPageData.busimg />
+	    			 <p v-cloak class="user-title">{{curPageData.cname}}</p>
+	    			 <p v-cloak class="user-title-body">{{curPageData.busnote}}</p>
 	    			 <div v-cloak class="user-title-footer">
-	    			 	<p class="ul-p">结束时间：{{endTime}}</p>
+	    			 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
 					 	<button class="ul-btn" class="mui-btn mui-btn-mini" onclick="packageRenew()">套餐续费</button>
-					 	<p class="ul-p-right">{{expenses}}</p>
+					 	<p class="ul-p-right">{{curPageData.feecode}}元/{{curPageData.busmonth}}月</p>
 	    			 </div>
 	    		</div>
 	    		<div class="mui-row ul-list-title">
@@ -229,13 +230,7 @@
 								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
 								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
 							]
-							,imgUrl:curPageData.imgUrl
-							,title:curPageData.title
-							,titleBody:curPageData.titleBody
-							,expenses:curPageData.expenses
-							,endTime:curPageData.endTime
-							,orderState:curPageData.orderState
-							
+							,curPageData:curPageData
 						}
 					});
 			});

@@ -103,12 +103,13 @@ var appPay = (function(mod) {
 	
 	/**
 	 * 订购（续订）套餐公共方法
+	 * @param {Object} action 接口名称
 	 * @param {Object} data 参数数组
 	 * @param {Object} success 成功回调
 	 * @param {Object} fail 失败回调
 	 */
 	
-	mod.UserFeeFunc = function(data,success,fail) {
+	mod.UserFeeFunc = function(action,data,success,fail) {
 		console.log('data:' + JSON.stringify(data));
 		var enData1 = {};
 		var comData = {
@@ -124,11 +125,11 @@ var appPay = (function(mod) {
 		console.log('comData1:' + JSON.stringify(comData1));
 		events.showWaiting();
 		//发送网络请求，data为网络返回值----4.用户订购套餐
-		postDataEncry2('UserFee', enData1, comData1, 0, function(data1) {
+		postDataEncry2(action, enData1, comData1, 0, function(data1) {
 			console.log('UserFee:' + JSON.stringify(data1));
 			events.closeWaiting();
 			if(data1.RspCode == 0) {
-				success;
+				success();
 			} else {
 				fail(data1.RspTxt)
 //				mui.toast(data1.RspTxt);
