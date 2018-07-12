@@ -21,47 +21,87 @@
 	</head>
 
 	<body>
-		<nav class="mui-bar mui-bar-tab">
-				<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homeSchool/homeSchoolIndex.html">
-					<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
-					<span class="mui-tab-label">家校互动</span>
-				</a>
-				<a id="kejiao" class="mui-tab-item " href="../../html/sciedu/sciedu_home.html">
-				<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
-					<span class="mui-icon iconfont icon-jiaoyu"></span>
-					<span class="mui-tab-label">科教活动</span>
-				</a>
-				<a id="kecheng" class="mui-tab-item" href="../../html/Course/courseIndex.html">
-					<span class="mui-icon iconfont icon-kecheng"></span>
-					<span class="mui-tab-label">课程</span>
-				</a>
-				<a id="zhuxue" class="mui-tab-item" href="../../html/helpStudy/helpStudyIndex.html">
-					<span class="mui-icon iconfont icon-iconfontbangzhu"></span>
-					<span class="mui-tab-label">助学</span>
-				</a>
-		</nav>
+		<div id="nav">
+			<nav class="mui-bar mui-bar-tab">
+					<a id="defaultTab" class="mui-tab-item" v-if='identify==2 && isBd==false' :href=hrefRela>
+						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
+						<span class="mui-tab-label">家校互动</span>
+					</a>
+					<a id="defaultTab" class="mui-tab-item mui-active" v-else :href=hrefHome>
+						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
+						<span class="mui-tab-label">家校互动</span>
+					</a>
+					<a id="kejiao" class="mui-tab-item " href="../../html/sciedu/sciedu_home.html">
+					<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
+						<span class="mui-icon iconfont icon-jiaoyu"></span>
+						<span class="mui-tab-label">科教活动</span>
+					</a>
+					<a id="kecheng" class="mui-tab-item" href="../../html/Course/courseIndex.html">
+						<span class="mui-icon iconfont icon-kecheng"></span>
+						<span class="mui-tab-label">课程</span>
+					</a>
+					<a id="zhuxue" class="mui-tab-item" href="../../html/helpStudy/helpStudyIndex.html">
+						<span class="mui-icon iconfont icon-iconfontbangzhu"></span>
+						<span class="mui-tab-label">助学</span>
+					</a>
+			</nav>
+		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/utils/app-update.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			//mui初始化 
 			mui.init();
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var idenfify=personal.utp;//身份 0老师，1学生，2家长
+			var isBd;//是否绑定学生
+			if(personal.isBd==undefined || personal.isBd==false){
+				isBd=false;
+			}else{
+				isBd=true;
+			}
 			var subpages =[];
-				subpages=['../../html/homeSchool/homeSchoolIndex.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
-			
-			var subpage_style = {
+			var subpage_style = { 
 				top: '0px',
 				bottom: '51px'
 			};
-
 			var aniShow = {};
-
+			var nav; 
+			
+			if(idenfify==2&&!isBd){//家长身份且没绑定学生
+				subpages=['../../html/relation/relationStu.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
+			}else{
+				subpages=['../../html/homeSchool/homeSchoolIndex.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
+			}
+			console.log('subpages==='+subpages)
+			
+			
+//			function test(){
+//				personal['isBd']=true;
+//				store.set(window.storageKeyName.PERSONALINFO, personal);
+//				mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {
+//				});
+//			}
+			
+			
+			window.addEventListener('home_refresh', function(data) {
+				location.reload();
+			});			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				console.log('oooooooooooooooooooooooooooooooooooooooooooooooooooo');
+				nav=new Vue({
+					el:'#nav',
+					data:{
+						identify:idenfify,
+						isBd:isBd,
+						hrefHome:'../../html/homeSchool/homeSchoolIndex.html',
+						hrefRela:'../../html/relation/relationStu.html'
+					}
+				});
+				
 				//安卓的连续点击两次退出程序
 				var backButtonPress = 0;
 				//重写返回键
@@ -114,11 +154,11 @@
 					}
 					//隐藏当前;
 					plus.webview.hide(activeTab);
-					//更改当前活跃的选项卡
+					//更改当前活跃的选项卡 
 					activeTab = targetTab;
 				});
 			
-				var defaultTab = document.getElementById("defaultTab");
+				var defaultTab = document.getElementById("kejiao");
 				//模拟首页点击
 				mui.trigger(defaultTab, 'tap');
 				//切换选项卡高亮
