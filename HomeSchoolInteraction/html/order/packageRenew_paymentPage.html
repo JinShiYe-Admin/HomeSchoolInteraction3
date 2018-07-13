@@ -345,26 +345,15 @@
 								mui.toast('您还没有选择时长')
 							}else{
 								//调起支付
-//								appPay.pay(appPay.wxpay,function success(){
-									var data={
-										servid:orderDetailData.orderDetail.serviceid,//套餐代码
-										servm:orderDetailData.servm*1, //订购总月数
-										feem:orderDetailData.feem*1//订购花费
+								appPay.payCode=true;
+								//调起支付
+								appPay.pay(appPay.wxpay,function success(){
+//									
+								},function fail(code,err){
+									if(code==0){
+										plus.nativeUI.alert("支付失败：" + err);
 									}
-									appPay.UserFeeFunc('UserReFee',data,function success(){
-										mui.toast('套餐订购成功');
-										//修改新结束时间
-										parent.orderDetail.etime=parent.newEtime;
-										//通知套餐详情页面刷新时间
-										mui.fire(plus.webview.currentWebview().opener(), 'refresh', {
-											newEtime:orderDetailData.newEtime
-										});
-									},function fail(err){
-										mui.toast(err);
-									});
-//								},function fail(err){
-//									plus.nativeUI.alert("支付失败：" + err);
-//								});
+								});
 							}
 						}
 					}
@@ -384,7 +373,46 @@
 					monthList.push(month*i) 
 				}
 				//end
+				//添加支付返回APP时的监听
+				appPay.addListener(function(){//查询成功
+					order;
+				},function(e){//查询失败
+					mui.toast(e);
+				},function(e){//查询超时
+					reCheck();
+				})
 			});
+			
+			//尝试重新查询
+			function reCheck(){
+				appPay.payResult(function(){//查询成功
+						order;
+					},function(e){//查询失败
+							mui.toast(e);
+					},function(e){//查询超时
+							mui.toast(e);
+					},'查询超时，正尝试重新查询...',10000);
+			}
+			
+			//用户续订套餐
+			var order = function() {
+				var data={
+					servid:orderDetailData.orderDetail.serviceid,//套餐代码
+					servm:orderDetailData.servm*1, //订购总月数
+					feem:orderDetailData.feem*1//订购花费
+				}
+				appPay.UserFeeFunc('UserReFee',data,function success(){
+					mui.toast('套餐续订成功');
+					//修改新结束时间
+					parent.orderDetail.etime=parent.newEtime;
+					//通知套餐详情页面刷新时间
+					mui.fire(plus.webview.currentWebview().opener(), 'refresh', {
+						newEtime:orderDetailData.newEtime
+					});
+				},function fail(err){
+					mui.toast(err);
+				});
+			}
 
 			//年月日加减
 			function addMonths(date,months){
