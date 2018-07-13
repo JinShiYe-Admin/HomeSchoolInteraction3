@@ -162,7 +162,6 @@
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/events.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
-		<script src="../../js/utils/app-update.js"></script>
 		<script type="text/javascript">
 			mui.init({
 				statusBarBackground: '#00CFBD',
@@ -294,9 +293,6 @@
 						}
 					}
 				});
-				console.log('当前版本:' + plus.runtime.version);
-//				setTimeout(appUpdate.updateApp(personal.schid), 5000);
-				appUpdate.updateApp(personal.schid)
 			});
 			//关闭侧滑
 			window.addEventListener('closeMinePage', function(data) {

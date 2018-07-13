@@ -114,8 +114,13 @@
 			    text-align: right;
 			    -webkit-touch-callout: none;
 			}
-			.ul-li-p{
-				width: 33%;
+			.ul-li-l{
+				text-align:left;
+				width: 40%;
+				float: left;
+			}
+			.ul-li-r{
+				width: 30%;
 				float: left;
 			}
 		</style>
@@ -144,9 +149,9 @@
 	    		<div class="mui-row ul-list"> 
 		    		<ul class="mui-table-view">
 							 <li v-cloak v-for="item in orderRecordList" class="mui-table-view-cell">
-							 	<p class="ul-li-p">{{item.time}}</p>
-							 	<p class="ul-li-p">{{item.money}}元</p>
-							 	<p class="ul-li-p">{{item.duration}}月</p>
+							 	<p class="ul-li-l">{{item.rectime}}</p>
+							 	<p class="ul-li-r">{{item.feem}}元</p>
+							 	<p class="ul-li-r">{{item.servm}}月</p>
 							 </li>
 					</ul>
 	    		</div>
@@ -164,9 +169,13 @@
 		<script src='../../js/utils/signHmacSHA1.js'></script>
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			console.log('personal********:' + JSON.stringify(personal));
 			
 			mui.init({
@@ -178,30 +187,16 @@
 						height: '50px', //可选,默认50px.下拉刷新控件的高度,
 						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
 						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-						auto: false,
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
 						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-					},
-					up: { 
-						height: 50, //可选.默认50.触发上拉加载拖动距离
-						contentrefresh: "<span class='mui-spinner'></span>正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
 					}
 				}
 			});
 			
-			function pulldownRefresh() {
-				renew.flag = 0;
-				renew.pageIndex = 1;
-				renew.canTap=false;
-				getRenewList(); 
-			}
 			
-			function pullupRefresh() {
-				if(renew.canTap){
-					renew.flag = 1;
-					getRenewList();
-				}
+			//下拉刷新
+			function pulldownRefresh() {
+				getRenewList();
 			}
 			
 			window.addEventListener('refresh', function(data) {
@@ -220,24 +215,11 @@
 							flag: 0 //0刷新，1加载更多
 							,pageIndex: 1 //当前页数
 							,canTap:true //下拉刷新时，上拉加载能否使用 true
-							,orderRecordList:[
-								{time:'2018-06-25 14:01',money:'50',duration:'5'}
-								,{time:'2018-06-25 14:02',money:'10',duration:'12'}
-								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
-								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
-								,{time:'2018-06-25 14:02',money:'10',duration:'12'}
-								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
-								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
-								,{time:'2018-06-25 14:02',money:'10',duration:'12'}
-								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
-								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
-								,{time:'2018-06-25 14:02',money:'10',duration:'12'}
-								,{time:'2018-06-25 14:03',money:'30',duration:'8'}
-								,{time:'2018-06-25 14:04',money:'500',duration:'36'}
-							]
+							,orderRecordList:[]
 							,curPageData:curPageData
 						}
 					});
+					getRenewList();
 			});
 			
 			//套餐续订
@@ -245,12 +227,34 @@
 				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
 			}
 			
-			
+			 
 			function getRenewList(){  
 				console.log("获取订购列表")
-				mui('#scroll').pullRefresh().endPulldownToRefresh();
-				mui('#scroll').pullRefresh().endPullupToRefresh(); 
-			}
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					servid:renew.curPageData.serviceid,
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('UserFeeDetail', enData1, comData1, 0, function(data1) {
+					console.log('UserFeeDetail:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData) {
+							renew.orderRecordList=data1.RspData.servdetail;
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+					mui('#scroll').pullRefresh().endPulldownToRefresh(); //参数为true代表没有更多数据了。
+				});
+}
 		</script> 
 	</body>
 
