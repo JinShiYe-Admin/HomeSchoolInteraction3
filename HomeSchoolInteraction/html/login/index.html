@@ -56,7 +56,7 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			var idenfify=personal.utp;//身份 0老师，1学生，2家长
+			var idenfify=personal.utp;//身份 0老师，2学生，1家长
 			var isBd;//是否绑定学生
 			if(personal.isBd==undefined || personal.isBd==false){
 				isBd=false;

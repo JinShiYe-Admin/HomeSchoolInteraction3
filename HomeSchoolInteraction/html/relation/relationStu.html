@@ -6,6 +6,8 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css" />
 		<style type="text/css">
 			[v-cloak] {
 				display: none;
@@ -133,13 +135,22 @@
 				transform: scaleY(.5);
 				background-color: #c8c7cc;
 			}
+			.stu-name0{
+				font-size: 14px;
+				color: #666;
+			}
+			.stu-name{
+				font-size: 14px;
+				color: #999999;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>-->
 			<h1 class="mui-title" style="color: white;">关联学生</h1>
+			<a id="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
 		<div id='userBusData' class="mui-content mui-fullscreen" style="background: white;">
 			<p class="p-show" v-show="userStuList.length==0">
@@ -160,7 +171,19 @@
 				<img src="../../img/homeSchool/noData.png" style="width: 200px;" />
 			</div>
 			<div v-else v-cloak class="mui-scroll">
-				<div class="mui-row" style="margin-bottom: 81px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @click="clickUserBus(userBusModel)" v-for="(userBusModel,index) in orderList">
+						<div v-if="userBusModel.stuModel.stuid">
+							<a class="userNameclass">{{userBusModel.cname}}</a>
+							<a class="stu-name0">{{userBusModel.stuModel.schname}}{{userBusModel.stuModel.grdname}}{{userBusModel.stuModel.clsname}}{{userBusModel.stuModel.stuname}}({{userBusModel.stuModel.sexName}})</a>
+						</div>
+						<div v-else="">
+							<a class="userNameclass">{{userBusModel.cname}}</a>
+							<a class="stu-name">请关联学生</a>
+						</div>
+					</li>
+				</ul>
+				<!--<div class="mui-row" style="margin-bottom: 81px;">
 					<div id="" v-for="(userBusModel,index) in orderList">
 						<p class="p-show1"></p>
 						<a class="mui-content-padded userNameclass">{{userBusModel.cname}}</a>
@@ -172,12 +195,12 @@
 							</div>
 						</form>
 					</div>
-				</div>
+				</div>-->
 			</div>
 
-			<nav class="mui-bar mui-bar-tab" style="margin-top: 5px;">
+			<nav class="mui-bar mui-bar-tab" style="margin-top: 5px;height: 15px;">
 				<p class="p-show3">*如果没有您要选的学生请联系班主任</p>
-				<p @click="sureFunc" class="weui-btn weui-btn_blue">确定</p>
+				<!--<p @click="sureFunc" class="weui-btn weui-btn_blue">确定</p>-->
 			</nav>
 		</div>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
@@ -199,10 +222,13 @@
 		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/mui/mui.picker.js"></script>
+		<script src="../../js/mui/mui.poppicker.js"></script>
 		<script type="text/javascript">
 			mui.init();
 			var personal;
 			var publicParameter;
+			var userPicker;
 			mui.plusReady(function() {
 				//获取个人信息
 				personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -211,15 +237,11 @@
 				//4.1.用户已订购套餐及功能扩展栏目
 				getUserBusFunc();
 				userBusData.peopleMsg = personal;
+				//4.5.获取用户关联的学生列表
+				getUserUstu();
+				//弹出
+				userPicker = new mui.PopPicker();
 			});
-
-			function copyObj(obj) {
-				let res = {}
-				for(var key in obj) {
-					res[key] = obj[key]
-				}
-				return res
-			}
 
 			var userBusData = new Vue({
 				el: '#userBusData',
@@ -229,44 +251,66 @@
 					peopleMsg: {}
 				},
 				methods: {
-					sureFunc: function() {
-						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
-						var tempSelectFlag = 0;
-						for(var i = 0; i < userBusData.orderList.length; i++) {
-							var tempStuModel = userBusData.orderList[i];
-							for(var a = 0; a < tempStuModel.stuList.length; a++) {
-								var tempModel = tempStuModel.stuList[a];
-								console.log('tempModel:' + tempModel.selectStu);
-								if (tempModel.selectStu == 1) {
-									tempSelectFlag++;
-								}
-							}
-						}
-						if (tempSelectFlag == 0) {
-							mui.toast('请给套餐选择对应的学生');
-						}else{
-							
-						}
-					},
-					clickStu: function(userBusModel, stuModel) {
-						if(stuModel.selectStu == 0) {
-							for(var i = 0; i < userBusModel.stuList.length; i++) {
-								var tempUserModel = userBusModel.stuList[i];
-								console.log('tempUserModel.selectStu:' + tempUserModel.selectStu);
-								console.log('stuModel.selectStu:' + stuModel.selectStu);
-								if(tempUserModel.stuid == stuModel.stuid) {
-									tempUserModel.selectStu = 1;
-								} else {
-									tempUserModel.selectStu = 0;
-								}
-							}
+					clickUserBus: function(model) {
+						if(userBusData.userStuList.length == 0) {
+							mui.toast('请先关联学生');
 						} else {
-							stuModel.selectStu = 0;
+							var tempArray = [];
+							if(model.stuModel.stuid) {
+								var tempModel = {
+									value: 0,
+									stuid: 0,
+									text: '取消绑定'
+								}
+								tempArray.push(tempModel);
+							}
+							tempArray = tempArray.concat(userBusData.userStuList);
+							userPicker.setData(tempArray);
+							if(model.stuModel.stuid) {
+								for(var i = 0; i < tempArray.length; i++) {
+									var tempStu = tempArray[i];
+									if(tempStu.stuid == model.stuModel.stuid) {
+										userPicker.pickers[0].setSelectedIndex(i, 200);
+									}
+								}
+							}
+
+							userPicker.show(function(items) {
+								console.log('items:' + JSON.stringify(items[0]));
+								var tempModel = items[0];
+								//4.7.关联用户与学生--绑定套餐和学生
+								getUnUserStu(model, tempModel);
+							});
 						}
-						console.log('userBusData.orderList11:' + JSON.stringify(userBusData.orderList));
 					}
 				}
 			});
+
+			document.getElementById('sure').addEventListener('tap', function() {
+				var tempFlag = 0;
+				for(var i = 0; i < userBusData.orderList.length; i++) {
+					var tempStu = userBusData.orderList[i];
+					if(tempStu.stuModel.stuid) {
+						tempFlag++;
+					}
+				}
+				if(tempFlag == 0) {
+					mui.toast('请先关联学生');
+				} else {
+					plus.webview.open('../../html/login/index.html');
+					var wvs = plus.webview.all();
+					for(var i = 0, len = wvs.length; i < len; i++) {
+						if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+							wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+							wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+							continue;
+						}
+						plus.webview.close(wvs[i]);
+					}
+					var curr = plus.webview.currentWebview();
+					curr.close();
+				}
+			})
 
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
@@ -281,12 +325,13 @@
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
 				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
-					console.log('GetUserBusFunc:' + JSON.stringify(data1));
+					console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
 							for(var i = 0; i < data1.RspData.userbus.length; i++) {
 								var tempModel = data1.RspData.userbus[i];
+								tempModel.stuModel = {};
 								tempModel.stuList = [];
 							}
 							userBusData.orderList = [].concat(data1.RspData.userbus);
@@ -299,7 +344,7 @@
 				});
 			}
 
-			//4.6.获取用户手机关联的学生列表
+			//4.6.获取用户手机关联的学生列表--获取可以进行绑定的学生
 			function getUserMstu() {
 				var enData1 = {};
 				//不需要加密的数据
@@ -312,7 +357,7 @@
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
 				postDataEncry('UserMstu', enData1, comData1, 0, function(data1) {
-					console.log('UserMstu:' + JSON.stringify(data1));
+					console.log('4.6.UserMstu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData.stus) {
@@ -324,41 +369,81 @@
 								} else {
 									tempStuModel.sexName = '男';
 								}
+								tempStuModel.value = tempStuModel.stuid;
+								tempStuModel.text = tempStuModel.schname + tempStuModel.grdname + tempStuModel.clsname + tempStuModel.stuname + '(' + tempStuModel.sexName + ')';
 							}
 							userBusData.userStuList = [].concat(data1.RspData.stus);
-							//塞入每个套餐中
-							for(var i = 0; i < userBusData.orderList.length; i++) {
-								var tempArray = data1.RspData.stus.concat();
-								var tempModel = userBusData.orderList[i];
-								//vue深拷贝
-								tempModel.stuList = JSON.parse(JSON.stringify(tempArray));
-							}
 						}
 					} else {
 						mui.toast(data1.RspTxt);
 					}
 				});
 			}
-			
-			//4.7.关联用户与学生
-			function getUnUserStu(stuid,forid) {
+
+			//4.7.关联用户与学生--绑定套餐和学生
+			function getUnUserStu(model, stuModel) {
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
 					uuid: publicParameter.uuid, //用户设备号
 					utid: personal.utid, //用户ID
-					stuid: stuid, //学生ID
-					forid: forid, //订购记录ID,用户订购套餐记录ID
+					stuid: stuModel.stuid, //学生ID
+					forid: model.forid, //订购记录ID,用户订购套餐记录ID
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
 				postDataEncry('UnUserStu', enData1, comData1, 0, function(data1) {
-					console.log('UnUserStu:' + JSON.stringify(data1));
+					console.log('4.7.UnUserStu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-						
+						if(stuModel.stuid == 0) {
+							model.stuModel = {};
+						} else {
+							model.stuModel = stuModel;
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+
+			//4.5.获取用户关联的学生列表--获取套餐已经绑定的学生
+			function getUserUstu() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utid: personal.utid, //用户ID
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('UserUstu', enData1, comData1, 0, function(data1) {
+					console.log('4.5.UserUstu:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData) {
+							for(var i = 0; i < userBusData.orderList.length; i++) {
+								var tempModel = userBusData.orderList[i];
+								console.log('tempModel.forid:' + tempModel.forid);
+								for(var a = 0; a < data1.RspData.stus.length; a++) {
+									var tempStuModel = data1.RspData.stus[a];
+									if(tempStuModel.sex == 0) {
+										tempStuModel.sexName = '女';
+									} else {
+										tempStuModel.sexName = '男';
+									}
+									console.log('tempStuModel.forid:' + tempStuModel.forid);
+									if(tempModel.forid == tempStuModel.forid) {
+										tempModel.stuModel = tempStuModel;
+									}
+								}
+							}
+							console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
+						}
 					} else {
 						mui.toast(data1.RspTxt);
 					}

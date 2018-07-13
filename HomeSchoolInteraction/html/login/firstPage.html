@@ -47,13 +47,13 @@
 				uuid: plus.device.uuid,
 				appid: plus.runtime.appid
 			}
-			if (tempModel.uuid=='') {
+			if(tempModel.uuid == '') {
 				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
 				tempModel.uuid = publicPar.uuid;
 				tempModel.appid = publicPar.appid;
 			}
-			console.log('plus.device.uuid:'+tempModel.uuid);
-			console.log('plus.runtime.appid:'+tempModel.appid);
+			console.log('plus.device.uuid:' + tempModel.uuid);
+			console.log('plus.runtime.appid:' + tempModel.appid);
 			store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
 			setUUID();
 			document.addEventListener("netchange", wainshow, false);
@@ -118,7 +118,7 @@
 		//login登录
 		var loginPro = function(tempName, tempPW) {
 			var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-			console.log('tempName000:'+tempName+',tempPW:'+tempPW+',publicPar:'+publicPar.uuid+',publicPar:'+publicPar.appid);
+			console.log('tempName000:' + tempName + ',tempPW:' + tempPW + ',publicPar:' + publicPar.uuid + ',publicPar:' + publicPar.appid);
 			//握手
 			var enData0 = {};
 			//不需要加密的数据
@@ -162,17 +162,12 @@
 							if(data1.RspData.subs == null) {
 								data1.RspData.subs = [];
 							}
-							//									if (data1.RspData.clss.length>0) {
-							//										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
-							//									}
 							if(data1.RspData.urolestr == null) {
 								data1.RspData.urolestr = '00000000000000000000000000000';
 							}
-//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
-//								data1.RspData.imgurl = '../../img/login/headImg.png';
-//							}
 							data1.RspData.userName0 = tempName;
 							data1.RspData.password0 = tempPW;
+							data1.RspData.relationStuList = []; //家长身份时，判断套餐有没有关联学生
 							var model_area = {
 								procode: '00', //省份code，自己添加的参数
 								proname: '全国', //省份名称，自己添加的参数
@@ -201,13 +196,44 @@
 								}
 							});
 							if(personal.utid == '0') { //无权限
-//								plus.webview.open('../../index2.html');
+								//								plus.webview.open('../../index2.html');
 								utils.hrefSessionStorage('../../html/login/index2.html', {});
 							} else {
-//								utils.mOpenWithData("../../index.html", personal);
-								utils.hrefSessionStorage('../../html/login/index.html', {});
+								if(personal.utp == 1) { //0老师，2学生，1家长
+									var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+									//4.5.获取用户关联的学生列表
+									var enData2 = {};
+									//不需要加密的数据
+									var comData2 = {
+										uuid: publicParameter.uuid, //用户设备号
+										utid: personal.utid, //用户ID
+										utoken: personal.utoken, //用户令牌
+										appid: publicParameter.appid //系统所分配的应用ID
+									};
+									events.showWaiting();
+									//发送网络请求，data为网络返回值
+									postDataEncry('UserUstu', enData2, comData2, 0, function(data2) {
+										console.log('4.5.UserUstu:' + JSON.stringify(data2));
+										events.closeWaiting();
+										if(data2.RspCode == 0) {
+											if(data2.RspData) {
+												utils.hrefSessionStorage('../../html/login/index.html', {});
+											} else {
+												var tempModel = {
+													flag: 1 //
+												}
+												utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+											}
+										} else {
+											mui.toast(data2.RspTxt);
+											utils.hrefSessionStorage('../../html/login/index.html', {});
+										}
+									});
+								} else {
+									utils.hrefSessionStorage('../../html/login/index.html', {});
+								}
 							}
-						}else if(data1.RspCode == 5){//用户名或密码不正确
+						} else if(data1.RspCode == 5) { //用户名或密码不正确
 							store.set(window.storageKeyName.PERSONALINFO, {});
 							setUUID();
 						} else {
@@ -225,7 +251,7 @@
 		//从ios原生得到信息
 		var setUUID = function() {
 			//			if(loginFlag == 0) {
-			
+
 			//判断上次是否登录过，自动登录
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('setUUIDpersonal000:' + JSON.stringify(personal));

@@ -7,9 +7,14 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript">
-		</script>
-  
+		<style type="text/css">
+			.regisgerColo{
+				border-color: #00CFBD;
+				color: #00CFBD;
+				border-radius: 20px;
+			}
+		</style>
+
 	</head>
 
 	<body>
@@ -32,8 +37,8 @@
 			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 0px 60px ;" />
 
 			<div style="padding: 0px 20px;">
-				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;">登录</button>
-				<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>
+				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;border-radius: 20px;">登录</button>
+				<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-outlined regisgerColo" style=" margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>
 			</div>
 		</div>
 	</body>
@@ -55,7 +60,6 @@
 	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/utils/events.js"></script>
 	<script type="text/javascript">
-		
 		//		$(function() {
 		//			
 		//		});
@@ -66,38 +70,38 @@
 				uuid: plus.device.uuid,
 				appid: plus.runtime.appid
 			}
-			
+
 			var backButtonPress = 0;
-//			setUUID();
+			//			setUUID();
 		});
-//		document.addEventListener("plusready", function() {
-//			message = document.getElementById("message");
-//			// 监听点击消息事件
-//			plus.push.addEventListener("click", function(msg) {
-//				// 判断是从本地创建还是离线推送的消息
-//				switch(msg.payload) {
-//					case "LocalMSG":
-//						outSet("点击本地创建消息启动：");
-//						break;
-//					default:
-//						outSet("点击离线推送消息启动：");
-//						break;
-//				}
-//				// 提示点击的内容
-//				plus.ui.alert(msg.content);
-//				// 处理其它数据
-//				logoutPushMsg(msg);
-//			}, false);
-//			// 监听在线消息事件
-//			plus.push.addEventListener("receive", function(msg) {
-//				if(msg.aps) { // Apple APNS message
-//					outSet("接收到在线APNS消息：");
-//				} else {
-//					outSet("接收到在线透传消息：");
-//				}
-//				logoutPushMsg(msg);
-//			}, false);
-//		}, false);
+		//		document.addEventListener("plusready", function() {
+		//			message = document.getElementById("message");
+		//			// 监听点击消息事件
+		//			plus.push.addEventListener("click", function(msg) {
+		//				// 判断是从本地创建还是离线推送的消息
+		//				switch(msg.payload) {
+		//					case "LocalMSG":
+		//						outSet("点击本地创建消息启动：");
+		//						break;
+		//					default:
+		//						outSet("点击离线推送消息启动：");
+		//						break;
+		//				}
+		//				// 提示点击的内容
+		//				plus.ui.alert(msg.content);
+		//				// 处理其它数据
+		//				logoutPushMsg(msg);
+		//			}, false);
+		//			// 监听在线消息事件
+		//			plus.push.addEventListener("receive", function(msg) {
+		//				if(msg.aps) { // Apple APNS message
+		//					outSet("接收到在线APNS消息：");
+		//				} else {
+		//					outSet("接收到在线透传消息：");
+		//				}
+		//				logoutPushMsg(msg);
+		//			}, false);
+		//		}, false);
 		document.getElementById("login").addEventListener('tap', function(event) {
 			console.log("登录");
 			var tempName = document.getElementById("account").value;
@@ -115,7 +119,7 @@
 
 			}
 		});
-	
+
 		document.getElementById("register").addEventListener('tap', function(event) {
 			console.log("注册");
 			plus.webview.open('../register/register.html');
@@ -191,9 +195,9 @@
 							if(data1.RspData.urolestr == null) {
 								data1.RspData.urolestr = '00000000000000000000000000000';
 							}
-//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
-//								data1.RspData.imgurl = '../../img/login/headImg.png';
-//							}
+							//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
+							//								data1.RspData.imgurl = '../../img/login/headImg.png';
+							//							}
 							data1.RspData.userName0 = tempName;
 							data1.RspData.password0 = tempPW;
 							var model_area = {
@@ -222,33 +226,33 @@
 									//											mui.toast(data.RspTxt);
 								}
 							});
-							
+
 							//如果密码为1--6，让修改密码后，进入主界面
 							if(personal.password0 == '123456') {
 								var tempModel = {
-									flag:1//0是主动修改密码，1是判断是默认密码，自动让修改
+									flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
 								}
 								utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
 							} else {
-								//判断权限  
-								var permission = true;
-								if(personal.utid == '0') {
-									permission = false;
-								}
-								if(permission) {
-									plus.webview.open('../../html/login/index.html');
-								}
-								var wvs = plus.webview.all();
-								for(var i = 0, len = wvs.length; i < len; i++) {
-									if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-										wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-										wvs[i].getURL().indexOf('courseIndex.html') != -1) {
-										continue;
+								if(personal.utp == 1) { //0老师，2学生，1家长
+									var tempModel = {
+										flag: 1 //
 									}
-									plus.webview.close(wvs[i]);
+									utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+								} else {
+									plus.webview.open('../../html/login/index.html');
+									var wvs = plus.webview.all();
+									for(var i = 0, len = wvs.length; i < len; i++) {
+										if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+											wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+											wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+											continue;
+										}
+										plus.webview.close(wvs[i]);
+									}
+									var curr = plus.webview.currentWebview();
+									curr.close();
 								}
-								var curr = plus.webview.currentWebview();
-								curr.close();
 							}
 						} else {
 							mui.toast(data1.RspTxt);
@@ -265,7 +269,7 @@
 		var setUUID = function(tempStr) {
 			if(loginFlag == 0) {
 				//			var tempModel0 = $.parseJSON(tempStr);
-//				store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
+				//				store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
 				console.log('tempStr:' + tempStr);
 				//判断上次是否登录过，自动登录
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
