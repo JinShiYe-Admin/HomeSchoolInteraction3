@@ -287,16 +287,16 @@
 			});
 
 			document.getElementById('sure').addEventListener('tap', function() {
-				var tempFlag = 0;
-				for(var i = 0; i < userBusData.orderList.length; i++) {
-					var tempStu = userBusData.orderList[i];
-					if(tempStu.stuModel.stuid) {
-						tempFlag++;
-					}
-				}
-				if(tempFlag == 0) {
-					mui.toast('请先关联学生');
-				} else {
+//				var tempFlag = 0;
+//				for(var i = 0; i < userBusData.orderList.length; i++) {
+//					var tempStu = userBusData.orderList[i];
+//					if(tempStu.stuModel.stuid) {
+//						tempFlag++;
+//					}
+//				}
+//				if(tempFlag == 0) {
+//					mui.toast('请先关联学生');
+//				} else {
 					plus.webview.open('../../html/login/index.html');
 					var wvs = plus.webview.all();
 					for(var i = 0, len = wvs.length; i < len; i++) {
@@ -309,7 +309,7 @@
 					}
 					var curr = plus.webview.currentWebview();
 					curr.close();
-				}
+//				}
 			})
 
 			//4.1.用户已订购套餐及功能扩展栏目
