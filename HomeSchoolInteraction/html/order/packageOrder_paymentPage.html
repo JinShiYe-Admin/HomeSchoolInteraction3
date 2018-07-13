@@ -310,11 +310,6 @@
 			console.log('personal********:' + JSON.stringify(personal));
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			mui.init();
-			var wxChannel = null; // 微信支付
-			var aliChannel = null; // 支付宝支付
-			var channel = null;
-			var alipayUrl = window.storageKeyName.ALIPAYSERVER;
-			var wechatPayUrl = window.storageKeyName.WXPAYSERVER;
 
 			var univlent; //单价
 			var monthList = []; //月份集合
@@ -415,10 +410,10 @@
 						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
 						} else {
-							order();
+							
 							//调起支付
 //							appPay.pay(appPay.wxpay,function success(){
-//								UserFeeFunc
+								order();
 //							},function fail(err){
 //								plus.nativeUI.alert("支付失败：" + err);
 //							});
@@ -459,7 +454,7 @@
 					feem:orderData.feem*1,//订购花费
 					funclist:funcArray//订购的扩展参数
 				}
-				appPay.UserFeeFunc(data,function success(){
+				appPay.UserFeeFunc('UserFee',data,function success(){
 					mui.toast('套餐订购成功');
 				},function fail(err){
 					mui.toast(err);

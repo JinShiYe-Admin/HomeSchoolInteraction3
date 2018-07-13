@@ -185,7 +185,7 @@
 			<h1 class="mui-title" style="color: white;">套餐续订</h1>
 		</header>
 		<div class="mui-content">
-			<div id='orderDetail'>
+			<div id='orderDetailData'>
 				<div class="mui-row">
 					<ul class="mui-table-view">
 						<li class="mui-table-view-cell mui-media">
@@ -202,8 +202,6 @@
 						</li>
 					</ul>
 				</div>
-			</div>
-			<div id='orderData'>
 				<div class="mui-row" style="margin-top: 5px;">
 						<h5 class="mui-content-padded">原订购信息</h5>
 						<div class="mui-input-row line">
@@ -215,21 +213,21 @@
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>订购时间</label>
-								<input type="text" value="2018-07-06" disabled/>
+								<input type="text" :value=orderDetail.stime disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>结束时间</label>
-								<input type="text" value="2019-07-06" disabled/>
+								<input type="text" :value=orderDetail.etime disabled/>
 							</a>
-						</div>
+						</div> 
 				</div>
 				<form id="orderForm">
 					<div class="mui-row" style="margin-top: 5px;">
 						<div class="mui-input-row" style="margin-top: 5px;">
 							<a class="mui-navigate-right">
-								<label>时长</label>
+								<label>时长</label> 
 								<select name="sc" class="mui-btn-block" @change="gradeChange($event)">
 									<option value="" disabled selected>请选择时长</option>
 									<option :value=index+1 v-for="(item,index) in monthList" :monthnum=item>{{item}}个月</option>
@@ -238,8 +236,9 @@
 						</div>
 						<div class="mui-input-row line">
 							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
-							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费时间：2018-09-09</label>
-							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">新结束时间：2020-07-06</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费时间：{{nowDate}}</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;" v-if="newEtime ==''">新结束时间：{{orderDetail.etime}}</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;" v-else>新结束时间：{{newEtime}}</label>
 						</div>
 					</div>
 
@@ -288,6 +287,7 @@
 		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/payUtil.js"></script>
 		<script>
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			console.log('personal********:' + JSON.stringify(personal));
@@ -295,147 +295,138 @@
 			mui.init();
 
 			var curPageData;
-			var orderDetail;
-			var orderData;
+			var orderDetailData;
 			var univlent;//单价
 			var monthList=[];//月份集合
+			var nowDate=getNowFormatDate();
 			mui.plusReady(function() {
+				orderDetailData = new Vue({
+					el: '#orderDetailData',
+					data: {
+						nowDate:nowDate,
+						newEtime:'',
+						orderDetail: {},
+						radioChecked: false,//是否选择支付方式
+						chekcboxChecked: false,//注册协议是否阅读
+						isDisabled: true,//支付按钮是否关闭
+						sysfuncList: [], //附加信息
+						monthList: monthList,
+						servm:0,//订购套餐总月数
+						feem:0//订购套餐总费用
+					},
+					methods: {
+						radioClick: function() {
+							this.radioChecked = !this.radioChecked
+							if(this.radioChecked == true)
+								$('#zffs').html('&ensp;|&ensp;微信支付');
+							if(this.radioChecked == false){
+								this.isDisabled = true
+								$('#zffs').html('');
+							}else if(this.radioChecked == true && this.chekcboxChecked == true)
+								this.isDisabled = false
+						},
+						checkboxClick: function() {
+							this.chekcboxChecked = !this.chekcboxChecked
+							if(this.chekcboxChecked == false)
+								this.isDisabled = true
+							else if(this.chekcboxChecked == true && this.radioChecked == true)
+								this.isDisabled = false
+						},
+						gradeChange:function(e){//月份下拉选选中事件
+							 var domDiv=e.target;
+							 var selectTime=$(domDiv).val();
+							 this.servm=$(domDiv).find("option:selected").attr('monthnum');
+							 this.feem=(selectTime*1*univlent*1).toFixed(2);
+							 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
+						},
+						payAction:function(){//支付
+							var parent=this;
+							if(this.servm==0){
+								mui.toast('您还没有选择时长')
+							}else{
+								//调起支付
+//								appPay.pay(appPay.wxpay,function success(){
+									var data={
+										servid:orderDetailData.orderDetail.serviceid,//套餐代码
+										servm:orderDetailData.servm*1, //订购总月数
+										feem:orderDetailData.feem*1//订购花费
+									}
+									appPay.UserFeeFunc('UserReFee',data,function success(){
+										mui.toast('套餐订购成功');
+										//修改新结束时间
+										parent.orderDetail.etime=parent.newEtime;
+										//通知套餐详情页面刷新时间
+										mui.fire(plus.webview.currentWebview().opener(), 'refresh', {
+											newEtime:orderDetailData.newEtime
+										});
+									},function fail(err){
+										mui.toast(err);
+									});
+//								},function fail(err){
+//									plus.nativeUI.alert("支付失败：" + err);
+//								});
+							}
+						}
+					}
+				});
+				
+				// 获取支付通道
+				appPay.getChannels();
+				
 				var _data=utils.getDataFromUrl(window.location.href);
-				orderDetail.orderDetail = _data;
-				orderDetail.orderDetail.imgUrl = '../../img/login/headImg.png';
+				orderDetailData.orderDetail = _data;
+				orderDetailData.orderDetail.imgUrl = '../../img/login/headImg.png';
 				//计算可以订购的时长  为月份数组 start
 				univlent=_data.feecode;
 				var month=_data.busmonth;
 				var num =36/month;
-				for(var i=1;i<=num;i++){
-					monthList.push(month*i)
+				for(var i=1;i<=num;i++){ 
+					monthList.push(month*i) 
 				}
 				//end
-				
-				//套餐功能及扩展栏目
-				getSysBusFunc();
 			});
 
-			var orderDetail = new Vue({
-				el: '#orderDetail',
-				data: {
-					orderDetail: {}
-				}
-			});
-
-			var orderData = new Vue({
-				el: '#orderData',
-				data: {
-					radioChecked: false,//是否选择支付方式
-					chekcboxChecked: false,//注册协议是否阅读
-					isDisabled: true,//支付按钮是否关闭
-					sysfuncList: [], //附加信息
-					monthList: monthList,
-					servm:0,//订购套餐总月数
-					feem:0//订购套餐总费用
-				},
-				methods: {
-					radioClick: function() {
-						this.radioChecked = !this.radioChecked
-						if(this.radioChecked == true)
-							$('#zffs').html('&ensp;|&ensp;微信支付');
-						if(this.radioChecked == false){
-							this.isDisabled = true
-							$('#zffs').html('');
-						}else if(this.radioChecked == true && this.chekcboxChecked == true)
-							this.isDisabled = false
-					},
-					checkboxClick: function() {
-						this.chekcboxChecked = !this.chekcboxChecked
-						if(this.chekcboxChecked == false)
-							this.isDisabled = true
-						else if(this.chekcboxChecked == true && this.radioChecked == true)
-							this.isDisabled = false
-					},
-					gradeChange:function(e){//月份下拉选选中事件
-						 var domDiv=e.target;
-						 var selectTime=$(domDiv).val();
-						 this.servm=$(domDiv).find("option:selected").attr('monthnum');
-						 this.feem=(selectTime*1*univlent*1).toFixed(2);
-					},
-					payAction:function(){//支付
-						if(this.servm==0){
-							mui.toast('您还没有选择时长')
-						}else{
-							var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-							var comData0 = {
-								uuid: publicParameter.uuid, //用户设备号
-								appid: publicParameter.appid, //系统所分配的应用ID
-								uid: personal.utid, //用户ID
-								servid:'',//套餐代码
-								servm: this.servm, //订购总月数
-								feem: this.feem, //订购花费
-								dnote:'',//备注
-								recutname:personal.utname,//操作者姓名
-								frmtype:'',//操作类型
-								funclist:{
-									fcode:'',//功能代码
-									itemcode:'',//栏目代码
-									itemsons:''//栏目选择子集
-								},//订购的扩展参数
-								utoken: personal.utoken, //用户令牌
-								sign:''//其他参数按照规则产生的签名
-							};
-							console.log(JSON.stringify(orderData.sysfuncList))
-							console.log(JSON.stringify(comData0))
-						}
-					}
-				}
-			});
-
-			//套餐功能及扩展栏目
-			var getSysBusFunc = function() {
-				var enData1 = {};
-				//不需要加密的数据
-				var comData1 = {
-					uuid: publicParameter.uuid, //用户设备号
-					fcodes: orderDetail.orderDetail.fcodes, //功能代码串,留空为全部,多个用逗号隔开
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid //系统所分配的应用ID
-				};
-				events.showWaiting();
-				//获取验证码
-				//发送网络请求，data为网络返回值
-				postDataEncry('SysBusFunc', enData1, comData1, 0, function(data1) {
-					console.log('SysBusFunc:' + JSON.stringify(data1));
-					events.closeWaiting();
-					if(data1.RspCode == 0) {
-						//将sysfunc[0].fext[0].itemsons转化为数组
-						for(var i = 0; i < data1.RspData.sysfunc.length; i++) {
-							var tempModel0 = data1.RspData.sysfunc[i];
-							for(var a = 0; a < tempModel0.fext.length; a++) {
-								var tempModel1 = tempModel0.fext[a];
-								tempModel1.itemsons = tempModel1.itemsons.split(',');
-							}
-						}
-						orderData.sysfuncList = [].concat(data1.RspData.sysfunc);
-					} else {
-						mui.toast(data1.RspTxt);
-					}
-				});
+			//年月日加减
+			function addMonths(date,months){
+		       var d=new Date(date);
+		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
+		       var y=d.getFullYear()
+		       var m=d.getMonth()+1; 
+		       var d=d.getDate(); 
+		       return getNowFormatDate(y,m,d); 
 			}
 
-//			//将输入表单中的内容，转为obj
-//			$.fn.serializeObject = function() {
-//				var o = {};
-//				var a = this.serializeArray();
-//				$.each(a, function() {
-//					if(o[this.name] !== undefined) {
-//						if(!o[this.name].push) {
-//							o[this.name] = [o[this.name]];
-//						}
-//						o[this.name].push(this.value || '');
-//					} else {
-//						o[this.name] = this.value || '';
-//					}
-//				});
-//				return o;
-//			};
+			//获取当前日期
+			function getNowFormatDate(years,months,days) {
+				  var date = new Date();
+				  var seperator1 = ".";
+				  var year ='';
+				  var month ='';
+				  var strDate ='';
+				  if(years==undefined)
+				    year=date.getFullYear();
+				  else
+				    year=years*1
+				    
+				  if(months==undefined)
+				  	month=date.getMonth() + 1;
+				  else
+				  	month =months;
+				  	
+				  if(days==undefined)
+				  	strDate=date.getDate();
+				  else
+				  	strDate=days;
+				  
+				  if (month >= 1 && month <= 9) 
+				    month = "0" + month;
+				  
+				  if (strDate >= 0 && strDate <= 9) 
+				    strDate = "0" + strDate;
+				  
+				  var currentdate = year + seperator1 + month + seperator1 + strDate;
+				  return currentdate;
+			};
 			
 		</script>
 	</body>

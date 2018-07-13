@@ -13,7 +13,6 @@
 			body {
 				background-color: #efeff4;
 			}
-			
 			.mui-bar-tab .mui-tab-item.mui-active{
 				color:#00CFBD;
 			}
@@ -23,15 +22,11 @@
 	<body>
 		<div id="nav">
 			<nav class="mui-bar mui-bar-tab">
-					<a id="defaultTab" class="mui-tab-item" v-if='identify==2 && isBd==false' :href=hrefRela>
+					<a id="defaultTab" v-cloak class="mui-tab-item"  :href=hrefHome>
 						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
 						<span class="mui-tab-label">家校互动</span>
 					</a>
-					<a id="defaultTab" class="mui-tab-item mui-active" v-else :href=hrefHome>
-						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
-						<span class="mui-tab-label">家校互动</span>
-					</a>
-					<a id="kejiao" class="mui-tab-item " href="../../html/sciedu/sciedu_home.html">
+					<a id="kejiao" class="mui-tab-item  mui-active" href="../../html/sciedu/sciedu_home.html">
 					<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
 						<span class="mui-icon iconfont icon-jiaoyu"></span>
 						<span class="mui-tab-label">科教活动</span>
@@ -58,6 +53,7 @@
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
 			var idenfify=personal.utp;//身份 0老师，2学生，1家长
 			var isBd;//是否绑定学生
+			var hrefHome;//首页链接
 			if(personal.isBd==undefined || personal.isBd==false){
 				isBd=false;
 			}else{
@@ -73,8 +69,10 @@
 			
 			if(idenfify==2&&!isBd){//家长身份且没绑定学生
 				subpages=['../../html/relation/relationStu.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
+				hrefHome='../../html/relation/relationStu.html';
 			}else{
 				subpages=['../../html/homeSchool/homeSchoolIndex.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
+				hrefHome='../../html/homeSchool/homeSchoolIndex.html';
 			}
 			console.log('subpages==='+subpages)
 			
@@ -85,7 +83,7 @@
 //				mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {
 //				});
 //			}
-			
+			 
 			
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
@@ -97,8 +95,7 @@
 					data:{
 						identify:idenfify,
 						isBd:isBd,
-						hrefHome:'../../html/homeSchool/homeSchoolIndex.html',
-						hrefRela:'../../html/relation/relationStu.html'
+						hrefHome:hrefHome
 					}
 				});
 				

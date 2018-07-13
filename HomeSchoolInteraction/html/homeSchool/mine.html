@@ -178,7 +178,7 @@
 								utils.mOpenWithData("../../html/order/orderList.html", setting);
 							} else if(setting.tempID == 2) {
 //								utils.mOpenWithData("../../html/mine/about.html", setting);
-								utils.mOpenWithData("../../html/relation/createStuAccount.html", setting);
+utils.mOpenWithData("../../html/relation/createStuAccount.html", setting);
 							}
 						},
 						clickHeadImg: function() {
@@ -190,6 +190,7 @@
 				});
 
 			function hideMenu() {
+				console.log('侧滑执行方法执行了吗')
 				mui.fire(plus.webview.currentWebview().opener(), 'hideMenu', {
 					hide: true
 				});
