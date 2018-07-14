@@ -172,7 +172,7 @@ var appPay = (function(mod) {
 	 * @param {Object} msg dialog 的文字
 	 * @param {Object} N 毫秒后开始执行
 	 */
-	mod.payResult =function(success,fail,failtimeout,msg,tomout){
+	mod.payResult =function(success,fail,failtimeout,msg,timout){
 		//弹出查询等待框
 		var dialog = plus.nativeUI.showWaiting(msg,{modal:true,back:'none'});
 		//5S后查询支付结果
@@ -225,7 +225,7 @@ var appPay = (function(mod) {
 //				failtimeout("支付结果查询失败："+e)
 //				console.log("支付结果查询失败："+e)
 //			});
-		}, tomout);
+		}, timout);
 	}
 	
 	/**
