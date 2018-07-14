@@ -325,12 +325,40 @@
 					monthList.push(month * i)
 				}
 				//end
-
+				
 				//套餐功能及扩展栏目
 				getSysBusFunc();
 				// 获取支付通道
 				appPay.getChannels();
+				
+				//添加支付返回APP时的监听
+				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
+				appPay.addListener(function(){//查询成功
+					order;
+				},function(e){//查询失败
+//					mui.toast(e);
+					var btnArray = ['否', '是'];
+					mui.confirm(e+'! 是否重新查询？', '校讯通', btnArray, function(e) {
+						if (e.index == 1) {
+							reCheck();
+						} 
+					})
+				},function(e){//查询超时
+					reCheck();
+				})
 			});
+			
+			//尝试重新查询
+			function reCheck(){
+				appPay.payResult(function(){//查询成功
+						order;
+					},function(e){//查询失败
+							mui.toast(e);
+					},function(e){//查询超时
+							mui.toast(e);
+					},'正尝试重新查询...',10000);
+			}
+			
 
 			var orderDetailData = new Vue({
 				el: '#orderDetailData',
@@ -410,13 +438,15 @@
 						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
 						} else {
-							
+							appPay.payCode=true;
 							//调起支付
-//							appPay.pay(appPay.wxpay,function success(){
-								order();
-//							},function fail(err){
-//								plus.nativeUI.alert("支付失败：" + err);
-//							});
+							appPay.pay(appPay.wxpay,function success(){
+//								order();
+							},function fail(code,err){
+								if(code==0){
+									plus.nativeUI.alert("支付失败：" + err);
+								}
+							});
 						}
 					}
 				},

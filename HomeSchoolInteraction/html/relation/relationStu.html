@@ -377,7 +377,7 @@
 					console.log('4.6.UserMstu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-						if(data1.RspData.stus) {
+						if(data1.RspData) {
 							for(var i = 0; i < data1.RspData.stus.length; i++) {
 								var tempStuModel = data1.RspData.stus[i];
 								tempStuModel.selectStu = 0;

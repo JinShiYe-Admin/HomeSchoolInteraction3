@@ -227,7 +227,7 @@
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
-						if(data1.RspData.userbus) {
+						if(data1.RspData) {
 							//循环找到对应的套餐代码数据，合并
 							for(var i = 0; i < orders.orderList.length; i++) {
 								var orderModel = orders.orderList[i];
