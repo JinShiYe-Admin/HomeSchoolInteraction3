@@ -76,7 +76,6 @@
 				width: 80%;
 				height: 40px;
 			}
-
 		</style>
 	</head>
 
@@ -134,60 +133,78 @@
 					});
 				});
 			});
-			
+
 			var mine = new Vue({
-					el: "#mine",
-					data: {
-						userName: personal.utname,
-						userImg: setImg(personal.imgurl),
-						settings: [{
-							name: "密码修改",
-							icon: "",
-							href: "",
-							tempID: 0,
-							cls: 'mui-icon mui-icon-locked'
-						}, {
-							name: "我的订购",
-							icon: "",
-							href: "",
-							tempID: 1,
-							cls: 'mui-icon-extra mui-icon-extra-cart'
-						},{
-							name: "关于我们",
-							icon: "",
-							href: "",
-							tempID: 2,
-							cls: 'mui-icon mui-icon-info'
-						}],
-						isMineShow: false //屏蔽或显示我的界面
+				el: "#mine",
+				data: {
+					userName: personal.utname,
+					userImg: setImg(personal.imgurl),
+					settings: [{
+						name: "密码修改",
+						icon: "",
+						href: "",
+						tempID: 0,
+						cls: 'mui-icon mui-icon-locked'
+					}, {
+						name: "关联学生",
+						icon: "",
+						href: "",
+						tempID: 3,
+						cls: 'mui-icon-extra mui-icon-extra-cart'
+					}, {
+						name: "创建账号",
+						icon: "",
+						href: "",
+						tempID: 4,
+						cls: 'mui-icon-extra mui-icon-extra-cart'
+					}, {
+						name: "我的订购",
+						icon: "",
+						href: "",
+						tempID: 1,
+						cls: 'mui-icon-extra mui-icon-extra-cart'
+					}, {
+						name: "关于我们",
+						icon: "",
+						href: "",
+						tempID: 2,
+						cls: 'mui-icon mui-icon-info'
+					}],
+					isMineShow: false //屏蔽或显示我的界面
+				},
+				methods: {
+					quitLogin: function() { //退出登录
+						closeMenu();
+						hideMenu();
 					},
-					methods: {
-						quitLogin: function() { //退出登录
-							closeMenu();
-							hideMenu();
-						},
-						jumpToDetail: function(setting) {
-							hideMenu();
-							this.isMineShow = false;
-							if(setting.tempID == 0) {
-								var tempModel = {
-									flag: 0 //0是主动修改密码，1是判断是默认密码，自动让修改
-								}
-								utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
-							} else if(setting.tempID == 1) {
-								utils.mOpenWithData("../../html/order/orderList.html", setting);
-							} else if(setting.tempID == 2) {
-//								utils.mOpenWithData("../../html/mine/about.html", setting);
-utils.mOpenWithData("../../html/relation/createStuAccount.html", setting);
+					jumpToDetail: function(setting) {
+						hideMenu();
+						this.isMineShow = false;
+						if(setting.tempID == 0) {//密码修改
+							var tempModel = {
+								flag: 0 //0是主动修改密码，1是判断是默认密码，自动让修改
 							}
-						},
-						clickHeadImg: function() {
-							this.isMineShow = false;
-							hideMenu();
-							utils.mOpenWithData("../../html/mine/headImg.html", {});
+							utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+						} else if(setting.tempID == 1) {//我的订购
+							utils.mOpenWithData("../../html/order/orderList.html", setting);
+						} else if(setting.tempID == 2) {//关于我们
+							utils.mOpenWithData("../../html/mine/about.html", setting);
+						}else if(setting.tempID == 3) {//关联学生
+							var tempModel = {
+								flag: 1 //0是自动登录后，默认进入，1是主动进去修改
+							}
+							utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+						}else if(setting.tempID == 4) {//创建账号
+							utils.mOpenWithData("../../html/relation/createStuAccount.html", setting);
 						}
+					},
+					clickHeadImg: function() {
+						this.isMineShow = false;
+						hideMenu();
+						utils.mOpenWithData("../../html/mine/headImg.html", {});
 					}
-				});
+				}
+			});
 
 			function hideMenu() {
 				console.log('侧滑执行方法执行了吗')

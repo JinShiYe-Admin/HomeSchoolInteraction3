@@ -135,11 +135,13 @@
 				transform: scaleY(.5);
 				background-color: #c8c7cc;
 			}
-			.stu-name0{
+			
+			.stu-name0 {
 				font-size: 14px;
 				color: #666;
 			}
-			.stu-name{
+			
+			.stu-name {
 				font-size: 14px;
 				color: #999999;
 			}
@@ -147,10 +149,10 @@
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>-->
+		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a v-if="headFlag ==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
 			<h1 class="mui-title" style="color: white;">关联学生</h1>
-			<a id="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
+			<a v-if="headFlag ==0" @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
 		<div id='userBusData' class="mui-content mui-fullscreen" style="background: white;">
 			<p class="p-show" v-show="userStuList.length==0">
@@ -230,6 +232,8 @@
 			var publicParameter;
 			var userPicker;
 			mui.plusReady(function() {
+				var curPage = utils.getDataFromUrl(window.location.href);
+				headData.headFlag = curPage.flag;
 				//获取个人信息
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log('personal:' + JSON.stringify(personal));
@@ -241,6 +245,41 @@
 				getUserUstu();
 				//弹出
 				userPicker = new mui.PopPicker();
+			});
+
+			var headData = new Vue({
+				el: '#headData',
+				data: {
+					headFlag: 0 //0是自动登录后，默认进入，1是主动进去修改
+				},
+				methods: {
+					sure: function() {
+						console.log('sureBtn');
+						//				var tempFlag = 0;
+						//				for(var i = 0; i < userBusData.orderList.length; i++) {
+						//					var tempStu = userBusData.orderList[i];
+						//					if(tempStu.stuModel.stuid) {
+						//						tempFlag++;
+						//					}
+						//				}
+						//				if(tempFlag == 0) {
+						//					mui.toast('请先关联学生');
+						//				} else {
+						plus.webview.open('../../html/login/index.html');
+						var wvs = plus.webview.all();
+						for(var i = 0, len = wvs.length; i < len; i++) {
+							if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+								wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+								wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+								continue;
+							}
+							plus.webview.close(wvs[i]);
+						}
+						var curr = plus.webview.currentWebview();
+						curr.close();
+						//				}
+					}
+				}
 			});
 
 			var userBusData = new Vue({
@@ -255,6 +294,10 @@
 						if(userBusData.userStuList.length == 0) {
 							mui.toast('请先关联学生');
 						} else {
+							if(model.stuModel.servstat == 0) {
+								mui.toast('当前套餐已失效，不能进行操作');
+								return;
+							}
 							var tempArray = [];
 							if(model.stuModel.stuid) {
 								var tempModel = {
@@ -285,32 +328,6 @@
 					}
 				}
 			});
-
-			document.getElementById('sure').addEventListener('tap', function() {
-//				var tempFlag = 0;
-//				for(var i = 0; i < userBusData.orderList.length; i++) {
-//					var tempStu = userBusData.orderList[i];
-//					if(tempStu.stuModel.stuid) {
-//						tempFlag++;
-//					}
-//				}
-//				if(tempFlag == 0) {
-//					mui.toast('请先关联学生');
-//				} else {
-					plus.webview.open('../../html/login/index.html');
-					var wvs = plus.webview.all();
-					for(var i = 0, len = wvs.length; i < len; i++) {
-						if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-							wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-							wvs[i].getURL().indexOf('courseIndex.html') != -1) {
-							continue;
-						}
-						plus.webview.close(wvs[i]);
-					}
-					var curr = plus.webview.currentWebview();
-					curr.close();
-//				}
-			})
 
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
