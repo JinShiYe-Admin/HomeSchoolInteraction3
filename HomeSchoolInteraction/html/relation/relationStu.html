@@ -255,6 +255,7 @@
 				methods: {
 					sure: function() {
 						console.log('sureBtn');
+						mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {});
 						//				var tempFlag = 0;
 						//				for(var i = 0; i < userBusData.orderList.length; i++) {
 						//					var tempStu = userBusData.orderList[i];
