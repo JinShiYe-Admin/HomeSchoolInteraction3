@@ -417,8 +417,14 @@
 					if(data1.RspCode == 0) {
 						if(stuModel.stuid == 0) {
 							model.stuModel = {};
+							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+							personal1.isBdCount--; //套餐是否绑定学生
+							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						} else {
 							model.stuModel = stuModel;
+							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+							personal1.isBdCount++; //套餐是否绑定学生
+							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						}
 					} else {
 						mui.toast(data1.RspTxt);
@@ -443,6 +449,9 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
+							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+							personal1.isBdCount = data1.RspData.stus.length; //套餐是否绑定学生
+							store.set(window.storageKeyName.PERSONALINFO, personal1);
 							for(var i = 0; i < userBusData.orderList.length; i++) {
 								var tempModel = userBusData.orderList[i];
 								console.log('tempModel.forid:' + tempModel.forid);

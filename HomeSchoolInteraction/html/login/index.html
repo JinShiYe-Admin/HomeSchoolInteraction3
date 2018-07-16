@@ -54,7 +54,7 @@
 			var idenfify=personal.utp;//身份 0老师，2学生，1家长
 			var isBd;//是否绑定学生
 			var hrefHome;//首页链接
-			if(personal.isBd==undefined || personal.isBd==false){
+			if(personal.isBdCount==undefined || personal.isBdCount==0){
 				isBd=false;
 			}else{
 				isBd=true;
@@ -66,7 +66,7 @@
 			};
 			var aniShow = {};
 			var nav; 
-			if(idenfify==2&&!isBd){//家长身份且没绑定学生
+			if(idenfify==1&&!isBd){//家长身份且没绑定学生
 				subpages=['../../html/relation/relationStu.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
 				hrefHome='../../html/relation/relationStu.html';
 			}else{

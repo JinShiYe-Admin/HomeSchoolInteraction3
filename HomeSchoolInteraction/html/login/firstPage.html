@@ -167,7 +167,7 @@
 							}
 							data1.RspData.userName0 = tempName;
 							data1.RspData.password0 = tempPW;
-							data1.RspData.relationStuList = []; //家长身份时，判断套餐有没有关联学生
+							data1.RspData.isBdCount = 0; //套餐是否绑定学生
 							var model_area = {
 								procode: '00', //省份code，自己添加的参数
 								proname: '全国', //省份名称，自己添加的参数
@@ -217,6 +217,9 @@
 										events.closeWaiting();
 										if(data2.RspCode == 0) {
 											if(data2.RspData) {
+												var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+												personal1.isBdCount = data2.RspData.stus.length; //套餐是否绑定学生
+												store.set(window.storageKeyName.PERSONALINFO, personal1);
 												utils.hrefSessionStorage('../../html/login/index.html', {});
 											} else {
 												var tempModel = {
