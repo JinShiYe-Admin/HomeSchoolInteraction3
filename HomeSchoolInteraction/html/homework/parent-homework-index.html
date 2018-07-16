@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>老师作业index</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-bar-tab .mui-tab-item.mui-active {
+				color: #00CFBD;
+			}
+			
+			.mui-segmented-control {
+				font-size: 15px;
+				font-weight: 400;
+				position: relative;
+				display: table;
+				overflow: hidden;
+				width: 100%;
+				table-layout: fixed;
+				border: 1px solid red;
+				border-radius: 3px;
+				background-color: transparent;
+				-webkit-touch-callout: none;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				line-height: 30px;
+				display: table-cell;
+				overflow: hidden;
+				width: 1%;
+				-webkit-transition: background-color .1s linear;
+				transition: background-color .1s linear;
+				text-align: center;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: red;
+				border-color: red;
+				border-left: 1px solid red;
+			}
+			
+			.mui-segmented-control .mui-control-item.mui-active {
+				color: #fff;
+				background-color: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 v-if="headFlag ==0" id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
+			<div v-else="" style="width: 200px;text-align: center;margin: auto;position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active tempA" href="#item1">待办公文</a>
+					<a class="mui-control-item tempA" href="#item2">已办公文</a>
+				</div>
+			</div>
+			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
+				<span class="mui-icon mui-icon-home"></span>
+				<span id="flag0" class="mui-tab-label">布置作业</span>
+			</a>
+			<a class="mui-tab-item" href="../../html/homework/teacher-indexCorrect.html">
+				<span class="mui-icon mui-icon-email"></span>
+				<span id="flag1" class="mui-tab-label">批改作业</span>
+			</a>
+			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm.html">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span id="flag2" class="mui-tab-label">作业报表</span>
+			</a>
+		</nav>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			//mui初始化
+			mui.init();
+			var subpages = ['../../html/homework/teacher-indexPublish.html', '../../html/homework/teacher-indexCorrect.html', '../../html/homework/teacher-indexForm.html'];
+			var subpage_style = {
+				top: '45px',
+				bottom: '51px'
+			};
+
+			var aniShow = {};
+			var headData = new Vue({
+				el: '#headData',
+				data: {
+					headFlag: 0, //0显示标题，1显示分类显示，作业报表
+					titleName: '布置作业'
+				},
+				methods: {
+
+				}
+			});
+
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				for(var i = 0; i < 3; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if(i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+					}
+					self.append(sub);
+				}
+			});
+			//当前激活选项
+			var activeTab = subpages[0];
+			var title = document.getElementById("title");
+			//选项卡点击事件
+			mui('.mui-bar-tab').on('tap', 'a', function(e) {
+				var targetTab = this.getAttribute('href');
+				if(targetTab == activeTab) {
+					return;
+				}
+				//更换标题
+				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+				var tempFlag = this.querySelector('.mui-tab-label').id;
+				if(tempFlag == 'flag0') {
+					headData.headFlag = 0;
+					headData.titleName = '布置作业';
+				} else if(tempFlag == 'flag1') {
+					headData.headFlag = 0;
+					headData.titleName = '作业列表';
+				} else {
+					headData.headFlag = 1;
+					headData.titleName = '作业报表';
+				}
+				console.log('tempFlag:' + tempFlag + ',headData.headFlag:' + headData.headFlag);
+				//显示目标选项卡
+				//若为iOS平台或非首次显示，则直接显示
+				if(mui.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab);
+				} else {
+					//否则，使用fade-in动画，且保存变量
+					var temp = {};
+					temp[targetTab] = "true";
+					mui.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 300);
+				}
+				//隐藏当前;
+				plus.webview.hide(activeTab);
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+			});
+			//自定义事件，模拟点击“首页选项卡”
+			document.addEventListener('gohome', function() {
+				var defaultTab = document.getElementById("defaultTab");
+				//模拟首页点击
+				mui.trigger(defaultTab, 'tap');
+				//切换选项卡高亮
+				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+				if(defaultTab !== current) {
+					current.classList.remove('mui-active');
+					defaultTab.classList.add('mui-active');
+				}
+			});
+		</script>
+	</body>
+
+</html>

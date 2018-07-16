@@ -568,7 +568,16 @@
 							}
 
 						} else if(index == 5) { //作业管理
-							utils.mOpenWithData("../../html/homework/teacher-index.html", {});
+							console.log('personal.utp===='+personal.utp)
+							//身份 0老师，2学生，1家长
+							if(personal.utp==0){//老师
+								utils.mOpenWithData("../../html/homework/teacher-index.html", {});
+							}else if(personal.utp==1){//家长
+								utils.mOpenWithData("../../html/homework/parent-homework-index.html", {});
+							}else{
+								mui.toast('此功能暂未开放');
+							}
+							
 						}else {
 							mui.toast('此功能暂未开放');
 						}
