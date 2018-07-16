@@ -245,6 +245,22 @@
 				getUserUstu();
 				//弹出
 				userPicker = new mui.PopPicker();
+				if(curPage.returnFlag == 1) {
+					var backButtonPress = 0;
+					//重写返回键
+					mui.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				}
 			});
 
 			var headData = new Vue({
