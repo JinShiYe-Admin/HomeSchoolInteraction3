@@ -152,7 +152,7 @@
 		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<a v-if="headFlag ==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
 			<h1 class="mui-title" style="color: white;">关联学生</h1>
-			<a v-if="headFlag ==0" @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
+			<a @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
 		<div id='userBusData' class="mui-content mui-fullscreen" style="background: white;">
 			<p class="p-show" v-show="userStuList.length==0">
@@ -271,30 +271,33 @@
 				methods: {
 					sure: function() {
 						console.log('sureBtn');
-						mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {});
-						//				var tempFlag = 0;
-						//				for(var i = 0; i < userBusData.orderList.length; i++) {
-						//					var tempStu = userBusData.orderList[i];
-						//					if(tempStu.stuModel.stuid) {
-						//						tempFlag++;
-						//					}
-						//				}
-						//				if(tempFlag == 0) {
-						//					mui.toast('请先关联学生');
-						//				} else {
-						plus.webview.open('../../html/login/index.html');
-						var wvs = plus.webview.all();
-						for(var i = 0, len = wvs.length; i < len; i++) {
-							if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-								wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-								wvs[i].getURL().indexOf('courseIndex.html') != -1) {
-								continue;
+						if(headData.headFlag == 0) {
+							plus.webview.open('../../html/login/index.html');
+							var wvs = plus.webview.all();
+							for(var i = 0, len = wvs.length; i < len; i++) {
+								if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+									wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+									wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+									continue;
+								}
+								plus.webview.close(wvs[i]);
 							}
-							plus.webview.close(wvs[i]);
+							var curr = plus.webview.currentWebview();
+							curr.close();
+						} else {
+							var tempFlag = 0;
+							for(var i = 0; i < userBusData.orderList.length; i++) {
+								var tempStu = userBusData.orderList[i];
+								if(tempStu.stuModel.stuid) {
+									tempFlag++;
+								}
+							}
+							if(tempFlag == 0) {
+								mui.toast('请先关联学生');
+							} else {
+								mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {});
+							}
 						}
-						var curr = plus.webview.currentWebview();
-						curr.close();
-						//				}
 					}
 				}
 			});
