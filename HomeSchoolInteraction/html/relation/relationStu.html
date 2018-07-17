@@ -275,12 +275,14 @@
 							plus.webview.open('../../html/login/index.html');
 							var wvs = plus.webview.all();
 							for(var i = 0, len = wvs.length; i < len; i++) {
-								if(wvs[i].getURL().indexOf('index.html') != -1 ||
-									wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-									wvs[i].getURL().indexOf('relationStu.html') != -1 ||
-									wvs[i].getURL().indexOf('helpStudyIndex.html') != -1 ||
-									wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-									wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+								var url=wvs[i].getURL();
+								console.log('wvs[i].getURL()=========='+url)
+								if(url.indexOf('index.html') != -1 ||
+									url.indexOf('homeSchoolIndex.html') != -1 ||
+									url.indexOf('relationStu.html') != -1 ||
+									url.indexOf('helpStudyIndex.html') != -1 ||
+									url.indexOf('sciedu_home.html') != -1 ||
+									url.indexOf('courseIndex.html') != -1) {
 									continue;
 								}
 								plus.webview.close(wvs[i]);

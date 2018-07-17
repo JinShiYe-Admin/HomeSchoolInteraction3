@@ -91,11 +91,13 @@
 			<div class="mui-row" style="background: #EEEEEE;height: 20px;"></div>
 			<div class="mui-row btns">
 				<ul class="mui-table-view" style="margin-bottom: 61px;">
-					<li v-for="setting in settings" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
-						<a class="mui-navigate-right">
-							<span :class="setting.cls"></span> {{setting.name}}
-						</a>
-					</li>
+					<template v-for="setting in settings" >
+						<li v-show="setting.qx.indexOf(utp)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
+							<a class="mui-navigate-right">
+								<span :class="setting.cls"></span> {{setting.name}}
+							</a>
+						</li>
+					</template>
 				</ul>
 				<div class="out-btn">
 					<button id="close-btn" type="button" class="mui-btn mui-btn-danger " style="width: 100%;height:40px;">退出登录</button>
@@ -152,33 +154,39 @@
 						icon: "",
 						href: "",
 						tempID: 0,
-						cls: 'mui-icon mui-icon-locked'
+						cls: 'mui-icon mui-icon-locked',
+						qx:"0,1,2"
 					}, {
 						name: "关联学生",
 						icon: "",
 						href: "",
 						tempID: 3,
-						cls: 'mui-icon-extra mui-icon-extra-cart'
+						cls: 'mui-icon-extra mui-icon-extra-cart',
+						qx:"1"
 					}, {
 						name: "创建账号",
 						icon: "",
 						href: "",
 						tempID: 4,
-						cls: 'mui-icon-extra mui-icon-extra-cart'
+						cls: 'mui-icon-extra mui-icon-extra-cart',
+						qx:"1"
 					}, {
 						name: "我的订购",
 						icon: "",
 						href: "",
 						tempID: 1,
-						cls: 'mui-icon-extra mui-icon-extra-cart'
+						cls: 'mui-icon-extra mui-icon-extra-cart',
+						qx:"1"
 					}, {
 						name: "关于我们",
 						icon: "",
 						href: "",
 						tempID: 2,
-						cls: 'mui-icon mui-icon-info'
+						cls: 'mui-icon mui-icon-info',
+						qx:"0,1,2"
 					}],
-					isMineShow: false //屏蔽或显示我的界面
+					isMineShow: false,//屏蔽或显示我的界面
+					utp:personal.utp//身份信息 身份 0老师，2学生，1家长
 				},
 				methods: {
 					jumpToDetail: function(setting) {
@@ -195,7 +203,7 @@
 							utils.mOpenWithData("../../html/mine/about.html", setting);
 						}else if(setting.tempID == 3) {//关联学生
 							var tempModel = {
-								flag: 1 //0是自动登录后，默认进入，1是主动进去修改
+								flag: 0
 							}
 							utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
 						}else if(setting.tempID == 4) {//创建账号
