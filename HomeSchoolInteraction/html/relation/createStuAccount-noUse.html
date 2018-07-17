@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+	<!--  创建学生账号   -->
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+			
+			.mui-content{
+				background: #FFF;
+			}
+			
+			.line:before {
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 15px;
+				height: 1px;
+				content: '';
+				-webkit-transform: scaleY(.2);
+				transform: scaleY(.2);
+				background-color: #c8c7cc;
+			}
+			
+			.head-img{
+				width: 50px;
+				height:50px;
+				border-radius: 100%;
+			}
+			
+			.mui-media-body{
+				margin-left: 60px;
+			}
+			
+			.mui-media-body p{
+				color: #000;
+			}
+			
+			.mui-ellipsis-title{
+				font-size: 14px;
+				margin-bottom: 5px;
+			}
+			
+			.row-title{
+				background: #F2F2F2;
+			}
+			
+			.mui-content-padded{
+				margin-left: 15px;
+			}
+			
+			.mui-content-padded-title{
+				font-size: 14px;
+				color: #ff9900;
+				margin:10px 0 10px 15px;
+			}
+			
+			.mui-table-view-cell{
+				font-size: 14px;
+			}
+			
+			input[disabled]{
+				color:#000;opacity:1;
+			}
+			
+			input::-webkit-input-placeholder {
+		         font-size: 14px;
+       	    }
+       	    
+       	    .mui-input-row label {
+       	    	padding:11px 0 11px 10px !important;
+			    width: 23%;
+			    font-size: 14px;
+			    line-height: 1.4;
+			}
+		    .mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea {
+			    float: left;
+			    width: 53%;
+			    font-size: 14px;
+			    padding: 10px 0;
+			}
+			
+			.xggl-btn,.jccf-btn{
+				background: transparent !important;
+				color:#00CFBD !important;
+				border: 1px solid #00CFBD !important;
+				height: 25px !important; 
+				width: 20% !important; 
+				font-size: 12px !important;
+				padding: 5px 10px !important;
+				margin-top: 8px !important;
+				right: 2% !important;
+			}
+		    
+		    .zhycz_div{
+		    	vertical-align: middle;
+		    	float: right;
+		    	background: transparent !important;
+				color:#FE6D6E !important;
+				font-size: 11px !important;
+				border: 0 !important;
+				height: 25px !important; 
+				width: 23% !important; 
+				padding: 5px 5px !important;
+				margin-top: 6px !important;
+				right: 2% !important;
+		    }
+		    
+		    .bcz-img {
+		    	vertical-align: middle;
+			    width: 12px;
+			    height: 12px;
+			}
+		    .mui-icon-clear{
+		    	display: none;
+		    }
+		    
+		    .bottom-row {
+				position: fixed;
+				bottom: 0;
+				z-index: 3;
+				background: #FFFFFF;
+				width: 100%;
+				height: 50px;
+			}
+			
+			.pay-btn {
+				border: #00CFBD;
+				background: #00CFBD;
+				height: 50px;
+				border-radius: 0;
+			}
+		    
+		    /*div row line*/ 
+		    .mui-input-group:before {
+		    	left: 15px;
+			    transform: scaleY(.3);
+			}
+		    .mui-input-group:after {
+		    	left: 15px;
+			    transform: scaleY(.0);
+			}
+			.mui-input-row:after {
+				left: 15px;
+			    transform: scaleY(.3);
+			}
+			.mui-table-view:before {
+			    left: 15px;
+			    transform: scaleY(.3);
+			}
+			.mui-table-view:after {
+			    transform: scaleY(.3);
+			}
+			/*ul line*/	
+		    .mui-table-view-cell:after {
+			    height: 0px;
+			}
+			
+		     /*input radio*/
+		    
+		    .check-img{
+		    	vertical-align: middle;
+		    	width: 25px;
+		    	height: 25px;
+		    	margin-left: 15px;
+		    }
+			
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<h1 class="mui-title" style="color: white;">创建学生账号</h1>
+		</header>
+		<div id='scroll' class="mui-content">
+			<div class="mui-row">
+				<h5 class="mui-content-padded">家长信息</h5>
+				<div class="mui-input-row line">
+					<div style="margin: 10px 0 0 15px;">
+						<img class="mui-media-object mui-pull-left head-img" src="../../img/homeSchool/u296.png">
+						<div class="mui-media-body">
+							<p class='mui-ellipsis-title'>王家长</p>
+							<p class='mui-ellipsis'>132****2233</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-row row-title" style="height: 34px;">
+				<h5 class="mui-content-padded-title">套餐关联的学生信息</h5>
+			</div>
+			<div id="info">
+				<div class="mui-row" style="margin-top: 10px;" v-for='(package,index) in packageList'>
+					<h5 class="mui-content-padded">{{package.cname}}</h5>
+					<form  class="mui-input-group" style="display: none;">
+						<div class="mui-input-row">
+							<label>关联学生</label>
+							<input  name='glxs' type="text" class="mui-input-clear stu-name" value="" disabled/>
+							<button  type="button" class="mui-btn mui-btn-block mui-btn-primary xggl-btn" @click="modifyStu($event,index)">修改关联</button>
+						</div>
+						<div class="mui-input-row">
+							<label>账号</label>
+							<input type="text" class="mui-input-clear" placeholder="请输入学生账号" value="" v-on:input='inputFunc($event,index)'/>
+							<button  v-show='package.checkBtn' @click="checkeAccount($event,index)" type="button" class="mui-btn mui-btn-block mui-btn-primary jccf-btn">检查</button>
+							<div  v-show='package.accountIsExists'  class="zhycz_div"><img src="../../img/homeSchool/warning.png" class="bcz-img"/>账号已存在</div>
+						</div> 
+						<!--<div class="mui-input-row">
+							<label>确认密码</label>
+							<input id="confirmPassword" name='confirmPassword' type="password" class="mui-input-clear" placeholder="请输入确认密码" />
+						</div>-->
+					</form>
+					<ul class="mui-table-view" >
+						<li class="mui-table-view-cell" @click='checkStu($event,index,stuIndex)' v-for='(sut,stuIndex) in stuList'>
+							<template v-if="package.stuSelect==stuIndex">
+								<img class="check-img" src="../../img/homeSchool/Radio_sel.png"/>{{sut.stuname}}
+							</template>
+							<template v-else>
+								<img class="check-img"  src="../../img/homeSchool/Radio_def.png"/>{{sut.stuname}}
+							</template>
+						</li>
+					</ul> 
+				</div>
+				 
+				<div class="mui-row bottom-row">
+					<button class="mui-btn mui-btn-primary mui-col-xs-12 mui-col-sm-12 pay-btn" @click="payAction()" :disabled="isDisabled">确&emsp;定</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script>
+			var personal;
+			var publicParameter;
+			var info ;
+			mui.plusReady(function() {
+				//获取个人信息
+				personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				
+				info =new Vue({ 
+					el:'#info',
+					data:{
+						isDisabled:true,
+						packageList:[],
+						stuList:[]
+						
+					},
+					methods:{
+						checkeAccount:function(ev,index){//检查账号是否重复
+							var value=$(ev.target).parent().find('input').val();
+							if(!value==''){//输入框有值
+								//TODO 检查账号是否重复
+								//if 重复
+								var a =false;
+								if(a){
+									var obj=this.packageList[index];
+									obj.accountIsExists=true;//账号重复是否显示
+									obj.checkBtn=false;//检查按钮是否显示
+									this.$set(this.packageList, index, obj);
+								}else{
+									//将账号放入选择的学生对象中
+									var obj=this.packageList[index];
+									obj.checkedStudent['account']=value;
+									this.$set(this.packageList, index, obj);
+								}
+									
+							}
+						},
+						inputFunc:function(ev,index){//input输入框事件
+							var value=$(ev.target).val();
+							if(value==''){
+								var obj=this.packageList[index];
+									obj.accountIsExists=false;//账号重复是否显示
+									obj.checkBtn=true;//检查按钮是否显示
+									this.$set(this.packageList, index, obj);
+							}
+						},
+						modifyStu:function(ev,index){//修改关联
+							var btnArray = ['取消', '确认'];
+							var parent=this;
+							mui.confirm('您确定要修改关联学生吗？', '校讯通', btnArray, function(e) {
+								if (e.index == 1) {
+									//清空表单显示选择列表
+									var a =$(ev.target).parent().parent().find('input[type=text]');
+									$(a).each(function(){//清空form 的值
+										$(this).val(''); 
+									})
+									$(ev.target).parent().parent().css('display','none');
+									$(ev.target).parent().parent().parent().find('ul').css('display','inherit');
+									this.isDisabled=true;
+									//去掉packageList中的 选中学生
+									var obj=parent.packageList[index];
+									obj.stuSelect=-1;
+									Vue.delete(obj,'checkedStudent')
+									parent.$set(parent.packageList, index, obj);
+									//设置套餐可选择学生 选择的套餐索引为-1
+									parent.packageList.canCheck=true;
+									parent.packageList.packageNum=-1;
+								} 
+							})
+						},
+						checkStu:function(ev,index,stuIndex){//li点击选中学生
+							var text=$(ev.target).text().trim();
+							var btnArray = ['取消', '确认'];
+							var parent=this;
+							//设置选中图片
+							var obj=parent.packageList[index];
+							obj.stuSelect=stuIndex;
+							parent.$set(parent.packageList, index, obj);
+							if(parent.packageList.canCheck){
+								mui.confirm('您确定要关联	'+text+'	吗？', '校讯通', btnArray, function(e) {
+									if (e.index == 1) {
+										//显示表单和隐藏选择列表
+										$(ev.target).parent().css('display','none');
+										$(ev.target).parent().parent().find('form').css('display','inherit');
+										$(ev.target).parent().parent().find('form').find('input[class="mui-input-clear stu-name"]').val(text)
+										parent.isDisabled=false;
+										//设置选中学生
+										var obj=parent.packageList[index];
+										obj['checkedStudent']=parent.stuList[stuIndex];
+										parent.$set(parent.packageList, index, obj);
+										//设置其他套餐禁选学生
+										parent.packageList.canCheck=false;
+										parent.packageList.packageNum=index;
+									}else{
+										//设置非选中图片
+										var obj=parent.packageList[index];
+										obj.stuSelect=-1;
+										parent.$set(parent.packageList, index, obj);
+									}
+								})
+							}else{
+								mui.toast("您的套餐还没绑定完成");
+								var obj=parent.packageList[index];
+								obj.stuSelect=-1;
+								parent.$set(parent.packageList, index, obj);
+							}
+						},
+						payAction:function(){
+							//TODO 设置套餐可选择人员  套餐下选中的学生，提交状态为已提交
+							//this.packageList.canCheck=true;
+							console.log("packageList========"+JSON.stringify(this.packageList))
+							console.log("提交的套餐信息========"+JSON.stringify(this.packageList[this.packageList.packageNum]))
+						}
+					},
+					mounted:function(){
+						getUserBusFunc();
+						getUserMstu();
+					}
+				});
+			});
+			
+			
+			//4.1.用户已订购套餐及功能扩展栏目
+			function getUserBusFunc() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+					console.log('GetUserBusFunc:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData) {
+							info.packageList = [].concat(data1.RspData.userbus);
+							for(var i =0;i<info.packageList.length;i++){
+								info.packageList[i]['stuSelect']=-1;//设置每个套餐下学生选中的索引数 -1代表没选择
+								info.packageList[i]['accountIsExists']=false;//账号已存在提示是否显示
+								info.packageList[i]['checkBtn']=true;//检查按钮是否显示
+								info.packageList['canCheck']=true;//套餐是否可以选择人员
+								info.packageList['packageNum']=-1;//当前正在操作绑定套餐的索引数 -1代表没选择
+							}
+							console.log("packageList:"+JSON.stringify(info.packageList))
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+
+			//4.6.获取用户手机关联的学生列表
+			function getUserMstu() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				events.showWaiting();
+				//获取验证码
+				//发送网络请求，data为网络返回值
+				postDataEncry('UserMstu', enData1, comData1, 0, function(data1) {
+					console.log('UserMstu:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData==null){
+							console.log('返回数据为空')
+						}else{
+							info.stuList = [].concat(data1.RspData.stus);
+							 console.log("stuList:"+JSON.stringify(info.stuList))
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>
