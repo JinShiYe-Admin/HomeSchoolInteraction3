@@ -6,7 +6,7 @@ var compress = (function(mod) {
 		var options = {
 			src: picPath, //压缩转换原始图片的路径
 			dst: getSavePath(picPath), //压缩转换目标图片的路径
-			overwrite: true,
+			overwrite: true,//覆盖生成新文件
 			format:'jpg'
 		}
 		//获取图片类型
@@ -39,7 +39,7 @@ var compress = (function(mod) {
 		var options = {
 			src: picPath, //压缩转换原始图片的路径
 			dst: getSavePath(picPath), //压缩转换目标图片的路径
-			overwrite: true
+			overwrite: true//覆盖生成新文件
 		}
 		//console.log(123)
 		//获取图片类型
@@ -171,7 +171,8 @@ var compress = (function(mod) {
 	mod.compressImageTo_xx = function(data, successCallBack, errorCallBack) {
 		var optionWith = 'auto';
 		var optionHeight = 'auto';
-		var sizeMax = 1048576; //1MB
+//		var sizeMax = 1048576; //1MB
+		var sizeMax = 524288;
 		if(data.width) {
 			optionWith = data.width;
 		}
@@ -203,22 +204,24 @@ var compress = (function(mod) {
 				//var size = event.size; // 压缩转换后图片的大小，单位为字节（Byte）
 				//var width = event.width; // 压缩转换后图片的实际宽度，单位为px
 				//var height = event.height; // 压缩转换后图片的实际高度，单位为px
-				//console.log('compressImageTo_xx 成功 target:' + event.target + ' size:' + event.size + ' width:' + event.width + ' height:' + event.height);
+				console.log('compressImageTo_xx 成功 target:' + event.target + ' size:' + event.size + ' width:' + event.width + ' height:' + event.height);
 				if(event.size <= sizeMax) {
 					successCallBack(event);
 				} else {
-					var data = {
-						path: event.target,
-						dst: event.target,
+					var data1 = {
+						path: data.path,
+						dst: options.dst,
 						sizemax: sizeMax,
 					}
 
 					if(event.width > event.height) { //宽>=长
-						data.width = parseInt(event.width / 2) + "px";
+//						data1.width = parseInt(event.width / 2) + "px";
+						data1.width = "2048px";
 					} else { //宽<长
-						data.height = parseInt(event.height / 2) + "px";
+//						data1.height = parseInt(event.height / 2) + "px";
+						data1.height = "2048px";
 					}
-					mod.compressImageTo_xx(data, successCallBack, errorCallBack);
+					mod.compressImageTo_xx(data1, successCallBack, errorCallBack);
 				}
 			},
 			function(error) {

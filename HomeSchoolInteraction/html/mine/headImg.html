@@ -255,7 +255,7 @@
 				peopleInfo.peopleHeadImg = tempImg;
 				personal.imgurl = tempImg;
 				store.set(window.storageKeyName.PERSONALINFO, personal);
-				mui.fire(plus.webview.currentWebview().opener(), 'setHeadImg', {
+				mui.fire(plus.webview.currentWebview().opener(), 'mine_setHeadImg', {
 					imgurl: tempImg
 				});
 			}
@@ -268,8 +268,8 @@
 					overwrite: true,
 					format: '.jpg', //压缩转换后的图片格式
 					quality: 50,
-					width: "50%", //缩放图片的宽度
-					height: "50%"
+					width: "100px", //缩放图片的宽度
+					height: "100px"
 				}
 
 				plus.zip.compressImage(options,

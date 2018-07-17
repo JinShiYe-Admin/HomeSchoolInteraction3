@@ -150,7 +150,7 @@
 
 	<body>
 		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a v-if="headFlag ==1" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<a v-if="headFlag ==0" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
 			<h1 class="mui-title" style="color: white;">关联学生</h1>
 			<a @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
@@ -301,6 +301,7 @@
 								mui.toast('请先关联学生');
 							} else {
 								mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {});
+								mui.back();
 							}
 						}
 					}
