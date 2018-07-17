@@ -80,7 +80,7 @@
 				</div>
 			</div>
 			<div id="contentData">
-				<template>
+				<template v-if="showFlag==0">
 					<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: white;padding-left: 7px;">
 						<li class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3" style="border: 0px;">
 							<a href="#" @click="clickFunction(0)">
@@ -140,478 +140,494 @@
 							</a>
 						</li>
 					</ul>
+				</template>
+				<template v-else="">
+					<p>您还没有订购套餐或者关联学生，请去个人中心设置</p>
+				</template>
 			</div>
-			</template>
-		</div>
 
-		<script src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-		<script type="text/javascript" src="../../js/utils/vue.js"></script>
-		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-		<!--加密-->
-		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-		<!---->
-		<script src='../../js/libs/crypto-js/require.js'></script>
-		<script src='../../js/utils/signHmacSHA1.js'></script>
-		<script src='../../js/utils/sortSign.js'></script>
-		<script src="../../js/storageKeyName.js"></script>
-		<script src="../../js/utils/store.js"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
-		<script src="../../js/utils/events.js"></script>
-		<script src="../../js/libs/jquery.js"></script>
-		<script type="text/javascript">
-			mui.init({
-				statusBarBackground: '#00CFBD',
-				swipeBack: false,
-				beforeback: back
-			});
+			<script src="../../js/mui.min.js"></script>
+			<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+			<script type="text/javascript" src="../../js/utils/vue.js"></script>
+			<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+			<!--加密-->
+			<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+			<!---->
+			<script src='../../js/libs/crypto-js/require.js'></script>
+			<script src='../../js/utils/signHmacSHA1.js'></script>
+			<script src='../../js/utils/sortSign.js'></script>
+			<script src="../../js/storageKeyName.js"></script>
+			<script src="../../js/utils/store.js"></script>
+			<script src="../../js/publicProtocolNew.js"></script>
+			<script src="../../js/utils/events.js"></script>
+			<script src="../../js/libs/jquery.js"></script>
+			<script type="text/javascript">
+				mui.init({
+					statusBarBackground: '#00CFBD',
+					swipeBack: false,
+					beforeback: back
+				});
 
-			function back() {
-				if(showMenu) {
-					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-					closeMenu();
-					return false;
-				} else {
-					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
-					menu.close('none');
-					return true;
+				function back() {
+					if(showMenu) {
+						//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+						closeMenu();
+						return false;
+					} else {
+						//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+						menu.close('none');
+						return true;
+					}
 				}
-			}
-			//获取个人信息
-			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			console.log('personal:' + JSON.stringify(personal));
-			var main, menu, mask = mui.createMask(_closeMenu);
-			var showMenu = false,
-				mode = 'all-move';
-			//首先改变移动标志
-			slideTogether = true;
-			//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
-			//						menu.setStyle({
-			//							left: '-70%'
-			//						});
-			mui.plusReady(function() {
-				if(mui.os.android){
-					var info = plus.push.getClientInfo();
-					//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
-					//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
-					//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
-					//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
-					plus.push.addEventListener( "receive", function( msg ) {
+				//获取个人信息
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				var main, menu, mask = mui.createMask(_closeMenu);
+				var showMenu = false,
+					mode = 'all-move';
+				//首先改变移动标志
+				slideTogether = true;
+				//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
+				//						menu.setStyle({
+				//							left: '-70%'
+				//						});
+				mui.plusReady(function() {
+					if(personal.utp == 1) { //0老师，2学生，1家长
+						//4.1.用户已订购套餐及功能扩展栏目
+						getUserBusFunc();
+					}
+					if(mui.os.android) {
+						var info = plus.push.getClientInfo();
+						//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
+						//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
+						//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
+						//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
+						plus.push.addEventListener("receive", function(msg) {
 							//放置安卓角标
-							try{
+							try {
 								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
 								var context = plus.android.runtimeMainActivity();
 								ShortcutBadger.applyCount(context, 1);
+							} catch(err) {
+								console.log('类加载出错：' + err)
 							}
-							catch(err){
-								console.log('类加载出错：'+err)
-							}
-							console.log('msg.title========'+JSON.stringify(msg))
+							console.log('msg.title========' + JSON.stringify(msg))
 							//设置通知栏消息
-						    var options = {cover:false,sound:'system'};
-						    if(JSON.parse(msg.content).body==undefined){//非标准json格式
-						    	plus.push.createMessage(msg.content, msg.content, options );
-						    }else{//使用封装的标准json格式
-						    	plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
-						    }
-	
-				    } ,false);
-					plus.push.addEventListener( "click", function ( msg ) {
-						//清空app角标
-						try{
-							 var context = plus.android.runtimeMainActivity();
-							 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-							 ShortcutBadger.removeCount(context);
-						}
-						catch(err){
-							console.log('类加载出错：'+err)
-						}
-	//					console.log('msg:'+JSON.stringify(msg))
-						console.log('appname:'+msg.title)
-						console.log('title:'+msg.content)
-						console.log('body:'+JSON.stringify(msg.payload))
-						console.log('body.title:'+JSON.parse(msg.payload).title)
-						console.log('body.content:'+JSON.parse(msg.payload).content)
-						console.log('body.payload:'+JSON.parse(msg.payload).payload)
-					} ,false); 
-					
-				}
-				
-				
-				//安卓的连续点击两次退出程序
-//				alert('Hbuildr版本：8.8.3，运行版本:'+plus.runtime.version)
-				var backButtonPress = 0;
-				//重写返回键
-				mui.back = function(event) {
-					backButtonPress++;
-					if(backButtonPress > 1) {
-						plus.runtime.quit();
-					} else {
-						plus.nativeUI.toast('再按一次退出应用');
-					}
-					setTimeout(function() {
-						backButtonPress = 0;
-					}, 1000);
-					return false;
-				};
-				//12.获取某人未读学校通知个数
-				getNoReadNoticeCntByMan();
-				//10.获取某用户的定制城市
-				//				getPersonCitysByUser();
+							var options = {
+								cover: false,
+								sound: 'system'
+							};
+							if(JSON.parse(msg.content).body == undefined) { //非标准json格式
+								plus.push.createMessage(msg.content, msg.content, options);
+							} else { //使用封装的标准json格式
+								plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options);
+							}
 
-				main = plus.webview.currentWebview();
-				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
-				setTimeout(function() {
-					//侧滑菜单默认隐藏，这样可以节省内存；
-					menu = mui.preload({
-						id: '../../html/homeSchool/mine.html',
-						url: '../../html/homeSchool/mine.html',
-						styles: {
-							left: 0,
-							width: '70%',
-							zindex: 9997
+						}, false);
+						plus.push.addEventListener("click", function(msg) {
+							//清空app角标
+							try {
+								var context = plus.android.runtimeMainActivity();
+								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+								ShortcutBadger.removeCount(context);
+							} catch(err) {
+								console.log('类加载出错：' + err)
+							}
+							//					console.log('msg:'+JSON.stringify(msg))
+							console.log('appname:' + msg.title)
+							console.log('title:' + msg.content)
+							console.log('body:' + JSON.stringify(msg.payload))
+							console.log('body.title:' + JSON.parse(msg.payload).title)
+							console.log('body.content:' + JSON.parse(msg.payload).content)
+							console.log('body.payload:' + JSON.parse(msg.payload).payload)
+						}, false);
+
+					}
+
+					//安卓的连续点击两次退出程序
+					//				alert('Hbuildr版本：8.8.3，运行版本:'+plus.runtime.version)
+					var backButtonPress = 0;
+					//重写返回键
+					mui.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+					//12.获取某人未读学校通知个数
+					getNoReadNoticeCntByMan();
+
+					main = plus.webview.currentWebview();
+					//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
+					setTimeout(function() {
+						//侧滑菜单默认隐藏，这样可以节省内存；
+						menu = mui.preload({
+							id: '../../html/homeSchool/mine.html',
+							url: '../../html/homeSchool/mine.html',
+							styles: {
+								left: 0,
+								width: '70%',
+								zindex: 9997
+							}
+						});
+					}, 300);
+
+					window.addEventListener('home_setHeadImg', function(data) {
+						tempHead.headImg = data.detail.imgurl;
+					});
+
+					var tempHead = new Vue({
+						el: "#tempHead",
+						data: {
+							headImg: setImg(personal.imgurl)
+						},
+						methods: {
+							clickLeftImg: function() {
+								console.log('indexweeeeeeeeee:');
+								openMenu();
+							}
 						}
 					});
-				}, 300);
-
-				window.addEventListener('home_setHeadImg', function(data) {
-					tempHead.headImg = data.detail.imgurl;
 				});
-
-				var tempHead = new Vue({
-					el: "#tempHead",
-					data: {
-						headImg: setImg(personal.imgurl)
-					},
-					methods: {
-						clickLeftImg: function() {
-							console.log('indexweeeeeeeeee:');
-							openMenu();
-						}
+				window.addEventListener('refush_count1', function() {
+					console.log('refush_count000');
+					//4.1.用户已订购套餐及功能扩展栏目
+					getUserBusFunc();
+				});
+				//4.1.用户已订购套餐及功能扩展栏目
+				function getUserBusFunc() {
+					personal = store.get(window.storageKeyName.PERSONALINFO);
+					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+					var enData1 = {};
+					//不需要加密的数据
+					var comData1 = {
+						uuid: publicParameter.uuid, //用户设备号
+						uid: personal.uid, //用户账号
+						utoken: personal.utoken, //用户令牌
+						appid: publicParameter.appid //系统所分配的应用ID
 					}
+					events.showWaiting();
+					//发送网络请求，data为网络返回值
+					postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+						console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
+						events.closeWaiting();
+						if(data1.RspCode == 0) {
+							if(data1.RspData) {
+								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								if(personal.packageCount > 0 && personal.isBdCount > 0) {
+									console.log('showFlag=0');
+									contentData.showFlag = 0;
+								} else {
+									console.log('showFlag=01');
+									contentData.showFlag = 1;
+								}
+							}else{
+								personal.packageCount = 0; //套餐是否绑定学生
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								contentData.showFlag = 1;
+							}
+						} else {
+							mui.toast(data1.RspTxt);
+						}
+					});
+				}
+				//关闭侧滑
+				window.addEventListener('closeMinePage', function(data) {
+					closeMenu();
 				});
-			});
-			//关闭侧滑
-			window.addEventListener('closeMinePage', function(data) {
-				closeMenu();
-			});
-			//获取未读数
-			window.addEventListener('getNoticeNoReadCnt', function(data) {
-				//12.获取某人未读学校通知个数
-				getNoReadNoticeCntByMan();
-			});
+				//获取未读数
+				window.addEventListener('getNoticeNoReadCnt', function(data) {
+					//12.获取某人未读学校通知个数
+					getNoReadNoticeCntByMan();
+				});
 
-			//阅读了一条未读状态的通知数据
-			window.addEventListener('readNoticeList', function(data) {
-				contentData.NoReadCnt--;
-			});
+				//阅读了一条未读状态的通知数据
+				window.addEventListener('readNoticeList', function(data) {
+					contentData.NoReadCnt--;
+				});
 
-			window.addEventListener('hideMenu', function(data) {
-				console.log('侧滑执行方法')
-				closeMenu();
-			});
+				window.addEventListener('hideMenu', function(data) {
+					console.log('侧滑执行方法')
+					closeMenu();
+				});
 
-			/**
-			 * 显示菜单菜单
-			 */
-			function openMenu() {
-				if(!showMenu) {
-					//侧滑菜单处于隐藏状态，则立即显示出来；
-					//显示完毕后，根据不同动画效果移动窗体；
-					menu.show('none', 0, function() {
+				/**
+				 * 显示菜单菜单
+				 */
+				function openMenu() {
+					if(!showMenu) {
+						//侧滑菜单处于隐藏状态，则立即显示出来；
+						//显示完毕后，根据不同动画效果移动窗体；
+						menu.show('none', 0, function() {
+							switch(mode) {
+								case 'main-move':
+									//主窗体开始侧滑；
+									main.setStyle({
+										left: '70%',
+										transition: {
+											duration: 150
+										}
+									});
+									break;
+								case 'menu-move':
+									menu.setStyle({
+										left: '0%',
+										transition: {
+											duration: 10
+										}
+									});
+									break;
+								case 'all-move':
+									main.setStyle({
+										left: '70%',
+										transition: {
+											duration: 150
+										}
+									});
+									menu.setStyle({
+										left: '0%',
+										transition: {
+											duration: 10
+										}
+									});
+									break;
+							}
+						});
+						//显示遮罩
+						mask.show();
+						showMenu = true;
+					}
+				}
+				/**
+				 * 关闭侧滑菜单
+				 */
+				function closeMenu() {
+					_closeMenu();
+					//关闭遮罩
+					mask.close();
+				}
+
+				/**
+				 * 关闭侧滑菜单（业务部分）
+				 */
+				function _closeMenu() {
+					if(showMenu) {
+						//关闭遮罩；
 						switch(mode) {
 							case 'main-move':
 								//主窗体开始侧滑；
 								main.setStyle({
-									left: '70%',
+									left: '0',
 									transition: {
 										duration: 150
 									}
 								});
 								break;
 							case 'menu-move':
+								//主窗体开始侧滑；
 								menu.setStyle({
-									left: '0%',
-									transition: {
-										duration: 10
-									}
-								});
-								break;
-							case 'all-move':
-								main.setStyle({
-									left: '70%',
+									left: '-70%',
 									transition: {
 										duration: 150
 									}
 								});
-								menu.setStyle({
-									left: '0%',
+								break;
+							case 'all-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '0',
 									transition: {
-										duration: 10
+										duration: 150
 									}
 								});
+								//menu页面同时移动
+								menu.setStyle({
+									left: '-70%',
+									transition: {
+										duration: 150
+									}
+								});
+
 								break;
 						}
+
+						//等窗体动画结束后，隐藏菜单webview，节省资源；
+						setTimeout(function() {
+							menu.hide();
+						}, 200);
+						//改变标志位
+						showMenu = false;
+					}
+				}
+				//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+				mui.menu = function() {
+					if(showMenu) {
+						closeMenu();
+					} else {
+						openMenu();
+					}
+				}
+
+				//12.获取某人未读学校通知个数
+				var getNoReadNoticeCntByMan = function() {
+					var tempData = {
+						manId: personal.utid, //登录人ID
+						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
+					}
+					//				plus.device.vibrate(500);
+					//				events.showWaiting();
+					getNoReadNoticeCntByManPro(tempData, function function_name(data) {
+						//					events.closeWaiting();
+						console.log('12data:' + JSON.stringify(data));
+						if(data.RspCode == 0) {
+							contentData.NoReadCnt = data.RspData.NoReadCnt;
+							//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+							utils.setBadgeNumber(0, contentData.NoReadCnt);
+							//						$("#NoReadCnt").show();
+						} else {
+							mui.toast(data.RspTxt);
+						}
 					});
-					//显示遮罩
-					mask.show();
-					showMenu = true;
 				}
-			}
-			/**
-			 * 关闭侧滑菜单
-			 */
-			function closeMenu() {
-				_closeMenu();
-				//关闭遮罩
-				mask.close();
-			}
-
-			/**
-			 * 关闭侧滑菜单（业务部分）
-			 */
-			function _closeMenu() {
-				if(showMenu) {
-					//关闭遮罩；
-					switch(mode) {
-						case 'main-move':
-							//主窗体开始侧滑；
-							main.setStyle({
-								left: '0',
-								transition: {
-									duration: 150
-								}
-							});
-							break;
-						case 'menu-move':
-							//主窗体开始侧滑；
-							menu.setStyle({
-								left: '-70%',
-								transition: {
-									duration: 150
-								}
-							});
-							break;
-						case 'all-move':
-							//主窗体开始侧滑；
-							main.setStyle({
-								left: '0',
-								transition: {
-									duration: 150
-								}
-							});
-							//menu页面同时移动
-							menu.setStyle({
-								left: '-70%',
-								transition: {
-									duration: 150
-								}
-							});
-
-							break;
-					}
-
-					//等窗体动画结束后，隐藏菜单webview，节省资源；
-					setTimeout(function() {
-						menu.hide();
-					}, 200);
-					//改变标志位
-					showMenu = false;
-				}
-			}
-			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
-			mui.menu = function() {
-				if(showMenu) {
-					closeMenu();
-				} else {
-					openMenu();
-				}
-			}
-			//9.新增定制城市
-			var addPersonCity = function() {
-				var tempData = {
-					userId: personal.utid, //登录人ID
-					cityCodes: noticelistData.pageIndex, //定制城市Code,多个的情况用英文逗号隔开
-					cityNames: '10' //定制城市名称,多个的情况用英文逗号隔开
-				}
-				events.showWaiting();
-				addPersonCityPro(tempData, function function_name(data) {
-					events.closeWaiting();
-					console.log('9data:' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-
-					} else {
-						mui.toast(data.RspTxt);
-					}
-				});
-			}
-			//10.获取某用户的定制城市
-			var getPersonCitysByUser = function() {
-				var tempData = {
-					userId: personal.utid //登录人ID
-				}
-				events.showWaiting();
-				getPersonCitysByUserPro(tempData, function function_name(data) {
-					events.closeWaiting();
-					console.log('10data:' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-
-					} else {
-						mui.toast(data.RspTxt);
-					}
-				});
-			}
-			//12.获取某人未读学校通知个数
-			var getNoReadNoticeCntByMan = function() {
-				var tempData = {
-					manId: personal.utid, //登录人ID
-					schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
-				}
-				//				plus.device.vibrate(500);
-				//				events.showWaiting();
-				getNoReadNoticeCntByManPro(tempData, function function_name(data) {
-					//					events.closeWaiting();
-					console.log('12data:' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-						contentData.NoReadCnt = data.RspData.NoReadCnt;
-						//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-						utils.setBadgeNumber(0, contentData.NoReadCnt);
-						//						$("#NoReadCnt").show();
-					} else {
-						mui.toast(data.RspTxt);
-					}
-				});
-			}
-			//vue数据
-			var contentData = new Vue({
-				el: "#contentData",
-				data: {
-					NoReadCnt: 0, //未读通知数
-					//圆形单个功能
-					singleFunctionArray: [{
-						picName: '学校通知',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '学生表现',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '班级信息',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '荣誉展示',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '活动展示',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '作业管理',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '考试成绩',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}, {
-						picName: '留言',
-						picUrl: '',
-						picFlag: 0,
-						picCount: ''
-					}]
-				},
-				methods: {
-					clickFunction: function(index) {
-						console.log('index:', index);
-						if(index == 0) { //学校通知
-							//判断权限
-							if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
-								if(personal.grds.length > 0) { //年级领导
-									utils.mOpenWithData("noticeList.html", {
-										index: 1
-									});
-								} else {
-									//判断是不是班主任
-									var tempFlag = 0;
-									for(var i = 0; i < personal.clss.length; i++) {
-										var classModel = personal.clss[i];
-										if(classModel.isms == 1) {
-											tempFlag++;
-										}
-									}
-									//如果是班主任
-									if(tempFlag > 0) {
+				//vue数据
+				var contentData = new Vue({
+					el: "#contentData",
+					data: {
+						showFlag: 0, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
+						NoReadCnt: 0, //未读通知数
+						//圆形单个功能
+						singleFunctionArray: [{
+							picName: '学校通知',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '学生表现',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '班级信息',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '荣誉展示',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '活动展示',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '作业管理',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '考试成绩',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}, {
+							picName: '留言',
+							picUrl: '',
+							picFlag: 0,
+							picCount: ''
+						}]
+					},
+					methods: {
+						clickFunction: function(index) {
+							console.log('index:', index);
+							if(index == 0) { //学校通知
+								//判断权限
+								if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
+									if(personal.grds.length > 0) { //年级领导
 										utils.mOpenWithData("noticeList.html", {
 											index: 1
 										});
 									} else {
-										mui.toast('无权限');
+										//判断是不是班主任
+										var tempFlag = 0;
+										for(var i = 0; i < personal.clss.length; i++) {
+											var classModel = personal.clss[i];
+											if(classModel.isms == 1) {
+												tempFlag++;
+											}
+										}
+										//如果是班主任
+										if(tempFlag > 0) {
+											utils.mOpenWithData("noticeList.html", {
+												index: 1
+											});
+										} else {
+											mui.toast('无权限');
+										}
 									}
+								} else if(personal.urolestrxxt > 1) { //授权用户
+									utils.mOpenWithData("noticeList.html", {
+										index: 1
+									});
 								}
-							} else if(personal.urolestrxxt > 1) { //授权用户
-								utils.mOpenWithData("noticeList.html", {
-									index: 1
-								});
-							}
 
-						} else if(index == 5) { //作业管理
-							console.log('personal.utp===='+personal.utp)
-							//身份 0老师，2学生，1家长
-							if(personal.utp==0){//老师
-								utils.mOpenWithData("../../html/homework/teacher-index.html", {});
-							}else if(personal.utp==1){//家长
-								utils.mOpenWithData("../../html/homework/parent-homework-index.html", {});
-							}else{
+							} else if(index == 5) { //作业管理
+								console.log('personal.utp====' + personal.utp)
+								//身份 0老师，2学生，1家长
+								if(personal.utp == 0) { //老师
+									utils.mOpenWithData("../../html/homework/teacher-index.html", {});
+								} else if(personal.utp == 1) { //家长
+									utils.mOpenWithData("../../html/homework/parent-homework-index.html", {});
+								} else {
+									mui.toast('此功能暂未开放');
+								}
+
+							} else {
 								mui.toast('此功能暂未开放');
 							}
-							
-						}else {
-							mui.toast('此功能暂未开放');
 						}
 					}
-				}
-			});
+				});
 
-			var slider = mui("#slider");
-			//轮播开始
-			slider.slider({
-				interval: 5000
-			});
-			
-			if(mui.os.android){
-				//监听收到通知后，没通过标题栏而是点击app图标进入app的事件，官方用语叫：应用切换到前台运行事件 
-				document.addEventListener("plusready", onPlusReady, false); 
-				function onPlusReady(){
-					document.addEventListener("resume", onAppReume, false);
-				}
-				function onAppReume(){
-					console.log("清空安卓app角标");
-					//清空app角标
-					try {
-						 var context = plus.android.runtimeMainActivity();
-						 var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-						 ShortcutBadger.removeCount(context);
+				var slider = mui("#slider");
+				//轮播开始
+				slider.slider({
+					interval: 5000
+				});
+
+				if(mui.os.android) {
+					//监听收到通知后，没通过标题栏而是点击app图标进入app的事件，官方用语叫：应用切换到前台运行事件 
+					document.addEventListener("plusready", onPlusReady, false);
+
+					function onPlusReady() {
+						document.addEventListener("resume", onAppReume, false);
 					}
-					catch(err){
-						console.log('类加载出错：'+err)
+
+					function onAppReume() {
+						console.log("清空安卓app角标");
+						//清空app角标
+						try {
+							var context = plus.android.runtimeMainActivity();
+							var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+							ShortcutBadger.removeCount(context);
+						} catch(err) {
+							console.log('类加载出错：' + err)
+						}
+
 					}
-					
 				}
-			}
-		</script>
+			</script>
 	</body>
 
 </html>

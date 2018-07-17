@@ -136,6 +136,11 @@
 					});
 				});
 			});
+			
+			window.addEventListener('refush_count', function() {
+					console.log('refush_count001');
+					mui.fire(plus.webview.currentWebview().opener(), 'refush_count1', {});
+				});
 
 			var mine = new Vue({
 				el: "#mine",
