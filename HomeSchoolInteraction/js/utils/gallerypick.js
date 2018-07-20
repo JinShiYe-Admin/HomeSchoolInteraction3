@@ -1,6 +1,6 @@
 var Gallery = (function(mod) {
 
-	mod.pickVideoTime = 10; //从本地选取的时长，默认10秒(未达到11S都算10S)
+	mod.pickVideoTime = 61; //从本地选取的时长，默认10秒(未达到11S都算10S)
 	mod.changeType = 1; //是否强制改变文件类型
 	/**
 	 * 从相册选取视频
@@ -57,16 +57,16 @@ var Gallery = (function(mod) {
 							//console.log("视频时长 " + mVideo.duration);
 							if(mVideo.duration < (mod.pickVideoTime + 1)) {
 								//console.log("视频文件大小 " + metadata.size);
-								if(metadata.size > (30 * 1024 * 1024)) {
-									//console.log("视频大小不得大于30M");
-									wd.close();
-									mui.toast("视频大小不得大于30M");
-									callBack({
-										flag: 0,
-										message: "视频大小不得大于30M"
-									});
-									return false;
-								}
+//								if(metadata.size > (30 * 1024 * 1024)) {
+//									//console.log("视频大小不得大于30M");
+//									wd.close();
+//									mui.toast("视频大小不得大于30M");
+//									callBack({
+//										flag: 0,
+//										message: "视频大小不得大于30M"
+//									});
+//									return false;
+//								}
 								var path = entrySuccesCB.fullPath;
 								if(plus.os.name == "iOS") {
 									path = "file://" + path;

@@ -165,6 +165,7 @@
 			<script src="../../js/utils/events.js"></script>
 			<script src="../../js/libs/jquery.js"></script>
 			<script src="../../js/utils/pushPermission.js"></script>
+			<script src="../../js/utils/clearIcon.js"></script>
 			<script type="text/javascript">
 				mui.init({
 					statusBarBackground: '#00CFBD',
@@ -641,16 +642,11 @@
 					}
 
 					function onAppReume() {
-						console.log("清空安卓app角标");
-						//清空app角标
-						try {
-							var context = plus.android.runtimeMainActivity();
-							var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-							ShortcutBadger.removeCount(context);
-						} catch(err) {
-							console.log('类加载出错：' + err)
-						}
-
+						plus.clearIcon.clearIco(function( result ) {
+							console.log("result>>>>>>"+result[0]);
+						},function(result){
+							console.log('未知错误：'+result);
+						});
 					}
 				}
 			</script>

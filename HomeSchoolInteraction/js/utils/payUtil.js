@@ -158,9 +158,6 @@ var appPay = (function(mod) {
 				},function(e){
 					failtimeout(e);
 				},'正在查询支付结果...',5000);
-			}else{
-				console.log('切着玩')
-			}
 		}, false);
 	}
 	
