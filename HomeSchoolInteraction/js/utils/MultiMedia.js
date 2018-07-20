@@ -253,14 +253,31 @@ var MultiMedia = (function($, mod) {
 							cmr.startVideoCapture(function(p) {
 								plus.io.resolveLocalFileSystemURL(p, function(entry) {
 									if(self.data.VideoNum > 0) {
-										var wd = events.showWaiting('处理中...');
-										self.data.VideoNum--;
 										console.log('录制视频成功 ' + entry.toLocalURL());
-										self.addVideos(entry.toLocalURL(), function() {
-											wd.close();
+										var path=entry.toLocalURL();
+										var oldPath=path.substring(6,path.length);
+										var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/compress/'+new Date().getTime()+'.mp4';
+										var json={
+											filePath:oldPath,
+											newPath:newPath
+										}
+										plus.compressVideo.compress(JSON.stringify(json),function(result){
+											console.log("result："+result[0]);
+											var obj=JSON.parse(result[0]);
+											if(obj.code==0){
+												self.data.VideoNum--;
+												var wd = events.showWaiting('处理中...');
+												self.addVideos(entry.toLocalURL(), function() {
+													wd.close();
+												});
+											}else{
+												mui.toast(obj.msg)
+											}
+										},function(result){
+											console.log("result"+result[0]);
+											mui.toast("视频转码失败")
 										});
 									}
-									//								createItem(entry);
 								}, function(e) {
 									console.log('读取录像文件错误：' + e.message);
 								});
@@ -277,7 +294,7 @@ var MultiMedia = (function($, mod) {
 									self.data.VideoNum--;
 									//console.log('录制视频成功 ' + fpath);
 									self.addVideos(fpath, function() {
-										//console.log("录像 callback");
+										console.log("录像 callback");
 										wd.close();
 									});
 								}
@@ -288,13 +305,42 @@ var MultiMedia = (function($, mod) {
 						break;
 					case 2: //从相册选择
 						Gallery.pickVideo(function(data) {
-							//console.log("pickVideo " + JSON.stringify(data));
-							if(data.flag == 1) {
-								self.data.VideoNum--;
-								self.addVideos(data.path, function() {
-									//console.log("从相册选择 callback");
-									data.wd.close();
-								});
+							if(plus.os.name == 'Android'){
+								if(data.flag == 1) {
+									var path=data.path;
+									var oldPath=path.substring(6,path.length);
+									var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/imgCompress/'+new Date().getTime()+'.mp4';
+									var json={
+										filePath:oldPath,
+										newPath:newPath
+									}
+									var obj=plus.compressVideo.compress(JSON.stringify(json),function(result){
+										console.log(JSON.stringify(obj));
+										var obj=JSON.parse(result[0]);
+										if(obj.code==0){
+											self.data.VideoNum--;
+											var wd = events.showWaiting('处理中...');
+											self.addVideos('file://'+newPath, function() {
+												wd.close();
+											});
+										}else{
+											mui.toast(obj.msg)
+										}
+									},function(result){
+										console.log("result"+result[0]);
+										mui.toast("视频转码失败")
+									});
+								}
+							}else{
+								//console.log("pickVideo " + JSON.stringify(data));
+								if(data.flag == 1) {
+									self.data.VideoNum--;
+									var wd = events.showWaiting('处理中...');
+									self.addVideos(data.path, function() {
+										console.log("从相册选择 callback");
+										wd.close();
+									});
+								}
 							}
 						});
 						break;
@@ -590,7 +636,7 @@ var MultiMedia = (function($, mod) {
 	proto.addVideos = function(path, callback) {
 		var self = this;
 		//生成缩略图
-		//console.log("addVideos " + path);
+		console.log("addVideos " + path);
 		self.addVideosThumb(path, callback);
 	}
 	/**
@@ -644,6 +690,7 @@ var MultiMedia = (function($, mod) {
 
 		video.onerror = function() {
 			mui.toast("视频加载失败");
+			console.log("callback");
 			callback();
 		}
 		video.src = path;

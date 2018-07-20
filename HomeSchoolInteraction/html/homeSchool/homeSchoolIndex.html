@@ -164,6 +164,7 @@
 			<script src="../../js/publicProtocolNew.js"></script>
 			<script src="../../js/utils/events.js"></script>
 			<script src="../../js/libs/jquery.js"></script>
+			<script src="../../js/utils/pushPermission.js"></script>
 			<script type="text/javascript">
 				mui.init({
 					statusBarBackground: '#00CFBD',
@@ -201,6 +202,7 @@
 					}
 					if(mui.os.android) {
 						var info = plus.push.getClientInfo();
+						console.log(JSON.stringify(info))
 						//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
 						//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
 						//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
@@ -220,14 +222,17 @@
 								cover: false,
 								sound: 'system'
 							};
-							if(JSON.parse(msg.content).body == undefined) { //非标准json格式
-								plus.push.createMessage(msg.content, msg.content, options);
-							} else { //使用封装的标准json格式
-								plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options);
-							}
+							try{
+						    	JSON.parse(msg.content);
+						    	plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
+						    }
+						    catch(err){
+						    	plus.push.createMessage(msg.content, msg.content, options );
+						    }
 
 						}, false);
 						plus.push.addEventListener("click", function(msg) {
+							getNoReadNoticeCntByMan();
 							//清空app角标
 							try {
 								var context = plus.android.runtimeMainActivity();
@@ -244,7 +249,29 @@
 							console.log('body.content:' + JSON.parse(msg.payload).content)
 							console.log('body.payload:' + JSON.parse(msg.payload).payload)
 						}, false);
-
+						
+						var isFirst = store.get(window.storageKeyName.ISFIRST);
+						console.log('isFirst=========================='+isFirst)
+						if(isFirst==null){
+							//检测通知权限是否开启
+							plus.pushPermission.isNotificationEnabled(function( result ) {
+								console.log("result>>>>>>"+result[0]);
+								var obj=JSON.parse(result[0]);
+								if(obj.code==0){
+									if(!obj.msg){//通知权限没开启，提示打开
+										store.set(window.storageKeyName.ISFIRST, 'noFirst');
+										var btnArray = ['以后再说', '立即开启'];
+										mui.confirm('开启后可第一时间收到消息通知', '校讯通', btnArray, function(e) {
+											if (e.index == 1) {//立即开启
+												plus.pushPermission.gotoSetting();
+											}
+										})
+									}
+								}
+							},function(result){
+								console.log('未知错误：'+result);
+							});
+						}
 					}
 
 					//安卓的连续点击两次退出程序
@@ -592,7 +619,6 @@
 								} else {
 									mui.toast('此功能暂未开放');
 								}
-
 							} else {
 								mui.toast('此功能暂未开放');
 							}
