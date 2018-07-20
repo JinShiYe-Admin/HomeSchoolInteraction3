@@ -215,11 +215,11 @@ var compress = (function(mod) {
 					}
 
 					if(event.width > event.height) { //宽>=长
-//						data1.width = parseInt(event.width / 2) + "px";
-						data1.width = "2048px";
+						data1.width = parseInt(event.width / 2) + "px";
+//						data1.width = "2048px";
 					} else { //宽<长
-//						data1.height = parseInt(event.height / 2) + "px";
-						data1.height = "2048px";
+						data1.height = parseInt(event.height / 2) + "px";
+//						data1.height = "2048px";
 					}
 					mod.compressImageTo_xx(data1, successCallBack, errorCallBack);
 				}
