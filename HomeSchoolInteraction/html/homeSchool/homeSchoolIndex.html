@@ -235,20 +235,18 @@
 						plus.push.addEventListener("click", function(msg) {
 							getNoReadNoticeCntByMan();
 							//清空app角标
-							try {
-								var context = plus.android.runtimeMainActivity();
-								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-								ShortcutBadger.removeCount(context);
-							} catch(err) {
-								console.log('类加载出错：' + err)
-							}
+							plus.clearIcon.clearIco(function( result ) {
+								console.log("result>>>>>>"+result[0]);
+							},function(result){
+								console.log('未知错误：'+result);
+							});
 							//					console.log('msg:'+JSON.stringify(msg))
-							console.log('appname:' + msg.title)
-							console.log('title:' + msg.content)
-							console.log('body:' + JSON.stringify(msg.payload))
-							console.log('body.title:' + JSON.parse(msg.payload).title)
-							console.log('body.content:' + JSON.parse(msg.payload).content)
-							console.log('body.payload:' + JSON.parse(msg.payload).payload)
+//							console.log('appname:' + msg.title)
+//							console.log('title:' + msg.content)
+//							console.log('body:' + JSON.stringify(msg.payload))
+//							console.log('body.title:' + JSON.parse(msg.payload).title)
+//							console.log('body.content:' + JSON.parse(msg.payload).content)
+//							console.log('body.payload:' + JSON.parse(msg.payload).payload)
 						}, false);
 						
 						var isFirst = store.get(window.storageKeyName.ISFIRST);
