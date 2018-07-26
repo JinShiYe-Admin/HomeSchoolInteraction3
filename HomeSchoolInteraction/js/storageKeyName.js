@@ -71,6 +71,7 @@ var storageKeyName = (function(mod) {
 	mod.BADGENUMBER = 'badgeNumber'//app角标
 	mod.PUBLICPARAMETER = 'publicParameter'//共用参数
 	mod.ISFIRST = 'isFitst'; //是否是第一次登陆
+	mod.ICONNUM = 0; //角标数量
 	mod.PERSONALINFO = 'personalInfo1111'; //个人信息，登录成功后返回值
 	mod.SHAKEHAND = 'ShakeHand'; //公钥，登录时，返回的握手信息，
 	mod.AUTOLOGIN = 'autoLogin'; //登录信息
