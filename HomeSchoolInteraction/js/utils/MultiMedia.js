@@ -248,13 +248,12 @@ var MultiMedia = (function($, mod) {
 					case 0: //取消
 						break;
 					case 1: //录像
+					//recordvideoutil  限制了拍摄时长   gallerypick 限制了相册选取的视频长短
 						if(plus.os.name == 'Android') {
-							var cmr = plus.camera.getCamera();
-							cmr.startVideoCapture(function(p) {
-								plus.io.resolveLocalFileSystemURL(p, function(entry) {
-									if(self.data.VideoNum > 0) {
-										console.log('录制视频成功 ' + entry.toLocalURL());
-										var path=entry.toLocalURL();
+							RecordVideo.recordVideo({}, function(fpath) {
+								if(self.data.VideoNum > 0) {
+										console.log('录制视频成功 ' + fpath);
+										var path=fpath;
 										var oldPath=path.substring(7,path.length);
 										var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/compress/'+new Date().getTime()+'.mp4';
 										var json={
@@ -281,15 +280,50 @@ var MultiMedia = (function($, mod) {
 											mui.toast("视频转码失败")
 										});
 									}
-								}, function(e) {
-									console.log('读取录像文件错误：' + e.message);
-								});
-							}, function(e) {
-								console.log('失败：' + e.message);
-							}, {
-								filename: '_doc/camera/' + new Date().getTime() + '.mp4',
-								index: 0
+							}, function(err) {
+								mui.toast(err.message);
 							});
+//							var cmr = plus.camera.getCamera();
+//							cmr.startVideoCapture(function(p) {
+//								plus.io.resolveLocalFileSystemURL(p, function(entry) {
+//									if(self.data.VideoNum > 0) {
+//										console.log('录制视频成功 ' + entry.toLocalURL());
+//										var path=entry.toLocalURL();
+//										var oldPath=path.substring(7,path.length);
+//										var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/compress/'+new Date().getTime()+'.mp4';
+//										var json={
+//											filePath:oldPath,
+//											newPath:newPath
+//										}
+//										plus.compressVideo.compress(JSON.stringify(json),function(result){
+//											console.log("result："+result[0]);
+//											var obj=JSON.parse(result[0]);
+//											var wd = events.showWaiting('处理中...');
+//											if(obj.code==0){
+//												self.data.VideoNum--;
+//												
+//													self.addVideos(obj.msg, function() {
+//														wd.close();
+//													});
+//											}else{
+//												wd.close();
+////												mui.toast(obj.msg)
+//												mui.alert(obj.msg, '校讯通', function() {});
+//											}
+//										},function(result){
+//											console.log("result"+result[0]);
+//											mui.toast("视频转码失败")
+//										});
+//									}
+//								}, function(e) {
+//									console.log('读取录像文件错误：' + e.message);
+//								});
+//							}, function(e) {
+//								console.log('失败：' + e.message);
+//							}, {
+//								filename: '_doc/camera/' + new Date().getTime() + '.mp4',
+//								index: 0
+//							});
 						} else if(plus.os.name == 'iOS') {
 							RecordVideo.recordVideo({}, function(fpath) {
 								if(self.data.VideoNum > 0) {

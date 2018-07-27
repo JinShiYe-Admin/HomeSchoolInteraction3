@@ -1,6 +1,6 @@
 var Gallery = (function(mod) {
 
-	mod.pickVideoTime = 61; //从本地选取的时长，默认10秒(未达到11S都算10S)
+	mod.pickVideoTime = window.storageKeyName.VIDEOLENGTH; //从本地选取的时长，默认10秒(未达到11S都算10S)
 	mod.changeType = 1; //是否强制改变文件类型
 	/**
 	 * 从相册选取视频
@@ -55,7 +55,7 @@ var Gallery = (function(mod) {
 						var mVideo = document.createElement("video");
 						mVideo.ondurationchange = function() {
 							//console.log("视频时长 " + mVideo.duration);
-							if(mVideo.duration < (mod.pickVideoTime + 1)) {
+							if(mod.pickVideoTime==-1){
 								//console.log("视频文件大小 " + metadata.size);
 //								if(metadata.size > (30 * 1024 * 1024)) {
 //									//console.log("视频大小不得大于30M");
@@ -83,19 +83,49 @@ var Gallery = (function(mod) {
 								};
 								//console.log("相册选取视频返回的数据 " + JSON.stringify(callBackData));
 								callBack(callBackData);
-							} else {
-								entrySuccesCB.remove(function(remSucCB) {
-									//console.log("删除文件成功 " + remSucCB);
-								}, function(remErrorCB) {
-									//console.log("删除文件失败" + JSON.stringify(remErrorCB));
-								});
-								//console.log("视频时长不得超出" + mod.pickVideoTime + "秒");
-								wd.close();
-								mui.toast("视频时长不得超出" + mod.pickVideoTime + "秒");
-								callBack({
-									flag: 0, //失败
-									message: "视频时长不得超出" + mod.pickVideoTime + "秒" //失败信息
-								});
+							}else{
+								if(mVideo.duration < (mod.pickVideoTime + 1)) {
+									//console.log("视频文件大小 " + metadata.size);
+	//								if(metadata.size > (30 * 1024 * 1024)) {
+	//									//console.log("视频大小不得大于30M");
+	//									wd.close();
+	//									mui.toast("视频大小不得大于30M");
+	//									callBack({
+	//										flag: 0,
+	//										message: "视频大小不得大于30M"
+	//									});
+	//									return false;
+	//								}
+									var path = entrySuccesCB.fullPath;
+									if(plus.os.name == "iOS") {
+										path = "file://" + path;
+									} else {
+										path = "file://" + plus.io.convertLocalFileSystemURL(path);
+									}
+									var callBackData = {
+										flag: 1, //成功
+										wd: wd, //成功才返回的等待框
+										path: path, //视频文件路径
+										video: mVideo, //video元素
+										duration: mVideo.duration, //视频时长，单位秒
+										rawName: rawName //原名字
+									};
+									//console.log("相册选取视频返回的数据 " + JSON.stringify(callBackData));
+									callBack(callBackData);
+								} else {
+									entrySuccesCB.remove(function(remSucCB) {
+										//console.log("删除文件成功 " + remSucCB);
+									}, function(remErrorCB) {
+										//console.log("删除文件失败" + JSON.stringify(remErrorCB));
+									});
+									//console.log("视频时长不得超出" + mod.pickVideoTime + "秒");
+									wd.close();
+									mui.toast("视频时长不得超出" + mod.pickVideoTime + "秒");
+									callBack({
+										flag: 0, //失败
+										message: "视频时长不得超出" + mod.pickVideoTime + "秒" //失败信息
+									});
+								}
 							}
 						}
 						mVideo.onerror = function() {

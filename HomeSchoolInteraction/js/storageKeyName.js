@@ -91,6 +91,9 @@ var storageKeyName = (function(mod) {
 	mod.SCIEDUREADED='sciedu-readed';//科教已读
 	mod.CUSTOMREQUESTTIME='customer-request-time';
 
+	mod.VIDEOSIZE = -1;//视频大小限制 -1为不限制   30 * 1024 * 1024 =30M
+	mod.VIDEOLENGTH = 301; //视频时长限制 -1为不限制
+
 	mod.MAINHOMEWORKURLTEACHER = mod.MAINHOMEWORKURL + 'TeacherService.svc/'; //老师作业url
 	mod.MAINHOMEWORKURLSTUDENT = mod.MAINHOMEWORKURL + 'StudentService.svc/'; //学生作业url
 	mod.WAITING = '加载中...'; //
