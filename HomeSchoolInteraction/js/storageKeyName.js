@@ -55,6 +55,8 @@ var storageKeyName = (function(mod) {
 			mod.MAINHOMEWORKURL = 'http://192.168.1.44:8513/'; //作业主url
 			mod.MAINQIUZHI = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //求知主url
 			mod.MAINMICROCLASS = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //微课主url
+			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
+			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
 			//---开发---end---
 			//---七牛空间和接口---开发---start---
 			mod.QNPB = 'https://qn-educds.jiaobaowang.net/'; //公开空间域名
