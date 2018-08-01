@@ -33,24 +33,24 @@ var video = (function(mod) {
 				plus.io.resolveLocalFileSystemURL(p, function(entry) {
 					entry.file(function(file) {
 						//console.log('filesize=' + file.size)
-						if(file.size > 1048576 * 30) {
-							//						mui.toast('视频大小不得超过30M');
-							errorCB({
-								code: 999, // 错误编码
-								message: '视频大小不得超过30M' // 错误描述信息
-							});
-						} else {
+//						if(file.size > 1048576 * 30) {
+//							//						mui.toast('视频大小不得超过30M');
+//							errorCB({
+//								code: 999, // 错误编码
+//								message: '视频大小不得超过30M' // 错误描述信息
+//							});
+//						} else {
 							//console.log(123)
 							mVideo.ondurationchange = function() {
 								//console.log("ondurationchange  duration " + mVideo.duration);
-								if(mVideo.duration < 11) {
+								if(mVideo.duration < 60*5+1) {
 									//console.log('成功：' + tempPath);
 									successCB("file://" + tempPath)
 
 								} else {
 									errorCB({
 										code: 999, // 错误编码
-										message: '视频时长不得超出10秒' // 错误描述信息
+										message: '视频时长不得超出五分钟' // 错误描述信息
 										//					mui.toast("视频时长不得超出10秒");
 									})
 								}
@@ -60,7 +60,7 @@ var video = (function(mod) {
 								mui.toast("视频加载失败")
 							}
 							mVideo.src = tempPath;
-						}
+//						}
 
 					})
 				})

@@ -294,12 +294,18 @@ var MultiMedia = (function($, mod) {
 							RecordVideo.recordVideo({}, function(fpath) {
 								if(self.data.VideoNum > 0) {
 									var wd = events.showWaiting('处理中...');
-									self.data.VideoNum--;
-									//console.log('录制视频成功 ' + fpath);
-									self.addVideos(fpath, function() {
-										console.log("录像 callback");
+									plus.compressVideo.ioscompress(fpath, function(result) {
+										self.data.VideoNum--;
 										wd.close();
+										console.log('result000:' + result);
+										self.addVideos('file://' +result, function() {
+											console.log("录像 callback");
+										});
+									}, function(result) {
+										wd.close();
+										console.log('result001:' + result);
 									});
+									
 								}
 							}, function(err) {
 								mui.toast(err.message);
@@ -338,16 +344,26 @@ var MultiMedia = (function($, mod) {
 									});
 								}
 							}else{
-								//console.log("pickVideo " + JSON.stringify(data));
-								if(data.flag == 1) {
-									self.data.VideoNum--;
+								var fpath=data.path;
+//								RecordVideo.recordVideo({}, function(fpath) {
+								if(self.data.VideoNum > 0) {
 									var wd = events.showWaiting('处理中...');
-									self.addVideos(data.path, function() {
-										console.log("从相册选择 callback");
-										data.wd.close();
+									plus.compressVideo.ioscompress(fpath, function(result) {
+										self.data.VideoNum--;
+										console.log('result000:' + result);
 										wd.close();
+										self.addVideos('file://' +result, function() {
+											console.log("录像 callback");
+										});
+									}, function(result) {
+										wd.close();
+										console.log('result001:' + result);
 									});
+									
 								}
+//							}, function(err) {
+//								mui.toast(err.message);
+//							});
 							}
 						});
 						break;
