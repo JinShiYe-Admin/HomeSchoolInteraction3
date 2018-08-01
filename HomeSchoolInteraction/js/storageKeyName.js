@@ -55,6 +55,8 @@ var storageKeyName = (function(mod) {
 			mod.MAINHOMEWORKURL = 'http://192.168.1.44:8513/'; //作业主url
 			mod.MAINQIUZHI = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //求知主url
 			mod.MAINMICROCLASS = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //微课主url
+			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
+			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
 			//---开发---end---
 			//---七牛空间和接口---开发---start---
 			mod.QNPB = 'https://qn-educds.jiaobaowang.net/'; //公开空间域名
@@ -90,6 +92,9 @@ var storageKeyName = (function(mod) {
 	mod.VIEWCANCLICK = 'viewCanClick';
 	mod.SCIEDUREADED='sciedu-readed';//科教已读
 	mod.CUSTOMREQUESTTIME='customer-request-time';
+
+	mod.VIDEOSIZE = -1;//视频大小限制 -1为不限制   30 * 1024 * 1024 =30M
+	mod.VIDEOLENGTH = 301; //视频时长限制 -1为不限制
 
 	mod.MAINHOMEWORKURLTEACHER = mod.MAINHOMEWORKURL + 'TeacherService.svc/'; //老师作业url
 	mod.MAINHOMEWORKURLSTUDENT = mod.MAINHOMEWORKURL + 'StudentService.svc/'; //学生作业url

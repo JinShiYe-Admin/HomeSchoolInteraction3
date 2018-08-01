@@ -78,13 +78,13 @@ var appPay = (function(mod) {
 				mod.order_id=JSON.parse(data).out_trade_no;
 				console.log('data======='+mod.order_id);
 				plus.payment.request(mod.channel, data, function(result) {
-					//console.log('result=' + JSON.stringify(result));
+					console.log('result=' + JSON.stringify(result));
 //					alert("result=" + JSON.stringify(result));
 //					plus.nativeUI.alert("支付成功！", function() {
 //						success;
 //					});
 				}, function(error) {
-					//console.log('error' + JSON.stringify(error));
+					console.log('error' + JSON.stringify(error));
 //					plus.nativeUI.alert("支付失败：" + error.code);
 					fail(1,error.code);
 				});
@@ -158,6 +158,7 @@ var appPay = (function(mod) {
 				},function(e){
 					failtimeout(e);
 				},'正在查询支付结果...',5000);
+			}
 		}, false);
 	}
 	
