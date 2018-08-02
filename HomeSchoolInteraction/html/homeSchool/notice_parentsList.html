@@ -331,7 +331,7 @@
 				});
 			}
 
-			//6.学校班级学生,获取选择班级中对应的人
+			//4.15.学校班级订购学生
 			var getClassParents = function(classids) {
 				var enData0 = {};
 				//不需要加密的数据
@@ -343,13 +343,13 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('ClassStu', enData0, comData0, 0, function(data) {
+				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						classListData.flag = 1;
 						console.log('data:' + JSON.stringify(data));
-						for(var i = 0; i < data.RspData.clssstus.length; i++) {
-							var stuModel = data.RspData.clssstus[i];
+						for(var i = 0; i < data.RspData.classuserustus.length; i++) {
+							var stuModel = data.RspData.classuserustus[i];
 							//							stuModel.flag = 0;
 							//判断上个界面，是否选择
 							var tempClassFlag = 0;

@@ -360,7 +360,7 @@
 				addNoticeContent.parentArray = [].concat(tempData.parentsArray);
 			});
 
-			//6.学校班级学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
+			//4.15.学校班级订购学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
 			var getClassParents = function(classids, flag) {
 				var enData0 = {};
 				//不需要加密的数据
@@ -372,7 +372,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('ClassStu', enData0, comData0, 0, function(data) {
+				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//						console.log('data:' + JSON.stringify(data));
@@ -381,7 +381,7 @@
 							addNoticeContent.parentsStr = '所在班级没有学生';
 						} else {
 							//							console.log('qqqqqqqqw');
-							addNoticeContent.parentArray = [].concat(data.RspData.clssstus);
+							addNoticeContent.parentArray = [].concat(data.RspData.classuserustus);
 							//默认的班主任数据
 							if(flag == 0) {
 								//将班级ID字符串，分割为数组
@@ -582,9 +582,9 @@
 				var temp4 = [];
 				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 					var stuModel = addNoticeContent.parentArray[i];
-					temp0.push(stuModel.stuid);
-					temp1.push(stuModel.stuname);
-					temp2.push(stuModel.stuno);
+					temp0.push(stuModel.utid);
+					temp1.push(stuModel.mobile);
+					temp2.push('');
 					temp3.push('');
 					
 				}
@@ -612,21 +612,26 @@
 					encName = tempArray.join('|');
 				}
 				//				console.log('encName:'+encName);
+				var sendIMG = '';
+				if (personal.imgurl) {
+					sendIMG = personal.imgurl;
+				}
+				
 				//1.新增学校通知（同时增加通知未读）
 				var tempData1 = {
-					schoolId: personal.schid, //学校ID，统一部署的时候，学校ID传000000
+					schoolId: (personal.schid).toString(), //学校ID，统一部署的时候，学校ID传000000
 					noticeContent: addNoticeContent.content, //内容
 					noticEncName: encName, //附件名称，竖杠隔开
 					noticeEncImgAddr: encImg, //附件缩略图地址，竖杠隔开
 					noticeEncAddr: encAddr, //附件地址，竖杠隔开
 					smsSync: addNoticeContent.msgFlag, //是否短信同步，先填0
-					sendManId: personal.utid, //发布人ID
+					sendManId: (personal.utid).toString(), //发布人ID
 					sendManCode: personal.uid, //发布人账号
 					sendManName: personal.utname, //发布人姓名
-					sendManImg: personal.imgurl, //发布人头像
+					sendManImg: sendIMG, //发布人头像
 					receiveManIds: arrayToStr(temp0), //接收人人ID，例如：[“1”,”2”,”3”]
-					receiveManCodes: arrayToStr(temp2), //接收人账号，例如：[“1”,”2”,”3”]
-					receiveManNames: arrayToStr(temp1), //接收人姓名，例如：[“1”,”2”,”3”]
+					receiveManCodes: arrayToStr(temp1), //接收人账号，例如：[“1”,”2”,”3”]
+					receiveManNames: arrayToStr(temp2), //接收人姓名，例如：[“1”,”2”,”3”]
 					receiveManImgs: arrayToStr(temp3) //接收人头像
 				}
 				events.showWaiting();
