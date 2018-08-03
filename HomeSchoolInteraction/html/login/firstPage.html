@@ -182,20 +182,20 @@
 							var personal = store.get(window.storageKeyName.PERSONALINFO);
 							console.log('personal0001:' + JSON.stringify(personal));
 
-							var info = plus.push.getClientInfo();
-							var tempBindData = {
-								appId: info.appid,
-								alias: data1.RspData.utid,
-								cid: info.clientid
-							}
-							bindPro(tempBindData, function function_name(data) {
-								//									events.closeWaiting();
-								if(data.RspCode == 0) {
-									//										utils.mOpenWithData("../../index.html", {});
-								} else {
-									//											mui.toast(data.RspTxt);
-								}
-							});
+//							var info = plus.push.getClientInfo();
+//							var tempBindData = {
+//								appId: info.appid,
+//								alias: data1.RspData.utid,
+//								cid: info.clientid
+//							}
+//							bindPro(tempBindData, function function_name(data) {
+//								//									events.closeWaiting();
+//								if(data.RspCode == 0) {
+//									//										utils.mOpenWithData("../../index.html", {});
+//								} else {
+//									//											mui.toast(data.RspTxt);
+//								}
+//							});
 							if(personal.utid == '0') { //无权限
 								//								plus.webview.open('../../index2.html');
 								utils.hrefSessionStorage('../../html/login/index2.html', {});

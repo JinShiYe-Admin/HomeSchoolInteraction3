@@ -197,6 +197,21 @@
 				//							left: '-70%'
 				//						});
 				mui.plusReady(function() {
+					//推送绑定
+					var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+					var info = plus.push.getClientInfo();
+					var tempBindData = {
+						appId: info.appid,
+						alias: tempInfo00.utid,
+						cid: info.clientid
+					}
+					bindPro(tempBindData, function function_name(data) {
+						if(data.RspCode == 0) {
+
+						} else {
+
+						}
+					});
 					if(personal.utp == 1) { //0老师，2学生，1家长
 						//4.1.用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
@@ -211,7 +226,7 @@
 						plus.push.addEventListener("receive", function(msg) {
 							//放置安卓角标
 							try {
-								var iconNum = store.get(window.storageKeyName.ICONNUM)*1+1;
+								var iconNum = store.get(window.storageKeyName.ICONNUM) * 1 + 1;
 								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
 								var context = plus.android.runtimeMainActivity();
 								ShortcutBadger.applyCount(context, iconNum);
@@ -225,59 +240,88 @@
 								cover: false,
 								sound: 'system'
 							};
-							try{
-								if(JSON.parse(msg.content).body==undefined){
-									plus.push.createMessage(msg.content, msg.content, options );
-								}else{
-									plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options );
+							try {
+								if(JSON.parse(msg.content).body == undefined) {
+									plus.push.createMessage(msg.content, msg.content, options);
+								} else {
+									plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options);
 								}
-						    }
-						    catch(err){
-						    	plus.push.createMessage(msg.content, msg.content, options );
-						    }
+							} catch(err) {
+								plus.push.createMessage(msg.content, msg.content, options);
+							}
 
 						}, false);
 						plus.push.addEventListener("click", function(msg) {
 							getNoReadNoticeCntByMan();
 							//清空app角标
-							plus.clearIcon.clearIco(function( result ) {
-								console.log("result>>>>>>"+result[0]);
+							plus.clearIcon.clearIco(function(result) {
+								console.log("result>>>>>>" + result[0]);
 								store.set(window.storageKeyName.ICONNUM, 0);
 								plus.push.clear();
-							},function(result){
-								console.log('未知错误：'+result);
+							}, function(result) {
+								console.log('未知错误：' + result);
 							});
 							//					console.log('msg:'+JSON.stringify(msg))
-//							console.log('appname:' + msg.title)
-//							console.log('title:' + msg.content)
-//							console.log('body:' + JSON.stringify(msg.payload))
-//							console.log('body.title:' + JSON.parse(msg.payload).title)
-//							console.log('body.content:' + JSON.parse(msg.payload).content)
-//							console.log('body.payload:' + JSON.parse(msg.payload).payload)
+							//							console.log('appname:' + msg.title)
+							//							console.log('title:' + msg.content)
+							//							console.log('body:' + JSON.stringify(msg.payload))
+							//							console.log('body.title:' + JSON.parse(msg.payload).title)
+							//							console.log('body.content:' + JSON.parse(msg.payload).content)
+							//							console.log('body.payload:' + JSON.parse(msg.payload).payload)
 						}, false);
-						
+
 						var isFirst = store.get(window.storageKeyName.ISFIRST);
-						console.log('isFirst=========================='+isFirst)
-						if(isFirst==null){
+						console.log('isFirst==========================' + isFirst)
+						if(isFirst == null) {
 							//检测通知权限是否开启
-							plus.pushPermission.isNotificationEnabled(function( result ) {
-								console.log("result>>>>>>"+result[0]);
-								var obj=JSON.parse(result[0]);
-								if(obj.code==0){
-									if(!obj.msg){//通知权限没开启，提示打开
+							plus.pushPermission.isNotificationEnabled(function(result) {
+								console.log("result>>>>>>" + result[0]);
+								var obj = JSON.parse(result[0]);
+								if(obj.code == 0) {
+									if(!obj.msg) { //通知权限没开启，提示打开
 										store.set(window.storageKeyName.ISFIRST, 'noFirst');
 										var btnArray = ['以后再说', '立即开启'];
 										mui.confirm('开启后可第一时间收到消息通知', '校讯通', btnArray, function(e) {
-											if (e.index == 1) {//立即开启
+											if(e.index == 1) { //立即开启
 												plus.pushPermission.gotoSetting();
 											}
 										})
 									}
 								}
-							},function(result){
-								console.log('未知错误：'+result);
+							}, function(result) {
+								console.log('未知错误：' + result);
 							});
 						}
+					} else {
+						document.addEventListener("plusready", function() {
+							message = document.getElementById("message");
+							// 监听点击消息事件
+							plus.push.addEventListener("click", function(msg) {
+								//12.获取某人未读学校通知个数
+								getNoReadNoticeCntByMan();
+								plus.device.vibrate(500);
+								// 判断是从本地创建还是离线推送的消息 
+								switch(msg.payload) {
+									case "LocalMSG":
+										//						outSet("点击本地创建消息启动：");
+										break;
+									default:
+										//						outSet("点击离线推送消息启动：");
+										break;
+								}
+							}, false);
+							// 监听在线消息事件
+							plus.push.addEventListener("receive", function(msg) {
+								//12.获取某人未读学校通知个数
+								getNoReadNoticeCntByMan();
+								plus.device.vibrate(500);
+								if(msg.aps) { // Apple APNS message
+									//					outSet("接收到在线APNS消息：");
+								} else {
+									//					outSet("接收到在线透传消息：");
+								}
+							}, false);
+						}, false);
 					}
 
 					//安卓的连续点击两次退出程序
@@ -364,7 +408,7 @@
 									console.log('showFlag=01');
 									contentData.showFlag = 1;
 								}
-							}else{
+							} else {
 								personal.packageCount = 0; //套餐是否绑定学生
 								store.set(window.storageKeyName.PERSONALINFO, personal);
 								contentData.showFlag = 1;
@@ -515,7 +559,7 @@
 				var getNoReadNoticeCntByMan = function() {
 					var tempData = {
 						manId: personal.utid, //登录人ID
-						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
+						schoolId: window.storageKeyName.SCHOOLID, //学校ID,统一部署的时候，学校ID传000000
 					}
 					//				plus.device.vibrate(500);
 					//				events.showWaiting();
@@ -586,11 +630,11 @@
 							console.log('index:', index);
 							if(index == 0) { //学校通知
 								//判断权限,学生、家长
-								if (personal.utp==1||personal.utp==2) {
+								if(personal.utp == 1 || personal.utp == 2) {
 									utils.mOpenWithData("noticeList.html", {
 										index: 1
 									});
-								}else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
+								} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
 									if(personal.grds.length > 0) { //年级领导
 										utils.mOpenWithData("noticeList.html", {
 											index: 1
@@ -651,12 +695,12 @@
 					}
 
 					function onAppReume() {
-						plus.clearIcon.clearIco(function( result ) {
-							console.log("result>>>>>>"+result[0]);
+						plus.clearIcon.clearIco(function(result) {
+							console.log("result>>>>>>" + result[0]);
 							store.set(window.storageKeyName.ICONNUM, 0);
 							plus.push.clear();
-						},function(result){
-							console.log('未知错误：'+result);
+						}, function(result) {
+							console.log('未知错误：' + result);
 						});
 					}
 				}

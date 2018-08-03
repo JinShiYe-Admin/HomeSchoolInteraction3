@@ -118,11 +118,7 @@
 		"distribute": {
 			"plugins": {"payment":{"weixin":{"description":"微信支付","appid":"wx272c9b4a4ac2e9ac"}},
 				"push": {
-					"igexin": {
-						"appid": "JBKWJXXIFz8yGRCzCPEjM",
-						"appkey": "nFhcmTt06TAbE0uCK58uo",
-						"appsecret": "23GnJiP9008oM6lpZSeRM9"
-					}
+					"igexin": {"appid":"JBKWJXXIFz8yGRCzCPEjM","appkey":"nFhcmTt06TAbE0uCK58uo","appsecret":"23GnJiP9008oM6lpZSeRM9"}
 				}
 			},
 			"apple": {
@@ -305,7 +301,8 @@
 			"html/homeSchool/notice_add.html": {
 				"resources": [],
 				"refer": [
-					"html/utils/camera_video.html"
+					"html/utils/camera_video.html",
+					"html/homeSchool/notice_parentsList.html"
 				],
 				"priority": 0
 			}
@@ -533,7 +530,6 @@
 				"html/mine/modifyPassword.html",
 				"js/libs/CryptoJS/components/lib-typedarrays-min.js",
 				"js/libs/CryptoJS/components/core-min.js",
-				"html/homeSchool/notice_parentsList.html",
 				"img/homeSchool/schoolPage4.png",
 				"js/libs/CryptoJS/rollups/hmac-ripemd160.js",
 				"img/homeSchool/u292.png",

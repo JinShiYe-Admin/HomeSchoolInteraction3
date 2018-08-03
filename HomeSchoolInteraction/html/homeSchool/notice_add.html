@@ -612,10 +612,6 @@
 					encName = tempArray.join('|');
 				}
 				//				console.log('encName:'+encName);
-				var sendIMG = '';
-				if (personal.imgurl) {
-					sendIMG = personal.imgurl;
-				}
 				
 				//1.新增学校通知（同时增加通知未读）
 				var tempData1 = {
@@ -628,7 +624,7 @@
 					sendManId: (personal.utid).toString(), //发布人ID
 					sendManCode: personal.uid, //发布人账号
 					sendManName: personal.utname, //发布人姓名
-					sendManImg: sendIMG, //发布人头像
+					sendManImg: personal.imgurl, //发布人头像
 					receiveManIds: arrayToStr(temp0), //接收人人ID，例如：[“1”,”2”,”3”]
 					receiveManCodes: arrayToStr(temp1), //接收人账号，例如：[“1”,”2”,”3”]
 					receiveManNames: arrayToStr(temp2), //接收人姓名，例如：[“1”,”2”,”3”]

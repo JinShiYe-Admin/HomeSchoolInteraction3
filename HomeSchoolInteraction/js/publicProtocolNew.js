@@ -409,7 +409,6 @@ var bindPro = function(data0, callback) {
 	//	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
 	//	data0 = extendParameter(data0);
 	//	xhrPost('http://jbyj.jiaobaowang.net/GeTuiPushServer/bind', data0, callback);
-
 }
 
 //1.解绑
