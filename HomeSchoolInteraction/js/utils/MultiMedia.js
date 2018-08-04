@@ -352,6 +352,7 @@ var MultiMedia = (function($, mod) {
 								if(data.flag == 1) {
 									var path=data.path;
 									var oldPath=path.substring(7,path.length);
+									console.log("path=============="+path+",oldPath========"+oldPath)
 									var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/imgCompress/'+new Date().getTime()+'.mp4';
 									var json={
 										filePath:oldPath,
@@ -364,12 +365,12 @@ var MultiMedia = (function($, mod) {
 										if(obj.code==0){
 											self.data.VideoNum--;
 												self.addVideos(obj.msg, function() {
-													data.wd.close();
+//													data.wd.close();
 													wd.close();
 												});
 										}else{
 											wd.close();
-											data.wd.close();
+//											data.wd.close();
 											mui.alert(obj.msg, '校讯通', function() {});
 										}
 									},function(result){
