@@ -534,13 +534,15 @@
 					if(data.RspCode == 0) {
 						var tempArry = cities;
 						mui.each(cityArray, function(index, element) {
-							if(element.acode.substring(0, 4) == personal.areano.substring(0, 4)) {
-								personal.uarea = element;
-								store.set(window.storageKeyName.PERSONALINFO, personal);
-								if(personal.utid != 0) { //用户显示当前城市
-									document.getElementById("userCityTitle").style.display = 'block';
-									document.getElementById("userCity").style.display = 'inline';
-									addBeforeCity(personal.uarea);
+							if(!element.acode==null){
+								if(element.acode.substring(0, 4) == personal.areano.substring(0, 4)) {
+									personal.uarea = element;
+									store.set(window.storageKeyName.PERSONALINFO, personal);
+									if(personal.utid != 0) { //用户显示当前城市
+										document.getElementById("userCityTitle").style.display = 'block';
+										document.getElementById("userCity").style.display = 'inline';
+										addBeforeCity(personal.uarea);
+									}
 								}
 							}
 							//遍历，然后判断是否是之前选择的城市，修改选中状态
