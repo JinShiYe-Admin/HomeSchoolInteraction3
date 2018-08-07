@@ -317,10 +317,11 @@
 				},
 				methods: {
 					clickUserBus: function(model) {
+						console.log('clickUserBus.model:'+JSON.stringify(model));
 						if(userBusData.userStuList.length == 0) {
 							mui.toast('请先关联学生');
 						} else {
-							if(model.stuModel.servstat == 0) {
+							if(model.serstat == 0) {
 								mui.toast('当前套餐已失效，不能进行操作');
 								return;
 							}

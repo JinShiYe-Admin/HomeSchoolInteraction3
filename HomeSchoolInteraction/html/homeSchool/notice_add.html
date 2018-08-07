@@ -414,6 +414,15 @@
 									}
 								}
 								console.log('classidArr:' + JSON.stringify(classidArr));
+								var tempGradeArray = [];
+								//重新计算年级
+								for (var i = 0; i < classidArr.length; i++) {
+									var temp111 = classidArr[i].parents[0];
+									tempGradeArray.push(temp111.grdname);
+								}
+								tempGradeArray = unique(tempGradeArray);
+//								console.log('tempGradeArray1:'+tempGradeArray);
+								addNoticeContent.gradeStr = tempGradeArray.join(',');
 								//判断是否包含班主任身份
 								if(classidArr.length > 0) {
 									addNoticeContent.teacherFlag = 0;

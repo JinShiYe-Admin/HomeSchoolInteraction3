@@ -402,20 +402,21 @@
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
 				postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//判断获取到的班级，有没有人，将没有人的去掉
-						for(var q = data.RspData.clss.length-1; q >=0 ; q--) {
+						for(var q = data.RspData.clss.length - 1; q >= 0; q--) {
 							var tempclass = data.RspData.clss[q];
 							var tempAAA = 0;
 							for(var w = 0; w < schoolStuCountArray.length; w++) {
 								var tempclass1 = schoolStuCountArray[w];
-								if (tempclass.clsid == tempclass1.clsid) {
+								if(tempclass.clsid == tempclass1.clsid) {
 									tempAAA++;
 								}
 							}
-							if (tempAAA==0) {
-								data.RspData.clss.splice(q,1);
+							if(tempAAA == 0) {
+								data.RspData.clss.splice(q, 1);
 							}
 						}
 						data.RspData.clss.sort(compare("clsname"));
@@ -446,7 +447,6 @@
 									}
 								} else if(personalFlag == 2) { //2年级领导
 									if(gradeModel.tempGradeIsms == 0) {
-
 										//如果同时是班主任，并且这些年级、班级，不在个人信息的管理年级中
 										for(var m = 0; m < personal.clss.length; m++) { //个人信息中的班级列表
 											var grdModel = personal.clss[m];
@@ -480,38 +480,79 @@
 				});
 			}
 
-			//2.7:	学校班级学生统计
+			//2.7:	学校班级学生统计---多一步操作..........
 			var SchStuCount = function(gradeStr) {
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
 					uuid: publicParameter.uuid, //用户设备号
 					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid //系统所分配的应用ID
+					appid: publicParameter.appid, //系统所分配的应用ID
+					gradeids: gradeStr //需要查询的年级ID,多个ID用英文逗号隔开
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('SchStuC', enData0, comData0, 0, function(data) {
-					events.closeWaiting();
-					console.log('学校班级学生统计:' + JSON.stringify(data));
+				postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					if(data.RspCode == 0) {
-						schoolStuCountArray = data.RspData.schstuc;
-						//3.学校年级下班级
-						getClassList(gradeStr);
-					} else {
-						mui.toast(data.RspTxt, "cancel");
+						//班级
+						var tempArray = [];
+						for (var i = 0; i < data.RspData.clss.length; i++) {
+							var tempModel = data.RspData.clss[i];
+							tempArray.push(tempModel.clsid);
+						}
+						var tempClass = tempArray.join(',');
+						var enData1 = {};
+						//不需要加密的数据
+						var comData1 = {
+							uuid: publicParameter.uuid, //用户设备号
+							utoken: personal.utoken, //用户令牌
+							appid: publicParameter.appid, //系统所分配的应用ID
+							classids: tempClass //需要查询的班级ID,多个代码用英文逗号隔开
+						}
+						events.showWaiting();
+						//发送网络请求，data为网络返回值
+						postDataEncry('ClassUserUStu', enData1, comData1, 0, function(data1) {
+							events.closeWaiting();
+							if(data1.RspCode == 0) {
+								schoolStuCountArray = data1.RspData.classuserustus;
+								//3.学校年级下班级
+								getClassList(gradeStr);
+							}
+						});
 					}
+
 				});
+				//				var enData0 = {};
+				//				//不需要加密的数据
+				//				var comData0 = {
+				//					uuid: publicParameter.uuid, //用户设备号
+				//					utoken: personal.utoken, //用户令牌
+				//					appid: publicParameter.appid //系统所分配的应用ID
+				//				}
+				//				events.showWaiting();
+				//				//发送网络请求，data为网络返回值
+				//				postDataEncry('SchStuC', enData0, comData0, 0, function(data) {
+				//					events.closeWaiting();
+				//					console.log('学校班级学生统计:' + JSON.stringify(data));
+				//					if(data.RspCode == 0) {
+				//						schoolStuCountArray = data.RspData.schstuc;
+				//						//3.学校年级下班级
+				//						getClassList(gradeStr);
+				//					} else {
+				//						mui.toast(data.RspTxt, "cancel");
+				//					}
+				//				});
 			}
 
 			//刚进入页面得到数据时，判断全部的勾选状态
 			var allDataSelect = function() {
 				var tempFlag = 0;
-				for(var i = gradeListData.gradeListArray.length-1; i >= 0 ; i--) {
+				for(var i = gradeListData.gradeListArray.length - 1; i >= 0; i--) {
 					var gradeModel = gradeListData.gradeListArray[i];
 					//将年级里没有班级的去掉
-					if (gradeModel.classArray.length==0) {
-						gradeListData.gradeListArray.splice(i,1);
+					if(gradeModel.classArray.length == 0) {
+						gradeListData.gradeListArray.splice(i, 1);
 					}
 				}
 				for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
