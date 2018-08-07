@@ -8,8 +8,12 @@ var Gallery = (function(mod) {
 	 */
 	mod.pickVideo = function(callBack) {
 		plus.gallery.pick(function(filePath) {
-			var wd = events.showWaiting('处理中...');
-			mod.videoInfo(wd, filePath, callBack);
+			var wd = '123';
+			if(plus.os.name == 'iOS') {
+				mod.videoInfo(wd, filePath, callBack);
+			} else if(plus.os.name == 'Android') { //安卓
+				mod.videoInfoAndroid(wd, filePath, callBack);
+			}
 		}, function(error) {
 			mod.galleryPickError(error, function(err) {
 				mui.toast("打开相册失败 " + entryErrorCB.message);
@@ -20,6 +24,110 @@ var Gallery = (function(mod) {
 			});
 		}, {
 			filter: "video",
+		});
+	}
+
+	/**
+	 * 判断视频是否通过限定
+	 * @param {Object} wd
+	 * @param {Object} filePath
+	 * @param {Object} callBack
+	 */
+	mod.videoInfoAndroid = function(wd, filePath, callBack) {
+
+		//获取选取的视频文件对象
+		plus.io.resolveLocalFileSystemURL(filePath, function(entry) {
+			//1.判断大小
+			entry.getMetadata(function(metadata) {
+				var mVideo = document.createElement("video");
+						mVideo.ondurationchange = function() {
+							//console.log("视频时长 " + mVideo.duration);
+							var rawNames = filePath.split("/");
+							var rawName = rawNames[rawNames.length - 1]; //原名字
+							if(mod.pickVideoTime==-1){
+								//console.log("视频文件大小 " + metadata.size);
+//								if(metadata.size > (30 * 1024 * 1024)) {
+//									//console.log("视频大小不得大于30M");
+//									wd.close();
+//									mui.toast("视频大小不得大于30M");
+//									callBack({
+//										flag: 0,
+//										message: "视频大小不得大于30M"
+//									});
+//									return false;
+//								}
+								var	path = "file://" + plus.io.convertLocalFileSystemURL(filePath);
+								var callBackData = {
+									flag: 1, //成功
+									wd: wd, //成功才返回的等待框
+									path: path, //视频文件路径
+									video: mVideo, //video元素
+									duration: mVideo.duration, //视频时长，单位秒
+									rawName: rawName //原名字
+								};
+								//console.log("相册选取视频返回的数据 " + JSON.stringify(callBackData));
+								callBack(callBackData);
+							}else{
+								if(mVideo.duration < (mod.pickVideoTime + 1)) {
+									//console.log("视频文件大小 " + metadata.size);
+	//								if(metadata.size > (30 * 1024 * 1024)) {
+	//									//console.log("视频大小不得大于30M");
+	//									wd.close();
+	//									mui.toast("视频大小不得大于30M");
+	//									callBack({
+	//										flag: 0,
+	//										message: "视频大小不得大于30M"
+	//									});
+	//									return false;
+	//								}
+	
+									var	path = "file://" + plus.io.convertLocalFileSystemURL(filePath);
+									var callBackData = {
+										flag: 1, //成功
+										wd: wd, //成功才返回的等待框
+										path: path, //视频文件路径
+										video: mVideo, //video元素
+										duration: mVideo.duration, //视频时长，单位秒
+										rawName: rawName //原名字
+									};
+									//console.log("相册选取视频返回的数据 " + JSON.stringify(callBackData));
+									callBack(callBackData);
+								} else {
+//									wd.close();
+									mui.toast("视频时长不得超出" + mod.pickVideoTime + "秒");
+									callBack({
+										flag: 0, //失败
+										message: "视频时长不得超出" + mod.pickVideoTime + "秒" //失败信息
+									});
+								}
+							}
+						}
+						mVideo.onerror = function() {
+//							wd.close();
+							mui.toast("视频加载失败");
+							callBack({
+								flag: 0,
+								message: "视频加载失败"
+							});
+						}
+						mVideo.src = filePath;
+			}, function(metadataErrorCB) {
+				//console.log("获取视频信息失败 " + JSON.stringify(metadataErrorCB));
+//				wd.close();
+				mui.toast("获取视频信息失败 " + metadataErrorCB.message);
+				callBack({
+					flag: 0,
+					message: "获取视频信息失败 " + metadataErrorCB.message
+				});
+			});
+		}, function(fileErrorCB) {
+			//console.log("获取相册的视频文件对象失败 " + JSON.stringify(fileErrorCB));
+//			wd.close();
+			mui.toast("获取视频失败 " + fileErrorCB.message);
+			callBack({
+				flag: 0,
+				message: "获取视频失败 " + fileErrorCB.message
+			});
 		});
 	}
 
