@@ -593,9 +593,8 @@
 					var stuModel = addNoticeContent.parentArray[i];
 					temp0.push(stuModel.utid);
 					temp1.push(stuModel.mobile);
-					temp2.push('');
-					temp3.push('');
-					
+					temp2.push(stuModel.utname+'|'+stuModel.stuname);
+					temp3.push(stuModel.uimg);
 				}
 				if(temp0.length == 0) {
 					mui.toast('选择的接收人为空');

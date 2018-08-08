@@ -295,7 +295,7 @@
 								<img v-if="model.ReceiveManImg==null||model.ReceiveManImg==''" class="mui-media-object mui-pull-left peopleImg" src='../../img/noImgPerson.jpg'>
 								<img v-else="" class="mui-media-object mui-pull-left peopleImg" :src=model.ReceiveManImg>
 								<div class="mui-media-body replyName">
-									{{model.ReceiveManName}}的家长
+									{{model.ReceiveManName}}
 									<p class="mui-ellipsis replyTime">{{model.ReadTime}}</p>
 								</div>
 							</a>
@@ -309,7 +309,7 @@
 								<img v-if="model.ReceiveManImg==null||model.ReceiveManImg==''" class="mui-media-object mui-pull-left peopleImg" src='../../img/noImgPerson.jpg'>
 								<img v-else="" class="mui-media-object mui-pull-left peopleImg" :src=model.ReceiveManImg>
 								<div class="mui-media-body replyName" style="padding-top: 10px;">
-									{{model.ReceiveManName}}的家长
+									{{model.ReceiveManName}}
 								</div>
 							</a>
 						</li>
@@ -429,6 +429,25 @@
 						console.log('data:' + JSON.stringify(data));
 						if(data.RspCode == 0) {
 							noticeDetailData.flag = 1;
+							//修改未读、已读名字显示
+							for (var i = 0; i < data.RspData.ReadArray.length; i++) {
+								var tempModel = data.RspData.ReadArray[i];
+								var tempArray = tempModel.ReceiveManName.split('|');
+								if (tempArray.length==2) {
+									tempModel.ReceiveManName = tempArray[1]+'('+tempArray[0]+')';
+								} else if (tempArray.length==1) {
+									tempModel.ReceiveManName = tempArray[0]+'()';
+								}
+							}
+							for (var i = 0; i < data.RspData.NoReadArray.length; i++) {
+								var tempModel = data.RspData.NoReadArray[i];
+								var tempArray = tempModel.ReceiveManName.split('|');
+								if (tempArray.length==2) {
+									tempModel.ReceiveManName = tempArray[1]+'('+tempArray[0]+')';
+								} else if (tempArray.length==1) {
+									tempModel.ReceiveManName = tempArray[0]+'()';
+								}
+							}
 							data.RspData.SendTime = modifyTimeFormat(data.RspData.SendTime);
 							if(data.RspData.NoticeEncAddr.length > 0) {
 								data.RspData.NoticeEncAddr = data.RspData.NoticeEncAddr.split('|');

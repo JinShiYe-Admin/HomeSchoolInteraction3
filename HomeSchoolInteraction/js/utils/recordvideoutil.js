@@ -100,62 +100,106 @@ var RecordVideo = (function(mod) {
 	 * @param {Object} errorCB
 	 */
 	mod.recordVideoInIOS = function(options, successCB, errorCB) {
+		console.log('recordVideoInIOS000000');
 		var cmr = plus.camera.getCamera();
 		var res = cmr.supportedVideoResolutions[1];
 		var fmt = cmr.supportedVideoFormats[0];
 		cmr.startVideoCapture(function(p) {
-				var tempPath = plus.io.convertLocalFileSystemURL(p)
-				var mVideo = document.createElement("video");
-				plus.io.resolveLocalFileSystemURL(p, function(entry) {
-					entry.file(function(file) {
-						//console.log('filesize=' + file.size)
-//						if(file.size > 1048576 * 30) {
-//							//						mui.toast('视频大小不得超过30M');
-//							errorCB({
-//								code: 999, // 错误编码
-//								message: '视频大小不得超过30M' // 错误描述信息
-//							});
-//						} else {
-							//console.log(123)
-							mVideo.ondurationchange = function() {
-								//console.log("ondurationchange  duration " + mVideo.duration);
-								if(mVideo.duration < 60*5+1) {
-									//console.log('成功：' + tempPath);
-									successCB("file://" + tempPath)
-
-								} else {
-									errorCB({
-										code: 999, // 错误编码
-										message: '视频时长不得超出五分钟' // 错误描述信息
-										//					mui.toast("视频时长不得超出10秒");
-									})
-								}
-
-							}
-							mVideo.onerror = function() {
-								mui.toast("视频加载失败")
-							}
-							mVideo.src = tempPath;
-//						}
-
-					})
-				})
-
-			},
-			function(e) {
-				//console.log('### ERROR ### 录制视频异常 name:' + e.code + " message:" + e.message);
-				if(e.code != 2) {
-					errorCB({
-						code: 'ERROR', // 错误编码
-						message: '录制视频异常' // 错误描述信息
+			var tempPath = plus.io.convertLocalFileSystemURL(p)
+			var mVideo = document.createElement("video");
+			plus.io.resolveLocalFileSystemURL(p, function(entry) {
+				entry.file(function(file) {
+					console.log('recordVideoInIOS000003:' + JSON.stringify(file));
+					mVideo.setAttribute('src', file.fullPath);
+					mVideo.addEventListener('durationchange', function() {
+						console.log('recordVideoInIOS000004:' + mVideo.duration);
+						//console.log("ondurationchange  duration " + mVideo.duration);
+						if(mVideo.duration < 60 * 5 + 1) {
+							//console.log('成功：' + tempPath);
+							successCB("file://" + tempPath)
+						} else {
+							errorCB({
+								code: 999, // 错误编码
+								message: '视频时长不得超出五分钟' // 错误描述信息
+								//					mui.toast("视频时长不得超出10秒");
+							})
+						}
 					});
-				}
-			}, {
-				filename: '_documents/' + (new Date()).getTime() + parseInt(Math.random() * 1000) + '.mp4',
-				index: 1,
-				resolution: res,
-				format: fmt
+				});
+			}, function(e) {
+				outLine('读取录像文件错误：' + e.message);
 			});
+		}, function(e) {
+			if(e.code != 2) {
+				errorCB({
+					code: 'ERROR', // 错误编码
+					message: '录制视频异常' // 错误描述信息
+				});
+			}
+		}, {
+			filename: '_doc/camera/'
+		});
+		//		cmr.startVideoCapture(function(p) {
+		//			console.log('recordVideoInIOS000001:'+p);
+		//				var tempPath = plus.io.convertLocalFileSystemURL(p)
+		//				var mVideo = document.createElement("video");
+		//				console.log('tempPath:'+tempPath);
+		//				plus.io.resolveLocalFileSystemURL("file://" + tempPath, function(entry) {
+		//					console.log('recordVideoInIOS000002');
+		//					entry.file(function(file) {
+		//						console.log('recordVideoInIOS000003');
+		//						//console.log('filesize=' + file.size)
+		////						if(file.size > 1048576 * 30) {
+		////							//						mui.toast('视频大小不得超过30M');
+		////							errorCB({ 
+		////								code: 999, // 错误编码
+		////								message: '视频大小不得超过30M' // 错误描述信息
+		////							});
+		////						} else {
+		//							//console.log(123)
+		//							mVideo.ondurationchange = function() {
+		//								console.log('recordVideoInIOS000004');
+		//								//console.log("ondurationchange  duration " + mVideo.duration);
+		//								if(mVideo.duration < 60*5+1) {
+		//									console.log('recordVideoInIOS000005');
+		//									//console.log('成功：' + tempPath);
+		//									successCB("file://" + tempPath)
+		//
+		//								} else {
+		//									console.log('recordVideoInIOS000006');
+		//									errorCB({
+		//										code: 999, // 错误编码
+		//										message: '视频时长不得超出五分钟' // 错误描述信息
+		//										//					mui.toast("视频时长不得超出10秒");
+		//									})
+		//								}
+		//
+		//							}
+		//							console.log('recordVideoInIOS000007');
+		//							mVideo.onerror = function() {
+		//								mui.toast("视频加载失败")
+		//							}
+		//							mVideo.src = tempPath;
+		////						}
+		//
+		//					})
+		//				})
+		//
+		//			},
+		//			function(e) {
+		//				//console.log('### ERROR ### 录制视频异常 name:' + e.code + " message:" + e.message);
+		//				if(e.code != 2) {
+		//					errorCB({
+		//						code: 'ERROR', // 错误编码
+		//						message: '录制视频异常' // 错误描述信息
+		//					});
+		//				}
+		//			}, {
+		//				filename: '_documents/' + (new Date()).getTime() + parseInt(Math.random() * 1000) + '.mp4',
+		//				index: 1,
+		//				resolution: res,
+		//				format: fmt
+		//			});
 
 	}
 
@@ -176,8 +220,8 @@ var RecordVideo = (function(mod) {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri); //录像输出位置
 		//		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); //0 最低质量, 1高质量(不设置,10M;0,几百KB;1,50M)
 		intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, options.time); //控制录制时间单位秒
-//		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, size * 1024 * 1024L);//限制大小
-		console.log("options.time=================="+options.time);
+		//		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, size * 1024 * 1024L);//限制大小
+		console.log("options.time==================" + options.time);
 		var main = plus.android.runtimeMainActivity();
 		main.startActivityForResult(intent, window.storageKeyName.CODERECORDVIDEO);
 		//第一个参数：一个Intent对象，用于携带将跳转至下一个界面中使用的数据，使用putExtra(A,B)方法，此处存储的数据类型特别多，基本类型全部支持。
