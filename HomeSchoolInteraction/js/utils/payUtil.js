@@ -152,10 +152,13 @@ var appPay = (function(mod) {
 				mod.payCode=false;
 				console.log('支付订单号'+mod.order_id);
 				mod.payResult(function(){
+					console.log('addListener success')
 					success;
 				},function(e){
+					console.log('addListener fail')
 					fail(e);
 				},function(e){
+					console.log('addListener fail 2')
 					failtimeout(e);
 				},'正在查询支付结果...',5000);
 			}
@@ -187,10 +190,12 @@ var appPay = (function(mod) {
 				if(this.readyState === 4 && this.status === 200) {
 					var data = xhr.responseText;
 					var data1=JSON.parse(data);
-					console.log(data)
+					console.log("payResult"+data)
 					if(data1.RspCode == 0) {
+						console.log('payResult success')
 						success;
 					} else {
+						console.log('payResult fail')
 						fail(data1.RspTxt)
 					}
 				} else {

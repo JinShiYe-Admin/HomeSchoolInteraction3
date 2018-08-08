@@ -302,6 +302,26 @@
 								var obj=this.stuList[stuIndex];
 									obj.accountIsExists=false;//账号重复是否显示
 									this.$set(this.stuList, stuIndex, obj);
+							}else{
+								var regex=/^[\u4e00-\u9fa50-9A-Za-z]+$/;
+								var myReg = /^[a-zA-Z0-9_]{0,}$/;
+								var reg = /[\u4e00-\u9fa5]/g; 
+								var result=regex.test(value);
+								var result2=myReg.test(value);
+								var endStr='';
+								if(result==true&&result2==true){
+								 	endStr=value;
+								}else{//包含中文或特殊字符
+								  	var newStr=value.substring(0,value.length-1);
+								  	if(result2==false){//去掉中文
+								  	 	endStr=newStr.replace(reg,"")
+								  	}else{
+								  		endStr=newStr
+								  	}
+								}
+								var obj=this.stuList[stuIndex];
+								obj.lgname=endStr;
+								this.$set(this.stuList, stuIndex, obj);
 							}
 						},
 						modifyStu:function(ev,stuIndex){//修改关联

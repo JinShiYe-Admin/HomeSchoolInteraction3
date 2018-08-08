@@ -171,7 +171,7 @@
 			.mui-input-row label~input {
 			    float: left;
 			    font-size: 14px;
-			    color: #8f8f94;
+			    color: #080808;
 			    margin-left: 14px;
 			}
 			
@@ -207,13 +207,13 @@
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>缴费金额</label>
-								<input type="text" value="120元" disabled/>
+								<input  type="text" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
 							<a class="mui-navigate-right">
 								<label>订购时间</label>
-								<input type="text" :value=orderDetail.stime disabled/>
+								<input  type="text" :value=orderDetail.stime disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
@@ -377,6 +377,7 @@
 				//添加支付返回APP时的监听
 				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
 				appPay.addListener(function(){//查询成功
+					console.log('appPay success')
 					order;
 				},function(e){//查询失败
 					var btnArray = ['否', '是'];
@@ -403,6 +404,7 @@
 			
 			//用户续订套餐
 			var order = function() {
+				console.log('order')
 				var data={
 					servid:orderDetailData.orderDetail.serviceid,//套餐代码
 					servm:orderDetailData.servm*1, //订购总月数
@@ -422,8 +424,9 @@
 			}
 
 			//年月日加减
-			function addMonths(date,months){
-		       var d=new Date(date);
+			var addMonths = function(date,months) {
+			   var nd=date.split(".").join("/");
+		       var d=new Date(nd);
 		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
 		       var y=d.getFullYear()
 		       var m=d.getMonth()+1; 
