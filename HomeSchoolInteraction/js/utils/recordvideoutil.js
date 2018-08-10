@@ -216,12 +216,15 @@ var RecordVideo = (function(mod) {
 		var Intent = plus.android.importClass("android.content.Intent");
 		var intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		var file = new File(options.outPutPath);
+		var direct = plus.io.convertLocalFileSystemURL('_documents');
+		var file2 = new File(direct);
+		file2.mkdir();
 		var outPutUri = Uri.fromFile(file);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, outPutUri); //录像输出位置
 		//		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0); //0 最低质量, 1高质量(不设置,10M;0,几百KB;1,50M)
 		intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, options.time); //控制录制时间单位秒
 		//		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, size * 1024 * 1024L);//限制大小
-		console.log("options.time==================" + options.time);
+		console.log("options.time==================" + options.time+"，direct============"+direct);
 		var main = plus.android.runtimeMainActivity();
 		main.startActivityForResult(intent, window.storageKeyName.CODERECORDVIDEO);
 		//第一个参数：一个Intent对象，用于携带将跳转至下一个界面中使用的数据，使用putExtra(A,B)方法，此处存储的数据类型特别多，基本类型全部支持。
