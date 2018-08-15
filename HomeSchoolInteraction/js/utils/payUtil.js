@@ -56,6 +56,7 @@ var appPay = (function(mod) {
 		}
 		console.log('channel', mod.channel);
 		var data0 = {
+			appid:'wx272c9b4a4ac2e9ac',//微信开发平台应用APPID
 			body: orderDetailData.orderDetail.cnname, //商品名称
 			attach: orderDetailData.orderDetail.note, //附加描述,最好填写,以区分
 			uid: personal.uid, //订购的注册账户
