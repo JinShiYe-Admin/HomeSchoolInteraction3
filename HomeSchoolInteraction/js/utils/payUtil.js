@@ -78,17 +78,20 @@ var appPay = (function(mod) {
 				var data = xhr.responseText;
 				mod.order_id=JSON.parse(data).out_trade_no;
 				console.log('data======='+mod.order_id);
-				plus.payment.request(mod.channel, data, function(result) {
-					console.log('result=' + JSON.stringify(result));
-//					alert("result=" + JSON.stringify(result));
-//					plus.nativeUI.alert("支付成功！", function() {
-//						success;
-//					});
-				}, function(error) {
-					console.log('error' + JSON.stringify(error));
-//					plus.nativeUI.alert("支付失败：" + error.code);
-					fail(1,error.code);
-				});
+				console.log('data======='+data);
+				console.log('mod.channel======='+mod.channel);
+					console.log(JSON.stringify(mod.channel))
+					plus.payment.request(mod.channel, data, function(result) {
+						console.log('result=' + JSON.stringify(result));
+	//					alert("result=" + JSON.stringify(result));
+	//					plus.nativeUI.alert("支付成功！", function() {
+	//						success;
+	//					});
+					}, function(error) {
+						console.log('error' + JSON.stringify(error));
+	//					plus.nativeUI.alert("支付失败：" + error.code);
+						fail(1,error.code);
+					});
 			} else {
 
 			}
@@ -154,7 +157,7 @@ var appPay = (function(mod) {
 				console.log('支付订单号'+mod.order_id);
 				mod.payResult(function(){
 					console.log('addListener success')
-					success;
+					success();
 				},function(e){
 					console.log('addListener fail')
 					fail(e);
@@ -194,7 +197,7 @@ var appPay = (function(mod) {
 					console.log("payResult"+data)
 					if(data1.RspCode == 0) {
 						console.log('payResult success')
-						success;
+						success();
 					} else {
 						console.log('payResult fail')
 						fail(data1.RspTxt)

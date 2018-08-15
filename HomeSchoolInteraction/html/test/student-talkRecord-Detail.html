@@ -30,6 +30,11 @@
 				font-weight: bold;
 			}
 			
+			.user-title-se{
+				font-size: 13px;
+				color: #6d6d6d;
+			}
+			
 			.user-title-body {
 				text-align: left;
 				margin: 0 10px;
@@ -67,13 +72,13 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
 			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">谈话记录详情</h1>
-			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
+			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 15px;">确定</a>
 		</header>
 		<div class="mui-content">
 			<div id='talk'>
 				<div class="mui-row title-info">
 					<p v-cloak class="user-title">{{title}}</p>
-					<p v-cloak class="user-title">{{time}}</p>
+					<p v-cloak class="user-title-se">{{time}}</p>
 					<p v-cloak class="user-title-body">{{body}}</p>
 					<div v-cloak class="user-title-footer">
 						<p class="ul-p">附件：<a :href=fj>上课睡觉.jpg</a></p>
