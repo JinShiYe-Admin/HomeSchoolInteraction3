@@ -330,7 +330,6 @@ var MultiMedia = (function($, mod) {
 								console.log('recordVideo00001');
 								if(self.data.VideoNum > 0) {
 									console.log('recordVideo00002');
-									//									events.showWaiting('处理中...');
 									var w = plus.nativeUI.showWaiting("转码中，请等待...\n0%");
 									plus.compressVideo.ioscompress(fpath, function(result) {
 										console.log("result:" + result);
@@ -340,23 +339,19 @@ var MultiMedia = (function($, mod) {
 												clearInterval();
 											}
 											var n = tempArr[1];
-//											var t = setInterval(function() {
 												w.setTitle("转码中，请等待...\n" + tempArr[1] + '%');
 												if(n >= 100) {
 													w.close();
 													clearInterval();
 												}
-//											}, 1000);
 										} else {
 											self.data.VideoNum--;
 											console.log('result000:' + tempArr[1]);
-											//											events.closeWaiting();
 											self.addVideos('file://' + tempArr[1], function() {
 												console.log("录像 callback");
 											});
 										}
 									}, function(result) {
-										//										events.closeWaiting();
 										console.log('result001:' + result);
 									});
 
@@ -402,26 +397,31 @@ var MultiMedia = (function($, mod) {
 								var fpath = data.path;
 								//								RecordVideo.recordVideo({}, function(fpath) {
 								if(self.data.VideoNum > 0) {
-
+									console.log('recordVideo00002');
+									var w = plus.nativeUI.showWaiting("转码中，请等待...\n0%");
 									plus.compressVideo.ioscompress(fpath, function(result) {
 										console.log("result:" + result);
 										var tempArr = result.split(',');
 										if(tempArr[0] == 1) {
-											var wd = events.showWaiting('转码中' + tempArr[1] * 100);
-
+											w.onclose = function() {
+												clearInterval();
+											}
+											var n = tempArr[1];
+												w.setTitle("转码中，请等待...\n" + tempArr[1] + '%');
+												if(n >= 100) {
+													w.close();
+													clearInterval();
+												}
 										} else {
 											self.data.VideoNum--;
 											console.log('result000:' + tempArr[1]);
-											wd.close();
 											self.addVideos('file://' + tempArr[1], function() {
 												console.log("录像 callback");
 											});
 										}
 									}, function(result) {
-										wd.close();
 										console.log('result001:' + result);
 									});
-
 								}
 								//							}, function(err) {
 								//								mui.toast(err.message);

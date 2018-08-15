@@ -152,7 +152,7 @@
 		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<a v-if="headFlag ==0" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
 			<h1 class="mui-title" style="color: white;">关联学生</h1>
-			<a @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
+			<a v-if="headFlag ==1" @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
 		<div id='userBusData' class="mui-content mui-fullscreen" style="background: white;">
 			<p class="p-show" v-show="userStuList.length==0">
@@ -161,7 +161,7 @@
 			<p class="p-smg">账号信息</p>
 			<p class="p-show1"></p>
 			<a href="javascript:;">
-				<img class="mui-media-object mui-pull-left img-people" src="../../img/login/headImg.png">
+				<img class="mui-media-object mui-pull-left img-people" :src=peopleMsg.imgurl>
 				<div class="mui-media-body">
 					<p class="mui-ellipsis userNameclass">{{peopleMsg.utname}}</p>
 					<p class="mui-ellipsis userNameclass">{{peopleMsg.uid}}</p>
@@ -240,6 +240,7 @@
 				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				//4.1.用户已订购套餐及功能扩展栏目
 				getUserBusFunc();
+				personal.imgurl = setImg(personal.imgurl);
 				userBusData.peopleMsg = personal;
 				//4.5.获取用户关联的学生列表
 				getUserUstu();
@@ -441,6 +442,7 @@
 				postDataEncry('UnUserStu', enData1, comData1, 0, function(data1) {
 					console.log('4.7.UnUserStu:' + JSON.stringify(data1));
 					events.closeWaiting();
+					mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
 					if(data1.RspCode == 0) {
 						if(stuModel.stuid == 0) {
 							model.stuModel = {};

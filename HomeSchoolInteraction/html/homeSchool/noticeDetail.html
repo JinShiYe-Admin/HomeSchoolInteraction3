@@ -152,7 +152,8 @@
 			    height: 0px;
 			}
 			.mui-table-view:after {
-			    height: 0px;
+				margin-left: 10px;
+			    height: 1px;
 			}
 			
 			.tb-width{
@@ -446,6 +447,15 @@
 									tempModel.ReceiveManName = tempArray[1]+'('+tempArray[0]+')';
 								} else if (tempArray.length==1) {
 									tempModel.ReceiveManName = tempArray[0]+'()';
+								}
+							}
+							for (var i = 0; i < data.RspData.ReplyArray.length; i++) {
+								var tempModel = data.RspData.ReplyArray[i];
+								var tempArray = tempModel.ReplyManName.split('|');
+								if (tempArray.length==2) {
+									tempModel.ReplyManName = tempArray[1]+'('+tempArray[0]+')';
+								} else if (tempArray.length==1) {
+									tempModel.ReplyManName = tempArray[0];
 								}
 							}
 							data.RspData.SendTime = modifyTimeFormat(data.RspData.SendTime);

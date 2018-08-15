@@ -6,6 +6,30 @@
 		<title>批改作业</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.selectP {
+				margin-right: 10px;
+				margin-top: 8px;
+				margin-left: 10px;
+			}
+			
+			.homewrokContent {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				margin: 5px 10px 5px;
+			}
+			
+			.mui-card-link {}
+			
+			.carlinkContent {
+				font-size: 12px;
+				color: darkgray;
+				margin-left: 10px;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -14,9 +38,114 @@
 			<h1 class="mui-title" style="color: white;">作业列表</h1>
 			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
 		</header>-->
+		<div class="mui-content" id="homeworkList">
+			<div id="">
+				<p class="selectP" style="">筛选</p>
+			</div>
+
+			<div class="" id="homeworkListArray" style="background: white;">
+				<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
+					<div class="mui-card-header">
+						{{homeworkModel.homeworkName}}
+						<button v-if="homeworkModel.homeworkFlag ==1" @click.stop="clickBtn(homeworkModel)" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+					</div>
+					<div class="mui-card-content">
+						<div class="homewrokContent">
+							{{homeworkModel.homeworkContent}}
+						</div>
+						<img :src="homeworkModel.homeworkImg" alt="" width="100%" />
+						<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
+						<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
+						<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
+
+					</div>
+					<div class="mui-card-footer">
+						<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
 			mui.init()
+
+			var homeworkListArray = new Vue({
+				el: "#homeworkListArray",
+				data: {
+					homeworkArray: [{
+						homeworkName: '语文作业【一年级 1601班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-22',
+					}, {
+						homeworkName: '语文作业【一年级 1602班】',
+						homeworkFlag: 0,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '',
+						homeworkFlag1: '40',
+						homeworkFlag2: '14',
+						homeworkFlag3: '20',
+						homeworkFlag4: '32',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-15',
+					}, {
+						homeworkName: '语文作业【一年级 1603班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '22',
+						homeworkFlag4: '32',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-1-25',
+					}, {
+						homeworkName: '语文作业【一年级 1604班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-7-25',
+					}, {
+						homeworkName: '语文作业【一年级 1605班】',
+						homeworkFlag: 0,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-25',
+					}, ]
+				},
+				methods: {
+					clickHomeworkModel: function(model) {
+						console.log('clickHomeworkModel:' + JSON.stringify(model));
+					},
+					clickBtn: function(model) {
+						console.log('clickBtn:' + JSON.stringify(model));
+					}
+				}
+			});
 		</script>
 	</body>
 

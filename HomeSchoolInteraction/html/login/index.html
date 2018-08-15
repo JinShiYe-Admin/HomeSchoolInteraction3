@@ -82,7 +82,10 @@
 //				mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {
 //				});
 //			}
-			 
+			 window.addEventListener('refush_count', function() {
+					console.log('refush_count000');
+					mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
+				});
 			
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
