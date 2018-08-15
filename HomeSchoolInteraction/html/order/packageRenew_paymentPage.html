@@ -378,7 +378,7 @@
 				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
 				appPay.addListener(function(){//查询成功
 					console.log('appPay success')
-					order;
+					order();
 				},function(e){//查询失败
 					var btnArray = ['否', '是'];
 					mui.confirm(e+'! 是否重新查询？', '校讯通', btnArray, function(e) {
@@ -394,7 +394,7 @@
 			//尝试重新查询
 			function reCheck(){
 				appPay.payResult(function(){//查询成功
-						order;
+						order();
 					},function(e){//查询失败
 							mui.toast(e);
 					},function(e){//查询超时

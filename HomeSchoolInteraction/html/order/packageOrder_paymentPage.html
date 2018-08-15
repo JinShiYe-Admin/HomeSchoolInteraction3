@@ -334,7 +334,8 @@
 				//添加支付返回APP时的监听
 				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
 				appPay.addListener(function(){//查询成功
-					order;
+					console.log("11111111111111");
+					order();
 				},function(e){//查询失败
 //					mui.toast(e);
 					var btnArray = ['否', '是'];
@@ -351,7 +352,7 @@
 			//尝试重新查询
 			function reCheck(){
 				appPay.payResult(function(){//查询成功
-						order;
+						order();
 					},function(e){//查询失败
 							mui.toast(e);
 					},function(e){//查询超时
@@ -437,6 +438,23 @@
 					payAction: function() { //支付
 						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
+//								var data='{"appid":"wx272c9b4a4ac2e9ac","noncestr":"2d1eb4c5511e4cc196d891ed3137c0c1","out_trade_no":"Wx146901530220180814135735042","package":"Sign=WXPay","partnerid":"1469015302","prepayid":"wx14135735756567687b82a3e80402404861","sign":"5BCE7F0E9B235B4865563FC183F850E3","timestamp":"1534226256"} at js/utils/vconsole.min.js:7'
+//								plus.payment.getChannels(function(channels) {
+//									console.log('channels=' + JSON.stringify(channels));
+//									for(var i in channels) {
+//										var temp = channels[i];
+//										if(temp.id == 'wxpay') {
+//											plus.payment.request(temp, data, function(result) {
+//												console.log('result=' + JSON.stringify(result));
+//											}, function(error) {
+//												console.log('error' + JSON.stringify(error));
+//											});
+//										}
+//									}
+//								}, function(e) {
+//									alert("获取支付通道失败：" + e.message);
+//								});
+								
 						} else {
 							appPay.payCode=true;
 							//调起支付
