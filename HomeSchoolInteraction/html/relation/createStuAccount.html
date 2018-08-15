@@ -205,9 +205,14 @@
 												<label>确认密码:</label>
 												<input type="password" name="repassword" class="mui-input-clear" placeholder="确认密码">
 											</div>
-											<div class="mui-button-row" >
-												<button class="mui-btn mui-btn-dgr" type="button" @click="submitStuAccount($event,stuIndex)">确认</button>
-												<button class="mui-btn mui-btn-primary jccf-btn" type="button" @click="cancel($event,stuIndex)">取消</button>
+											<div class="mui-button-row" > 
+												<template v-if="students.lgname==null||students.lgname==''">
+													<button class="mui-btn mui-btn-dgr" type="button" @click="submitStuAccount($event,stuIndex)">确认</button>
+												</template>
+												<template v-else>
+													<button class="mui-btn mui-btn-dgr" type="button" @click="submitStuAccount($event,stuIndex)">确认</button>
+													<button class="mui-btn mui-btn-primary jccf-btn" type="button"  @click="cancel($event,stuIndex)">取消</button>
+												</template>
 											</div>
 										</form>
 									</div>
@@ -346,7 +351,7 @@
 								}else if(formobj.password.length > 18 || formobj.password.length < 6){//密码长度验证
 									mui.toast('密码长度需为6到18个字符');
 								}else if(!checkPass(formobj.password)){//密码正则验证
-									mui.toast('密码长度需为6到18个字符');
+									mui.toast('只能输入数字和字母');
 								}else if(!(formobj.password==formobj.repassword)){//两次密码验证
 									mui.toast('两次输入的密码不一致');
 								}else{
@@ -479,7 +484,7 @@
 							　　		stuIdList.push(stuid);
 									stu['accountIsExists']=false;//账号已存在提示是否显示
 									stu['upw']=123456;
-									if(stu.lgname==''){
+									if(stu.lgname==''||stu.lgname==null){
 										stu['createFormShow']=true;//创建学生账号表单是否显示
 										stu['disabled']=false;//学生账号input是否可编辑
 									}else{
