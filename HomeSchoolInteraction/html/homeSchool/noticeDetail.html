@@ -195,6 +195,16 @@
 				vertical-align: middle;
 			}
 			
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
+			    color: inherit;
+			    border-top: 0;
+			    border-left: 0;
+			    border-right: 0;
+			    border-bottom: 1px solid #C8C7CC;
+			}
+			.mui-table-view-cell:last-child:after, .mui-table-view-cell:last-child:before {
+			    height: 1px;
+			}
 		</style>
 	</head>
 
@@ -209,9 +219,8 @@
 				<button v-on:click.stop="replyContent()" type="button" class="" style="width: 20%;margin-top: 2px;border: 0px;font-size: 18px;color: #00cfbd;">回复</button>
 			</div>
 		</nav>  
-		
 		<div class="mui-content" id="noticeDetailData"   style="background: white;">
-			<p style="color: black;padding: 10px;font-size: 14px;color: #333333;word-break: break-all;">{{noticesDetail.NoticeContent}}</p>
+				<p style="color: black;padding:10px 0 0 15px;font-size: 14px;color: #333333;word-break: break-all;">{{noticesDetail.NoticeContent}}</p>
 				<div class="" v-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==2">
 					<ul class="mui-table-view mui-grid-view">
 						<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr" >
@@ -261,7 +270,7 @@
 
 			<p style="margin:0px auto 5px;padding-top:5px;padding-right: 10px;font-size:12px;overflow:hidden;text-align:right;">{{noticesDetail.SendManName}} | {{noticesDetail.SendTime}}</p>
 			<div style="width: 100%;height: 10px;background: #f2f2f2;"></div>
-			<div id="sliderSegmentedControl" style="border-bottom: 1px solid #c8c7cc;" class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary" style="margin-top: 5px;">
+			<div id="sliderSegmentedControl"   class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary" style="margin-top: 5px;">
 				<a id="item1" class="mui-control-item mui-active readPeople slider-list" href="#ReplyArray">
 					回复({{noticesDetail.ReplyArray.length}})
 				</a>
