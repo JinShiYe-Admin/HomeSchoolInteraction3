@@ -21,7 +21,7 @@
 
 	<body>
 		<div id="nav">
-			<nav class="mui-bar mui-bar-tab">
+			<nav class="mui-bar mui-bar-tab" id="navIndex">
 					<a id="defaultTab" v-cloak class="mui-tab-item"  href='../../html/homeSchool/homeSchoolIndex.html'>
 						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
 						<span class="mui-tab-label">家校互动</span>
@@ -82,13 +82,32 @@
 //				});
 //			}
 			 window.addEventListener('refush_count', function() {
-					console.log('refush_count000');
 					mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
 				});
 			
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
-			});			
+			});		
+
+			//侧滑菜单弹出时，tab按钮禁用
+			window.addEventListener('closeClick', function(data) {
+				canClick=false;
+				var wvs=plus.webview.getDisplayWebview();
+				document.getElementById('navIndex').style.display='none'
+				for(var i=0;i<wvs.length;i++){
+						wvs[i].setStyle({top: '0px',bottom: '0px'})
+				}
+			});
+			//侧滑菜单关闭时，tab按钮启用
+			window.addEventListener('openClick', function(data) {
+				canClick=true;
+				var wvs=plus.webview.getDisplayWebview();
+				document.getElementById('navIndex').style.display='inherit'
+				for(var i=0;i<wvs.length;i++){
+					wvs[i].setStyle({top: '0px',bottom: '51px'})
+				}
+			});
+			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
 				nav=new Vue({
@@ -127,24 +146,24 @@
 				
 				//选项卡点击事件
 				mui('.mui-bar-tab').on('tap', 'a', function(e) {
-					var targetTab = this.getAttribute('href');
-					if(targetTab == activeTab) {
-						return;
-					}else{
-						var viewIsExists=plus.webview.getWebviewById(targetTab);
-						if(viewIsExists==null||viewIsExists==''||viewIsExists==undefined){
-							var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
-							newSub.hide();
-							self.append(newSub);
-						} 
-					}
-					//更换标题
-					//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-					plus.webview.show(targetTab, "fade-in", 300);
-					//隐藏当前;
-					plus.webview.hide(activeTab);
-					//更改当前活跃的选项卡 
-					activeTab = targetTab;
+						var targetTab = this.getAttribute('href');
+						if(targetTab == activeTab) {
+							return;
+						}else{
+							var viewIsExists=plus.webview.getWebviewById(targetTab);
+							if(viewIsExists==null||viewIsExists==''||viewIsExists==undefined){
+								var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
+								newSub.hide();
+								self.append(newSub);
+							} 
+						}
+						//更换标题
+						//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+						plus.webview.show(targetTab, "fade-in", 300);
+						//隐藏当前;
+						plus.webview.hide(activeTab);
+						//更改当前活跃的选项卡 
+						activeTab = targetTab;
 				});
 			
 				var defaultTab = document.getElementById("kejiao");
