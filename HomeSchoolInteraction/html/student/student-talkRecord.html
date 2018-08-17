@@ -10,6 +10,9 @@
 		<link href="../../css/mui.picker.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
 			body{
 				background: #fff;
 			}
@@ -61,9 +64,9 @@
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
-				<a class="mui-control-item" href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
 			</div>
 		</div>
 		<div class="mui-content mui-fullscreen" id="actionArrayData" style="background: white;margin-top: 85px;z-index:0;">
@@ -182,12 +185,10 @@
 				},
 				methods: {
 					muiback: function() {
-						console.log('clickHomeworkModel:');
 						mui.back();
 					},
 					gotoDeatil:function(){
-						console.log('1111111111111111111')
-						utils.mOpenWithData("../../html/test/student-talkRecord-Detail.html", {});	
+						utils.mOpenWithData("../../html/student/student-talkRecord-Detail.html", {});	
 					}
 				}
 			});
@@ -328,14 +329,6 @@
 				//						}
 				//					});
 			};
-//			var headHight=$('#actionHead').height();
-//			var titleHight=$('#selectTitle').height();
-//			var ulHight=$('.mui-table-view').height();
-//			console.log(ulHight)
-//			console.log($(window).height())
-//			if((headHight+titleHight+ulHight)<$(window).height()){
-//				$('.mui-pull-bottom-tips').hide();
-//			}
 		</script>
 	</body>
  
