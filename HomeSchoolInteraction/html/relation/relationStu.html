@@ -278,16 +278,18 @@
 							var wvs = plus.webview.all();
 							for(var i = 0, len = wvs.length; i < len; i++) {
 								var url=wvs[i].getURL();
-								console.log('wvs[i].getURL()=========='+url)
-								if(url.indexOf('index.html') != -1 ||
-									url.indexOf('homeSchoolIndex.html') != -1 ||
-									url.indexOf('relationStu.html') != -1 ||
-									url.indexOf('helpStudyIndex.html') != -1 ||
-									url.indexOf('sciedu_home.html') != -1 ||
-									url.indexOf('courseIndex.html') != -1) {
-									continue;
+								if(url!=null){
+									console.log('wvs[i].getURL()=========='+url)
+									if(url.indexOf('index.html') != -1 ||
+										url.indexOf('homeSchoolIndex.html') != -1 ||
+										url.indexOf('relationStu.html') != -1 ||
+										url.indexOf('helpStudyIndex.html') != -1 ||
+										url.indexOf('sciedu_home.html') != -1 ||
+										url.indexOf('courseIndex.html') != -1) {
+										continue;
+									}
+									plus.webview.close(wvs[i]);
 								}
-								plus.webview.close(wvs[i]);
 							}
 							var curr = plus.webview.currentWebview();
 							curr.close();
