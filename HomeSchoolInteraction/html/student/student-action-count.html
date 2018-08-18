@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
+			body{
+				background: #fff;
+			}
+			.mui-segmented-control{
+				border: 0px;
+				background: #F0F0F0;
+			}
+			.mui-segmented-control .mui-control-item{
+				color: #0D0D0D;
+				border: 0px;
+			}			
+			.mui-segmented-control .mui-control-item.mui-active {
+			    color: #0D0D0D;
+			    background-color: transparent;
+			}
+			.mui-segmented-control .mui-control-item span{
+				font-size: 12px;
+				padding: 0 0 0 5px;
+			}
+			.mui-ellipsis{
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			.mui-table-view-cell:after{
+				left:0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">统计报表</h1>
+		</header>
+		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
+			<div class="mui-segmented-control" >
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui/mui.picker.js"></script>
+		<script src="../../js/mui/mui.poppicker.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script type="text/javascript" src="../../js/publicProtocol.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript">
+			var m$=mui.init()
+			mui.plusReady(function(){
+			});
+			
+			var selectTitle =new Vue({
+				el:"#selectTitle",
+				data:{
+					grade:'全部年级',
+					classes:'全部班级',
+					list:[ {value: '1',text: '全部年级',children: [{value: "10",text: "全部班级"}]},
+						   {value: '2',text: '初中一年级',children: [{value: "10",text: "10111班"}]},
+						   {value: '3',text: '二年级',children: [{value: "10",text: "一班"}]}
+						 ]
+				},
+				methods:{
+					selectGrade:function(){
+						var userPicker = new m$.PopPicker({layer: 2});
+						userPicker.setData(selectTitle.list);
+						userPicker.show(function(items) {
+							selectTitle.grade=_getParam(items[0], 'text');
+							selectTitle.classes=_getParam(items[1], 'text');
+							console.log("你选择的城市是:" + _getParam(items[0], 'text') + " " + _getParam(items[1], 'text'));
+						});
+					},
+					selectClass:function(){
+						this.$options.methods.selectGrade();
+					}
+				}
+			}); 
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+			
+			//阻尼系数、初始化刷新加载更多
+			var deceleration = mui.os.ios ? 0.003 : 0.0009;
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+				indicators: true, //是否显示滚动条
+				deceleration: deceleration
+			});
+
+		</script>
+	</body>
+ 
+</html>

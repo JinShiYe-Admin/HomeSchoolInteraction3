@@ -127,6 +127,12 @@
 				if(targetTab == activeTab) {
 					return;
 				}
+				
+				//发送通知。隐藏学生行为页面的popwindow
+				if(targetTab!='../../html/student/student-action.html'){
+					var action=plus.webview.getWebviewById(subpages[1]);
+					mui.fire(action,'closePop',{});
+				}
 				//更换标题
 //				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
 //				var tempFlag = this.querySelector('.mui-tab-label').id;

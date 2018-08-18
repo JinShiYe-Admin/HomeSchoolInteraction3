@@ -58,7 +58,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学生量化考评</h1>
 			<!--<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
 		</header>
@@ -73,16 +73,16 @@
 			<div class="mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<ul class="mui-table-view">
-						<!--<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray" @tap="clickAction(actionModel)">
+						<!--<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray" @tap="gotoDeatil(index)">
 							<a href="javascript:;">
 								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
 								<div class="mui-media-body">
 									王{{index+1}}陆【五年级108{{index+1}}班】
-									<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #D36570;">未谈话</span>
 								</div>
 							</a>
 						</li>-->
-						<li class="mui-table-view-cell mui-media" @tap="gotoDeatil()">
+						<li class="mui-table-view-cell mui-media" @tap="gotoDeatil(1)">
 							<a href="javascript:;">
 								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
 								<div class="mui-media-body">
@@ -165,18 +165,6 @@
 			mui.plusReady(function(){
 				getTnewsCollList(pageIndex);
 			});
-			var actionHead = new Vue({
-				el: "#actionHead",
-				data: {
-
-				},
-				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
-					}
-				}
-			});
 
 			var actionArrayData = new Vue({
 				el: "#actionArrayData",
@@ -184,10 +172,8 @@
 					actionArray: []
 				},
 				methods: {
-					muiback: function() {
-						mui.back();
-					},
-					gotoDeatil:function(){
+					gotoDeatil:function(index){
+						console.log('点击的第'+index+'个item')
 						utils.mOpenWithData("../../html/student/student-talkRecord-Detail.html", {});	
 					}
 				}

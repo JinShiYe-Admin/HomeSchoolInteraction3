@@ -10,6 +10,9 @@
 		<link href="../../css/mui.picker.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
 			body{
 				background: #fff;
 			}
@@ -29,33 +32,157 @@
 				font-size: 12px;
 				padding: 0 0 0 5px;
 			}
+			.leftTag{
+				font-size: 14px;
+			}
+			.rightTag{
+				font-size: 13px;
+				float: right;
+				color: #999999;
+			}
+			.rightTagTh{
+				font-size: 13px;
+				float: right;
+			}
+			.mui-ellipsis{
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			.mui-table-view-cell:after{
+				left:0px;
+			}
+			
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			.mui-popover {
+				height: 80px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title" style="color: white;">学生量化考评</h1>
-			<!--<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">学生行为记录</h1>
+			<a href="#bottomPopover" class="mui-pull-right" style="color: white;font-size: 25px;margin: 12px 5px 0 0;"><img style="width: 17px;" src="../../img/utils/more.png"/></a>
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
-				<a class="mui-control-item" href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
 			</div>
 		</div>
-		<div class="mui-content mui-fullscreen" id="actionArrayData" style="background: white;margin-top: 85px;z-index:0;">
-			<div class="mui-scroll-wrapper">
-				<div class="mui-scroll">
-					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media" v-for="actionModel in actionArray" @tap="clickAction(actionModel)">
-							<a href="javascript:;">
-								<div class="mui-media-body" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;font-size: 16px;">
-									{{actionModel.titleName}}
+		<div id="actionArrayData">
+			<div class="mui-content mui-fullscreen" style="background: white;margin-top: 85px;z-index:0;">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<!--<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray">
+								<div class="mui-slider-right mui-disabled" @tap="deleteItem($event,index)">
+									<a class="mui-btn mui-btn-red">删除</a>
 								</div>
-							</a>
-						</li>
+								<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(index)">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										王{{index+1}}陆【五年级108{{index+1}}班】
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+								</a>
+							</li>-->
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-slider-right mui-disabled"  @tap="deleteItem($event,1)">
+									<a class="mui-btn mui-btn-red">删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(1)">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,2)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							
+							
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,3)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,4)">
+									<a class="mui-btn mui-btn-red">删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,5)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis' >能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,6)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+						
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" @click="toPage('http://www.baidu.com')"><a href="#">添加</a></li>
+						<li class="mui-table-view-cell" @click="toPage('../../html/student/student-action-count.html')"><a href="">统计报表</a></li>
 					</ul>
 				</div>
 			</div>
@@ -75,36 +202,47 @@
 		<script src="../../js/mui.pullToRefresh.js"></script>
 		<script src="../../js/mui.pullToRefresh.material.js"></script>
 		<script type="text/javascript">
-			var $=mui.init()
+			var m$=mui.init()
 			var pageIndex = 1; //请求数据页面
 			var totalPageCount; //总页码
 			var flagRef = 0; //是刷新0，还是加载更多1
 			mui.plusReady(function(){
 				getTnewsCollList(pageIndex);
 			});
-			var actionHead = new Vue({
-				el: "#actionHead",
-				data: {
-
-				},
-				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
-					}
-				}
+			//接收student-index发送的close事件
+			window.addEventListener('closePop', function() {
+				$("#bottomPopover").hide();
+				$(".mui-backdrop").hide();
 			});
-
 			var actionArrayData = new Vue({
 				el: "#actionArrayData",
 				data: {
 					actionArray: []
 				},
 				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
-					}
+					deleteItem:function(event,index){
+						var dom=event.target;
+						var li = dom.parentNode.parentNode;
+						var btnArray = ['确认', '取消'];
+						mui.confirm('确认删除该条记录？', '校讯通', btnArray, function(e) {
+							if (e.index == 0) {
+//								li.parentNode.removeChild(li);
+								console.log("删除第"+index+"个item")
+							} else {
+								setTimeout(function() {
+									m$.swipeoutClose(li);
+								}, 0);
+							}
+						});
+					},
+					gotoDeatil:function(index){
+						console.log('点击第'+index+'个标签进入详情')
+//						utils.mOpenWithData("../../html/student/student-action-Detail.html", {});	
+					},
+					toPage:function(url){
+						console.log('跳转页面'+url)
+						utils.mOpenWithData(url, {});
+					} 
 				}
 			});
 			
@@ -113,20 +251,14 @@
 				data:{
 					grade:'全部年级',
 					classes:'全部班级',
-					type:'类型',
 					list:[ {value: '1',text: '全部年级',children: [{value: "10",text: "全部班级"}]},
 						   {value: '2',text: '初中一年级',children: [{value: "10",text: "10111班"}]},
 						   {value: '3',text: '二年级',children: [{value: "10",text: "一班"}]}
-						 ],
-					typeList:[
-							 {value: '1',text: '全部状态'},
-							 {value: '2',text: '期评'},
-							 {value: '3',text: '周评'}
 						 ]
 				},
 				methods:{
 					selectGrade:function(){
-						var userPicker = new $.PopPicker({layer: 2});
+						var userPicker = new m$.PopPicker({layer: 2});
 						userPicker.setData(selectTitle.list);
 						userPicker.show(function(items) {
 							selectTitle.grade=_getParam(items[0], 'text');
@@ -136,15 +268,6 @@
 					},
 					selectClass:function(){
 						this.$options.methods.selectGrade();
-					},
-					selectType:function(){
-						var obj=this;
-						var userPicker = new $.PopPicker({layer: 1});
-						userPicker.setData(this.typeList);
-						userPicker.show(function(items) {
-							obj.type=_getParam(items[0], 'text')
-							console.log( JSON.stringify(items[0]));
-						});
 					}
 				}
 			}); 
@@ -244,7 +367,8 @@
 				//						}
 				//					});
 			};
+			
 		</script>
 	</body>
-
+ 
 </html>
