@@ -73,7 +73,7 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
 			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学生行为记录</h1>
-			<a href="#bottomPopover" class="mui-pull-right" style="color: white;font-size: 25px;margin: 12px 5px 0 0;"><img style="width: 17px;" src="../../img/utils/more.png"/></a>
+			<a href="#bottomPopover" class="mui-pull-right" style="color: white;width:60px;height: 30px; font-size: 25px;margin: 12px 5px 0 0;"><img style="width: 17px;float: right;" src="../../img/utils/more.png"/></a>
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
@@ -181,8 +181,8 @@
 			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
 				<div class="mui-popover-arrow"></div>
 					<ul class="mui-table-view">
-						<li class="mui-table-view-cell" @click="toPage('http://www.baidu.com')"><a href="#">添加</a></li>
-						<li class="mui-table-view-cell" @click="toPage('../../html/student/student-action-count.html')"><a href="">统计报表</a></li>
+						<li class="mui-table-view-cell" @click="toPage('http://www.baidu.com')">添加</li>
+						<li class="mui-table-view-cell" @click="toPage('student-action-count.html')">统计报表</li>
 					</ul>
 				</div>
 			</div>
@@ -240,7 +240,9 @@
 //						utils.mOpenWithData("../../html/student/student-action-Detail.html", {});	
 					},
 					toPage:function(url){
-						console.log('跳转页面'+url)
+//						plus.webview.open(url);
+						$("#bottomPopover").hide();
+						$(".mui-backdrop").hide();
 						utils.mOpenWithData(url, {});
 					} 
 				}
