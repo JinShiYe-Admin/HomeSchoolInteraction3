@@ -75,7 +75,9 @@
 					</div>
 					<div class="flex-container" style="padding-left: 20px;">
 						<div class="mui-input-row mui-checkbox mui-left" v-for="(stuModel,index) in classModel.stuArray">
-							<label class="stuName" style="width: 160px;">{{stuModel.stuname}}<a class="" style="color: #ff9966;">[订]</a></label>
+							<label class="stuName" style="width: 160px;">{{stuModel.stuname}}
+							<!-- <a class="" style="color: #ff9966;">[订]</a> -->
+							</label>
 							<input v-model="stuModel.flag" name="checkbox1" type="checkbox" @click="clickStu(classModel,stuModel)">
 						</div>
 					</div>

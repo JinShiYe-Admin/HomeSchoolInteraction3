@@ -205,7 +205,7 @@
 				//判断是否包含班主任身份
 				for(var i = 0; i < personal.clss.length; i++) {
 					var classModel = personal.clss[i];
-					if(classModel.isms == 1) {
+					if(classModel.isms == 1&&classModel.isfinish == 0) {
 						addNoticeContent.teacherFlag = 1;
 						addNoticeContent.flag = 1;
 						addNoticeContent.gradeArray.push(classModel.grdid);
