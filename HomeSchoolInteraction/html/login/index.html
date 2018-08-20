@@ -88,25 +88,47 @@
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
 			});		
-
-			//侧滑菜单弹出时，tab按钮禁用
-			window.addEventListener('closeClick', function(data) {
-				canClick=false;
-				var wvs=plus.webview.getDisplayWebview();
-				document.getElementById('navIndex').style.display='none'
-				for(var i=0;i<wvs.length;i++){
+			
+			if(plus.os.name == 'Android') {
+				//侧滑菜单弹出时，tab按钮禁用
+				window.addEventListener('closeClick', function(data) {
+					var wvs=plus.webview.getDisplayWebview();
+					document.getElementById('navIndex').style.display='none'
+					for(var i=0;i<wvs.length;i++){
+							wvs[i].setStyle({top: '0px',bottom: '0px'})
+					}
+				});
+				//侧滑菜单关闭时，tab按钮启用
+				window.addEventListener('openClick', function(data) {
+					var wvs=plus.webview.getDisplayWebview();
+					document.getElementById('navIndex').style.display='inherit'
+					for(var i=0;i<wvs.length;i++){
+						wvs[i].setStyle({top: '0px',bottom: '51px'})
+					}
+				});
+			}else{
+				//侧滑菜单弹出时，tab按钮禁用
+				window.addEventListener('closeClick', function(data) {
+					var wvs=plus.webview.getDisplayWebview();
+					document.getElementById('navIndex').style.display='none'
+					for(var i=0;i<wvs.length;i++){
+						var url =wvs[i].getURL();
+						if(url.indexOf('/homeSchool/mine')==-1){
+							wvs[i].setStyle({top: '0px',bottom: '-100px'})
+						}else{
+							wvs[i].setStyle({top: '0px',bottom: '0px'})
+						}
+					}
+				});
+				//侧滑菜单关闭时，tab按钮启用
+				window.addEventListener('openClick', function(data) {
+					var wvs=plus.webview.getDisplayWebview();
+					document.getElementById('navIndex').style.display='inherit'
+					for(var i=0;i<wvs.length;i++){
 						wvs[i].setStyle({top: '0px',bottom: '0px'})
-				}
-			});
-			//侧滑菜单关闭时，tab按钮启用
-			window.addEventListener('openClick', function(data) {
-				canClick=true;
-				var wvs=plus.webview.getDisplayWebview();
-				document.getElementById('navIndex').style.display='inherit'
-				for(var i=0;i<wvs.length;i++){
-					wvs[i].setStyle({top: '0px',bottom: '51px'})
-				}
-			});
+					}
+				});
+			}
 			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
@@ -114,7 +136,7 @@
 					el:'#nav',
 					data:{
 						identify:idenfify,
-						isBd:isBd,
+						isBd:isBd, 
 						hrefHome:hrefHome
 					}
 				});
