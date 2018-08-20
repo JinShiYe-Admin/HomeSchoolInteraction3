@@ -360,7 +360,7 @@
 								zindex: 9997
 							}
 						});
-					}, 300);
+					}, 1);
 
 					window.addEventListener('home_setHeadImg', function(data) {
 						tempHead.headImg = data.detail.imgurl;
@@ -441,7 +441,7 @@
 					console.log('侧滑执行方法')
 					closeMenu();
 				});
-
+				
 				/**
 				 * 显示菜单菜单
 				 */
@@ -487,6 +487,8 @@
 						//显示遮罩
 						mask.show();
 						showMenu = true;
+						//通知index页隐藏tab栏
+						mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 					}
 				}
 				/**
@@ -548,6 +550,8 @@
 						}, 200);
 						//改变标志位
 						showMenu = false;
+						//通知index页显示tab栏
+						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
 					}
 				}
 				//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
@@ -680,7 +684,7 @@
 							} else if(index == 6){ 
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
-									utils.mOpenWithData("../../html/test/student-index.html", {});
+									utils.mOpenWithData("../../html/student/student-index.html", {});
 							} else {
 								mui.toast('此功能暂未开放');
 							}

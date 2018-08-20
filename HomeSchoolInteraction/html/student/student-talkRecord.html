@@ -10,6 +10,9 @@
 		<link href="../../css/mui.picker.css" rel="stylesheet" />
 		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
 		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
 			body{
 				background: #fff;
 			}
@@ -29,33 +32,113 @@
 				font-size: 12px;
 				padding: 0 0 0 5px;
 			}
+			.leftTag{
+				font-size: 14px;
+			}
+			.rightTag{
+				font-size: 13px;
+				float: right;
+				color: #999999;
+			}
+			.rightTagTh{
+				font-size: 13px;
+				float: right;
+			}
+			.mui-ellipsis{
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			.mui-table-view-cell:after{
+				left:0px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学生量化考评</h1>
 			<!--<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
-				<a class="mui-control-item" href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" href="javaScript:void(0)" @click="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
 			</div>
 		</div>
 		<div class="mui-content mui-fullscreen" id="actionArrayData" style="background: white;margin-top: 85px;z-index:0;">
 			<div class="mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media" v-for="actionModel in actionArray" @tap="clickAction(actionModel)">
+						<!--<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray" @tap="gotoDeatil(index)">
 							<a href="javascript:;">
-								<div class="mui-media-body" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;font-size: 16px;">
-									{{actionModel.titleName}}
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									王{{index+1}}陆【五年级108{{index+1}}班】
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #D36570;">未谈话</span>
+								</div>
+							</a>
+						</li>-->
+						<li class="mui-table-view-cell mui-media" @tap="gotoDeatil(1)">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #D36570;">未谈话</span>
 								</div>
 							</a>
 						</li>
+						<li class="mui-table-view-cell mui-media" >
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #5D9DDA;">未谈话</span>
+								</div>
+							</a>
+						</li>
+						
+						
+						<li class="mui-table-view-cell mui-media" >
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #5D9DDA;">未谈话</span>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media" >
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #5D9DDA;">未谈话</span>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media" >
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #5D9DDA;">未谈话</span>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media" >
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+								<div class="mui-media-body">
+									<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+									<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span><span class="rightTagTh" style="color: #5D9DDA;">未谈话</span>
+								</div>
+							</a>
+						</li>
+					
 					</ul>
 				</div>
 			</div>
@@ -75,24 +158,12 @@
 		<script src="../../js/mui.pullToRefresh.js"></script>
 		<script src="../../js/mui.pullToRefresh.material.js"></script>
 		<script type="text/javascript">
-			var $=mui.init()
+			var m$=mui.init()
 			var pageIndex = 1; //请求数据页面
 			var totalPageCount; //总页码
 			var flagRef = 0; //是刷新0，还是加载更多1
 			mui.plusReady(function(){
 				getTnewsCollList(pageIndex);
-			});
-			var actionHead = new Vue({
-				el: "#actionHead",
-				data: {
-
-				},
-				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
-					}
-				}
 			});
 
 			var actionArrayData = new Vue({
@@ -101,9 +172,9 @@
 					actionArray: []
 				},
 				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
+					gotoDeatil:function(index){
+						console.log('点击的第'+index+'个item')
+						utils.mOpenWithData("../../html/student/student-talkRecord-Detail.html", {});	
 					}
 				}
 			});
@@ -126,7 +197,7 @@
 				},
 				methods:{
 					selectGrade:function(){
-						var userPicker = new $.PopPicker({layer: 2});
+						var userPicker = new m$.PopPicker({layer: 2});
 						userPicker.setData(selectTitle.list);
 						userPicker.show(function(items) {
 							selectTitle.grade=_getParam(items[0], 'text');
@@ -246,5 +317,5 @@
 			};
 		</script>
 	</body>
-
+ 
 </html>

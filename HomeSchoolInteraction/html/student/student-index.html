@@ -54,19 +54,19 @@
 			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
 		</header>-->
 		<nav class="mui-bar mui-bar-tab">
-			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/test/student-attendance.html">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/student/student-attendance.html">
 				<span class="mui-icon mui-icon-home"></span>
 				<span id="flag0" class="mui-tab-label">学生考勤</span>
 			</a>
-			<a class="mui-tab-item" href="../../html/test/student-action.html">
+			<a class="mui-tab-item" href="../../html/student/student-action.html">
 				<span class="mui-icon mui-icon-email"></span>
 				<span id="flag1" class="mui-tab-label">学生行为</span>
 			</a>
-			<a class="mui-tab-item" href="../../html/test/student-talkRecord.html">
+			<a class="mui-tab-item" href="../../html/student/student-talkRecord.html">
 				<span class="mui-icon mui-icon-contact"></span>
 				<span id="flag2" class="mui-tab-label">谈话记录</span>
 			</a>
-			<a class="mui-tab-item" href="../../html/test/student-review.html">
+			<a class="mui-tab-item" href="../../html/student/student-review.html">
 				<span class="mui-icon mui-icon-contact"></span>
 				<span id="flag3" class="mui-tab-label">量化考评</span>
 			</a>
@@ -85,7 +85,7 @@
 			mui.init()
 			//mui初始化
 			mui.init();
-			var subpages = ['../../html/test/student-attendance.html', '../../html/test/student-action.html', '../../html/test/student-talkRecord.html', '../../html/test/student-review.html'];
+			var subpages = ['../../html/student/student-attendance.html', '../../html/student/student-action.html', '../../html/student/student-talkRecord.html', '../../html/student/student-review.html'];
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -126,6 +126,12 @@
 				var targetTab = this.getAttribute('href');
 				if(targetTab == activeTab) {
 					return;
+				}
+				
+				//发送通知。隐藏学生行为页面的popwindow
+				if(targetTab!='../../html/student/student-action.html'){
+					var action=plus.webview.getWebviewById(subpages[1]);
+					mui.fire(action,'closePop',{});
 				}
 				//更换标题
 //				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
