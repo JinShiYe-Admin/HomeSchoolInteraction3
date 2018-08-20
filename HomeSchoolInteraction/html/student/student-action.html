@@ -73,12 +73,12 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
 			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学生行为记录</h1>
-			<a href="#bottomPopover" class="mui-pull-right" style="color: white;width:60px;height: 30px; font-size: 25px;margin: 12px 5px 0 0;"><img style="width: 17px;float: right;" src="../../img/utils/more.png"/></a>
+			<a href="#bottomPopover" class="mui-pull-right" style="color: white;width:120px;height: 45px; font-size: 25px;"><img style="width: 17px;float: right;margin: 12px 5px 0 0;" src="../../img/utils/more.png"/></a>
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
-				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
 			</div>
 		</div>
 		<div id="actionArrayData">
@@ -187,7 +187,7 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui2.js"></script>
 		<script src="../../js/mui/mui.picker.js"></script>
 		<script src="../../js/mui/mui.poppicker.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>

@@ -51,8 +51,8 @@
 		</header>
 		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
 			<div class="mui-segmented-control" >
-				<a class="mui-control-item" v-cloak href="javascript:void(0)" @click="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
-				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @click="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
@@ -80,8 +80,8 @@
 					grade:'全部年级',
 					classes:'全部班级',
 					list:[ {value: '1',text: '全部年级',children: [{value: "10",text: "全部班级"}]},
-						   {value: '2',text: '初中一年级',children: [{value: "10",text: "10111班"}]},
-						   {value: '3',text: '二年级',children: [{value: "10",text: "一班"}]}
+						   {value: '2',text: '初中一年级',children: [{value: "20",text: "全部班级"},{value: "21",text: "10111班"},{value: "22",text: "10112班"}]},
+						   {value: '3',text: '二年级',children: [{value: "30",text: "全部班级"},{value: "31",text: "一班"},{value: "32",text: "10112班"}]}
 						 ]
 				},
 				methods:{
@@ -103,14 +103,6 @@
 				return obj[param] || '';
 			}
 			
-			//阻尼系数、初始化刷新加载更多
-			var deceleration = mui.os.ios ? 0.003 : 0.0009;
-			mui('.mui-scroll-wrapper').scroll({
-				bounce: false,
-				indicators: true, //是否显示滚动条
-				deceleration: deceleration
-			});
-
 		</script>
 	</body>
  
