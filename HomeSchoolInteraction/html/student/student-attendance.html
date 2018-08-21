@@ -7,30 +7,188 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
+			body{
+				background: #fff;
+			}
+			.mui-segmented-control{
+				border: 0px;
+				background: #F0F0F0;
+			}
+			.mui-segmented-control .mui-control-item{
+				color: #0D0D0D;
+				border: 0px;
+			}			
+			.mui-segmented-control .mui-control-item.mui-active {
+			    color: #0D0D0D;
+			    background-color: transparent;
+			}
+			.mui-segmented-control .mui-control-item span{
+				font-size: 12px;
+				padding: 0 0 0 5px;
+			}
+			.leftTag{
+				font-size: 14px;
+			}
+			.rightTag{
+				font-size: 13px;
+				float: right;
+				color: #999999;
+			}
+			.rightTagTh{
+				font-size: 13px;
+				float: right;
+			}
+			.mui-ellipsis{
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			.mui-table-view-cell:after{
+				left:0px;
+			}
+			
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			.mui-popover {
+				height: 80px;
+			}
+		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="attendanceHead">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="actionHead">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学生考勤</h1>
-			<!--<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
+			<a href="#bottomPopover" class="mui-pull-right" style="color: white;width:120px;height: 45px; font-size: 25px;"><img style="width: 17px;float: right;margin: 12px 5px 0 0;" src="../../img/utils/more.png"/></a>
 		</header>
-		<div class="mui-content mui-fullscreen" id="attendanceArrayData" style="background: white;margin-top: 45px;z-index:0;">
-			<div class="mui-scroll-wrapper">
-				<div class="mui-scroll">
-					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media" v-for="attendanceModel in attendanceArray" @tap="clickAttendance(attendanceModel)">
-							<a href="javascript:;">
-								<div class="mui-media-body" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;font-size: 16px;">
-									{{attendanceModel.titleName}}
+		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 8;">
+			<div class="mui-segmented-control" >
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+			</div>
+		</div>
+		<div id="actionArrayData">
+			<div class="mui-content mui-fullscreen" style="background: white;margin-top: 85px;z-index:0;">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<!--<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray">
+								<div class="mui-slider-right mui-disabled" @tap="deleteItem($event,index)">
+									<a class="mui-btn mui-btn-red">删除</a>
 								</div>
-							</a>
-						</li>
+								<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(index)">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										王{{index+1}}陆【五年级108{{index+1}}班】
+										<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+									</div>
+								</a>
+							</li>-->
+							<li class="mui-table-view-cell mui-media">
+								<div class="mui-slider-right mui-disabled"  @tap="deleteItem($event,1)">
+									<a class="mui-btn mui-btn-red">删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(1)">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,2)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							
+							
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,3)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,4)">
+									<a class="mui-btn mui-btn-red">删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,5)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis' >能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+							<li class="mui-table-view-cell mui-media" >
+								<div class="mui-slider-right mui-disabled" @click="deleteItem($event,6)">
+									<a class="mui-btn mui-btn-red" >删除</a>
+								</div>
+								<a class="mui-slider-handle" href="javascript:;">
+									<img class="mui-media-object mui-pull-left" src="../../img/login/headImg.png">
+									<div class="mui-media-body">
+										<span class="leftTag">王大陆【五年级1081班】</span><span class="rightTag">2018-8-13</span>
+										<span class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</span>
+									</div>
+								</a>
+							</li>
+						
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" @click="toPage('http://www.baidu.com')">添加</li>
+						<li class="mui-table-view-cell" @click="toPage('student-action-count.html')">统计报表</li>
 					</ul>
 				</div>
 			</div>
 		</div>
-		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui2.js"></script>
 		<script src="../../js/mui/mui.picker.js"></script>
 		<script src="../../js/mui/mui.poppicker.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
@@ -45,38 +203,96 @@
 		<script src="../../js/mui.pullToRefresh.js"></script>
 		<script src="../../js/mui.pullToRefresh.material.js"></script>
 		<script type="text/javascript">
-			mui.init()
+			var m$=mui.init()
 			var pageIndex = 1; //请求数据页面
 			var totalPageCount; //总页码
 			var flagRef = 0; //是刷新0，还是加载更多1
 			mui.plusReady(function(){
 				getTnewsCollList(pageIndex);
 			});
-			var attendanceHead = new Vue({
-				el: "#attendanceHead",
+			//接收student-index发送的close事件
+			window.addEventListener('closePop', function() {
+				$("#bottomPopover").hide();
+				$(".mui-backdrop").hide();
+			});
+			var actionArrayData = new Vue({
+				el: "#actionArrayData",
 				data: {
-
+					actionArray: []
 				},
 				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
-					}
+					deleteItem:function(event,index){
+						var dom=event.target;
+						var li = dom.parentNode.parentNode;
+						var btnArray = ['确认', '取消'];
+						mui.confirm('确认删除该条记录？', '校讯通', btnArray, function(e) {
+							if (e.index == 0) {
+//								li.parentNode.removeChild(li);
+								console.log("删除第"+index+"个item")
+							} else {
+								setTimeout(function() {
+									m$.swipeoutClose(li);
+								}, 0);
+							}
+						});
+					},
+					gotoDeatil:function(index){
+						console.log('点击第'+index+'个标签进入详情')
+//						utils.mOpenWithData("../../html/student/student-action-Detail.html", {});	
+					},
+					toPage:function(url){
+//						plus.webview.open(url);
+						$("#bottomPopover").hide();
+						$(".mui-backdrop").hide();
+						utils.mOpenWithData(url, {});
+					} 
 				}
 			});
-
-			var attendanceArrayData = new Vue({
-				el: "#attendanceArrayData",
-				data: {
-					attendanceArray: []
+			
+			var selectTitle =new Vue({
+				el:"#selectTitle",
+				data:{
+					grade:'全部年级',
+					classes:'全部班级',
+					type:'类型',
+					list:[ {value: '1',text: '全部年级',children: [{value: "10",text: "全部班级"}]},
+						   {value: '2',text: '初中一年级',children: [{value: "10",text: "10111班"}]},
+						   {value: '3',text: '二年级',children: [{value: "10",text: "一班"}]}
+						 ],
+					typeList:[
+							 {value: '1',text: '全部状态'},
+							 {value: '2',text: '期评'},
+							 {value: '3',text: '周评'}
+						 ]
 				},
-				methods: {
-					muiback: function() {
-						console.log('clickHomeworkModel:');
-						mui.back();
+				methods:{
+					selectGrade:function(){
+						var userPicker = new m$.PopPicker({layer: 2});
+						userPicker.setData(selectTitle.list);
+						userPicker.show(function(items) {
+							selectTitle.grade=_getParam(items[0], 'text');
+							selectTitle.classes=_getParam(items[1], 'text');
+							console.log("你选择的城市是:" + _getParam(items[0], 'text') + " " + _getParam(items[1], 'text'));
+						});
+					},
+					selectClass:function(){
+						this.$options.methods.selectGrade();
+					},
+					selectType:function(){
+						var obj=this;
+						var userPicker = new $.PopPicker({layer: 1});
+						userPicker.setData(this.typeList);
+						userPicker.show(function(items) {
+							obj.type=_getParam(items[0], 'text')
+							console.log( JSON.stringify(items[0]));
+						});
 					}
 				}
-			});
+			}); 
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+			
 			//阻尼系数、初始化刷新加载更多
 			var deceleration = mui.os.ios ? 0.003 : 0.0009;
 			mui('.mui-scroll-wrapper').scroll({
@@ -126,7 +342,6 @@
 			});
 			//54.科教频道_个人收藏列表
 			function getTnewsCollList(index) {
-				console.log('index:'+index);
 				var tempArray = [];
 				for(var i = 0; i < 10; i++) {
 					var tempValue = (index - 1) * 10 + i;
@@ -139,10 +354,10 @@
 				totalPageCount = 20;
 				pageIndex++;
 				if(flagRef == 0) { //刷新
-					attendanceArrayData.attendanceArray = tempArray;
+					actionArrayData.actionArray = tempArray;
 				} else { //加载更多
 					//合并数组
-					attendanceArrayData.attendanceArray = attendanceArrayData.attendanceArray.concat(tempArray);
+					actionArrayData.actionArray = actionArrayData.actionArray.concat(tempArray);
 				}
 				//需要加密的数据
 				//					var comData = {
@@ -160,17 +375,18 @@
 				//							totalPageCount = data.RspData.pg.PageCount;
 				//							pageIndex++;
 				//							if(flagRef == 0) { //刷新
-				//								attendanceArrayData.attendanceArray = data.RspData.dt;
+				//								actionArrayData.actionArray = data.RspData.dt;
 				//							} else { //加载更多
 				//								//合并数组
-				//								attendanceArrayData.attendanceArray = attendanceArrayData.attendanceArray.concat(data.RspData.dt);
+				//								actionArrayData.actionArray = actionArrayData.actionArray.concat(data.RspData.dt);
 				//							}
 				//						} else {
 				////							mui.toast(data.RspTxt);
 				//						}
 				//					});
 			};
+			
 		</script>
 	</body>
-
+ 
 </html>
