@@ -434,6 +434,7 @@
 						var selectTime = $(domDiv).val();
 						this.servm = $(domDiv).find("option:selected").attr('monthnum');
 						this.feem = (selectTime * 1 * univlent * 1).toFixed(2);
+						appPay.feem=this.feem;
 					},
 					payAction: function() { //支付
 						if(this.servm == 0) {
@@ -463,6 +464,8 @@
 							},function fail(code,err){
 								if(code==0){
 									plus.nativeUI.alert("支付失败：" + err);
+								}else{
+									plus.nativeUI.alert(err.message);
 								}
 							});
 						}
