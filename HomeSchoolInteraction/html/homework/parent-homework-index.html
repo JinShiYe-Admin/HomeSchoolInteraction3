@@ -7,35 +7,52 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
-			
+			.title-info {
+				padding: 18px 0 5px 0;
+				text-align: center;
+				background: #fff;
+			}
+			.user-title {
+				font-size: 17px;
+				color: #333333;
+				font-weight: bold;
+			}
+			.user-time{
+				font-size: 13px;
+				color: #8f8f94;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"><span style="font-size: 17px;">主页</span></a>
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"><span style="font-size: 17px;"></span></a>
 			<h1 id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
 			<!--<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
 		</header>
-		<div id='scroll' class="mui-content">
-			<div id='orders'>
-				123
+		<div class="mui-content" style="position: fixed;z-index: 8;background: #fff;">
+			<div class="mui-row title-info">
+				<p v-cloak class="user-title">{{title}}</p>
+				<span class="user-time">周期：</span>
+				<span class="user-time mui-icon-extra mui-icon-extra-calendar" @click="selectTime($event,1)" data-options='{"type":"date"}'>{{startTime}}</span>
+				<span class="user-time">&nbsp;至&nbsp;</span>
+				<span class="user-time mui-icon-extra mui-icon-extra-calendar" @click="selectTime($event,2)" data-options='{"type":"date"}'>{{endTime}}</span>
 			</div>
 		</div>
-		<nav class="mui-bar mui-bar-tab">
-			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
-				<span class="mui-icon mui-icon-home"></span>
-				<span id="flag0" class="mui-tab-label">布置作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexCorrect.html">
-				<span class="mui-icon mui-icon-email"></span>
-				<span id="flag1" class="mui-tab-label">批改作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm.html">
-				<span class="mui-icon mui-icon-contact"></span>
-				<span id="flag2" class="mui-tab-label">作业报表</span>
-			</a>
-		</nav>
+		<div class="mui-content mui-fullscreen" style="z-index: 6;background: #fff;margin-top: 115px;">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell keep-unfold mui-collapse">
+					<a class="mui-navigate-right" href="#">总计</a>
+					<div class="mui-collapse-content">
+						<div class="spdiv"><span class="dl">上课吵闹</span><span class="dr">2次</span></div>
+						<div class="line"></div>
+						<div class="spdiv"><span class="dl">上课打架</span><span class="dr">2次</span></div>
+						<div class="line"></div>
+						<div class="spdiv"><span class="dl">上课迟到</span><span class="dr">2次</span></div>
+					</div>
+				</li>
+			</ul>
+		</div>
 		<script type="text/javascript" src="../../js/mui.min.js"></script>
 		<script type="text/javascript" src="../../js/utils/vue.js"></script>
 		<!--加密-->

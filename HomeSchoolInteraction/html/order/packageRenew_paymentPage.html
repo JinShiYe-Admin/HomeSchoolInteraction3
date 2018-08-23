@@ -337,6 +337,7 @@
 							 var selectTime=$(domDiv).val();
 							 this.servm=$(domDiv).find("option:selected").attr('monthnum');
 							 this.feem=(selectTime*1*univlent*1).toFixed(2);
+							 appPay.feem=this.feem;
 							 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
 						},
 						payAction:function(){//支付
