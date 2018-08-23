@@ -169,13 +169,18 @@
 			
 			
 			.mui-input-row label~input {
+				margin-top: 5px;
+				text-align: left;
 			    float: left;
 			    font-size: 14px;
 			    color: #080808;
 			    margin-left: 14px;
 			}
 			
-			
+			.mui-btn:disabled, button:disabled{
+			    opacity: .6;
+			    background: #cccccc;
+			}
 		</style>
 	</head>
 
@@ -205,21 +210,21 @@
 				<div class="mui-row" style="margin-top: 5px;">
 						<h5 class="mui-content-padded">原订购信息</h5>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>缴费金额</label>
-								<input  type="text" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
+								<input  type="button" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>订购时间</label>
-								<input  type="text" :value=orderDetail.stime disabled/>
+								<input  type="button" :value=orderDetail.stime disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>结束时间</label>
-								<input type="text" :value=orderDetail.etime disabled/>
+								<input type="button" :value=orderDetail.etime disabled/>
 							</a>
 						</div> 
 				</div>
@@ -351,9 +356,7 @@
 								appPay.pay(appPay.wxpay,function success(){
 //									
 								},function fail(code,err){
-									if(code==0){
 										plus.nativeUI.alert("支付失败：" + err);
-									}
 								});
 							}
 						}
