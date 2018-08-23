@@ -175,6 +175,11 @@
 			.mui-popover-arrow {
 				display: none;
 			}
+			
+			.mui-btn:disabled, button:disabled{
+			    opacity: .6;
+			    background: #cccccc;
+			}
 		</style>
 	</head>
 
@@ -209,10 +214,18 @@
 						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
 							<a class="mui-navigate-right">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+'label'">{{fextModel.itemname}}</label>
-								<a :href="'#'+sysfuncModel.fid+fextModel.itemcode">
-									<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
-									<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
-								</a>
+								<template v-if="fextModel.itemsonsc>0">
+									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode">
+										<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请选择'+fextModel.itemname+'(最多'+fextModel.itemsonsc+'个)'" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
+										<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
+									</a>
+								</template>
+								<template v-else>
+									<a href="javaScript:">
+										<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请忽略'+fextModel.itemname+'选择'" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
+										<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
+									</a>
+								</template>
 							</a>
 						</div>
 					</div>
@@ -439,35 +452,31 @@
 					payAction: function() { //支付
 						if(this.servm == 0) {
 							mui.toast('您还没有选择时长')
-//								var data='{"appid":"wx272c9b4a4ac2e9ac","noncestr":"2d1eb4c5511e4cc196d891ed3137c0c1","out_trade_no":"Wx146901530220180814135735042","package":"Sign=WXPay","partnerid":"1469015302","prepayid":"wx14135735756567687b82a3e80402404861","sign":"5BCE7F0E9B235B4865563FC183F850E3","timestamp":"1534226256"} at js/utils/vconsole.min.js:7'
-//								plus.payment.getChannels(function(channels) {
-//									console.log('channels=' + JSON.stringify(channels));
-//									for(var i in channels) {
-//										var temp = channels[i];
-//										if(temp.id == 'wxpay') {
-//											plus.payment.request(temp, data, function(result) {
-//												console.log('result=' + JSON.stringify(result));
-//											}, function(error) {
-//												console.log('error' + JSON.stringify(error));
-//											});
-//										}
-//									}
-//								}, function(e) {
-//									alert("获取支付通道失败：" + e.message);
-//								});
-								
 						} else {
-							appPay.payCode=true;
-							//调起支付
-							appPay.pay(appPay.wxpay,function success(){
-//								order();
-							},function fail(code,err){
-								if(code==0){
-									plus.nativeUI.alert("支付失败：" + err);
-								}else{
-									plus.nativeUI.alert(err.message);
+							//判断必选项大于0的是否都选择了
+							var strs=[];
+							for(var i = 0; i < orderData.sysfuncList.length; i++) {
+								var sysfuncModel = orderData.sysfuncList[i];
+								for(var j=0;j<sysfuncModel.fext.length;j++){
+									var model = sysfuncModel.fext[j];
+									if(model.itemsonsc>0){
+										console.log(model.itemname+","+model.checked)
+										if(model.checked==undefined){
+											strs.push(model.itemname);
+										}
+									}
 								}
-							});
+							}
+							if(strs.length>0){
+								mui.toast("功能："+strs.join(",")+'为必选项')
+							}else{
+								appPay.payCode=true;
+								//调起支付
+								appPay.pay(appPay.wxpay,function success(){
+								},function fail(code,err){
+										plus.nativeUI.alert("支付失败：" + err);
+								});
+							}
 						}
 					}
 				},

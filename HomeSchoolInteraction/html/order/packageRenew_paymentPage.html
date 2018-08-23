@@ -175,7 +175,10 @@
 			    margin-left: 14px;
 			}
 			
-			
+			.mui-btn:disabled, button:disabled{
+			    opacity: .6;
+			    background: #cccccc;
+			}
 		</style>
 	</head>
 
@@ -351,9 +354,7 @@
 								appPay.pay(appPay.wxpay,function success(){
 //									
 								},function fail(code,err){
-									if(code==0){
 										plus.nativeUI.alert("支付失败：" + err);
-									}
 								});
 							}
 						}
