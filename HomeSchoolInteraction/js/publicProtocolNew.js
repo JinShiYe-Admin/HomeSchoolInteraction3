@@ -26,7 +26,7 @@ function setImg(imgURL,imgFlag) {
 		if (imgFlag==1) {//订购默认图
 			tempUrl = '../../img/order.png';
 		} else{
-			tempUrl = '../../img/login/headImg.png';
+			tempUrl = '../../img/noImgPerson.jpg';
 		}
 	} else {
 		var myDate = new Date();
