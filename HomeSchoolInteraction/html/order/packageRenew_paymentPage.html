@@ -364,7 +364,7 @@
 				
 				var _data=utils.getDataFromUrl(window.location.href);
 				orderDetailData.orderDetail = _data;
-				orderDetailData.orderDetail.imgUrl = '../../img/login/headImg.png';
+				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl,1);
 				//计算可以订购的时长  为月份数组 start
 				univlent=_data.feecode;
 				var month=_data.busmonth;

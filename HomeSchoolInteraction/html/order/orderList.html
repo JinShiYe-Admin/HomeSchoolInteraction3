@@ -205,7 +205,7 @@
 						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
 							var tempModel = data1.RspData.sysbus[i];
 							tempModel.orderFlag = 0;
-							tempModel.busimg = setImg(tempModel.busimg);
+							tempModel.busimg = setImg(tempModel.busimg,1);
 						}
 						orders.orderList = [].concat(data1.RspData.sysbus);
 						//用户已订购套餐及功能扩展栏目

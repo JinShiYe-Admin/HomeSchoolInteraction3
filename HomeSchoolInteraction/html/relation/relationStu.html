@@ -243,8 +243,6 @@
 				getUserBusFunc();
 				personal.imgurl = setImg(personal.imgurl);
 				userBusData.peopleMsg = personal;
-				//4.5.获取用户关联的学生列表
-				getUserUstu();
 				//弹出
 				userPicker = new mui.PopPicker();
 				if(curPage.returnFlag == 1) {
@@ -384,8 +382,8 @@
 							}
 							userBusData.orderList = [].concat(data1.RspData.userbus);
 						}
-						//4.6.获取用户手机关联的学生列表
-						getUserMstu();
+						//4.5.获取用户关联的学生列表
+						getUserUstu();
 					} else {
 						mui.toast(data1.RspTxt);
 					}
@@ -500,6 +498,8 @@
 									}
 								}
 							}
+							//4.6.获取用户手机关联的学生列表
+							getUserMstu();
 							console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 						}
 					} else {

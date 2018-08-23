@@ -128,7 +128,7 @@
 			var curPageData;
 			mui.plusReady(function() {
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
-				orders.orderDetail.imgUrl = '../../img/login/headImg.png';
+				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl,1);
 			});
 
 			var orders = new Vue({
