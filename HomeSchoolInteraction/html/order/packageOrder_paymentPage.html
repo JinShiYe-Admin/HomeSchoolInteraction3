@@ -522,6 +522,10 @@
 				}
 				appPay.UserFeeFunc('UserFee',data,function success(){
 					mui.toast('套餐订购成功');
+					//通知套餐详情页面刷新时间
+					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
+						newEtime:orderDetailData.newEtime
+					});
 				},function fail(err){
 					mui.toast(err);
 				});
