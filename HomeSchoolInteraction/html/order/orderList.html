@@ -142,7 +142,9 @@
 			function pulldownRefresh() {
 				getOrderList();
 			}
-			
+			window.addEventListener('refreshList', function(data) {
+				getOrderList();
+			});		
 			var personal;
 			var publicParameter;
 			mui.plusReady(function() {

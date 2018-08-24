@@ -420,9 +420,9 @@
 				appPay.UserFeeFunc('UserReFee',data,function success(){
 					mui.toast('套餐续订成功');
 					//修改新结束时间
-					parent.orderDetail.etime=parent.newEtime;
+					orderDetailData.orderDetail.etime=orderDetailData.newEtime;
 					//通知套餐详情页面刷新时间
-					mui.fire(plus.webview.currentWebview().opener(), 'refresh', {
+					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime:orderDetailData.newEtime
 					});
 				},function fail(err){

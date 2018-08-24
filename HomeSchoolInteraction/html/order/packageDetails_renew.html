@@ -199,7 +199,7 @@
 				getRenewList();
 			}
 			
-			window.addEventListener('refresh', function(data) {
+			window.addEventListener('refreshList', function(data) {
 				console.log(data.detail.newEtime);
 				renew.curPageData.etime=data.detail.newEtime;
 			});		
