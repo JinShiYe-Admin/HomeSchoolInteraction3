@@ -470,12 +470,18 @@
 							if(strs.length>0){
 								mui.toast("功能："+strs.join(",")+'为必选项')
 							}else{
-								appPay.payCode=true;
-								//调起支付
-								appPay.pay(appPay.wxpay,function success(){
-								},function fail(code,err){
-										plus.nativeUI.alert("支付失败：" + err);
-								});
+								//如果是0元套餐，直接走订购
+								if(this.feem==0){
+									order();
+								}else{
+									appPay.payCode=true;
+									//调起支付
+									appPay.pay(appPay.wxpay,function success(){
+									},function fail(code,err){
+											plus.nativeUI.alert("支付失败：" + err);
+									});
+								}
+								
 							}
 						}
 					}
