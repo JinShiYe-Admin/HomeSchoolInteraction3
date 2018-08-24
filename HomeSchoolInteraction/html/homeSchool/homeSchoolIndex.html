@@ -7,6 +7,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
 			.circular-square {
 				border-radius: 50%;
 				width: 56px;
@@ -142,7 +145,10 @@
 					</ul>
 				</template>
 				<template v-else="">
-					<p>您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<p style="text-align: center;margin-top: 5px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<div v-cloak style="text-align: center;margin:10% auto;">
+						<img src="../../img/nolink.png" style="width: 250px;" />
+					</div>
 				</template>
 			</div>
 
@@ -197,7 +203,7 @@
 				//							left: '-70%'
 				//						});
 				mui.plusReady(function() {
-					
+
 					//推送绑定
 					var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 					var info = plus.push.getClientInfo();
@@ -206,12 +212,12 @@
 						alias: tempInfo00.utid,
 						cid: info.clientid
 					}
-					console.log('tempBindData:'+JSON.stringify(tempBindData));
+					console.log('tempBindData:' + JSON.stringify(tempBindData));
 					bindPro(tempBindData, function function_name(data) {
-						console.log('bindpro返回值:'+JSON.stringify(data));
+						console.log('bindpro返回值:' + JSON.stringify(data));
 						if(data.RspCode == 0) {
 							var info = plus.push.getClientInfo();
-							console.log('bindpro:'+JSON.stringify(info));
+							console.log('bindpro:' + JSON.stringify(info));
 						} else {
 
 						}
@@ -441,7 +447,7 @@
 					console.log('侧滑执行方法')
 					closeMenu();
 				});
-				
+
 				/**
 				 * 显示菜单菜单
 				 */
@@ -681,10 +687,10 @@
 								} else {
 									mui.toast('此功能暂未开放');
 								}
-							} else if(index == 6){ 
+							} else if(index == 6) {
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
-									utils.mOpenWithData("../../html/student/student-index.html", {});
+								utils.mOpenWithData("../../html/student/student-index.html", {});
 							} else {
 								mui.toast('此功能暂未开放');
 							}
