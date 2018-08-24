@@ -89,9 +89,7 @@ var appPay = (function(mod) {
 	//					});
 					}, function(error) {
 						console.log('error' + JSON.stringify(error));
-						if(!error.code==100){
-							plus.nativeUI.alert("支付失败：" + error.message);	
-						}
+						plus.nativeUI.alert("支付失败");	
 						
 //						fail(1,JSON.stringify(error));
 					});

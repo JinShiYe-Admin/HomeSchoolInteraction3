@@ -190,19 +190,24 @@
 						for(var i=0;i<wvs.length;i++){
 							var url =wvs[i].getURL();
 							if(url.indexOf('/homeSchool/mine')==-1){
-								wvs[i].setStyle({top: '0px',bottom: '-100px'})
-							}else{
-								wvs[i].setStyle({top: '0px',bottom: '0px'})
+								wvs[i].setStyle({top: '0px',bottom: '-50px'})
 							}
 						}
 					});
 					//侧滑菜单关闭时，tab按钮启用
 					window.addEventListener('openClick', function(data) {
-						var wvs=plus.webview.getDisplayWebview();
 						document.getElementById('navIndex').style.display='inherit'
+						var wvs=plus.webview.getDisplayWebview();
 						for(var i=0;i<wvs.length;i++){
 							wvs[i].setStyle({top: '0px',bottom: '0px'})
 						}
+						setTimeout(function(){
+							var wvs=plus.webview.getDisplayWebview();
+							for(var i=0;i<wvs.length;i++){
+								console.log(wvs[i].getURL())
+								wvs[i].setStyle({top: '0px',bottom: '0px'})
+							}
+						},1000);
 					});
 				}
 			});

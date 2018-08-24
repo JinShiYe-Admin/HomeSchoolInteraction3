@@ -453,6 +453,7 @@
 				 */
 				function openMenu() {
 					if(!showMenu) {
+							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 						//侧滑菜单处于隐藏状态，则立即显示出来；
 						//显示完毕后，根据不同动画效果移动窗体；
 						menu.show('none', 0, function() {
@@ -494,7 +495,6 @@
 						mask.show();
 						showMenu = true;
 						//通知index页隐藏tab栏
-						mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 					}
 				}
 				/**
@@ -511,6 +511,7 @@
 				 */
 				function _closeMenu() {
 					if(showMenu) {
+						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
 						//关闭遮罩；
 						switch(mode) {
 							case 'main-move':
@@ -557,7 +558,6 @@
 						//改变标志位
 						showMenu = false;
 						//通知index页显示tab栏
-						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
 					}
 				}
 				//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
