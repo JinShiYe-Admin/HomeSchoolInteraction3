@@ -275,9 +275,9 @@
 							plus.webview.open('../../html/login/index.html');
 							var wvs = plus.webview.all();
 							for(var i = 0, len = wvs.length; i < len; i++) {
-								var url=wvs[i].getURL();
-								if(url!=null){
-									console.log('wvs[i].getURL()=========='+url)
+								var url = wvs[i].getURL();
+								if(url != null) {
+									console.log('wvs[i].getURL()==========' + url)
 									if(url.indexOf('index.html') != -1 ||
 										url.indexOf('homeSchoolIndex.html') != -1 ||
 										url.indexOf('relationStu.html') != -1 ||
@@ -319,7 +319,7 @@
 				},
 				methods: {
 					clickUserBus: function(model) {
-						console.log('clickUserBus.model:'+JSON.stringify(model));
+						console.log('clickUserBus.model:' + JSON.stringify(model));
 						if(userBusData.userStuList.length == 0) {
 							mui.toast('请先关联学生');
 						} else {
@@ -498,10 +498,10 @@
 									}
 								}
 							}
-							//4.6.获取用户手机关联的学生列表
-							getUserMstu();
-							console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 						}
+						//4.6.获取用户手机关联的学生列表
+						getUserMstu();
+						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 					} else {
 						mui.toast(data1.RspTxt);
 					}
