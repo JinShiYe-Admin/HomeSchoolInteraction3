@@ -453,7 +453,17 @@
 				 */
 				function openMenu() {
 					if(!showMenu) {
-							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
+						var wvs=plus.webview.getDisplayWebview();
+						for(var i=0;i<wvs.length;i++){
+							var url =wvs[i].getURL();
+							if(url.indexOf('/homeSchool/mine')==-1){
+								wvs[i].setStyle({mask:"rgba(0,0,0,0.5)"});
+								wvs[i].addEventListener("maskClick",function(){
+									closeMenu();
+								},false);
+							}
+						}
+//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 						//侧滑菜单处于隐藏状态，则立即显示出来；
 						//显示完毕后，根据不同动画效果移动窗体；
 						menu.show('none', 0, function() {
@@ -511,7 +521,11 @@
 				 */
 				function _closeMenu() {
 					if(showMenu) {
-						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
+//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
+					var wvs=plus.webview.getDisplayWebview();
+					for(var i=0;i<wvs.length;i++){
+						wvs[i].setStyle({mask:"none"});
+					}
 						//关闭遮罩；
 						switch(mode) {
 							case 'main-move':
