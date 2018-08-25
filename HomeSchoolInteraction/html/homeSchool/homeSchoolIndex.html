@@ -457,7 +457,11 @@
 						for(var i=0;i<wvs.length;i++){
 							var url =wvs[i].getURL();
 							if(url.indexOf('/homeSchool/mine')==-1){
-								wvs[i].setStyle({mask:"rgba(0,0,0,0.5)"});
+								if(plus.os.name == 'Android') {
+									wvs[i].setStyle({mask:"rgba(0,0,0,0.1)"});
+								}else{
+									wvs[i].setStyle({mask:"rgba(0,0,0,0.3)"});
+								}
 								wvs[i].addEventListener("maskClick",function(){
 									closeMenu();
 								},false);
