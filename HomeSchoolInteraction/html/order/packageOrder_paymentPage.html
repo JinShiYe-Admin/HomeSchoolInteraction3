@@ -429,7 +429,7 @@
 						var id = $(domDiv).parent().parent().attr("id");
 						if(name.length == 0 || value.length == 0) {
 							var label = $('#' + id + 'label').html();
-							document.getElementById(id + 'input0').value = '请选择' + label;
+							document.getElementById(id + 'input0').value = '请选择' + label+'(最多'+parms.itemsonsc+'个)';
 							document.getElementById(id + 'input1').value = [];
 							parms.checked = '';
 							Vue.delete(parms, 'checked');
