@@ -292,7 +292,7 @@
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log('personal:' + JSON.stringify(personal));
 				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-				
+				personal.imgurl = setImg(personal.imgurl);
 				info =new Vue({ 
 					el:'#info',
 					data:{
