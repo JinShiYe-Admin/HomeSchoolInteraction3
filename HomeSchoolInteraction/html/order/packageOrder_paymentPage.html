@@ -418,8 +418,15 @@
 						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
 						$(domDiv).parent().parent().find('li').each(function() {
 							if($(this).find('input').prop("checked")) {
-								name.push($(this).find('label').text());
-								value.push($(this).find('input').val());
+								var textValue=$(this).find('label').text();
+								if(textValue.indexOf("|")!=-1){
+									var _value=textValue.split("|")[0];
+									name.push(textValue);
+									value.push(_value);
+								}else{
+									name.push($(this).find('label').text());
+									value.push($(this).find('input').val());
+								}
 							}
 						})
 						if(value.length > max) {
