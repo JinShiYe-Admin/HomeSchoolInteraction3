@@ -155,14 +155,23 @@
 		<script type="text/javascript" src="../../js/utils/showvideoutil.js"></script>
 		<script type="text/javascript" src="../../js/utils/showaudio.js"></script>
 		<script type="text/javascript" src="../../js/utils/gallerypick.js"></script>
-		<script src='../../js/utils/compressVideo.js'></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
 		<script src="../../js/utils/utils.js"></script>
-		<!--<script src="../../js/utils/events.js"></script>-->
+		
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src='../../js/utils/compressVideo.js'></script>
 		<script type="text/javascript">
 			mui.init()
 			//获取个人信息
@@ -214,18 +223,18 @@
 						console.log('flag:' + flag);
 						if(flag == 0) { //年级
 							utils.mOpenWithData("../../html/homeSchool/gradeList.html", {
-								classIDsArray: addNoticeContent.classIDsArray, //选择的班级id数组
+								classIDsArray: addHomeworkContent.classIDsArray, //选择的班级id数组
 								gradeIDsArray: [] //全选择班级的年级id数组
 							});
 						} else if(flag == 1) { //班级
 							utils.mOpenWithData("../../html/homeSchool/gradeList.html", {
-								classIDsArray: addNoticeContent.classIDsArray, //选择的班级id数组
+								classIDsArray: addHomeworkContent.classIDsArray, //选择的班级id数组
 								gradeIDsArray: [] //全选择班级的年级id数组
 							});
 						} else if(flag == 2) { //家长
 							var tempArray = [];
-							for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
-								var tempModel = addNoticeContent.parentArray[i];
+							for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
+								var tempModel = addHomeworkContent.parentArray[i];
 								var tempModel1 = {
 									clsid: tempModel.clsid,
 									stuid: tempModel.stuid,
@@ -233,50 +242,183 @@
 								tempArray.push(tempModel1);
 							}
 							utils.mOpenWithData("../../html/homeSchool/notice_parentsList.html", {
-								classIDs: addNoticeContent.classIDs,
+								classIDs: addHomeworkContent.classIDs,
 								parentArray: tempArray
 							});
 						}
 					},
 					selectSubject: function() {
 
+					},hidePop: function(e, parms) { //隐藏弹窗
+						var domDiv = e.target;
+//						//遍历已勾选的input的key 和value
+//						var name = [];
+//						var value = [];
+//						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
+//						$(domDiv).parent().parent().find('li').each(function() {
+//							if($(this).find('input').prop("checked")) {
+//								name.push($(this).find('label').text());
+//								value.push($(this).find('input').val());
+//							}
+//						})
+//						if(value.length > max) {
+//							mui.toast('最多选' + max + '个');
+//							return;
+//						}
+						var id = $(domDiv).parent().parent().attr("id");
+//						if(name.length == 0 || value.length == 0) {
+//							var label = $('#' + id + 'label').html();
+//							document.getElementById(id + 'input0').value = '请选择' + label+'(最多'+parms.itemsonsc+'个)';
+//							document.getElementById(id + 'input1').value = [];
+//							parms.checked = '';
+//							Vue.delete(parms, 'checked');
+//						} else {
+//							document.getElementById(id + 'input0').value = name;
+//							document.getElementById(id + 'input1').value = value;
+//							parms.checked = value.join(',');
+//						}
+
+						//							console.log(JSON.stringify(parms))
+						mui('#' + id).popover('toggle');
 					}
 				}
 			});
 			window.addEventListener('selectGradeClass', function(data) {
 				//				console.log("data" + JSON.stringify(data.detail));
 				var tempData = data.detail;
-				addNoticeContent.gradeStr = tempData.gradeShow;
-				addNoticeContent.classStr = tempData.classShow;
-				addNoticeContent.classIDsArray = [].concat(tempData.classIDsArray);
-				addNoticeContent.gradeIDsArray = [].concat(tempData.gradeIDsArray);
-				addNoticeContent.classIDs = tempData.classIDs;
+				addHomeworkContent.gradeStr = tempData.gradeShow;
+				addHomeworkContent.classStr = tempData.classShow;
+				addHomeworkContent.classIDsArray = [].concat(tempData.classIDsArray);
+				addHomeworkContent.gradeIDsArray = [].concat(tempData.gradeIDsArray);
+				addHomeworkContent.classIDs = tempData.classIDs;
 				if(tempData.classIDs.length > 0) {
 					//6.学校班级学生,获取选择班级中对应的人
 					getClassParents(tempData.classIDs, 1);
-					addNoticeContent.flag = 0;
+					addHomeworkContent.flag = 0;
 					//判断选择的班级，是否有当前身份是班主任的
-					if(addNoticeContent.teacherFlag > 0) {
-						for(var i = 0; i < addNoticeContent.classIDsArray.length; i++) {
-							var temp = addNoticeContent.classIDsArray[i];
+					if(addHomeworkContent.teacherFlag > 0) {
+						for(var i = 0; i < addHomeworkContent.classIDsArray.length; i++) {
+							var temp = addHomeworkContent.classIDsArray[i];
 							//判断是否是班主任
 							for(var a = 0; a < personal.clss.length; a++) {
 								var classModel = personal.clss[a];
 								if(classModel.isms == 1 && temp == classModel.clsid) {
-									addNoticeContent.flag = 1;
+									addHomeworkContent.flag = 1;
 								}
 							}
 						}
 					}
 				} else {
-					addNoticeContent.classIDsArray = [];
-					addNoticeContent.gradeIDsArray = [];
-					addNoticeContent.gradeStr = '请选择';
-					addNoticeContent.classStr = '请选择';
-					addNoticeContent.flag = 0;
-					addNoticeContent.parentArray = [];
+					addHomeworkContent.classIDsArray = [];
+					addHomeworkContent.gradeIDsArray = [];
+					addHomeworkContent.gradeStr = '请选择';
+					addHomeworkContent.classStr = '请选择';
+					addHomeworkContent.flag = 0;
+					addHomeworkContent.parentArray = [];
 				}
 			});
+			//4.15.学校班级订购学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
+			var getClassParents = function(classids, flag) {
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid, //系统所分配的应用ID
+					classids: classids //需要查询的班级ID,多个代码用英文逗号隔开
+				}
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
+					events.closeWaiting();
+					if(data.RspCode == 0) {
+						//						console.log('data:' + JSON.stringify(data));
+						if(data.RspData == null) {
+							addHomeworkContent.parentsStr = '所在班级没有学生';
+						} else {
+							addHomeworkContent.parentArray = [].concat(data.RspData.classuserustus);
+							//默认的班主任数据
+							if(flag == 0) {
+								//将班级ID字符串，分割为数组
+								var classidArray = classids.split(',');
+								//组成班级model数组
+								var classidArr = [];
+								for(var i = 0; i < classidArray.length; i++) {
+									var tempModel = {
+										clsid: classidArray[i],
+										parents: []
+									}
+									classidArr.push(tempModel);
+								}
+								var tempArray = [];
+								for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
+									var tempModel = addHomeworkContent.parentArray[i];
+									for(var a = 0; a < classidArr.length; a++) {
+										var tempClassModel = classidArr[a];
+										if(tempClassModel.clsid == tempModel.clsid) {
+											tempClassModel.parents.push(tempModel);
+										}
+									}
+								}
+								console.log('addHomeworkContent.gradeArray:' + JSON.stringify(addHomeworkContent.gradeArray));
+								//将没有人员的移除
+								for(var a = classidArr.length - 1; a >= 0; a--) {
+									var tempClassModel = classidArr[a];
+									if(tempClassModel.parents.length == 0) {
+										classidArr.splice(a, 1);
+									}
+								}
+								console.log('classidArr:' + JSON.stringify(classidArr));
+								var tempGradeArray = [];
+								//重新计算年级
+								for (var i = 0; i < classidArr.length; i++) {
+									var temp111 = classidArr[i].parents[0];
+									tempGradeArray.push(temp111.grdname);
+								}
+								tempGradeArray = unique(tempGradeArray);
+//								console.log('tempGradeArray1:'+tempGradeArray);
+								addHomeworkContent.gradeStr = tempGradeArray.join(',');
+								//判断是否包含班主任身份
+								if(classidArr.length > 0) {
+									addHomeworkContent.teacherFlag = 0;
+									addHomeworkContent.flag = 0;
+									addHomeworkContent.classIDsArray = [];
+									addHomeworkContent.gradeIDsArray = [];
+									addHomeworkContent.classIDs = '';
+									addHomeworkContent.classStr = '';
+									addHomeworkContent.parentsStr = '';
+									for(var i = 0; i < classidArr.length; i++) {
+										var classModel = classidArr[i];
+										addHomeworkContent.teacherFlag = 1;
+										addHomeworkContent.flag = 1;
+										addHomeworkContent.classIDsArray.push(classModel.parents[0].clsid);
+										addHomeworkContent.gradeIDsArray.push(classModel.parents[0].grdid);
+										addHomeworkContent.classIDs = addHomeworkContent.classIDs + ',' + classModel.clsid;
+										addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + classModel.parents[0].clsname;
+										addHomeworkContent.parentsStr = addHomeworkContent.parentsStr + ';' + classModel.parents[0].clsname + '全部家长';
+									}
+									//去掉首个，
+									if(addHomeworkContent.classIDs.length > 0) {
+										addHomeworkContent.classIDs = addHomeworkContent.classIDs.substr(1);
+										addHomeworkContent.classStr = addHomeworkContent.classStr.substr(1);
+										addHomeworkContent.parentsStr = addHomeworkContent.parentsStr.substr(1);
+									}
+								} else {
+									addHomeworkContent.classIDsArray = [];
+									addHomeworkContent.gradeIDsArray = [];
+									addHomeworkContent.gradeStr = '请选择';
+									addHomeworkContent.classStr = '请选择';
+									addHomeworkContent.parentsStr = '请选择';
+									addHomeworkContent.flag = 0;
+									addHomeworkContent.parentArray = [];
+								}
+							}
+						}
+					} else {
+						mui.toast(data.RspTxt, "cancel");
+					}
+				});
+			}
 			//数组去重
 			function unique(arr) {
 				var result = [],
@@ -350,10 +492,10 @@
 				//完成
 //				document.getElementById('finish').addEventListener('tap', function() {
 //					events.hideKeyBoard(hideOption);
-//					if(addNoticeContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
+//					if(addHomeworkContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
 //						mui.toast('通知内容不能为空');
 //						document.getElementById("finish").disabled = false;
-//					} else if(addNoticeContent.content.length > 350) {
+//					} else if(addHomeworkContent.content.length > 350) {
 //						mui.toast('内容最多350字');
 //						document.getElementById("finish").disabled = false;
 //					} else {
@@ -382,8 +524,8 @@
 				var temp2 = [];
 				var temp3 = [];
 				var temp4 = [];
-				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
-					var stuModel = addNoticeContent.parentArray[i];
+				for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
+					var stuModel = addHomeworkContent.parentArray[i];
 					temp0.push(stuModel.utid);
 					temp1.push(stuModel.mobile);
 					temp2.push(stuModel.utname + '|' + stuModel.stuname);
@@ -395,10 +537,10 @@
 					document.getElementById("finish").disabled = false;
 					return;
 				}
-				if(addNoticeContent.msgFlag) {
-					addNoticeContent.msgFlag = 1;
+				if(addHomeworkContent.msgFlag) {
+					addHomeworkContent.msgFlag = 1;
 				} else {
-					addNoticeContent.msgFlag = 0;
+					addHomeworkContent.msgFlag = 0;
 				}
 				//附件名称
 				var encName = '';
@@ -417,11 +559,11 @@
 				//1.新增学校通知（同时增加通知未读）
 				var tempData1 = {
 					schoolId: (personal.schid).toString(), //学校ID，统一部署的时候，学校ID传000000
-					noticeContent: addNoticeContent.content, //内容
+					noticeContent: addHomeworkContent.content, //内容
 					noticEncName: encName, //附件名称，竖杠隔开
 					noticeEncImgAddr: encImg, //附件缩略图地址，竖杠隔开
 					noticeEncAddr: encAddr, //附件地址，竖杠隔开
-					smsSync: addNoticeContent.msgFlag, //是否短信同步，先填0
+					smsSync: addHomeworkContent.msgFlag, //是否短信同步，先填0
 					sendManId: (personal.utid).toString(), //发布人ID
 					sendManCode: personal.uid, //发布人账号
 					sendManName: personal.utname, //发布人姓名
@@ -436,10 +578,10 @@
 				addNoticePro(tempData1, function function_name(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
-						addNoticeContent.content = '';
-						if(temp4.length > 0 && addNoticeContent.msgFlag == 1) {
+						addHomeworkContent.content = '';
+						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
 							var tempMobiles = temp4.join(',').toString();
-							events.SendSmsForMobiles(tempMobiles, addNoticeContent.content);
+							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
 						}
 						mui.toast('成功');
 						setTimeout(function() {

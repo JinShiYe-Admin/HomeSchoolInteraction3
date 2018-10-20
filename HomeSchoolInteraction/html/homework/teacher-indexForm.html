@@ -9,14 +9,76 @@
 	</head>
 
 	<body>
-		<!--<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title" style="color: white;">作业报表</h1>
-			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
-		</header>-->
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--菜单部分-->
+			<aside class="mui-off-canvas-right">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<p style="margin: 10px 15px;">
+							<button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>
+						</p>
+					</div>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap">
+				<div class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content-padded">
+							<p style="padding: 5px 20px;margin-bottom: 5px;">
+								<button id="offCanvasShow" type="button" class="mui-btn mui-btn-primary mui-btn-block" style="padding: 5px;">
+									显示侧滑菜单
+								</button>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
+			</div>
+		</div>
 		<script src="../../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
+		<script>
+			mui.init({
+				swipeBack: false
+			});
+			mui.plusReady(function() {
+
+			});
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = offCanvasWrapper[0].classList;
+			classList.add('mui-slide-in');
+			offCanvasWrapper.offCanvas().refresh();
+			document.getElementById('offCanvasShow').addEventListener('tap', function() {
+				offCanvasWrapper.offCanvas('show');
+				console.log('show');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 0
+				});
+			});
+			// 监听点击遮罩关闭事件
+			document.getElementById("backdrop").addEventListener('tap', function() {
+				//阻止默认事件
+				event.detail.gesture.preventDefault();
+				offCanvasWrapper.offCanvas('close');
+				offCanvasWrapper.offCanvas('close');
+				console.log('close222');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 1
+				});
+			});
+			//禁止滑动主界面的时候出现侧滑菜单
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {　　
+				event.stopPropagation();
+			});
+
+			document.getElementById('offCanvasHide').addEventListener('tap', function() {
+				offCanvasWrapper.offCanvas('close');
+				console.log('close');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 1
+				});
+			});
 		</script>
 	</body>
 
