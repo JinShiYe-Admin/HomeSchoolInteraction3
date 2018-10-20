@@ -425,6 +425,7 @@
 					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime:orderDetailData.newEtime
 					});
+					mui.back();
 				},function fail(err){
 					mui.toast(err);
 				});

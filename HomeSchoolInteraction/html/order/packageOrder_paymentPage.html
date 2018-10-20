@@ -222,7 +222,7 @@
 								</template>
 								<template v-else>
 									<a href="javaScript:">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="'请忽略'+fextModel.itemname+'选择'" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
+										<input :id="sysfuncModel.fid+fextModel.itemcode+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
 										<input :id="sysfuncModel.fid+fextModel.itemcode+'input1'" type="hidden" :name=fextModel.itemcode />
 									</a>
 								</template>
@@ -281,7 +281,7 @@
 										<ul class="mui-table-view" style="background: #393D49;color: #fff;" :maxCheck=fextModel.itemsonsc>
 											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons">
 												<div class="mui-input-row mui-checkbox mui-right">
-													<label style="width: 100%;">{{item}}</label>
+													<label style="width: 100%;">{{getValue(item)}}</label>
 													<input :name=index :value=item type="checkbox">
 												</div>
 											</li>
@@ -419,8 +419,9 @@
 						$(domDiv).parent().parent().find('li').each(function() {
 							if($(this).find('input').prop("checked")) {
 								var textValue=$(this).find('label').text();
-								if(textValue.indexOf("|")!=-1){
-									var _value=textValue.split("|")[0];
+								var values=$(this).find('input').val();
+								if(values.indexOf("|")!=-1){
+									var _value=values.split("|")[0];
 									name.push(textValue);
 									value.push(_value);
 								}else{
@@ -448,6 +449,22 @@
 
 						//							console.log(JSON.stringify(parms))
 						mui('#' + id).popover('toggle');
+					},
+					 getValue: function(item) {
+						var values=item.split("|");
+						var newValue='';
+						for(var i=1;i<values.length;i++){
+							newValue+=values[i];
+						}
+					    return  newValue;
+					},
+					 getItemsons: function(item) {
+						var values=item[0].split("|");
+						var newValue='';
+						for(var i=1;i<values.length;i++){
+							newValue+=values[i];
+						}
+					    return  newValue;
 					},
 					gradeChange: function(e) { //月份下拉选选中事件
 						var domDiv = e.target;
@@ -518,6 +535,15 @@
 								itemsons: fextModel.checked //栏目选择子集
 							}
 							funcArray.push(tempModel);
+						}else if(fextModel.itemsonsc==0){
+							var sons=fextModel.itemsons[0];
+							var checked=sons.split("|")[0];
+							var tempModel = {
+								fcode: sysfuncModel.fcode, //功能代码
+								itemcode: fextModel.itemcode, //栏目代码
+								itemsons: checked //栏目选择子集
+							}
+							funcArray.push(tempModel);
 						}
 					}
 				}
@@ -533,6 +559,7 @@
 					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime:orderDetailData.newEtime
 					});
+					mui.back();
 				},function fail(err){
 					mui.toast(err);
 				});
@@ -571,7 +598,6 @@
 				});
 			}
 			
-
 		</script>
 	</body>
 

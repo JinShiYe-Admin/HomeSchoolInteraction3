@@ -57,7 +57,7 @@
 					<a class="mui-control-item tempA" href="#item2">已办公文</a>
 				</div>
 			</div>
-			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;" onclick="toDetail()">+</a>
 		</header>
 		<nav class="mui-bar mui-bar-tab">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
@@ -168,6 +168,11 @@
 					defaultTab.classList.add('mui-active');
 				}
 			});
+			
+			function toDetail(){
+				console.log("111111111111111111111")
+				utils.mOpenWithData("../../html/homework/teacher-homework-detail.html", {});
+			}
 		</script>
 	</body>
 
