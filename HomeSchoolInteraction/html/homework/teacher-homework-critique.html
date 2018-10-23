@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>作业点评</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			body{
+				background: #fff;
+			}
+			[v-cloak] {
+				visibility: hidden;
+			}
+			.user-title {
+				font-size: 17px;
+				color: #333333;
+				font-weight: bold;
+			}
+			
+			.user-title-body {
+				font-size: 15px;
+				text-align: left;
+				margin: 0 10px;
+				color: #3E4B53;
+				text-indent: 2em;
+			}
+			.line{
+				background-color: #f2f3f5;
+				height: 10px;
+				margin-top: 10px;
+			}
+			
+			.title {
+				margin:10px 0 10px;
+			    color: #FF9933;
+			    font-size: 15px;
+			    background: #F2F2F2;
+			    padding: 5px 15px;
+			}
+			
+			.mui-table-view:after {
+			    height: 0px;
+			}
+			.zt{
+			    font-size: 15px;
+			    text-align: left;
+			    margin: 0 15px;
+			    color: #3E4B53;
+			    float: left;
+			}
+			.zt-btn{
+				float: right;
+				right: 15px;
+				margin-top: -5px;
+				background-color: #00CFBD;
+				border-color:#00CFBD ;
+			}
+			input[type=text]{
+				margin: 0px;
+				border: 0;
+				font-size: 15px;
+			    color: #3E4B53;
+			}
+			textarea::-webkit-input-placeholder,input::-webkit-input-placeholder {
+	        	font-size: 14px;
+     		}
+			textarea{
+				margin: 0px 3% 20px;
+				width: 94%;
+			}
+			
+			.bottom-btn{
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				height: 55px;
+				 background: #F2F2F2;
+				 padding: 10px 15px;
+			}
+			.bottom-btn-left{
+				background-color: #00CFBD;
+				border-color:#00CFBD ;
+				float: left;
+				 width: 40%;
+			}
+			.bottom-btn-right{
+				background-color: #00CFBD;
+				border-color:#00CFBD ;
+				float: right;
+				 width: 40%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">作业点评</h1>
+			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submit()">提交</a>
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div id="detail">
+				<div class="mui-row">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a href="javascript:;">
+								<img class="mui-media-object mui-pull-left" src="../../img/homeSchool/schoolPage1.png">
+								<div class="mui-media-body">
+									王大拿
+									<p class='mui-ellipsis'>1年级1601班</p>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="title">
+					学生答案
+				</div>
+				<div class="mui-row">
+					<p v-cloak class="user-title-body">近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					</p>
+				</div>
+				<div class="title">
+						递交状态
+					</div>
+				<div class="mui-row">
+					<div style="padding: 10px 0;">
+						<p v-cloak class="zt">已提交</p>
+						<button class="mui-btn mui-btn-primary zt-btn">修改状态</button>
+					</div>
+				</div>
+				<div class="title">
+						分数
+				</div>
+				<div class="mui-row">
+					<input name="score" value="" type="text" placeholder="请输入分数（0-100）"  onkeyup="clearNoNum(this)">
+				</div>
+				<div class="title">
+						输入评价
+				</div>
+				<div class="mui-row">
+					<textarea name="critique" value="" rows="5" placeholder="请输入评价" style="margin-bottom: 60px;"></textarea>
+				</div>
+				
+				<div class="bottom-btn">
+					<button class="mui-btn mui-btn-primary bottom-btn-left" >上一个</button>
+					<button class="mui-btn mui-btn-primary bottom-btn-right" >下一个</button>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/slide/mui.min.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: false
+			});
+			mui.plusReady(function() {
+			});
+			var detail = new Vue({
+				el: "#detail",  
+				data: {
+					more:true,
+					btnText:'more'
+				},
+				methods: {
+				}
+			});
+		//只保留小数点后一位
+		function clearNoNum(obj){ 
+		    obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符  
+		    obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的  
+		    obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$","."); 
+		    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d).*$/,'$1$2.$3');//只能输入两个小数  
+		    if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
+		        obj.value= parseFloat(obj.value); 
+		    } 
+		} 
+		</script>
+	</body>
+
+</html>
