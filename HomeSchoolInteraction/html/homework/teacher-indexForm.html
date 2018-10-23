@@ -1,41 +1,687 @@
 <!doctype html>
-<html>
+<html style="">
 
 	<head>
 		<meta charset="UTF-8">
 		<title>作业报表</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.selectP {
+				margin-right: 10px;
+				margin-top: 8px;
+				margin-left: 10px;
+				text-align: right;
+			}
+			
+			.homeworkTitle {
+				color: black;
+				text-align: center;
+				font-size: 15px;
+			}
+			
+			.homeworkTime {
+				color: gray;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.homeworkCount {
+				height: 60px;
+				width: 20%;
+				float: left;
+				text-align: center;
+			}
+			
+			.homeworkFlag {
+				height: 20px;
+				width: 40px;
+				float: left;
+				text-align: center;
+			}
+			
+			.homeworkCountP1 {
+				color: goldenrod;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.homeworkCountP2 {
+				color: black;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.selectCell {
+				width: 48%;
+				margin-left: 2%;
+				float: left;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				background: red;
+				margin-bottom: 5px;
+				border-radius: 6px;
+			}
+		</style>
 	</head>
 
-	<body>
+	<body style="">
 		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
 			<!--菜单部分-->
-			<aside class="mui-off-canvas-right">
-				<div class="mui-scroll-wrapper">
-					<div class="mui-scroll">
-						<p style="margin: 10px 15px;">
-							<button id="offCanvasHide" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>
-						</p>
+			<aside class="mui-off-canvas-right" style="background: white;">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="">
+					<div class="mui-scroll" style="">
+						<ul class="mui-table-view" style="height: 90%;">
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#">表单1</a>
+								<div class="mui-collapse-content">
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#">表单2</a>
+								<div class="mui-collapse-content">
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+								</div>
+							</li>
+							<li class="mui-table-view-cell mui-collapse">
+								<a class="mui-navigate-right" href="#">表单3</a>
+								<div class="mui-collapse-content">
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+									<div class="selectCell">
+										kjlshgk1
+									</div>
+									<div class="selectCell">
+										kjlshgk2
+									</div>
+									<div class="selectCell">
+										kjlshgk3
+									</div>
+									<div class="selectCell">
+										kjlshgk4
+									</div>
+									<div class="selectCell">
+										kjlshgk5
+									</div>
+								</div>
+							</li>
+						</ul>
+						<div id="" style="height: 10%;">
+							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+						</div>
 					</div>
 				</div>
 			</aside>
-			<div class="mui-inner-wrap">
-				<div class="mui-content mui-scroll-wrapper">
-					<div class="mui-scroll">
-						<div class="mui-content-padded">
-							<p style="padding: 5px 20px;margin-bottom: 5px;">
-								<button id="offCanvasShow" type="button" class="mui-btn mui-btn-primary mui-btn-block" style="padding: 5px;">
-									显示侧滑菜单
-								</button>
-							</p>
-						</div>
+			<div class="mui-inner-wrap" style="">
+				<div id="formDetailData" class="mui-content mui-scroll-wrapper" style="background: white;">
+					<div @tap="selectForm" style="background: gold;margin-top: -10px;height: 30px;">
+						<p class="selectP" style="padding-top: 5px;">筛选</p>
 					</div>
+					<div class="" style="margin-top: 10px;">
+						<p class="homeworkTitle">一年级106班王龙作业统计表【语文】</p>
+						<p class="homeworkTime">统计周期 ：2018-6-23至2018-6-27</p>
+						<div class="" style="height: 60px;">
+							<div class="homeworkCount">
+								<p class="homeworkCountP1">共计作业</p>
+								<p class="homeworkCountP2">6次</p>
+							</div>
+							<div class="homeworkCount">
+								<p class="homeworkCountP1">已交作业</p>
+								<p class="homeworkCountP2">5次</p>
+							</div>
+							<div class="homeworkCount">
+								<p class="homeworkCountP1">未交作业</p>
+								<p class="homeworkCountP2">4次</p>
+							</div>
+							<div class="homeworkCount">
+								<p class="homeworkCountP1">已批作业</p>
+								<p class="homeworkCountP2">3次</p>
+							</div>
+							<div class="homeworkCount">
+								<p class="homeworkCountP1">未批作业</p>
+								<p class="homeworkCountP2">2次</p>
+							</div>
+						</div>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已交</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已批</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">80分</p>
+								</div>
+								<div class="" style="float: right;color: gray;font-size: 12px;">
+									李云 | 2018-6-6
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+								<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已交</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已批</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">80分</p>
+								</div>
+								<div class="" style="float: right;color: gray;font-size: 12px;">
+									李云 | 2018-6-6
+								</div>
+							</li>
+							<li class="mui-table-view-cell">
+								<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已交</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">已批</p>
+								</div>
+								<div class="homeworkFlag">
+									<p class="homeworkCountP1">80分</p>
+								</div>
+								<div class="" style="float: right;color: gray;font-size: 12px;">
+									李云 | 2018-6-6
+								</div>
+							</li>
+						</ul>
+					</div>
+
 				</div>
 				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
 			</div>
 		</div>
 		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
 		<script>
 			mui.init({
 				swipeBack: false
@@ -43,19 +689,18 @@
 			mui.plusReady(function() {
 
 			});
+			(function($) {
+				$(".mui-card").scroll({
+					//bounce: false,//滚动条是否有弹力默认是true
+					//indicators: false, //是否显示滚动条,默认是true
+				});
+			})(mui);
 			//侧滑容器父节点
 			var offCanvasWrapper = mui('#offCanvasWrapper');
 			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
 			var classList = offCanvasWrapper[0].classList;
 			classList.add('mui-slide-in');
 			offCanvasWrapper.offCanvas().refresh();
-			document.getElementById('offCanvasShow').addEventListener('tap', function() {
-				offCanvasWrapper.offCanvas('show');
-				console.log('show');
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
-					showCloseFlag: 0
-				});
-			});
 			// 监听点击遮罩关闭事件
 			document.getElementById("backdrop").addEventListener('tap', function() {
 				//阻止默认事件
@@ -68,16 +713,34 @@
 				});
 			});
 			//禁止滑动主界面的时候出现侧滑菜单
-			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {　　
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
 				event.stopPropagation();
 			});
+			//主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
 
-			document.getElementById('offCanvasHide').addEventListener('tap', function() {
-				offCanvasWrapper.offCanvas('close');
-				console.log('close');
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
-					showCloseFlag: 1
-				});
+			//			document.getElementById('offCanvasHide').addEventListener('tap', function() {
+			//				offCanvasWrapper.offCanvas('close');
+			//				console.log('close');
+			//				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+			//					showCloseFlag: 1
+			//				});
+			//			});
+
+			var formDetailData = new Vue({
+				el: "#formDetailData",
+				data: {
+					tempName: 'qqqqq'
+				},
+				methods: {
+					selectForm: function() {
+						offCanvasWrapper.offCanvas('show');
+						console.log('show');
+						mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+							showCloseFlag: 0
+						});
+					}
+				}
 			});
 		</script>
 	</body>
