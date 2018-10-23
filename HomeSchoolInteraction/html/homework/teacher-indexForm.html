@@ -63,6 +63,15 @@
 				margin-bottom: 5px;
 				border-radius: 6px;
 			}
+			.bottom-btns{
+				width: 100%;
+				bottom: 0;
+				position: fixed;
+				height: 50px;
+				background-color: #fff;
+				z-index: 999;
+				padding: 10px 0;
+			}
 		</style>
 	</head>
 
@@ -71,7 +80,7 @@
 			<!--菜单部分-->
 			<aside class="mui-off-canvas-right" style="background: white;">
 				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="">
-					<div class="mui-scroll" style="">
+					<div class="mui-scroll scroll-height" style="">
 						<ul class="mui-table-view" style="height: 90%;">
 							<li class="mui-table-view-cell mui-collapse">
 								<a class="mui-navigate-right" href="#">表单1</a>
@@ -584,11 +593,11 @@
 								</div>
 							</li>
 						</ul>
-						<div id="" style="height: 10%;">
+					</div>
+					<div id="" class="bottom-btns">
 							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
 							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
 						</div>
-					</div>
 				</div>
 			</aside>
 			<div class="mui-inner-wrap" style="">
