@@ -146,8 +146,8 @@
 				</div>
 				
 				<div class="bottom-btn">
-					<button class="mui-btn mui-btn-primary bottom-btn-left" >上一个</button>
-					<button class="mui-btn mui-btn-primary bottom-btn-right" >下一个</button>
+					<button class="mui-btn mui-btn-primary bottom-btn-left" @tap="previous()" >上一个</button>
+					<button class="mui-btn mui-btn-primary bottom-btn-right" @tap="next()">下一个</button>
 				</div>
 			</div>
 		</div>
@@ -160,10 +160,13 @@
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
+			var curPage='';
 			mui.init({
 				swipeBack: false
 			});
 			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log(JSON.stringify(curPage))
 			});
 			var detail = new Vue({
 				el: "#detail",  
@@ -172,6 +175,12 @@
 					btnText:'more'
 				},
 				methods: {
+					previous:function(){
+						console.log("123")
+					},
+					next:function(){
+						console.log("456")
+					}
 				}
 			});
 		//只保留小数点后一位
