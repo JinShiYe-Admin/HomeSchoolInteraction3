@@ -30,43 +30,93 @@
 				color: darkgray;
 				margin-left: 10px;
 			}
+			.selectCell {
+				width: 48%;
+				margin-left: 2%;
+				float: left;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				margin-bottom: 5px;
+				border-radius: 6px;
+			}
+			.selectCellBG0{
+				background: red;
+			}
+			.selectCellBG1{
+				background: blue;
+			}
+			
+			.bottom-btns {
+				width: 100%;
+				bottom: 0;
+				position: fixed;
+				height: 50px;
+				background-color: #fff;
+				z-index: 999;
+				padding: 10px 0;
+			}
 		</style>
 	</head>
 
 	<body>
-		<!--<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title" style="color: white;">作业列表</h1>
-			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
-		</header>-->
-		<div class="mui-content" id="homeworkList">
-			<div id="">
-				<p class="selectP" style="">筛选</p>
-			</div>
-
-			<div class="" id="homeworkListArray" style="background: white;">
-				<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
-					<div class="mui-card-header">
-						{{homeworkModel.homeworkName}}
-						<button v-if="homeworkModel.homeworkFlag ==1" @click.stop="clickBtn(homeworkModel)" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
-					</div>
-					<div class="mui-card-content">
-						<div class="homewrokContent">
-							{{homeworkModel.homeworkContent}}
-						</div>
-						<img :src="homeworkModel.homeworkImg" alt="" width="100%" />
-						<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
-						<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
-						<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
-
-					</div>
-					<div class="mui-card-footer">
-						<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--菜单部分-->
+			<aside class="mui-off-canvas-right" style="background: white;">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="margin-bottom: 50px;">
+					<div class="mui-scroll scroll-height" style="">
+						<ul class="mui-table-view" style="height: 90%;">
+							<li class="mui-table-view-cell mui-collapse" v-for="(selectModel,index) in selectArray">
+								<a class="mui-navigate-right" href="#">{{selectModel.selectName}}</a>
+								<div class="mui-collapse-content">
+									<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in selectModel.childSelectArray" @tap="modifySelectCell(selectModel,chlidModel)">
+										{{chlidModel.childName}}
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
-			</div>
+				<div id="" class="bottom-btns">
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+				</div>
+			</aside>
+			<div class="mui-inner-wrap" style="">
+				<div id="homeworkListArray" class="mui-content mui-scroll-wrapper" style="background: white;">
+					<div @tap="selectForm" style="background: gold;margin-top: -10px;height: 30px;">
+						<p class="selectP" style="padding-top: 5px;">筛选</p>
+					</div>
+					<div class="mui-content" id="homeworkList">
+						<div class="" style="background: white;">
+							<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
+								<div class="mui-card-header">
+									{{homeworkModel.homeworkName}}
+									<button v-if="homeworkModel.homeworkFlag ==1" @click.stop="clickBtn(homeworkModel)" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+								</div>
+								<div class="mui-card-content">
+									<div class="homewrokContent">
+										{{homeworkModel.homeworkContent}}
+									</div>
+									<img :src="homeworkModel.homeworkImg" alt="" width="100%" />
+									<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
+									<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
+									<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
 
+								</div>
+								<div class="mui-card-footer">
+									<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
+			</div>
 		</div>
+
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
@@ -77,6 +127,38 @@
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
 			mui.init()
+			mui.plusReady(function() {
+
+			});
+			(function($) {
+				$(".mui-card").scroll({
+					//bounce: false,//滚动条是否有弹力默认是true
+					//indicators: false, //是否显示滚动条,默认是true
+				});
+			})(mui);
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = offCanvasWrapper[0].classList;
+			classList.add('mui-slide-in');
+			offCanvasWrapper.offCanvas().refresh();
+			// 监听点击遮罩关闭事件
+			document.getElementById("backdrop").addEventListener('tap', function() {
+				//阻止默认事件
+				event.detail.gesture.preventDefault();
+				offCanvasWrapper.offCanvas('close');
+				offCanvasWrapper.offCanvas('close');
+				console.log('close222');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 1
+				});
+			});
+			//禁止滑动主界面的时候出现侧滑菜单
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
+				event.stopPropagation();
+			});
+			//主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
 
 			var homeworkListArray = new Vue({
 				el: "#homeworkListArray",
@@ -144,6 +226,157 @@
 					},
 					clickBtn: function(model) {
 						console.log('clickBtn:' + JSON.stringify(model));
+					},
+					selectForm: function() {
+						offCanvasWrapper.offCanvas('show');
+						console.log('show');
+						mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+							showCloseFlag: 0
+						});
+					}
+				}
+			});
+			//右侧滑出界面数据
+			var selectDetailData = new Vue({
+				el: "#offCanvasSideScroll",
+				data: {
+					selectFlag: 0,
+					selectArray: [{
+						selectName: '年级',
+						selectCode: '1',
+						childSelectArray: [{
+							childName: '一年级0',
+							childCode: '0',
+							childFlag: 0
+						}, {
+							childName: '一年级1',
+							childCode: '1',
+							childFlag: 0
+						}, {
+							childName: '一年级2',
+							childCode: '2',
+							childFlag: 0
+						}, {
+							childName: '一年级3',
+							childCode: '3',
+							childFlag: 0
+						}, {
+							childName: '一年级4',
+							childCode: '4',
+							childFlag: 0
+						}, {
+							childName: '一年级5',
+							childCode: '5',
+							childFlag: 0
+						}, {
+							childName: '一年级6',
+							childCode: '6',
+							childFlag: 0
+						}, {
+							childName: '一年级7',
+							childCode: '7',
+							childFlag: 0
+						}, {
+							childName: '一年级8',
+							childCode: '8',
+							childFlag: 0
+						}]
+					}, {
+						selectName: '年级1',
+						selectCode: '1',
+						childSelectArray: [{
+							childName: '一年级10',
+							childCode: '10',
+							childFlag: 0
+						}, {
+							childName: '一年级11',
+							childCode: '11',
+							childFlag: 0
+						}, {
+							childName: '一年级12',
+							childCode: '12',
+							childFlag: 0
+						}, {
+							childName: '一年级13',
+							childCode: '13',
+							childFlag: 0
+						}, {
+							childName: '一年级14',
+							childCode: '14',
+							childFlag: 0
+						}, {
+							childName: '一年级15',
+							childCode: '15',
+							childFlag: 0
+						}, {
+							childName: '一年级16',
+							childCode: '16',
+							childFlag: 0
+						}, {
+							childName: '一年级17',
+							childCode: '17',
+							childFlag: 0
+						}, {
+							childName: '一年级18',
+							childCode: '18',
+							childFlag: 0
+						}, {
+							childName: '一年级19',
+							childCode: '19',
+							childFlag: 0
+						}]
+					}, {
+						selectName: '年级2',
+						selectCode: '2',
+						childSelectArray: [{
+							childName: '一年级20',
+							childCode: '20',
+							childFlag: 0
+						}, {
+							childName: '一年级21',
+							childCode: '21',
+							childFlag: 0
+						}, {
+							childName: '一年级22',
+							childCode: '22',
+							childFlag: 0
+						}, {
+							childName: '一年级23',
+							childCode: '23',
+							childFlag: 0
+						}, {
+							childName: '一年级24',
+							childCode: '24',
+							childFlag: 0
+						}, {
+							childName: '一年级25',
+							childCode: '25',
+							childFlag: 0
+						}, {
+							childName: '一年级26',
+							childCode: '26',
+							childFlag: 0
+						}, {
+							childName: '一年级27',
+							childCode: '27',
+							childFlag: 0
+						}, {
+							childName: '一年级28',
+							childCode: '28',
+							childFlag: 0
+						}]
+					}, ]
+				},
+				methods: {
+					modifySelectCell: function(sumModel, currentModel) {
+						for(var i = 0; i < sumModel.childSelectArray.length; i++) {
+							var tempModel = sumModel.childSelectArray[i];
+							if(tempModel.childCode == currentModel.childCode) {
+								tempModel.childFlag = 1;
+							} else {
+								tempModel.childFlag = 0;
+							}
+						}
 					}
 				}
 			});

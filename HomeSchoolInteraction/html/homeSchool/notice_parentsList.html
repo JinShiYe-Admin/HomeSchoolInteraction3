@@ -66,7 +66,7 @@
 
 			<ul class="mui-table-view" v-for="(classModel,index) in classListArray">
 				<li v-if="classModel.showFlag>0" class="mui-table-view-cell">
-				<!--<li class="mui-table-view-cell">-->
+					<!--<li class="mui-table-view-cell">-->
 					<div style="width: 50%;height: 40px;margin-top: 5px;" class="flex-item">
 						<div class="mui-input-row mui-checkbox mui-left" style="margin-top: -10px;height: 30px;">
 							<label class="className">{{classModel.clsname}}</label>
@@ -217,7 +217,7 @@
 					addNotice: function() {
 						var tempStu = ''; //显示用的家长
 						var tempStuArray = []; //选择的家长数组
-						var tempGradeArray = [];//判断年级是否全部选择用
+						var tempGradeArray = []; //判断年级是否全部选择用
 						//循环所有数据
 						for(var i = 0; i < classListData.classListArray.length; i++) {
 							var classModel = classListData.classListArray[i];
@@ -235,9 +235,9 @@
 							}
 							if(selectGrade > 0) {
 								if(sumGrade == selectGrade && classModel.stuArray.length > 0) {
-									if (IsInArray(tempGradeArray,classModel.grdid)) {//存在
-										
-									} else{
+									if(IsInArray(tempGradeArray, classModel.grdid)) { //存在
+
+									} else {
 										tempStu = tempStu + ';' + classModel.grdname + '全部班级家长';
 										tempGradeArray.push(classModel.grdid);
 									}
@@ -350,27 +350,31 @@
 					if(data.RspCode == 0) {
 						classListData.flag = 1;
 						console.log('data:' + JSON.stringify(data));
+						//去重
+						//						data.RspData.classuserustus = data.RspData.classuserustus.unique('utid');
 						for(var i = 0; i < data.RspData.classuserustus.length; i++) {
 							var stuModel = data.RspData.classuserustus[i];
-							//							stuModel.flag = 0;
-							//判断上个界面，是否选择
-							var tempClassFlag = 0;
-							for(var m = 0; m < parentsArray.length; m++) {
-								var tempParentModel = parentsArray[m];
-								if(tempParentModel.stuid == stuModel.stuid) {
-									tempClassFlag++;
+							//0屏蔽，1有效，2删除
+							if(stuModel.stustat == 1) {
+								//判断上个界面，是否选择
+								var tempClassFlag = 0;
+								for(var m = 0; m < parentsArray.length; m++) {
+									var tempParentModel = parentsArray[m];
+									if(tempParentModel.stuid == stuModel.stuid && tempParentModel.utid == stuModel.utid && tempParentModel.forid == stuModel.forid) {
+										tempClassFlag++;
+									}
 								}
-							}
-							if(tempClassFlag == 0) {
-								stuModel.flag = 0; //默认未选择
-							} else {
-								stuModel.flag = 1; //选择
-							}
-							for(var a = 0; a < classListData.classListArray.length; a++) {
-								var classModel = classListData.classListArray[a];
-								if(classModel.clsid == stuModel.clsid) {
-									classModel.grdname = stuModel.grdname;
-									classModel.stuArray.push(stuModel);
+								if(tempClassFlag == 0) {
+									stuModel.flag = 0; //默认未选择
+								} else {
+									stuModel.flag = 1; //选择
+								}
+								for(var a = 0; a < classListData.classListArray.length; a++) {
+									var classModel = classListData.classListArray[a];
+									if(classModel.clsid == stuModel.clsid) {
+										classModel.grdname = stuModel.grdname;
+										classModel.stuArray.push(stuModel);
+									}
 								}
 							}
 						}
@@ -407,6 +411,30 @@
 				} else {
 					classListData.selectFlag = 0;
 				}
+			}
+			//给数组去重
+			Array.prototype.unique = function(key) {
+				var arr = this;
+				var n = [arr[0]];
+				for(var i = 1; i < arr.length; i++) {
+					if(key === undefined) {
+						if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
+					} else {
+						inner: {
+							var has = false;
+							for(var j = 0; j < n.length; j++) {
+								if(arr[i][key] == n[j][key]) {
+									has = true;
+									break inner;
+								}
+							}
+						}
+						if(!has) {
+							n.push(arr[i]);
+						}
+					}
+				}
+				return n;
 			}
 		</script>
 	</body>

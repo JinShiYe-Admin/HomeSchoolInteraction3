@@ -59,11 +59,17 @@
 				height: 40px;
 				line-height: 40px;
 				text-align: center;
-				background: red;
 				margin-bottom: 5px;
 				border-radius: 6px;
 			}
-			.bottom-btns{
+			.selectCellBG0{
+				background: red;
+			}
+			.selectCellBG1{
+				background: blue;
+			}
+			
+			.bottom-btns {
 				width: 100%;
 				bottom: 0;
 				position: fixed;
@@ -79,525 +85,23 @@
 		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
 			<!--菜单部分-->
 			<aside class="mui-off-canvas-right" style="background: white;">
-				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="">
+				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="margin-bottom: 50px;">
 					<div class="mui-scroll scroll-height" style="">
 						<ul class="mui-table-view" style="height: 90%;">
-							<li class="mui-table-view-cell mui-collapse">
-								<a class="mui-navigate-right" href="#">表单1</a>
+							<li class="mui-table-view-cell mui-collapse" v-for="(selectModel,index) in selectArray">
+								<a class="mui-navigate-right" href="#">{{selectModel.selectName}}</a>
 								<div class="mui-collapse-content">
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-								</div>
-							</li>
-							<li class="mui-table-view-cell mui-collapse">
-								<a class="mui-navigate-right" href="#">表单2</a>
-								<div class="mui-collapse-content">
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-								</div>
-							</li>
-							<li class="mui-table-view-cell mui-collapse">
-								<a class="mui-navigate-right" href="#">表单3</a>
-								<div class="mui-collapse-content">
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
-									</div>
-									<div class="selectCell">
-										kjlshgk1
-									</div>
-									<div class="selectCell">
-										kjlshgk2
-									</div>
-									<div class="selectCell">
-										kjlshgk3
-									</div>
-									<div class="selectCell">
-										kjlshgk4
-									</div>
-									<div class="selectCell">
-										kjlshgk5
+									<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in selectModel.childSelectArray" @tap="modifySelectCell(selectModel,chlidModel)">
+										{{chlidModel.childName}}
 									</div>
 								</div>
 							</li>
 						</ul>
 					</div>
-					<div id="" class="bottom-btns">
-							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
-							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
-						</div>
+				</div>
+				<div id="" class="bottom-btns">
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
 				</div>
 			</aside>
 			<div class="mui-inner-wrap" style="">
@@ -748,6 +252,151 @@
 						mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
 							showCloseFlag: 0
 						});
+					}
+				}
+			});
+			
+			//右侧滑出界面数据
+			var selectDetailData = new Vue({
+				el: "#offCanvasSideScroll",
+				data: {
+					selectFlag :0,
+					selectArray:[{
+						selectName:'年级',
+						selectCode:'1',
+						childSelectArray:[{
+							childName:'一年级0',
+							childCode:'0',
+							childFlag:0
+						},{
+							childName:'一年级1',
+							childCode:'1',
+							childFlag:0
+						},{
+							childName:'一年级2',
+							childCode:'2',
+							childFlag:0
+						},{
+							childName:'一年级3',
+							childCode:'3',
+							childFlag:0
+						},{
+							childName:'一年级4',
+							childCode:'4',
+							childFlag:0
+						},{
+							childName:'一年级5',
+							childCode:'5',
+							childFlag:0
+						},{
+							childName:'一年级6',
+							childCode:'6',
+							childFlag:0
+						},{
+							childName:'一年级7',
+							childCode:'7',
+							childFlag:0
+						},{
+							childName:'一年级8',
+							childCode:'8',
+							childFlag:0
+						}]
+					},{
+						selectName:'年级1',
+						selectCode:'1',
+						childSelectArray:[{
+							childName:'一年级10',
+							childCode:'10',
+							childFlag:0
+						},{
+							childName:'一年级11',
+							childCode:'11',
+							childFlag:0
+						},{
+							childName:'一年级12',
+							childCode:'12',
+							childFlag:0
+						},{
+							childName:'一年级13',
+							childCode:'13',
+							childFlag:0
+						},{
+							childName:'一年级14',
+							childCode:'14',
+							childFlag:0
+						},{
+							childName:'一年级15',
+							childCode:'15',
+							childFlag:0
+						},{
+							childName:'一年级16',
+							childCode:'16',
+							childFlag:0
+						},{
+							childName:'一年级17',
+							childCode:'17',
+							childFlag:0
+						},{
+							childName:'一年级18',
+							childCode:'18',
+							childFlag:0
+						},{
+							childName:'一年级19',
+							childCode:'19',
+							childFlag:0
+						}]
+					},{
+						selectName:'年级2',
+						selectCode:'2',
+						childSelectArray:[{
+							childName:'一年级20',
+							childCode:'20',
+							childFlag:0
+						},{
+							childName:'一年级21',
+							childCode:'21',
+							childFlag:0
+						},{
+							childName:'一年级22',
+							childCode:'22',
+							childFlag:0
+						},{
+							childName:'一年级23',
+							childCode:'23',
+							childFlag:0
+						},{
+							childName:'一年级24',
+							childCode:'24',
+							childFlag:0
+						},{
+							childName:'一年级25',
+							childCode:'25',
+							childFlag:0
+						},{
+							childName:'一年级26',
+							childCode:'26',
+							childFlag:0
+						},{
+							childName:'一年级27',
+							childCode:'27',
+							childFlag:0
+						},{
+							childName:'一年级28',
+							childCode:'28',
+							childFlag:0
+						}]
+					},]
+				},
+				methods: {
+					modifySelectCell: function(sumModel,currentModel) {
+						for (var i = 0; i < sumModel.childSelectArray.length; i++) {
+							var tempModel = sumModel.childSelectArray[i];
+							if (tempModel.childCode == currentModel.childCode) {
+								tempModel.childFlag=1;
+							} else{
+								tempModel.childFlag=0;
+							}
+						}
 					}
 				}
 			});
