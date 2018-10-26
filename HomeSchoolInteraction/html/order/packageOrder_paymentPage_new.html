@@ -645,6 +645,7 @@
 								if(str.indexOf('prd')!=-1){
 									for(var a = 0; a < tempModel0.fext.length; a++) {
 										var tempModel1 = tempModel0.fext[a];
+										tempModel1.itemsonsc=2;
 										tempModel1.labelName='请选择'+tempModel1.itemname+'（最多'+tempModel1.itemsonsc+'个）'
 										tempModel1.itemsons = tempModel1.itemsons.split(',');
 										if(tempModel1.itemcode=='grd'){
