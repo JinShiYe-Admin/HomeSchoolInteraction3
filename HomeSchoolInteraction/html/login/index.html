@@ -48,6 +48,7 @@
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/utils/app-update.js"></script>
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>-->
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -89,7 +90,8 @@
 				location.reload();
 			});		
 			
-			if(plus.os.name == 'Android') {
+			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+//			if(plus.os.name == 'Android') {
 				//侧滑菜单弹出时，tab按钮禁用
 				window.addEventListener('closeClick', function(data) {
 					var wvs=plus.webview.getDisplayWebview();
@@ -106,29 +108,29 @@
 						wvs[i].setStyle({top: '0px',bottom: '51px'})
 					}
 				});
-			}else{
-				//侧滑菜单弹出时，tab按钮禁用
-				window.addEventListener('closeClick', function(data) {
-					var wvs=plus.webview.getDisplayWebview();
-					document.getElementById('navIndex').style.display='none'
-					for(var i=0;i<wvs.length;i++){
-						var url =wvs[i].getURL();
-						if(url.indexOf('/homeSchool/mine')==-1){
-							wvs[i].setStyle({top: '0px',bottom: '-100px'})
-						}else{
-							wvs[i].setStyle({top: '0px',bottom: '0px'})
-						}
-					}
-				});
-				//侧滑菜单关闭时，tab按钮启用
-				window.addEventListener('openClick', function(data) {
-					var wvs=plus.webview.getDisplayWebview();
-					document.getElementById('navIndex').style.display='inherit'
-					for(var i=0;i<wvs.length;i++){
-						wvs[i].setStyle({top: '0px',bottom: '0px'})
-					}
-				});
-			}
+//			}else{
+//				//侧滑菜单弹出时，tab按钮禁用
+//				window.addEventListener('closeClick', function(data) {
+//					var wvs=plus.webview.getDisplayWebview();
+//					document.getElementById('navIndex').style.display='none'
+//					for(var i=0;i<wvs.length;i++){
+//						var url =wvs[i].getURL();
+//						if(url.indexOf('/homeSchool/mine')==-1){
+//							wvs[i].setStyle({top: '0px',bottom: '-100px'})
+//						}else{
+//							wvs[i].setStyle({top: '0px',bottom: '0px'})
+//						}
+//					}
+//				});
+//				//侧滑菜单关闭时，tab按钮启用
+//				window.addEventListener('openClick', function(data) {
+//					var wvs=plus.webview.getDisplayWebview();
+//					document.getElementById('navIndex').style.display='inherit'
+//					for(var i=0;i<wvs.length;i++){
+//						wvs[i].setStyle({top: '0px',bottom: '0px'})
+//					}
+//				});
+//			}
 			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
