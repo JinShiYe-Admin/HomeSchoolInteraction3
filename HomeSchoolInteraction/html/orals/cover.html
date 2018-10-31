@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css" />
+		<style>
+			html, body {
+				background: transparent;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="beforeLeaveDialog" class="cfm-dialog">
+			<div class="icon-title">
+				<svg class="icon" aria-hidden="true" style="color: #FF8800;">
+					<use xlink:href="#icon-icon-warning"></use>
+				</svg>
+			</div>
+			<p class="dialog-content">您还没有提交，离开将不保存成绩！</p>
+		</div>
+		
+		<div id="beforeLeaveDialog1" class="cfm-dialog">
+			<div class="icon-title">
+				<svg class="icon" aria-hidden="true" style="color: #FF8800;">
+					<use xlink:href="#icon-icon-warning"></use>
+				</svg>
+			</div>
+			<p class="dialog-content">您还没有提交，确定要离开吗？</p>
+		</div>
+		
+		<div id="catelogList">
+			<transition name="slide-up">
+				<div class="menu-box" v-show="isShowMenu">
+					<div class="title">
+						<span class="mui-icon mui-icon-bars"></span> 选择章节
+					</div>
+					<div class="menu-list-box">
+						<ul class="mui-table-view menu-list" v-for="(v,i) in menu" :key="i">
+							<li class="list-name mui-table-view-cell">{{v.name}}</li>
+							<li v-for="(item, k) in v.list" class="mui-table-view-cell" 
+								:key="k" :class="{selected: item.id==catalogId}" @click="selectMenu(item.id)">
+							 	{{item.name}}	
+							</li>
+						</ul>
+					</div>
+					<div class="bottom" @tap="hideMenu">关闭</div>
+				</div>
+			</transition>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/orals/layer/layer.js"></script>
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			var self;
+			
+			var menuListBox;
+			var catelogList = new Vue({
+				el: "#catelogList",
+				data: {
+					isShowMenu: false,
+					menu: [],
+					catalogId: 0,
+					canSelect: true
+				},
+				watch: {
+					isShowMenu: function(v) {
+						if(v){
+							this.$nextTick(function() {
+								if(document.querySelector('.menu-list-box .selected')){
+									menuListBox.scrollTop = document.querySelector('.menu-list-box .selected').parentNode.offsetTop;
+								}
+							});
+						}else{
+							self.hide();
+						}
+					}
+				},
+				mounted: function() {
+					menuListBox = document.querySelector('.menu-list-box');
+				},
+				methods: {
+					hideMenu: function() {
+						this.isShowMenu = false;
+					},
+					selectMenu: function(id) {
+						var _this = this;
+						if(this.canSelect) {
+							_this.isShowMenu = false;
+							_this.catalogId = id;
+							plus.storage.setItem("orals_catalog_id", String(id));
+						}else{
+							layer.open({
+								type: 1,
+								title: false,
+								closeBtn: 0,
+								resize: false,
+								skin: "beforeLeaveDialog",
+								area: REM*2.87+"px",
+								btn: ["残忍离开", "我再想想"],
+								btnAlign: 'c',
+								shadeClose: true,
+								isOutAnim: false,
+								content: $('#beforeLeaveDialog'),
+								yes: function(index, layero) {
+									_this.isShowMenu = false;
+									_this.catalogId = id;
+									plus.storage.setItem("orals_catalog_id", String(id));
+									layer.close(index);
+									self.hide();
+								},
+								btn2: function(index, layero) {
+									layer.close(index);
+								}
+							});
+						}
+					}
+				}
+			});
+			
+			mui.plusReady(function(){
+				
+				self = plus.webview.currentWebview();
+				
+				mui.init({
+					beforeback: function(){
+						self.hide();
+						return false;
+					}
+				});
+				
+				
+				var mask = mui.createMask(function(){
+					self.hide();
+				});
+
+				var dialogYes, type, opener;
+				
+				//打开
+				window.addEventListener("setOption", function(e){
+					self.show();
+					type = e.detail.type;
+					opener = plus.webview.getWebviewById(e.detail.opener_id);
+					if(type=="dialog"){
+						var btns = ["残忍离开", "我再想想"];
+						var content = $('#beforeLeaveDialog');
+						if(e.detail.dialog_type==1){
+							btns = ["确定", "取消"];
+							content = $('#beforeLeaveDialog1');
+						}
+						layer.open({
+							type: 1,
+							title: false,
+							closeBtn: 0,
+							resize: false,
+							skin: "beforeLeaveDialog",
+							area: REM*2.87+"px",
+							btn: btns,
+							btnAlign: 'c',
+							shadeClose: true,
+							isOutAnim: false,
+							content: content,
+							yes: function(index, layero) {
+								dialogYes = true;
+								layer.close(index);
+							},
+							btn2: function(index, layero) {
+								dialogYes = false;
+								layer.close(index);
+							},
+							end: function(index, layero) {
+								layer.close(index);
+								self.hide();
+							}
+						});
+					}else if(type=="menu") {
+						mask.show();
+						var catalog_id = plus.storage.getItem("orals_catalog_id");
+						if(catelogList.catalogId!=catalog_id) {
+							var menu_list = [];
+							var catalog = JSON.parse(plus.storage.getItem("orals_catalog")||"[]");
+							catalog.forEach(function(v){
+								var cur_list = filterArray(menu_list, "id", v.pid)[0];
+								if(cur_list){
+									cur_list.list.push(v);
+								}else{
+									menu_list.push({id: v.pid, name: v.pname, list: [v]});
+								}
+							});
+							catelogList.menu = menu_list;
+							catelogList.catalogId = catalog_id;
+						}
+						catelogList.canSelect = e.detail.canSelect;
+						catelogList.isShowMenu = true;
+					}
+				});
+				
+				//关闭
+				self.addEventListener("hide", function(){
+
+					mui.fire(opener, "coverHide", {
+						type: type,
+						dialogYes: dialogYes,
+						catalogId: catelogList.catalogId
+					});
+					
+					dialogYes = false;
+					catelogList.isShowMenu = false;
+					mask.close();
+					layer.closeAll();
+				});
+				
+			});
+			
+//			catelogList.isShowMenu = true;
+//			catelogList.menu = [{"id":751,"name":"Starter Unit1 Good morning!","list":[{"sequence":381,"selectedFlag":false,"name":"2a-2e","pid":751,"childList":[],"id":29381},{"sequence":382,"selectedFlag":false,"name":"3a-3d","pid":751,"childList":[],"id":29382},{"sequence":383,"selectedFlag":false,"name":"4a-4d","pid":751,"childList":[],"id":29383},{"sequence":2867,"selectedFlag":false,"name":"综合与提高","pid":751,"childList":[],"id":2867}]}];
+			
+		</script>
+	</body>
+
+</html>

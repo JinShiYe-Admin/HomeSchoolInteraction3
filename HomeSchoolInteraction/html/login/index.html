@@ -46,6 +46,7 @@
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/utils/app-update.js"></script>
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>-->
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
@@ -62,7 +63,7 @@
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
 			});		
-			
+      
 			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {

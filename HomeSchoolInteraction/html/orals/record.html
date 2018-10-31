@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			.mui-content {
+				height: 100%;
+				overflow-y: hidden;
+			}
+			.mui-content .second-title {
+				height: 52px;
+			    padding: 0;
+			    line-height: 52px;
+			}
+			#historyLlist {
+				height: calc(100% - 52px);
+				overflow-y: auto;
+				position: relative;
+			}
+			.mui-table-view-cell:after {
+				background-color: #e7e7e7;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav orals-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">测评记录</h1>
+		</header>
+		
+		<div class="mui-content">
+			<div class="second-title mui-text-center">
+				<div class="book-items-box" id="bookSelect">
+		    		<div id="bookItems"></div>
+		    		<a>
+		    			<svg class="icon" aria-hidden="true">
+						  <use xlink:href="#icon-icon-change"></use>
+						</svg>
+		    		</a>
+		    	</div>
+			</div>
+			
+			<div id="historyLlist" v-cloak>
+				<ul class="mui-table-view record-list">
+				    <li class="mui-table-view-cell" v-for="(v, i) in list" :key="i" @tap="goDetaile(i)">
+				    	<div class="mui-row">
+				    		<h4 class="title mui-ellipsis mui-col-xs-10">{{v.book_catalog_name}}</h4>
+				    		<div class="progress mui-col-xs-2 mui-text-right">
+			    				<span class="cur">{{v.complete_number}}</span><span class="total">/{{v.total_number}}</span>
+			    			</div>
+				    	</div>
+				    	<div class="mui-row" style="line-height: 0.28rem;">
+				    		<p class="sec-title mui-ellipsis mui-col-xs-7">{{v.book_catalog_pname}}</p>
+			    			<p class="time mui-text-right mui-col-xs-5">{{v.create_time}}</p>
+				    	</div>
+				    </li>
+				</ul>
+				<div class="list-end" v-show="list.length&&isLoaded&&!lastPage">上拉加载更多</div>
+				<div class="list-end" v-show="list.length&&!isLoaded&&!lastPage">正在加载...</div>
+				<div class="list-end" v-show="list.length&&lastPage">没有更多了~</div>
+				<div class="list-end" v-show="!list.length&&isLoaded">您还没测试过，暂无记录。</div>
+			</div>
+		    
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			
+			var bookItems = document.getElementById("bookItems");
+			var self;
+			var ischangeBook = false;
+			
+			mui.init({
+				beforeback: function(){
+					historyLlist.isLoaded = false;
+					if(ischangeBook) {
+						var test_webview = plus.webview.getWebviewById("orals_word");
+						mui.fire(test_webview, "changeBook");
+						ischangeBook = false;
+					}
+					return true;
+				}
+			});
+			
+			var historyLlist = new Vue({
+				el: "#historyLlist",
+				data: {
+					list: [],
+					isLoaded: false,
+					p: 1,
+					s: 8,
+					lastPage: false
+				},
+				mounted: function() {
+					//上拉刷新
+					var startX, startY;
+					var pullrefresh = document.getElementById("historyLlist");
+					pullrefresh.addEventListener('touchstart',function (ev) {
+						startX = ev.touches[0].pageX;
+			            startY = ev.touches[0].pageY;
+					}, false);
+					pullrefresh.addEventListener("touchend", function(ev){
+						var endX, endY;
+			            endX = ev.changedTouches[0].pageX;
+			            endY = ev.changedTouches[0].pageY;
+			            var direction = GetSlideDirection(startX, startY, endX, endY);
+			            if(direction==1) {
+			            	if(pullrefresh.scrollHeight==pullrefresh.scrollTop+pullrefresh.clientHeight){
+			            		!historyLlist.lastPage && getHistoryList();
+			            	}
+			            }
+					});
+				},
+				methods: {
+					goDetaile: function(index) {
+						var cur_li = this.list[index];
+						mui.openWindow({
+							url: "result.html",
+							id: "result.html",
+							extras: {
+								title: cur_li.book_catalog_name,
+								cate: cur_li.category,
+								catalog_id: cur_li.book_catalog_id
+							},
+							waiting: {
+								autoShow:true
+							}
+						});
+					}
+				}
+			})
+			
+			mui.plusReady(function() {
+				bookItems.innerHTML = getBookNames();
+				self = plus.webview.currentWebview();
+				
+				getHistoryList();
+				
+				window.addEventListener("refresh", function(e) {
+					historyLlist.list = [];
+					getHistoryList(1, (historyLlist.p-1)*historyLlist.s);
+				});
+				
+				window.addEventListener("changeBook", function(e) {
+					ischangeBook = true;
+					bookItems.innerHTML = getBookNames();
+					historyLlist.p = 1;
+					getHistoryList();
+				});
+				
+				historyLlist.s = Math.ceil(historyLlist.$el.clientHeight/(0.7*REM))||10;
+				
+			});
+			
+			var catalog_id;
+			function getHistoryList(p, s) {
+				historyLlist.isLoaded = false;
+				var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+				if(historyLlist.p==1) {
+					plus.nativeUI.showWaiting();
+					historyLlist.list = [];
+					//可选目录节点
+					catalog_id = [];
+					catalog.forEach(function(v){
+						catalog_id.push(v.id);
+					});
+				}
+				
+				oralsAjax(host+'/orals/history', {
+					page:true, 
+					p: p||historyLlist.p, 
+					s: s||historyLlist.s, 
+					bookCatalogId: catalog_id.join(),
+					category: self.category
+				},
+				function(res){
+					historyLlist.isLoaded = true;
+					historyLlist.lastPage = res.data.lastPage;
+					res.data.list.forEach(function(v){
+						if(v.category==self.category) {
+							v['book_catalog_pname'] = filterArray(catalog, 'id', v.book_catalog_id)[0].pname;
+							historyLlist.list.push(v);
+						}
+					});
+
+					historyLlist.p==1 && plus.nativeUI.closeWaiting();
+					if(!p) historyLlist.p = historyLlist.p+1;
+				}, function(){
+					plus.nativeUI.closeWaiting();
+				}, function(){
+					netErrorTip();
+					plus.nativeUI.closeWaiting();
+				});
+			}
+			
+			//选择教材
+			mui(".second-title").on("tap", "#bookSelect", function(e){
+				goBook();
+			});
+			
+//			historyLlist.list =  [
+//							{
+//								total_number: "14",
+//								complete_number: "7",
+//								create_time: "2018-06-27 10:01:50",
+//								book_catalog_name: "Uint 1 My name is jack (word)",
+//								book_catalog_pname: "Uint 1 My name is jack (word)",
+//								category: "read_word",
+//								book_catalog_id: 1936
+//							},
+//							{
+//								total_number: "100",
+//								complete_number: "31",
+//								create_time: "2018-06-28 10:01:50",
+//								book_catalog_name: "Uint 1 My name is jack My name is jack(sentence)",
+//								book_catalog_pname: "Uint 1 My name is jack (word)",
+//								category: "read_sentence",
+//								book_catalog_id: 1936
+//							}
+//					];
+			
+		</script>
+	</body>
+
+</html>

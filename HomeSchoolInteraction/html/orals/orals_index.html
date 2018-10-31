@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+	</head>
+	<body>
+		
+		<header class="mui-bar mui-bar-nav orals-header">
+			<div class="mui-clearfix">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
+			</div>
+		    <h1 class="mui-title">单词测评</h1>
+		</header>
+		
+		<nav class="mui-bar mui-bar-tab">
+		    <a class="mui-tab-item mui-active" data-type="word">
+		        <span class="mui-icon">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-word"></use>
+					</svg>
+		        </span>
+		        <!--<span class="mui-icon active">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-word-copy"></use>
+					</svg>
+		        </span>-->
+		        <span class="mui-tab-label">单词测评</span>
+		    </a>
+		    <a class="mui-tab-item" data-type="sentence">
+		        <span class="mui-icon">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-sentece"></use>
+					</svg>
+		        </span>
+		        <!--<span class="mui-icon active">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-sentece-active-copy"></use>
+					</svg>
+		        </span>-->
+		        <span class="mui-tab-label">句子测评</span>
+		    </a>
+		    <a class="mui-tab-item" data-type="errs">
+		        <span class="mui-icon">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-wrong"></use>
+					</svg>
+		        </span>
+		        <!--<span class="mui-icon active">
+		        	<svg class="icon" aria-hidden="true">
+					  <use xlink:href="#icon-icon-wrong-active-copy"></use>
+					</svg>
+		        </span>-->
+		        <span class="mui-tab-label">错题本</span>
+		    </a>
+		</nav>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		
+		<script type="text/javascript">
+			var muiTitle = document.querySelector('.mui-bar .mui-title');
+			var go_record = document.getElementById("goRecord");
+			
+			var activeTab = 'word';
+			var coverCallback;
+			var old_back = mui.back;
+
+			window.addEventListener("coverHide", function(e){
+				if(e.detail.type=="dialog"){
+					e.detail.dialogYes && coverCallback();
+				}
+			});
+			
+			mui.plusReady(function() {
+				
+				mui.init();
+				
+				var self = plus.webview.currentWebview();
+				//禁止横屏
+				plus.screen.lockOrientation("portrait-primary");
+				
+				//登录认证
+				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+				var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
+				var auth = {
+					uuid: deviceParam.uuid,
+					utid: userInfo.utid,
+					schid: userInfo.schid,
+					utname: userInfo.utname,
+					token: userInfo.utoken
+				}
+				
+				//是否获取到上一次记录
+				var isGetLast = false;
+				if(JSON.parse(plus.storage.getItem('orals_auth'))) {
+					isGetLast = auth.utid==JSON.parse(plus.storage.getItem('orals_auth')).utid;
+				}
+				
+				//保存认证
+				plus.storage.setItem("orals_auth", JSON.stringify(auth));
+				
+				//子页面
+				plus.nativeUI.showWaiting();
+				var word_test = plus.webview.create('orals_test.html', "orals_word", {
+			    	top: '44px',
+			        bottom: '51px'
+			   	},{
+			   		type: activeTab,
+			   		isGetLast: isGetLast
+			   	});
+			   	word_test.addEventListener("rendered", function(){
+			   		plus.nativeUI.closeWaiting();
+			   		word_test.evalJS('setCategory("'+activeTab+'");');
+			   	});
+			   	self.append(word_test);
+				
+				var errs_view = mui.preload({
+					url: 'errs.html',
+					id: 'orals_errs',
+					styles: {
+						top: '44px',
+			            bottom: '51px'
+					},
+					extras: {
+						type: 'errs'
+					}
+				});
+				errs_view.hide();
+				self.append(errs_view);
+				
+				
+				//底部选项卡切换
+				var canTap = true;
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('data-type');
+				    if (targetTab == activeTab) {
+				        return;
+				    }
+				    if((activeTab=="word"||activeTab=="sentence")&&plus.storage.getItem("orals_test_state")=="4"&&canTap) {
+				    	var _this = this;
+				    	mui.fire(cover_view, "setOption", {
+				    		type: 'dialog', 
+				    		opener_id: self.id, 
+				    		dialog_type: (targetTab=="word"||targetTab=="sentence")?0:1
+				    	});
+						coverCallback = function(){
+							canTap = false;
+							mui.trigger(_this,'touchstart');
+				    		mui.trigger(_this,'tap');
+						};
+				    	return false;
+				    }
+				    canTap = true;
+				    switch(targetTab)
+					{
+					    case "word":
+					    	muiTitle.innerHTML = "单词测评";
+					    	go_record.style.display = "block";
+					    	word_test.evalJS('setCategory("word")');
+					        word_test.show();
+					        errs_view.hide();
+					        break;
+					    case "sentence":
+					    	muiTitle.innerHTML = "句子测评";
+					    	go_record.style.display = "block";
+					    	word_test.evalJS('setCategory("sentence")');
+					        word_test.show();
+					        errs_view.hide();
+					        break;
+					    case "errs":
+					    	muiTitle.innerHTML = "错题本";
+					    	go_record.style.display = "none";
+							errs_view.show();
+							word_test.hide();
+					        break;
+					}
+					activeTab = targetTab;
+				});
+				
+				//遮罩层
+				var cover_view = mui.preload({
+					url: 'cover.html',
+					id: 'orals_cover',
+					styles: {
+						background: "transparent"
+					},
+					waiting: {
+						autoShow: false
+					},
+					show: {
+						aniShow: "none",
+						duration: 50
+					}
+				});
+				
+				//打开记录
+				mui(".mui-bar-nav").on("tap", "#goRecord", function(e){
+					if(plus.storage.getItem("orals_test_state")=="4"){
+						mui.fire(cover_view, "setOption", {
+							type: 'dialog',
+							opener_id: self.id,
+							dialog_type: 1
+						});
+						coverCallback = function(){
+							goRecord(activeTab);
+						}
+					}else{
+						goRecord(activeTab);
+					}
+				});
+				
+				mui.back = function(){
+					if(plus.storage.getItem("orals_test_state")=="4") {
+						mui.fire(cover_view, "setOption", {type: 'dialog', opener_id: self.id});
+						coverCallback = old_back;
+					}else{
+						old_back();
+					}
+				}
+				
+			});
+			
+		</script>
+	</body>
+</html>
