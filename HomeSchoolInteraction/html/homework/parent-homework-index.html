@@ -3,116 +3,149 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>作业列表</title>
+		<title>批改作业</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
+			.selectP {
+				margin-right: 10px;
+				margin-top: 8px;
+				margin-left: 10px;
+			}
 			
+			.homewrokContent {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				margin: 5px 10px 5px;
+			}
+			
+			.mui-card-link {}
+			
+			.carlinkContent {
+				font-size: 12px;
+				color: darkgray;
+				margin-left: 10px;
+			}
 		</style>
 	</head>
 
 	<body>
-		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"><span style="font-size: 17px;">主页</span></a>
-			<h1 id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
-			<!--<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">作业列表</h1>
+			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
 		</header>
-		<div id='scroll' class="mui-content">
-			<div id='orders'>
-				123
+		<div class="mui-content" id="homeworkList">
+			<div id="">
+				<p class="selectP" style="">筛选</p>
 			</div>
+
+			<div class="" id="homeworkListArray" style="background: white;">
+				<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
+					<div class="mui-card-header">
+						{{homeworkModel.homeworkName}}
+						<button v-if="homeworkModel.homeworkFlag ==1" @click.stop="clickBtn(homeworkModel)" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+					</div>
+					<div class="mui-card-content">
+						<div class="homewrokContent">
+							{{homeworkModel.homeworkContent}}
+						</div>
+						<img :src="homeworkModel.homeworkImg" alt="" width="100%" />
+						<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
+						<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
+						<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
+
+					</div>
+					<div class="mui-card-footer">
+						<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
+					</div>
+				</div>
+			</div>
+
 		</div>
-		<nav class="mui-bar mui-bar-tab">
-			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
-				<span class="mui-icon mui-icon-home"></span>
-				<span id="flag0" class="mui-tab-label">布置作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexCorrect.html">
-				<span class="mui-icon mui-icon-email"></span>
-				<span id="flag1" class="mui-tab-label">批改作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm.html">
-				<span class="mui-icon mui-icon-contact"></span>
-				<span id="flag2" class="mui-tab-label">作业报表</span>
-			</a>
-		</nav>
-		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/utils/vue.js"></script>
-		<!--加密-->
-		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-		<!---->
-		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-		<script src='../../js/libs/crypto-js/require.js'></script>
-		<script src='../../js/utils/signHmacSHA1.js'></script>
-		<script src='../../js/libs/jquery.js'></script>
-		<script src="../../js/publicProtocolNew.js"></script>
-		<script src='../../js/utils/sortSign.js'></script>
-		<script src="../../js/storageKeyName.js"></script>
-		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
-			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			console.log('personal:' + JSON.stringify(personal));
-			mui.init({
-				pullRefresh: {
-					container: '#scroll',
-					down: {
-						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-						height: '50px', //可选,默认50px.下拉刷新控件的高度,
-						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
-						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-						auto: true, //可选,默认false.首次加载自动上拉刷新一次
-						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+			mui.init()
+
+			var homeworkListArray = new Vue({
+				el: "#homeworkListArray",
+				data: {
+					homeworkArray: [{
+						homeworkName: '语文作业【一年级 1601班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-22',
+					}, {
+						homeworkName: '语文作业【一年级 1602班】',
+						homeworkFlag: 0,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '',
+						homeworkFlag1: '40',
+						homeworkFlag2: '14',
+						homeworkFlag3: '20',
+						homeworkFlag4: '32',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-15',
+					}, {
+						homeworkName: '语文作业【一年级 1603班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '22',
+						homeworkFlag4: '32',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-1-25',
+					}, {
+						homeworkName: '语文作业【一年级 1604班】',
+						homeworkFlag: 1,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-7-25',
+					}, {
+						homeworkName: '语文作业【一年级 1605班】',
+						homeworkFlag: 0,
+						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
+						homeworkImg: '../../img/homeSchool/u292.png',
+						homeworkFlag1: '40',
+						homeworkFlag2: '10',
+						homeworkFlag3: '20',
+						homeworkFlag4: '30',
+						homeworkFlag5: '80',
+						homeworkFlag6: '2018-6-25',
+					}, ]
+				},
+				methods: {
+					clickHomeworkModel: function(model) {
+						console.log('clickHomeworkModel:' + JSON.stringify(model));
 					},
-					up: {
-						height: 50, //可选.默认50.触发上拉加载拖动距离
-						auto: true, //可选,默认false.自动上拉加载一次
-						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					clickBtn: function(model) {
+						console.log('clickBtn:' + JSON.stringify(model));
 					}
 				}
 			});
-			
-			//加载更多
-			function pullupRefresh() {
-//				getNoticesList();
-					mui('#scroll').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
-					mui('#scroll').pullRefresh().endPulldownToRefresh();
-			}
-
-			/**
-			 * 下拉刷新具体业务实现
-			 */
-			function pulldownRefresh() {
-//				getNoticesList();
-					mui('#scroll').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
-					mui('#scroll').pullRefresh().endPulldownToRefresh();
-			}
-			
-			var headData = new Vue({
-				el: '#headData',
-				data: {
-					headFlag: 0, //0显示标题，1显示分类显示，作业报表
-					titleName: '作业列表'
-				},
-				methods: {
-
-				}
-			});
-			
-			//创建子页面，首个选项卡页面显示，其它均隐藏；
-			mui.plusReady(function() {
-				
-			});
-			
-
 		</script>
 	</body>
 

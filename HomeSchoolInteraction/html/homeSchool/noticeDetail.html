@@ -24,7 +24,7 @@
 				width: 100%;
 				height: 0px;
 				padding-bottom: 100%;
-				overflow: hidden; 
+				overflow: hidden;
 				margin: 0;
 				position: relative;
 			}
@@ -147,16 +147,16 @@
 				border-bottom: 2px solid #00CFBD;
 			}
 			
-			
 			.mui-table-view:before {
-			    height: 0px;
+				height: 0px;
 			}
+			
 			.mui-table-view:after {
 				margin-left: 10px;
-			    height: 0px;
+				height: 0px;
 			}
 			
-			.tb-width{
+			.tb-width {
 				width: 100%;
 				/*height: 170px;*/
 				/*min-height: 170px;*/
@@ -196,14 +196,16 @@
 			}
 			
 			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
-			    color: inherit;
-			    border-top: 0;
-			    border-left: 0;
-			    border-right: 0;
-			    border-bottom: 1px solid #C8C7CC;
+				color: inherit;
+				border-top: 0;
+				border-left: 0;
+				border-right: 0;
+				border-bottom: 1px solid #C8C7CC;
 			}
-			.mui-table-view-cell:last-child:after, .mui-table-view-cell:last-child:before {
-			    height: 1px;
+			
+			.mui-table-view-cell:last-child:after,
+			.mui-table-view-cell:last-child:before {
+				height: 1px;
 			}
 		</style>
 	</head>
@@ -218,59 +220,59 @@
 				<input v-model="content" maxlength="200" type="text" style="border: 0px;margin-bottom: 0px;margin-left: 5px;width: 75%;font-size: 16px;color: #999999;" placeholder="请输入要回复的内容" />
 				<button v-on:click.stop="replyContent()" type="button" class="" style="width: 20%;margin-top: 2px;border: 0px;font-size: 18px;color: #00cfbd;">回复</button>
 			</div>
-		</nav>  
-		<div class="mui-content" id="noticeDetailData"   style="background: white;">
-				<p style="color: black;padding:10px 0 0 15px;font-size: 14px;color: #333333;word-break: break-all;">{{noticesDetail.NoticeContent}}</p>
-				<div class="" v-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==2">
-					<ul class="mui-table-view mui-grid-view">
-						<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr" >
-								<div class="box">
-									<div class="img-box">
-										<img id="playVideoImg" src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;visibility: hidden;"/>
-										<img :src=noticesDetail.NoticeEncImgAddr  style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 20%;-moz-background-size:100% 100%;" onload="document.getElementById('playVideoImg').style.visibility='visible'" />
-									</div>
-								</div>
-						</li>
-					</ul>
-				</div>
-				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==1">
-					<ul class="mui-table-view mui-grid-view">
-						<li class="mui-table-view-cell mui-media" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
-							<a href="#">
-								<div class="notice-one-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
-								</div>
-							</a>
-						</li>
-					</ul>
-				</div>
-				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==2">
-					<ul class="mui-table-view mui-grid-view">
-						<li class="mui-table-view-cell mui-media mui-col-xs-5 mui-col-sm-5" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
-							<a href="#">
-								<div class="notice-two-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
-								</div>
-							</a>
-						</li>
-					</ul>
-				</div>
-				<div class="" v-else-if="noticesDetail.NoticeEncAddr.length>=3">
-					<ul class="mui-table-view mui-grid-view">
-						<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
-							<a href="#" style="margin: -10px 0 0 -20px;">
-								<!--<img class="notice-more-img" data-preview-src="" :src=picModel>-->
-								<div class="notice-more-img" style=" overflow: hidden;">
-									<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
-								</div>
-							</a>
-						</li>
-					</ul>
-				</div>
+		</nav>
+		<div class="mui-content" id="noticeDetailData" style="background: white;">
+			<p style="color: black;padding:10px 0 0 15px;font-size: 14px;color: #333333;word-break: break-all;">{{noticesDetail.NoticeContent}}</p>
+			<div class="" v-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==2">
+				<ul class="mui-table-view mui-grid-view">
+					<li class="mui-table-view-cell mui-media tb-width" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+						<div class="box">
+							<div class="img-box">
+								<img id="playVideoImg" src="../../img/utils/playvideo.png" @tap="playVideo" style="z-index: 2;width: 25%;visibility: hidden;" />
+								<img :src=noticesDetail.NoticeEncImgAddr style="background: url(../../img/utils/video-loading.gif); background-repeat:no-repeat; background-size:100% 20%;-moz-background-size:100% 100%;" onload="document.getElementById('playVideoImg').style.visibility='visible'" />
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==1&&noticesDetail.encFlag==1">
+				<ul class="mui-table-view mui-grid-view">
+					<li class="mui-table-view-cell mui-media" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+						<a href="#">
+							<div class="notice-one-img" style=" overflow: hidden;">
+								<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="" v-else-if="noticesDetail.NoticeEncAddr.length==2">
+				<ul class="mui-table-view mui-grid-view">
+					<li class="mui-table-view-cell mui-media mui-col-xs-5 mui-col-sm-5" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+						<a href="#">
+							<div class="notice-two-img" style=" overflow: hidden;">
+								<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="" v-else-if="noticesDetail.NoticeEncAddr.length>=3">
+				<ul class="mui-table-view mui-grid-view">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" v-for="(picModel,index) in noticesDetail.NoticeEncAddr">
+						<a href="#" style="margin: -10px 0 0 -20px;">
+							<!--<img class="notice-more-img" data-preview-src="" :src=picModel>-->
+							<div class="notice-more-img" style=" overflow: hidden;">
+								<img data-preview-src="" :src=picModel width="100%" style="background: url(../../img/utils/default_load_2.gif); vertical-align: middle;" onload="this.style.marginTop = (parseInt(this.parentNode.style.height) - this.height)/2 + 'px';this.style.marginLeft = (parseInt(this.parentNode.style.width) - this.width) /2 + 'px'" />
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
 
 			<p style="margin:0px auto 5px;padding-top:5px;padding-right: 10px;font-size:12px;overflow:hidden;text-align:right;">{{noticesDetail.SendManName}} | {{noticesDetail.SendTime}}</p>
 			<div style="width: 100%;height: 10px;background: #f2f2f2;"></div>
-			<div id="sliderSegmentedControl"   class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary" style="margin-top: 5px;">
+			<div id="sliderSegmentedControl" class=" mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary" style="margin-top: 5px;">
 				<a id="item1" class="mui-control-item mui-active readPeople slider-list" href="#ReplyArray">
 					回复({{noticesDetail.ReplyArray.length}})
 				</a>
@@ -280,7 +282,7 @@
 				<a id="item2" class="mui-control-item readPeople slider-list" href="#NoReadArray">
 					未浏览({{noticesDetail.NoReadArray.length}})
 				</a>
-			</div> 
+			</div>
 			<!--滑动内容-->
 			<div class="mui-slider-group" style="min-height: 100px;">
 				<div id="ReplyArray" class="mui-slider-item mui-control-content mui-active">
@@ -324,14 +326,13 @@
 				</div>
 			</div>
 		</div>
-		
-		
+
 		<div id="videoPopover" class="mui-popover">
 			<video id="video" style="position: absolute;z-index: 999;">
 				您的浏览器不支持 video 标签。
 			</video>
 		</div>
-		
+
 		<div id="MultiMedia">
 			<div id="audioPopover" class="mui-popover">
 				<div id="audio_show" class="audio-show-popover">
@@ -384,7 +385,7 @@
 				mui.plusReady(function() {
 					//初始化图片查看控件
 					previewImage = mui.previewImage();
-					ShowVideoUtil.initVideo(document.getElementById('video'),1);
+					ShowVideoUtil.initVideo(document.getElementById('video'), 1);
 					ShowAudioUtil.initAudioPopover({
 						show: document.getElementById("audio_show"),
 						icon: document.getElementById("audio_icon"),
@@ -404,16 +405,16 @@
 					el: "#noticeDetailData",
 					data: {
 						flag: 0, //
-						noticesDetail: {
-						} //获取到的详情
+						noticesDetail: {} //获取到的详情
 					},
 					methods: {
 						playVideo: function() {
-							console.log('playVideo:'+noticeDetailData.noticesDetail.NoticeEncAddr);
-							console.log('playVideo:'+noticeDetailData.noticesDetail.NoticeEncAddr[0]);
+							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr);
+							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr[0]);
 							ShowVideoUtil.showVideo(document.getElementById("video"), 'videoPopover', noticeDetailData.noticesDetail.NoticeEncAddr[0], noticeDetailData.noticesDetail.NoticeEncImgAddr);
 						}
-					},mounted:function(){
+					},
+					mounted: function() {
 						console.log('加载完了')
 					}
 				});
@@ -437,30 +438,30 @@
 						if(data.RspCode == 0) {
 							noticeDetailData.flag = 1;
 							//修改未读、已读名字显示
-							for (var i = 0; i < data.RspData.ReadArray.length; i++) {
+							for(var i = 0; i < data.RspData.ReadArray.length; i++) {
 								var tempModel = data.RspData.ReadArray[i];
 								var tempArray = tempModel.ReceiveManName.split('|');
-								if (tempArray.length==2) {
-									tempModel.ReceiveManName = tempArray[1]+'('+tempArray[0]+')';
-								} else if (tempArray.length==1) {
-									tempModel.ReceiveManName = tempArray[0]+'()';
+								if(tempArray.length == 2) {
+									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
+								} else if(tempArray.length == 1) {
+									tempModel.ReceiveManName = tempArray[0] + '()';
 								}
 							}
-							for (var i = 0; i < data.RspData.NoReadArray.length; i++) {
+							for(var i = 0; i < data.RspData.NoReadArray.length; i++) {
 								var tempModel = data.RspData.NoReadArray[i];
 								var tempArray = tempModel.ReceiveManName.split('|');
-								if (tempArray.length==2) {
-									tempModel.ReceiveManName = tempArray[1]+'('+tempArray[0]+')';
-								} else if (tempArray.length==1) {
-									tempModel.ReceiveManName = tempArray[0]+'()';
+								if(tempArray.length == 2) {
+									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
+								} else if(tempArray.length == 1) {
+									tempModel.ReceiveManName = tempArray[0] + '()';
 								}
 							}
-							for (var i = 0; i < data.RspData.ReplyArray.length; i++) {
+							for(var i = 0; i < data.RspData.ReplyArray.length; i++) {
 								var tempModel = data.RspData.ReplyArray[i];
 								var tempArray = tempModel.ReplyManName.split('|');
-								if (tempArray.length==2) {
-									tempModel.ReplyManName = tempArray[1]+'('+tempArray[0]+')';
-								} else if (tempArray.length==1) {
+								if(tempArray.length == 2) {
+									tempModel.ReplyManName = tempArray[1] + '(' + tempArray[0] + ')';
+								} else if(tempArray.length == 1) {
 									tempModel.ReplyManName = tempArray[0];
 								}
 							}
@@ -471,7 +472,7 @@
 								if(data.RspData.NoticeEncAddr.length == 1) {
 									var urlArr = data.RspData.NoticeEncAddr[0].split('.');
 									var urlLast = urlArr[urlArr.length - 1];
-									urlLast=urlLast.toLowerCase();
+									urlLast = urlLast.toLowerCase();
 									console.log('urlLast:' + urlLast);
 									if(urlLast == 'mp4' || urlLast == 'avi' || urlLast == 'mpg' || urlLast == 'vob' || urlLast == 'mov' || urlLast == 'flv' || urlLast == 'wmv') {
 										data.RspData.encFlag = 2;
@@ -513,9 +514,12 @@
 								noticeId: curPage.NoticeId, //通知ID
 								replyManId: personal.utid, //回复人ID
 								replyManCode: personal.uid, //回复人账号
-								replyManName: personal.utname, //回复人姓名
+								replyManName: curPage.ReceiveManName, //回复人姓名
 								replyManImg: personal.imgurl, //回复人头像
 								replyContent: noticeReplyContent.content //回复内容
+							}
+							if(personal.utp == 0) { //0老师，2学生，1家长
+								tempData1.replyManName = personal.utname;
 							}
 							events.showWaiting();
 							//3.回复学校通知(同时增加回复未读)

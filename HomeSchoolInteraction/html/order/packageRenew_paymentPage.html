@@ -169,13 +169,18 @@
 			
 			
 			.mui-input-row label~input {
+				margin-top: 5px;
+				text-align: left;
 			    float: left;
 			    font-size: 14px;
 			    color: #080808;
 			    margin-left: 14px;
 			}
 			
-			
+			.mui-btn:disabled, button:disabled{
+			    opacity: .6;
+			    background: #cccccc;
+			}
 		</style>
 	</head>
 
@@ -205,21 +210,21 @@
 				<div class="mui-row" style="margin-top: 5px;">
 						<h5 class="mui-content-padded">原订购信息</h5>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>缴费金额</label>
-								<input  type="text" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
+								<input  type="button" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>订购时间</label>
-								<input  type="text" :value=orderDetail.stime disabled/>
+								<input  type="button" :value=orderDetail.stime disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<a class="mui-navigate-right">
+							<a class="">
 								<label>结束时间</label>
-								<input type="text" :value=orderDetail.etime disabled/>
+								<input type="button" :value=orderDetail.etime disabled/>
 							</a>
 						</div> 
 				</div>
@@ -337,6 +342,7 @@
 							 var selectTime=$(domDiv).val();
 							 this.servm=$(domDiv).find("option:selected").attr('monthnum');
 							 this.feem=(selectTime*1*univlent*1).toFixed(2);
+							 appPay.feem=this.feem;
 							 this.newEtime=addMonths(this.orderDetail.etime,this.servm);
 						},
 						payAction:function(){//支付
@@ -344,16 +350,17 @@
 							if(this.servm==0){
 								mui.toast('您还没有选择时长')
 							}else{
-								//调起支付
-								appPay.payCode=true;
-								//调起支付
-								appPay.pay(appPay.wxpay,function success(){
-//									
-								},function fail(code,err){
-									if(code==0){
-										plus.nativeUI.alert("支付失败：" + err);
-									}
-								});
+								//如果是0元套餐，直接走订购
+								if(this.feem==0){
+									order();
+								}else{
+									appPay.payCode=true;
+									//调起支付
+									appPay.pay(appPay.wxpay,function success(){
+									},function fail(code,err){
+											plus.nativeUI.alert("支付失败");
+									});
+								}
 							}
 						}
 					}
@@ -364,7 +371,7 @@
 				
 				var _data=utils.getDataFromUrl(window.location.href);
 				orderDetailData.orderDetail = _data;
-				orderDetailData.orderDetail.imgUrl = '../../img/login/headImg.png';
+				orderDetailData.orderDetail.imgUrl = setImg(orderDetailData.orderDetail.imgUrl,1);
 				//计算可以订购的时长  为月份数组 start
 				univlent=_data.feecode;
 				var month=_data.busmonth;
@@ -413,11 +420,12 @@
 				appPay.UserFeeFunc('UserReFee',data,function success(){
 					mui.toast('套餐续订成功');
 					//修改新结束时间
-					parent.orderDetail.etime=parent.newEtime;
+					orderDetailData.orderDetail.etime=orderDetailData.newEtime;
 					//通知套餐详情页面刷新时间
-					mui.fire(plus.webview.currentWebview().opener(), 'refresh', {
+					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
 						newEtime:orderDetailData.newEtime
 					});
+					mui.back();
 				},function fail(err){
 					mui.toast(err);
 				});

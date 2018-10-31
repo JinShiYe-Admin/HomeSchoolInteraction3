@@ -292,7 +292,7 @@
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log('personal:' + JSON.stringify(personal));
 				publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-				
+				personal.imgurl = setImg(personal.imgurl);
 				info =new Vue({ 
 					el:'#info',
 					data:{
@@ -394,8 +394,10 @@
 											parent.$set(parent.stuList, stuIndex, stuObj);
 											parent.$options.methods.cancel(ev,stuIndex);
 											console.log(JSON.stringify(parent.stuList))
+											stuObj.accountIsExists=false;
 										},function(){
 											mui.toast('账号创建失败')
+											stuObj.accountIsExists=true;
 										});
 									},function(){
 										stuObj.accountIsExists=true;

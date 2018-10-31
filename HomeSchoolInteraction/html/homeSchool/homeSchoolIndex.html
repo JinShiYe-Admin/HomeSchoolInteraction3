@@ -7,6 +7,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
 			.circular-square {
 				border-radius: 50%;
 				width: 56px;
@@ -149,7 +152,10 @@
 					</ul>
 				</template>
 				<template v-else="">
-					<p>您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<p style="text-align: center;margin-top: 5px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<div v-cloak style="text-align: center;margin:10% auto;">
+						<img src="../../img/nolink.png" style="width: 250px;" />
+					</div>
 				</template>
 			</div>
 
@@ -204,7 +210,7 @@
 				//							left: '-70%'
 				//						});
 				mui.plusReady(function() {
-					
+
 					//推送绑定
 					var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 					var info = plus.push.getClientInfo();
@@ -213,12 +219,12 @@
 						alias: tempInfo00.utid,
 						cid: info.clientid
 					}
-					console.log('tempBindData:'+JSON.stringify(tempBindData));
+					console.log('tempBindData:' + JSON.stringify(tempBindData));
 					bindPro(tempBindData, function function_name(data) {
-						console.log('bindpro返回值:'+JSON.stringify(data));
+						console.log('bindpro返回值:' + JSON.stringify(data));
 						if(data.RspCode == 0) {
 							var info = plus.push.getClientInfo();
-							console.log('bindpro:'+JSON.stringify(info));
+							console.log('bindpro:' + JSON.stringify(info));
 						} else {
 
 						}
@@ -448,12 +454,27 @@
 					console.log('侧滑执行方法')
 					closeMenu();
 				});
-				
+
 				/**
 				 * 显示菜单菜单
 				 */
 				function openMenu() {
 					if(!showMenu) {
+						var wvs=plus.webview.getDisplayWebview();
+						for(var i=0;i<wvs.length;i++){
+							var url =wvs[i].getURL();
+							if(url.indexOf('/homeSchool/mine')==-1){
+								if(plus.os.name == 'Android') {
+									wvs[i].setStyle({mask:"rgba(0,0,0,0.1)"});
+								}else{
+									wvs[i].setStyle({mask:"rgba(0,0,0,0.3)"});
+								}
+								wvs[i].addEventListener("maskClick",function(){
+									closeMenu();
+								},false);
+							}
+						}
+//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 						//侧滑菜单处于隐藏状态，则立即显示出来；
 						//显示完毕后，根据不同动画效果移动窗体；
 						menu.show('none', 0, function() {
@@ -495,7 +516,6 @@
 						mask.show();
 						showMenu = true;
 						//通知index页隐藏tab栏
-						mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
 					}
 				}
 				/**
@@ -512,6 +532,11 @@
 				 */
 				function _closeMenu() {
 					if(showMenu) {
+//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
+					var wvs=plus.webview.getDisplayWebview();
+					for(var i=0;i<wvs.length;i++){
+						wvs[i].setStyle({mask:"none"});
+					}
 						//关闭遮罩；
 						switch(mode) {
 							case 'main-move':
@@ -558,7 +583,6 @@
 						//改变标志位
 						showMenu = false;
 						//通知index页显示tab栏
-						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
 					}
 				}
 				//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
@@ -688,7 +712,7 @@
 								} else {
 									mui.toast('此功能暂未开放');
 								}
-							} else if(index == 6){ 
+							} else if(index == 6) {
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
 									utils.mOpenWithData("../../html/student/student-index.html", {});
@@ -696,6 +720,7 @@
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
 								utils.mOpenWithData("../../html/orals/orals_index.html", {});
+
 							} else {
 								mui.toast('此功能暂未开放');
 							}

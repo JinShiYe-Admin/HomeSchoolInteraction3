@@ -20,27 +20,25 @@
 	</head>
 
 	<body>
-		<div id="nav">
-			<nav class="mui-bar mui-bar-tab" id="navIndex">
-					<a id="defaultTab" v-cloak class="mui-tab-item"  href='../../html/homeSchool/homeSchoolIndex.html'>
-						<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
-						<span class="mui-tab-label">家校互动</span>
-					</a>
-					<a id="kejiao" class="mui-tab-item  mui-active" href="../../html/sciedu/sciedu_home.html">
-					<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
-						<span class="mui-icon iconfont icon-jiaoyu"></span>
-						<span class="mui-tab-label">科教活动</span>
-					</a>
-					<a id="kecheng" class="mui-tab-item" href="../../html/Course/courseIndex.html">
-						<span class="mui-icon iconfont icon-kecheng"></span>
-						<span class="mui-tab-label">课程</span>
-					</a>
-					<a id="zhuxue" class="mui-tab-item" href="../../html/helpStudy/helpStudyIndex.html">
-						<span class="mui-icon iconfont icon-iconfontbangzhu"></span>
-						<span class="mui-tab-label">助学</span>
-					</a>
-			</nav>
-		</div>
+		<nav class="mui-bar mui-bar-tab" id="navIndex">
+				<a id="defaultTab" v-cloak class="mui-tab-item"  href='../../html/homeSchool/homeSchoolIndex.html'>
+					<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
+					<span class="mui-tab-label">家校互动</span>
+				</a>
+				<a id="kejiao" class="mui-tab-item  mui-active" href="../../html/sciedu/sciedu_home.html">
+				<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
+					<span class="mui-icon iconfont icon-jiaoyu"></span>
+					<span class="mui-tab-label">科教活动</span>
+				</a>
+				<a id="kecheng" class="mui-tab-item" href="../../html/Course/courseIndex.html">
+					<span class="mui-icon iconfont icon-kecheng"></span>
+					<span class="mui-tab-label">课程</span>
+				</a>
+				<a id="zhuxue" class="mui-tab-item" href="../../html/helpStudy/helpStudyIndex.html">
+					<span class="mui-icon iconfont icon-iconfontbangzhu"></span>
+					<span class="mui-tab-label">助学</span>
+				</a>
+		</nav>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/storageKeyName.js"></script>
@@ -52,96 +50,23 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			var idenfify=personal.utp;//身份 0老师，2学生，1家长
-			var isBd =personal.isBdCount; //套餐是否绑定学生
-			var hrefHome;//首页链接
-			if(personal.isBdCount==undefined || personal.isBdCount==0){
-				isBd=false;
-			}else{
-				isBd=true;
-			}
-//			var subpages =[];
 			var subpage_style = { 
 				top: '0px',
 				bottom: '51px'
 			};
-			var nav; 
-//			if(idenfify==1&&!isBd){//家长身份且套餐没绑定学生
-//				subpages=['../../html/relation/relationStu.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
-//				hrefHome='../../html/relation/relationStu.html';
-//			}else{
-//				subpages=['../../html/homeSchool/homeSchoolIndex.html', '../../html/sciedu/sciedu_home.html',  '../../html/Course/courseIndex.html', '../../html/helpStudy/helpStudyIndex.html'];
-//				hrefHome='../../html/homeSchool/homeSchoolIndex.html';
-//			}
-//			console.log('subpages==='+subpages)
 			
 			
-//			function test(){
-//				personal['isBd']=true;
-//				store.set(window.storageKeyName.PERSONALINFO, personal);
-//				mui.fire(plus.webview.currentWebview().opener(), 'home_refresh', {
-//				});
-//			}
-			 window.addEventListener('refush_count', function() {
-					mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
-				});
+			window.addEventListener('refush_count', function() {
+				mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
+			});
 			
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
 			});		
-			
-			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//			if(plus.os.name == 'Android') {
-				//侧滑菜单弹出时，tab按钮禁用
-				window.addEventListener('closeClick', function(data) {
-					var wvs=plus.webview.getDisplayWebview();
-					document.getElementById('navIndex').style.display='none'
-					for(var i=0;i<wvs.length;i++){
-							wvs[i].setStyle({top: '0px',bottom: '0px'})
-					}
-				});
-				//侧滑菜单关闭时，tab按钮启用
-				window.addEventListener('openClick', function(data) {
-					var wvs=plus.webview.getDisplayWebview();
-					document.getElementById('navIndex').style.display='inherit'
-					for(var i=0;i<wvs.length;i++){
-						wvs[i].setStyle({top: '0px',bottom: '51px'})
-					}
-				});
-//			}else{
-//				//侧滑菜单弹出时，tab按钮禁用
-//				window.addEventListener('closeClick', function(data) {
-//					var wvs=plus.webview.getDisplayWebview();
-//					document.getElementById('navIndex').style.display='none'
-//					for(var i=0;i<wvs.length;i++){
-//						var url =wvs[i].getURL();
-//						if(url.indexOf('/homeSchool/mine')==-1){
-//							wvs[i].setStyle({top: '0px',bottom: '-100px'})
-//						}else{
-//							wvs[i].setStyle({top: '0px',bottom: '0px'})
-//						}
-//					}
-//				});
-//				//侧滑菜单关闭时，tab按钮启用
-//				window.addEventListener('openClick', function(data) {
-//					var wvs=plus.webview.getDisplayWebview();
-//					document.getElementById('navIndex').style.display='inherit'
-//					for(var i=0;i<wvs.length;i++){
-//						wvs[i].setStyle({top: '0px',bottom: '0px'})
-//					}
-//				});
-//			}
+      
 			
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				nav=new Vue({
-					el:'#nav',
-					data:{
-						identify:idenfify,
-						isBd:isBd, 
-						hrefHome:hrefHome
-					}
-				});
 				
 				//安卓的连续点击两次退出程序
 				var backButtonPress = 0;
@@ -200,13 +125,6 @@
 					current.classList.remove('mui-active');
 					defaultTab.classList.add('mui-active');
 				}
-				//判断是否需要更新
-//				var personal = store.get(window.storageKeyName.PERSONALINFO);
-//				if(personal==''||personal==null||personal==undefined){
-//					console.log("无法获得用户学校ID，无法检测更新")
-//				}else{
-//					appUpdate.updateApp(window.storageKeyName.SCHOOLID);
-//				}
 			});
 		</script>
 	</body>

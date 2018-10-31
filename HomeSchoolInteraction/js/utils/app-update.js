@@ -221,17 +221,17 @@ var appUpdate = (function(mod) {
 	 * @param {Object} ApkUrl 整包地址
 	 */
 	function downApk(ApkUrl) {
-		//console.log(plus.os.name);
+//		console.log(plus.os.name);
 		if(plus.os.name == "Android") {
-			//console.log("下载APK路径：" + ApkUrl)
+//			console.log("下载APK路径：" + ApkUrl)
 			var url = "_doc/update/"; // 下载文件地址
 			var dtask = plus.downloader.createDownload(ApkUrl, {
 				filename: "_doc/update/"
 			}, function(d, status) {
-				//console.log("下载状态：" + status);
-				if(status == 200) { // 下载成功
+				console.log("下载状态：" + status+"，"+d.state);
+				if(d.state==4&&status == 200) { // 下载成功
 					var path = d.filename;
-					//console.log(d.filename);
+					console.log(d.filename);
 					if(mod.installFlag == 0) {
 						setDialog("新版app文件已下载，是否安装？", "您已取消安装", function() {
 							installApk(path);
@@ -318,25 +318,25 @@ var appUpdate = (function(mod) {
 		var filePath = "_doc/update/" + fileUrl.split('/')[fileUrl.split('/').length - 1]
 		plus.io.resolveLocalFileSystemURL(filePath, function(entry) {
 			// 可通过entry对象操作test.html文件 
-			console.log('存在文件！' + entry.isFile);
+			console.log('存在文件！' + entry.isFile+"，"+entry.toLocalURL());
 			entry.getMetadata(function(metadata) {
-				if(store.get("loadFileSize") == metadata.size) {
-					//console.log("Remove succeeded:" + store.get("loadFileSize"));
-					if(type) {
-						if(mod.installFlag == 0) {
-							setDialog("新版app文件已下载，是否安装？", "您已取消安装app", function() {
-								installApk(filePath);
-								mod.installFlag = 1;
-							}, function() {
-								mod.installFlag = 2;
-							})
-						} else if(mod.installFlag == 1) {
-							installApk(filePath);
-						}
-					} else {
-						installWgt(filePath);
-					}
-				} else {
+//				if(store.get("loadFileSize") == metadata.size) {
+//					console.log("Remove succeeded:" + store.get("loadFileSize"));
+//					if(type) {
+//						if(mod.installFlag == 0) {
+//							setDialog("新版app文件已下载，是否安装？", "您已取消安装app", function() {
+//								installApk(filePath);
+//								mod.installFlag = 1;
+//							}, function() {
+//								mod.installFlag = 2;
+//							})
+//						} else if(mod.installFlag == 1) {
+//							installApk(filePath);
+//						}
+//					} else {
+//						installWgt(filePath);
+//					}
+//				} else {
 					entry.remove(function(entry) {
 						if(type) {
 							downApk(fileUrl);
@@ -347,7 +347,7 @@ var appUpdate = (function(mod) {
 						alert(e.message); 
 					});
 
-				}
+//				}
 			}, function() {
 				//console.log("文件错误");
 			});

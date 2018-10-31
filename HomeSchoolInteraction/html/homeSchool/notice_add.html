@@ -302,6 +302,8 @@
 								var tempModel1 = {
 									clsid: tempModel.clsid,
 									stuid: tempModel.stuid,
+									utid: tempModel.utid,
+									forid: tempModel.forid
 								}
 								tempArray.push(tempModel1);
 							}
@@ -588,7 +590,6 @@
 				var temp1 = [];
 				var temp2 = [];
 				var temp3 = [];
-				var temp4 = [];
 				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 					var stuModel = addNoticeContent.parentArray[i];
 					temp0.push(stuModel.utid);
@@ -643,9 +644,12 @@
 				addNoticePro(tempData1, function function_name(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
-						addNoticeContent.content = '';
-						if(temp4.length > 0&&addNoticeContent.msgFlag == 1) {
-							var tempMobiles = temp4.join(',').toString();
+//						addNoticeContent.content = '';
+						console.log('temp1.length:'+temp1.length+',addNoticeContent.msgFlag:'+addNoticeContent.msgFlag);
+						console.log('temp1:'+JSON.stringify(temp1));
+						if(temp1.length > 0&&addNoticeContent.msgFlag == 1) {
+							console.log('111111111');
+							var tempMobiles = temp1.join(',').toString();
 							events.SendSmsForMobiles(tempMobiles, addNoticeContent.content);
 						}
 						mui.toast('成功');

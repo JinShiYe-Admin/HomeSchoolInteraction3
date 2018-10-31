@@ -94,7 +94,7 @@
 					<template v-for="setting in settings" >
 						<li v-show="setting.qx.indexOf(utp)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
 							<a class="mui-navigate-right">
-								<span :class="setting.cls"></span> {{setting.name}}
+								<span :class="setting.cls" :style="setting.name=='关联学生'||setting.name=='学生账号'?'font-size: 24px;margin:0 -2px 0 -3px;':'font-size: 20px'"></span> {{setting.name}}
 							</a>
 						</li>
 					</template>
@@ -161,14 +161,14 @@
 						icon: "",
 						href: "",
 						tempID: 3,
-						cls: 'mui-icon-extra mui-icon-extra-cart',
+						cls: 'mui-icon mui-icon-paperclip',
 						qx:"1"
 					}, {
-						name: "创建账号",
+						name: "学生账号",
 						icon: "",
 						href: "",
 						tempID: 4,
-						cls: 'mui-icon-extra mui-icon-extra-cart',
+						cls: 'mui-icon mui-icon-person',
 						qx:"1"
 					}, {
 						name: "我的订购",

@@ -71,10 +71,10 @@
 		</header>
 		<div id='scroll' class="mui-content">
 			<div id='orders'>
-				<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
+				<!--<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
 					<img src="../../img/homeSchool/noData.png" style="width: 200px;" />
-				</div>
-				<div v-else v-cloak class="mui-scroll">
+				</div>-->
+				<div v-cloak class="mui-scroll">
 					<ul class="mui-table-view">
 						<li v-for="item in orderList" @click="toMealDetails($event,item)" class="mui-table-view-cell mui-media">
 							<a href="javascript:;">
@@ -142,7 +142,9 @@
 			function pulldownRefresh() {
 				getOrderList();
 			}
-			
+			window.addEventListener('refreshList', function(data) {
+				getOrderList();
+			});		
 			var personal;
 			var publicParameter;
 			mui.plusReady(function() {
@@ -176,7 +178,7 @@
 					},
 					btnClick: function(item) {
 						if(item.orderFlag == 0)
-							utils.mOpenWithData("../../html/order/packageOrder_paymentPage.html", item);
+							utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
 						else
 							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
 					}
@@ -205,7 +207,7 @@
 						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
 							var tempModel = data1.RspData.sysbus[i];
 							tempModel.orderFlag = 0;
-							tempModel.busimg = setImg(tempModel.busimg);
+							tempModel.busimg = setImg(tempModel.busimg,1);
 						}
 						orders.orderList = [].concat(data1.RspData.sysbus);
 						//用户已订购套餐及功能扩展栏目

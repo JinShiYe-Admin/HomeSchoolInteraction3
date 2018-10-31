@@ -169,8 +169,8 @@
 			</a>
 			<p class="p-show2"></p>
 			<p class="p-smg">请关联套餐对应的学生</p>
-			<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
-				<img src="../../img/homeSchool/noData.png" style="width: 150px;" />
+			<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:20% auto;">
+				<img src="../../img/nolink.png" style="width: 150px;" />
 			</div>
 			<div v-else v-cloak class="mui-scroll">
 				<ul class="mui-table-view">
@@ -243,8 +243,6 @@
 				getUserBusFunc();
 				personal.imgurl = setImg(personal.imgurl);
 				userBusData.peopleMsg = personal;
-				//4.5.获取用户关联的学生列表
-				getUserUstu();
 				//弹出
 				userPicker = new mui.PopPicker();
 				if(curPage.returnFlag == 1) {
@@ -277,9 +275,9 @@
 							plus.webview.open('../../html/login/index.html');
 							var wvs = plus.webview.all();
 							for(var i = 0, len = wvs.length; i < len; i++) {
-								var url=wvs[i].getURL();
-								if(url!=null){
-									console.log('wvs[i].getURL()=========='+url)
+								var url = wvs[i].getURL();
+								if(url != null) {
+									console.log('wvs[i].getURL()==========' + url)
 									if(url.indexOf('index.html') != -1 ||
 										url.indexOf('homeSchoolIndex.html') != -1 ||
 										url.indexOf('relationStu.html') != -1 ||
@@ -321,7 +319,7 @@
 				},
 				methods: {
 					clickUserBus: function(model) {
-						console.log('clickUserBus.model:'+JSON.stringify(model));
+						console.log('clickUserBus.model:' + JSON.stringify(model));
 						if(userBusData.userStuList.length == 0) {
 							mui.toast('请先关联学生');
 						} else {
@@ -384,8 +382,8 @@
 							}
 							userBusData.orderList = [].concat(data1.RspData.userbus);
 						}
-						//4.6.获取用户手机关联的学生列表
-						getUserMstu();
+						//4.5.获取用户关联的学生列表
+						getUserUstu();
 					} else {
 						mui.toast(data1.RspTxt);
 					}
@@ -500,8 +498,10 @@
 									}
 								}
 							}
-							console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 						}
+						//4.6.获取用户手机关联的学生列表
+						getUserMstu();
+						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 					} else {
 						mui.toast(data1.RspTxt);
 					}

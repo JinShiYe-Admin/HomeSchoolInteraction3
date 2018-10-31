@@ -183,20 +183,20 @@
 							var personal = store.get(window.storageKeyName.PERSONALINFO);
 							console.log('personal0001:' + JSON.stringify(personal));
 
-//							var info = plus.push.getClientInfo();
-//							var tempBindData = {
-//								appId: info.appid,
-//								alias: data1.RspData.utid,
-//								cid: info.clientid
-//							}
-//							bindPro(tempBindData, function function_name(data) {
-//								//									events.closeWaiting();
-//								if(data.RspCode == 0) {
-//									//										utils.mOpenWithData("../../index.html", {});
-//								} else {
-//									//											mui.toast(data.RspTxt);
-//								}
-//							});
+							//							var info = plus.push.getClientInfo();
+							//							var tempBindData = {
+							//								appId: info.appid,
+							//								alias: data1.RspData.utid,
+							//								cid: info.clientid
+							//							}
+							//							bindPro(tempBindData, function function_name(data) {
+							//								//									events.closeWaiting();
+							//								if(data.RspCode == 0) {
+							//									//										utils.mOpenWithData("../../index.html", {});
+							//								} else {
+							//									//											mui.toast(data.RspTxt);
+							//								}
+							//							});
 							if(personal.utid == '0') { //无权限
 								//								plus.webview.open('../../index2.html');
 								utils.hrefSessionStorage('../../html/login/index2.html', {});
@@ -225,7 +225,7 @@
 												utils.hrefSessionStorage('../../html/login/index.html', {});
 											} else {
 												var tempModel = {
-													returnFlag:1,
+													returnFlag: 1,
 													flag: 1 //
 												}
 												utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
@@ -252,8 +252,12 @@
 //					}
 					
 				} else {
-					setUUID();
-					mui.toast(data.RspTxt);
+					if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+						mui.toast('网络异常，请检查网络设置！');
+					} else {
+						setUUID();
+						mui.toast(data.RspTxt);
+					}
 				}
 			});
 

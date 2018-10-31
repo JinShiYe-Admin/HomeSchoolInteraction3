@@ -20,10 +20,14 @@ function generateUUID() {
 };
 
 //设置头像，如果有，用本身的，没有给默认值
-function setImg(imgURL) {
+function setImg(imgURL,imgFlag) {
 	var tempUrl = '';
 	if(imgURL == null || imgURL.length == 0) {
-		tempUrl = '../../img/login/headImg.png';
+		if (imgFlag==1) {//订购默认图
+			tempUrl = '../../img/order.png';
+		} else{
+			tempUrl = '../../img/noImgPerson.jpg';
+		}
 	} else {
 		var myDate = new Date();
 		tempUrl = imgURL + '?' + myDate.getTime();
@@ -486,4 +490,11 @@ var getNoReadNoticeCntByManPro = function(data0, callback) {
 	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'schoolNotice/';
 	data0 = extendParameter(data0);
 	xhrPost(tempAttendUrl + 'getNoReadNoticeCntByMan', data0, callback);
+}
+
+//16.获取某人登录次数
+var getLoginCntByUserPro = function(data0, callback) {
+	var tempAttendUrl = window.storageKeyName.INTERFACEKONG + 'login/';
+	data0 = extendParameter(data0);
+	xhrPost(tempAttendUrl + 'getLoginCntByUser', data0, callback);
 }

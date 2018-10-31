@@ -1,357 +1,416 @@
 <!doctype html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<script type="text/javascript" src="../../js/mui.min.js"></script>
-		<style type="text/css">
-			.regisgerColo{
-				border-color: #00CFBD;
-				color: #00CFBD;
-				border-radius: 20px;
-			}
-		</style>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="../../css/mui.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="../../js/mui.min.js"></script>
+    <style type="text/css">
+        .regisgerColo {
+            border-color: #00CFBD;
+            color: #00CFBD;
+            border-radius: 20px;
+        }
+    </style>
 
-	</head>
+</head>
 
-	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<!--<a  class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>-->
-			<h1 class="mui-title" style="color: white;">登录</h1>
-		</header>
-		<div class="mui-content">
-			<div style="height: 200px;font-size: 18px;color: #00cfbd;;padding: 100px 0px;text-align: center;">欢迎登录</div>
-			<div class="mui-input-row">
-				<label style="margin-top: -5px;"><image src="../../img/login/username.png" style="width: 25px;height: 25px;" /></label>
-				<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入用户名">
-			</div>
-			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 5px 60px ;" />
+<body>
+    <header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+        <!--<a  class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>-->
+        <h1 class="mui-title" style="color: white;">登录</h1>
+    </header>
+    <div class="mui-content">
+        <div style="height: 200px;font-size: 18px;color: #00cfbd;;padding: 100px 0px;text-align: center;">欢迎登录</div>
+        <div class="mui-input-row">
+            <label style="margin-top: -5px;">
+                <image src="../../img/login/username.png" style="width: 25px;height: 25px;" />
+            </label>
+            <input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入用户名">
+        </div>
+        <hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 5px 60px ;" />
 
-			<div class="mui-input-row ">
-				<label><image src="../../img/login/password.png" style="width: 30px;height: 30px;" /></label>
-				<input id='password' type="password" class="mui-input-clear mui-input " placeholder="请输入密码">
-			</div>
-			<hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 0px 60px ;" />
+        <div class="mui-input-row ">
+            <label>
+                <image src="../../img/login/password.png" style="width: 27px;height: 27px;" />
+            </label>
+            <input id='password' type="password" class="mui-input-clear mui-input " placeholder="请输入密码" style="margin-top: 5px;">
+        </div>
+        <hr style=" height:1px;border:none;border-top:1px solid #aeaeae;;margin: -12px 20px 0px 60px ;" />
 
-			<div style="padding: 0px 20px;">
-				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;border-radius: 20px;">登录</button>
-				<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-outlined regisgerColo" style=" margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>
-			</div>
-		</div>
-	</body>
-	<!--加密-->
-	<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-	<!---->
-	<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-	<script src='../../js/libs/crypto-js/require.js'></script>
-	<script src='../../js/utils/signHmacSHA1.js'></script>
-	<script src='../../js/libs/jquery.js'></script>
-	<script src="../../js/publicProtocolNew.js"></script>
-	<script src='../../js/utils/sortSign.js'></script>
-	<script src="../../js/storageKeyName.js"></script>
-	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/events.js"></script>
-	<script type="text/javascript">
-		//		$(function() {
-		//			
-		//		});
-		var tempModel = {};
-		var loginFlag = 0; //0自动登录，1不自动登录
-		mui.plusReady(function() {
-			tempModel = {
-				uuid: plus.device.uuid,
-				appid: plus.runtime.appid
-			}
+        <div style="padding: 0px 20px;">
+            <button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;border-radius: 20px;">登录</button>
+            <button id='register' type="button" class="mui-btn mui-btn-block mui-btn-outlined regisgerColo" style=" margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>
+        </div>
+    </div>
+</body>
+<!--加密-->
+<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+<!---->
+<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+<script src='../../js/libs/crypto-js/require.js'></script>
+<script src='../../js/utils/signHmacSHA1.js'></script>
+<script src='../../js/libs/jquery.js'></script>
+<script src="../../js/publicProtocolNew.js"></script>
+<script src='../../js/utils/sortSign.js'></script>
+<script src="../../js/storageKeyName.js"></script>
+<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/utils/events.js"></script>
+<script type="text/javascript">
+    //		$(function() {
+    //			
+    //		});
+    var tempModel = {};
+    var loginFlag = 0; //0自动登录，1不自动登录
+    mui.plusReady(function () {
+        tempModel = {
+            uuid: plus.device.uuid,
+            appid: plus.runtime.appid
+        }
 
-			var backButtonPress = 0;
-			//			setUUID();
-		});
-		//		document.addEventListener("plusready", function() {
-		//			message = document.getElementById("message");
-		//			// 监听点击消息事件
-		//			plus.push.addEventListener("click", function(msg) {
-		//				// 判断是从本地创建还是离线推送的消息
-		//				switch(msg.payload) {
-		//					case "LocalMSG":
-		//						outSet("点击本地创建消息启动：");
-		//						break;
-		//					default:
-		//						outSet("点击离线推送消息启动：");
-		//						break;
-		//				}
-		//				// 提示点击的内容
-		//				plus.ui.alert(msg.content);
-		//				// 处理其它数据
-		//				logoutPushMsg(msg);
-		//			}, false);
-		//			// 监听在线消息事件
-		//			plus.push.addEventListener("receive", function(msg) {
-		//				if(msg.aps) { // Apple APNS message
-		//					outSet("接收到在线APNS消息：");
-		//				} else {
-		//					outSet("接收到在线透传消息：");
-		//				}
-		//				logoutPushMsg(msg);
-		//			}, false);
-		//		}, false);
-		document.getElementById("login").addEventListener('tap', function(event) {
-			console.log("登录");
-			var tempName = document.getElementById("account").value;
-			var tempPW = document.getElementById("password").value;
-			console.log('tempName111:' + tempName + ',tempPW' + tempPW);
-			//判断输入是否符合要求
-			if(checkInput(tempName)) {
-				if(checkInput(tempPW)) {
-					//login登录
-					loginPro(tempName, tempPW);
-				} else {
+        var backButtonPress = 0;
+        //			setUUID();
+    });
+    //		document.addEventListener("plusready", function() {
+    //			message = document.getElementById("message");
+    //			// 监听点击消息事件
+    //			plus.push.addEventListener("click", function(msg) {
+    //				// 判断是从本地创建还是离线推送的消息
+    //				switch(msg.payload) {
+    //					case "LocalMSG":
+    //						outSet("点击本地创建消息启动：");
+    //						break;
+    //					default:
+    //						outSet("点击离线推送消息启动：");
+    //						break;
+    //				}
+    //				// 提示点击的内容
+    //				plus.ui.alert(msg.content);
+    //				// 处理其它数据
+    //				logoutPushMsg(msg);
+    //			}, false);
+    //			// 监听在线消息事件
+    //			plus.push.addEventListener("receive", function(msg) {
+    //				if(msg.aps) { // Apple APNS message
+    //					outSet("接收到在线APNS消息：");
+    //				} else {
+    //					outSet("接收到在线透传消息：");
+    //				}
+    //				logoutPushMsg(msg);
+    //			}, false);
+    //		}, false);
+    document.getElementById("login").addEventListener('tap', function (event) {
+        console.log("登录");
+        var tempName = document.getElementById("account").value;
+        var tempPW = document.getElementById("password").value;
+        console.log('tempName111:' + tempName + ',tempPW' + tempPW);
+        //判断输入是否符合要求
+        if (checkInput(tempName)) {
+            if (checkInput(tempPW)) {
+                //login登录
+                loginPro(tempName, tempPW);
+            } else {
 
-				}
-			} else {
+            }
+        } else {
 
-			}
-		});
+        }
+    });
 
-		document.getElementById("register").addEventListener('tap', function(event) {
-			console.log("注册");
-			plus.webview.open('../register/register.html');
-		});
+    document.getElementById("register").addEventListener('tap', function (event) {
+        console.log("注册");
+        plus.webview.open('../register/register.html');
+    });
 
-		window.addEventListener('quit', function(data) {
-			console.log("data" + JSON.stringify(data.detail));
-			var tempData = data.detail;
-			loginFlag = 1;
-		});
+    window.addEventListener('quit', function (data) {
+        console.log("data" + JSON.stringify(data.detail));
+        var tempData = data.detail;
+        loginFlag = 1;
+    });
 
-		/**
-		 * 获取本地推送标识信息
-		 */
-		function getPushInfo() {
-			var info = plus.push.getClientInfo();
-			outSet("获取客户端推送标识信息：");
-			outLine("id: " + info.id);
-			outLine("token: " + info.token);
-			outLine("clientid: " + info.clientid);
-			outLine("appid: " + info.appid);
-			outLine("appkey: " + info.appkey);
-		}
+    /**
+     * 获取本地推送标识信息
+     */
+    function getPushInfo() {
+        var info = plus.push.getClientInfo();
+        outSet("获取客户端推送标识信息：");
+        outLine("id: " + info.id);
+        outLine("token: " + info.token);
+        outLine("clientid: " + info.clientid);
+        outLine("appid: " + info.appid);
+        outLine("appkey: " + info.appkey);
+    }
 
-		//login登录
-		var loginPro = function(tempName, tempPW) {
-			var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-			//握手
-			var enData0 = {};
-			//不需要加密的数据
-			var comData0 = {
-				uuid: publicPar.uuid, //用户设备号
-				shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
-				appid: publicPar.appid //系统所分配的应用ID
-			};
-			events.showWaiting();
-			//发送网络请求，data为网络返回值
-			postDataEncry('ShakeHand', enData0, comData0, 0, function(data) {
-				console.log('2121212');
-				if(data.RspCode == 0) {
-					store.set(window.storageKeyName.SHAKEHAND, data.RspData);
-					var enData1 = {
-						uid: tempName, //用户账号
-						pw: tempPW //用户密码
-					};
-					//不需要加密的数据
-					var comData1 = {
-						uuid: publicPar.uuid, //用户设备号
-						shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
-						appid: publicPar.appid, //系统所分配的应用ID
-						schid: storageKeyName.SCHOOLID, //学校ID
-						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
-					};
-					//登录
-					postDataEncry('Login', enData1, comData1, 0, function(data1) {
-						events.closeWaiting();
-						if(data1.RspCode == 0) {
-							if(data1.RspData.dpts == null) {
-								data1.RspData.dpts = [];
-							}
-							if(data1.RspData.grds == null) {
-								data1.RspData.grds = [];
-							}
-							if(data1.RspData.clss == null) {
-								data1.RspData.clss = [];
-							}
-							if(data1.RspData.subs == null) {
-								data1.RspData.subs = [];
-							}
-							//									if (data1.RspData.clss.length>0) {
-							//										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
-							//									}
-							if(data1.RspData.urolestr == null) {
-								data1.RspData.urolestr = '00000000000000000000000000000';
-							}
-							//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
-							//								data1.RspData.imgurl = '../../img/login/headImg.png';
-							//							}
-							data1.RspData.userName0 = tempName;
-							data1.RspData.password0 = tempPW;
-							data1.RspData.isBdCount = 0;//套餐是否绑定学生
-							data1.RspData.packageCount = 0; //套餐是否绑定
-							var model_area = {
-								procode: '00', //省份code，自己添加的参数
-								proname: '全国', //省份名称，自己添加的参数
-								acode: '000000', //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
-								aname: '全国', //节点名称--城市名称
-								atype: '' //节点类型,0省1城市2区县
-							}
-							data1.RspData.uarea = model_area; //用户区域,省代码 市代码|省名称 市名称
-							store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
-							var personal = store.get(window.storageKeyName.PERSONALINFO);
-							console.log('personal000:' + JSON.stringify(personal));
+    //login登录
+    var loginPro = function (tempName, tempPW) {
+        var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+        //握手
+        var enData0 = {};
+        //不需要加密的数据
+        var comData0 = {
+            uuid: publicPar.uuid, //用户设备号
+            shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+            appid: publicPar.appid //系统所分配的应用ID
+        };
+        events.showWaiting();
+        //发送网络请求，data为网络返回值
+        postDataEncry('ShakeHand', enData0, comData0, 0, function (data) {
+            console.log('2121212');
+            if (data.RspCode == 0) {
+                store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+                var enData1 = {
+                    uid: tempName, //用户账号
+                    pw: tempPW //用户密码
+                };
+                //不需要加密的数据
+                var comData1 = {
+                    uuid: publicPar.uuid, //用户设备号
+                    shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+                    appid: publicPar.appid, //系统所分配的应用ID
+                    schid: storageKeyName.SCHOOLID, //学校ID
+                    utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+                };
+                //登录
+                postDataEncry('Login', enData1, comData1, 0, function (data1) {
+                    events.closeWaiting();
+                    if (data1.RspCode == 0) {
+                        if (data1.RspData.dpts == null) {
+                            data1.RspData.dpts = [];
+                        }
+                        if (data1.RspData.grds == null) {
+                            data1.RspData.grds = [];
+                        }
+                        if (data1.RspData.clss == null) {
+                            data1.RspData.clss = [];
+                        }
+                        if (data1.RspData.subs == null) {
+                            data1.RspData.subs = [];
+                        }
+                        //									if (data1.RspData.clss.length>0) {
+                        //										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
+                        //									}
+                        if (data1.RspData.urolestr == null) {
+                            data1.RspData.urolestr = '00000000000000000000000000000';
+                        }
+                        //							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
+                        //								data1.RspData.imgurl = '../../img/login/headImg.png';
+                        //							}
+                        data1.RspData.userName0 = tempName;
+                        data1.RspData.password0 = tempPW;
+                        data1.RspData.isBdCount = 0; //套餐是否绑定学生
+                        data1.RspData.packageCount = 0; //套餐是否绑定
+                        var model_area = {
+                            procode: '00', //省份code，自己添加的参数
+                            proname: '全国', //省份名称，自己添加的参数
+                            acode: '000000', //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
+                            aname: '全国', //节点名称--城市名称
+                            atype: '' //节点类型,0省1城市2区县
+                        }
+                        data1.RspData.uarea = model_area; //用户区域,省代码 市代码|省名称 市名称
+                        store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
+                        var personal = store.get(window.storageKeyName.PERSONALINFO);
+                        console.log('personal000:' + JSON.stringify(personal));
 
-							var info = plus.push.getClientInfo();
-							var tempBindData = {
-								appId: info.appid,
-								alias: data1.RspData.utid,
-								cid: info.clientid
-							}
-							bindPro(tempBindData, function function_name(data) {
-								//									events.closeWaiting();
-								if(data.RspCode == 0) {
-									//										utils.mOpenWithData("../../index.html", {});
-								} else {
-									//											mui.toast(data.RspTxt);
-								}
-							});
+                        var info = plus.push.getClientInfo();
+                        var tempBindData = {
+                            appId: info.appid,
+                            alias: data1.RspData.utid,
+                            cid: info.clientid
+                        }
+                        bindPro(tempBindData, function function_name(data) {
+                            //									events.closeWaiting();
+                            if (data.RspCode == 0) {
+                                //										utils.mOpenWithData("../../index.html", {});
+                            } else {
+                                //											mui.toast(data.RspTxt);
+                            }
+                        });
 
-							//如果密码为1--6，让修改密码后，进入主界面
-							if(personal.password0 == '123456') {
-								var tempModel = {
-									flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
-								}
-								utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
-							} else {
-								if(personal.utp == 1) { //0老师，2学生，1家长
-									var tempModel = {
-										returnFlag:1,
-										flag: 1 //
-									}
-									utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
-								} else {
-									plus.webview.open('../../html/login/index.html');
-									var wvs = plus.webview.all();
-									for(var i = 0, len = wvs.length; i < len; i++) {
-										if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-											wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-											wvs[i].getURL().indexOf('courseIndex.html') != -1) {
-											continue;
-										}
-										plus.webview.close(wvs[i]);
-									}
-									var curr = plus.webview.currentWebview();
-									curr.close();
-								}
-							}
-						} else {
-							mui.toast(data1.RspTxt);
-						}
-					});
-				} else {
-					mui.toast(data.RspTxt);
-				}
-			});
+                        //如果密码为1--6，让修改密码后，进入主界面
+                        if (personal.password0 == '123456') {
+                            var tempModel = {
+                                flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
+                            }
+                            utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+                        } else {
+                            if (personal.utp == 1) { //0老师，2学生，1家长
+                                var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+                                //4.5.获取用户关联的学生列表
+                                var enData2 = {};
+                                //不需要加密的数据
+                                var comData2 = {
+                                    uuid: publicParameter.uuid, //用户设备号
+                                    utid: personal.utid, //用户ID
+                                    utoken: personal.utoken, //用户令牌
+                                    appid: publicParameter.appid //系统所分配的应用ID
+                                }
+                                events.showWaiting();
+                                //发送网络请求，data为网络返回值
+                                postDataEncry('UserUstu', enData2, comData2, 0, function (data2) {
+                                    console.log('4.5.UserUstu:' + JSON.stringify(data2));
+                                    events.closeWaiting();
+                                    if (data2.RspCode == 0) {
+                                        if (data2.RspData) {
+                                            var personal1 = store.get(window.storageKeyName
+                                                .PERSONALINFO);
+                                            personal1.isBdCount = data2.RspData.stus.length; //套餐是否绑定学生
+                                            store.set(window.storageKeyName.PERSONALINFO,
+                                                personal1);
+                                            //再判断，是否是在平台上第一次登陆
+                                            var tempData = {
+                                                userId: personal.utid //登录人ID
+                                            }
+                                            //				events.showWaiting();
+                                            getNoticesPro(tempData, function function_name(
+                                                data) {
+                                                //					events.closeWaiting();
+                                                if (data.RspCode == 0) {
+                                                    var tempModel = {
+                                                        returnFlag: 1,
+                                                        flag: 1 //
+                                                    }
+                                                    utils.mOpenWithData(
+                                                        "../../html/relation/relationStu.html",
+                                                        tempModel);
+                                                } else {
+                                                    gotoIndex();
+                                                }
+                                            });
+                                            gotoIndex();
+                                        } else {
+                                            var tempModel = {
+                                                returnFlag: 1,
+                                                flag: 1 //
+                                            }
+                                            utils.mOpenWithData(
+                                                "../../html/relation/relationStu.html",
+                                                tempModel);
+                                        }
+                                    } else {
+                                        gotoIndex();
+                                    }
+                                });
 
-		}
+                            } else {
+                                gotoIndex();
+                            }
+                        }
+                    } else {
+                        mui.toast(data1.RspTxt);
+                    }
+                });
+            } else {
+                mui.toast(data.RspTxt);
+            }
+        });
 
-		//从ios原生得到信息
-		var setUUID = function(tempStr) {
-			if(loginFlag == 0) {
-				//			var tempModel0 = $.parseJSON(tempStr);
-				//				store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
-				console.log('tempStr:' + tempStr);
-				//判断上次是否登录过，自动登录
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
+    }
+    var gotoIndex = function () {
+        plus.webview.open('../../html/login/index.html');
+        var wvs = plus.webview.all();
+        for (var i = 0, len = wvs.length; i < len; i++) {
+            if (wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+                wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+                wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+                continue;
+            }
+            plus.webview.close(wvs[i]);
+        }
+        var curr = plus.webview.currentWebview();
+        curr.close();
+    }
 
-				//			console.log('personal:' + JSON.parse(personal));
-				if(personal) {
-					if(personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
-						//login登录
-						loginPro('00000000000', '123');
-					} else {
-						document.getElementById("account").value = personal.userName0;
-						document.getElementById("password").value = personal.password0;
-						//login登录
-						loginPro(personal.userName0, personal.password0);
-						//需要参数
-						//					var comData = {
-						//						uuid: tempModel.uuid,
-						//						utid: personal.utid,
-						//						utoken: personal.utoken,
-						//						appid: tempModel.appid,
-						//						schid: personal.schid,
-						//						utname: personal.utname
-						//					};
-						//					events.showWaiting();
-						//					//令牌续订
-						//					postDataEncry('TokenReset', {}, comData, 0, function(data) {
-						//						events.closeWaiting();
-						//						if(data.RspCode == 0) {
-						//							var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
-						//							tempInfo00.utoken = data.RspData;
-						//							store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
-						//							var info = plus.push.getClientInfo();
-						//							var tempBindData = {
-						//								appId: info.appid,
-						//								alias: tempInfo00.utid,
-						//								cid: info.clientid
-						//							}
-						//							bindPro(tempBindData, function function_name(data) {
-						//								//									events.closeWaiting();
-						//								if(data.RspCode == 0) {
-						//									//										utils.mOpenWithData("../../index.html", {});
-						//								} else {
-						//									mui.toast(data.RspTxt);
-						//								}
-						//							});
-						//							//						utils.mOpenWithData("../../index.html", {});
-						//						} else {
-						//							mui.toast(data.RspTxt);
-						//						}
-						//					});
-					}
-				} else {
-					loginPro('00000000000', '000000');
-				}
-			} else {
+    //从ios原生得到信息
+    var setUUID = function (tempStr) {
+        if (loginFlag == 0) {
+            //			var tempModel0 = $.parseJSON(tempStr);
+            //				store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
+            console.log('tempStr:' + tempStr);
+            //判断上次是否登录过，自动登录
+            var personal = store.get(window.storageKeyName.PERSONALINFO);
 
-			}
-		}
+            //			console.log('personal:' + JSON.parse(personal));
+            if (personal) {
+                if (personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
+                    //login登录
+                    loginPro('00000000000', '123');
+                } else {
+                    document.getElementById("account").value = personal.userName0;
+                    document.getElementById("password").value = personal.password0;
+                    //login登录
+                    loginPro(personal.userName0, personal.password0);
+                    //需要参数
+                    //					var comData = {
+                    //						uuid: tempModel.uuid,
+                    //						utid: personal.utid,
+                    //						utoken: personal.utoken,
+                    //						appid: tempModel.appid,
+                    //						schid: personal.schid,
+                    //						utname: personal.utname
+                    //					};
+                    //					events.showWaiting();
+                    //					//令牌续订
+                    //					postDataEncry('TokenReset', {}, comData, 0, function(data) {
+                    //						events.closeWaiting();
+                    //						if(data.RspCode == 0) {
+                    //							var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+                    //							tempInfo00.utoken = data.RspData;
+                    //							store.set(window.storageKeyName.PERSONALINFO, tempInfo00);
+                    //							var info = plus.push.getClientInfo();
+                    //							var tempBindData = {
+                    //								appId: info.appid,
+                    //								alias: tempInfo00.utid,
+                    //								cid: info.clientid
+                    //							}
+                    //							bindPro(tempBindData, function function_name(data) {
+                    //								//									events.closeWaiting();
+                    //								if(data.RspCode == 0) {
+                    //									//										utils.mOpenWithData("../../index.html", {});
+                    //								} else {
+                    //									mui.toast(data.RspTxt);
+                    //								}
+                    //							});
+                    //							//						utils.mOpenWithData("../../index.html", {});
+                    //						} else {
+                    //							mui.toast(data.RspTxt);
+                    //						}
+                    //					});
+                }
+            } else {
+                loginPro('00000000000', '000000');
+            }
+        } else {
 
-		//判断是否输入了值
-		var checkInput = function(text) {
-			if(text.trim().length == 0) {
-				mui.toast('请输入账号密码');
-				return false;
-			}
-			if(isNull(text)) {
-				mui.toast('请输入账号密码');
-				return false;
-			}
-			return true;
-		}
+        }
+    }
 
-		//判断输入字符串是否为空或者全部都是空格
-		function isNull(str) {
-			if(str == "") return true;
-			var regu = "^[ ]+$";
-			var re = new RegExp(regu);
-			return re.test(str);
-		}
-	</script>
+    //判断是否输入了值
+    var checkInput = function (text) {
+        if (text.trim().length == 0) {
+            mui.toast('请输入账号密码');
+            return false;
+        }
+        if (isNull(text)) {
+            mui.toast('请输入账号密码');
+            return false;
+        }
+        return true;
+    }
+
+    //判断输入字符串是否为空或者全部都是空格
+    function isNull(str) {
+        if (str == "") return true;
+        var regu = "^[ ]+$";
+        var re = new RegExp(regu);
+        return re.test(str);
+    }
+</script>
 
 </html>
