@@ -308,19 +308,33 @@
 							<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;">
 								<div class="mui-scroll">
 									<form>
+										<template v-if="fextModel.itemcode=='prd'">
+											<div style="margin-left: 15px;color: #FF6600;">{{fextModel.labelName}}</div>
+										</template>
 										<ul class="mui-table-view" style="background: #393D49;color: #fff;" :maxCheck=fextModel.itemsonsc>
-											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons">
-												<div class="mui-input-row mui-checkbox mui-right">
-													<label style="width: 100%;">{{getValue(item)}}</label>
-													<input :name=index :value=item type="checkbox">
+											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons" >
+												<div class="mui-input-row mui-checkbox mui-right" @tap="childCheckAll($event)">
+													<label  name="parentLabel" style="width: 100%;">{{getValue(item)}}</label>
+													<input name="parent" :value=item type="checkbox">
 												</div>
+												<template v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)" v-for="(grdItem,index) in sysfuncModel.fext">
+													<div style="margin-left: 40px;color:#FF6600;">{{grdItem.labelName}}</div>
+													<ul class="mui-table-view" style="margin-left: 25px;background: #393D49;color: #fff;" :maxCheck2=grdItem.itemsonsc>
+														<li class="mui-table-view-cell" style="padding: 0;" v-for="(item2,index2) in grdItem.itemsons" >
+															<div class="mui-input-row mui-checkbox mui-right" @tap="checkXd($event)">
+																<label style="width: 100%;">{{getValue(item2)}}</label>
+																<input :name=index2 :value=item2 type="checkbox">
+															</div>
+														</li>
+													</ul>
+												</template>
 											</li>
 										</ul>
 									</form>
 								</div>
 							</div>
 							<div class="mui-input-row" style=";height:45px;top:255px;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; z-index: 20180704;background: #fff;">
-								<button class="mui-btn mui-btn-primary" style="display: block;margin:5px auto 0;float: none; width: 25%;background: #00CFBD;border: 0px;" @click="hidePop($event,fextModel)">确定</button>
+								<button class="mui-btn mui-btn-primary" style="display: block;margin:5px auto 0;float: none; width: 25%;background: #00CFBD;border: 0px;" @click="hidePop($event,fextModel,sysfuncModel.fext)">确定</button>
 							</div>
 						</div>
 					</div>
@@ -377,7 +391,6 @@
 				//添加支付返回APP时的监听
 				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
 				appPay.addListener(function(){//查询成功
-					console.log("11111111111111");
 					order();
 				},function(e){//查询失败
 //					mui.toast(e);
@@ -440,15 +453,53 @@
 						else if(this.chekcboxChecked == true && this.radioChecked == true)
 							this.isDisabled = false
 					},
-					hidePop: function(e,parms) { //隐藏弹窗
+					childCheckAll:function(e){//如果选中了学段，那么学段下的年级将全选
+						var domDiv = e.target;
+						$(domDiv).parent().find("input[type='checkbox']").each(function() {
+							var isChecked=$(this).prop("checked");//为啥会反着？这里获取到的checkbox的值跟平时正好相反，不知道为啥
+							if(!isChecked){
+								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
+									$(this).prop("checked",true);
+								});
+							}else{
+								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
+									$(this).prop("checked",false);
+								});
+							}
+						});
+					},
+					checkXd:function(e){//如果选择了学段下的所以年级，那么学段将设置为选中
+						var domDiv = e.target;
+						var isAllCheck=false;
+						var allCheck=[];
+						setTimeout(function(){
+							$(domDiv).parent().parent().parent().find("input[type='checkbox']").each(function() {
+								var isChecked=$(this).prop("checked"); 
+								allCheck.push(isChecked);
+							});
+							if(JSON.stringify(allCheck).indexOf("true")==-1){
+								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+									$(this).prop("checked",false);
+								});
+							}else{
+								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+									$(this).prop("checked",true);
+								});
+							}
+						},300);
+					},
+					hidePop: function(e,fextModel,fext) { //隐藏弹窗
 						var domDiv = e.target;
 						//遍历已勾选的input的key 和value
 						var name = [];
 						var value = [];
+						var name_nj = [];
+						var value_nj = [];
 						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
+						var max2 =0;
 						$(domDiv).parent().parent().find('li').each(function() {
-							if($(this).find('input').prop("checked")) {
-								var textValue=$(this).find('label').text();
+							if($(this).find('input[name="parent"]').prop("checked")) {
+								var textValue=$(this).find('label[name="parentLabel"]').text();
 								var values=$(this).find('input').val();
 								if(values.indexOf("|")!=-1){
 									var _value=values.split("|")[0];
@@ -458,46 +509,94 @@
 									name.push($(this).find('label').text());
 									value.push($(this).find('input').val());
 								}
+								
+								var num =$(this).find('ul').attr('maxCheck2');
+								if(num!=undefined){
+									max2=num;
+								}
+								
+								$(this).find('ul').find("li").each(function() {
+									if($(this).find('input').prop("checked")) {
+										var textValue=$(this).find('label').text();
+										var values=$(this).find('input').val();
+										if(values.indexOf("|")!=-1){
+											var _value=values.split("|")[0];
+											name_nj.push(textValue);
+											value_nj.push(_value);
+										}else{
+											name_nj.push($(this).find('label').text());
+											value_nj.push($(this).find('input').val());
+										}
+									}
+								});
 							}
 						})
-						if(value.length > max) {
-							mui.toast('最多选' + max + '个');
-							return;
+//						console.log("max===="+max);
+//						console.log("max2===="+max2);
+//						console.log("name========"+name);
+//						console.log("value========"+value);
+//						console.log("name_nj====="+name_nj);
+//						console.log("value_nj========="+value_nj);
+						var itemcode=fextModel.itemcode;
+						if(itemcode=='prd'){
+							if(value.length > max) {
+								mui.toast('学段最多选' + max + '个');
+								return;
+							}
+							
+							for(var z=0;z<value.length;z++){
+								var pid=value[z];
+								var pname=name[z];
+								var sz=[];
+								for(var i=0;i<value_nj.length;i++){
+									var gid=value_nj[i];
+									if(gid.startWith(pid)){
+										sz.push(gid);
+									}
+								}
+								if(sz.length > max2) {
+									mui.toast(pname+'年级最多选' + max2 + '个');
+									return;
+								}
+							}
+						}else{
+							if(value.length > max) {
+								mui.toast('最多选' + max + '个');
+								return;
+							}
 						}
+						
 						var id = $(domDiv).parent().parent().attr("id");
 						if(name.length == 0 || value.length == 0) {
 							var label = $('#' + id + 'label').html();
-							document.getElementById(id + 'input0').value = '请选择' + label+'(最多'+parms.itemsonsc+'个)';
+							document.getElementById(id + 'input0').value = label+'(最多可选'+fextModel.itemsonsc+'个)';
 							document.getElementById(id + 'input1').value = [];
-							parms.checked = '';
-							Vue.delete(parms, 'checked');
-						} else {
-							document.getElementById(id + 'input0').value = name;
-							document.getElementById(id + 'input1').value = value;
-							parms.checked = value.join(',');
-							var fid =$('#'+id).attr('fid');
-							var values =value.join(',');
-							if(id.indexOf('prd')!=-1){
-								for(var i = 0; i < orderData.sysfuncList.length; i++) {
-									var sysfuncModel = orderData.sysfuncList[i];
-									if(sysfuncModel.fid==fid){
-										for(var j=0;j<sysfuncModel.fext.length;j++){
-											var model = sysfuncModel.fext[j];
-											var idgrd =fid+model.itemcode+j;
-											if(values.indexOf(model.gid)!=-1){
-												$('#'+idgrd+'grd').show();
-											}else{
-												$('#'+idgrd+'grd').hide();
-												if(model.itemcode=='grd'){
-													model.checked="";
-//													Vue.delete(model, 'checked');
-//													model.labelName='请选择'+model.itemname+'（最多'+model.itemsonsc+'个）'
-												}
+							fextModel.checked = '';
+							Vue.delete(fextModel, 'checked');
+						} 
+						else {
+							for(var z=0;z<fext.length;z++){
+								var fexM=fext[z];
+								var itemcode=fexM.itemcode;
+								if(itemcode=='grd'){//遍历fex数组并找到itemcode为grd的对象
+									var gid=fexM.gid;
+									if(value.indexOf(gid)!=-1){
+										var sz=[];
+										for(var j=0;j<value_nj.length;j++){
+											var njId=value_nj[j];
+											if(njId.startWith(gid)){
+												sz.push(njId);
 											}
 										}
+										fexM.checked=sz.join(",");
+									}else{
+										fexM.checked="";
 									}
 								}
 							}
+							document.getElementById(id + 'input0').value = name;
+							document.getElementById(id + 'input1').value = value;
+							fextModel.checked = value.join(',');
 						}
 						mui('#' + id).popover('toggle');
 					},
@@ -508,6 +607,10 @@
 							newValue+=values[i];
 						}
 					    return  newValue;
+					},
+					 getId: function(item) {
+						var values=item.split("|");
+					    return  values[0];
 					},
 					 getItemsons: function(item) {
 						var values=item[0].split("|");
@@ -530,12 +633,13 @@
 						} else {
 							//判断必选项大于0的是否都选择了
 							var strs=[];
+							var prdModel;
 							for(var i = 0; i < orderData.sysfuncList.length; i++) {
 								var sysfuncModel = orderData.sysfuncList[i];
 								for(var j=0;j<sysfuncModel.fext.length;j++){
 									var model = sysfuncModel.fext[j];
 									if(model.itemsonsc>0){
-										console.log(model.itemname+","+model.checked)
+//										console.log(model.itemname+","+model.checked)
 										if(model.checked==undefined){
 											strs.push(model.itemname);
 										}
@@ -645,14 +749,12 @@
 								if(str.indexOf('prd')!=-1){
 									for(var a = 0; a < tempModel0.fext.length; a++) {
 										var tempModel1 = tempModel0.fext[a];
-										tempModel1.labelName='请选择'+tempModel1.itemname+'（最多'+tempModel1.itemsonsc+'个）'
+										tempModel1.labelName=tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
 										tempModel1.itemsons = tempModel1.itemsons.split(',');
 										if(tempModel1.itemcode=='grd'){
 											var gid=tempModel1.itemsons[0].split("|")[0].substring(0,1);
 											tempModel1.gid=gid;
 										}
-										
-										
 										tempModel0.fext[a]=tempModel1;
 									}
 									sysfunc.push(tempModel0)
@@ -667,7 +769,17 @@
 				});
 			}
 			
-		</script>
+			String.prototype.startWith=function(str){     
+			  var reg=new RegExp("^"+str);     
+			  return reg.test(this);        
+			}  
+			
+			String.prototype.endWith=function(str){     
+			  var reg=new RegExp(str+"$");     
+			  return reg.test(this);        
+			}
+			
+		</script> 
 	</body>
 
 </html>
