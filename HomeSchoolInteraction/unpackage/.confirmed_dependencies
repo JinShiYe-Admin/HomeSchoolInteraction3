@@ -1,67 +1,175 @@
 {
-  "html/sciedu/sciedu_home.html": {
-    "refer": [
-      "html/sciedu/sciedu_show_main.html"
-    ],
-    "resources": []
-  },
-  "html/login/firstPage.html": {
-    "refer": [
-      "html/login/index2.html",
-      "html/login/index.html"
-    ],
-    "resources": []
-  },
-  "html/login/index2.html": {
-    "resources": [
-      "html/login/loginFnoPermissions.html"
-    ],
-    "refer": [
-      "html/Course/courseIndex.html",
-      "html/sciedu/sciedu_home.html",
-      "html/helpStudy/helpStudyIndex.html",
-      "html/login/loginFnoPermissions.html"
-    ]
-  },
-  "html/login/index.html": {
-    "resources": [
-      "html/homeSchool/homeSchoolIndex.html"
-    ],
-    "refer": [
-      "html/Course/courseIndex.html",
-      "html/sciedu/sciedu_home.html",
-      "html/helpStudy/helpStudyIndex.html",
-      "html/homeSchool/homeSchoolIndex.html"
-    ]
-  },
-  "html/login/loginFnoPermissions.html": {
-    "refer": [
-      "html/login/index.html"
-    ],
-    "resources": []
-  },
-  "html/homeSchool/homeSchoolIndex.html": {
-    "refer": [
-      "html/homeSchool/mine.html",
-      "html/homeSchool/noticeList.html"
-    ],
-    "resources": []
-  },
-  "html/homeSchool/noticeDetail.html": {
-    "refer": [
-      "html/utils/camera_video.html"
-    ]
-  },
-  "html/homeSchool/noticeList.html": {
-    "refer": [
-      "html/homeSchool/noticeDetail.html",
-      "html/homeSchool/notice_add.html"
-    ]
-  },
-  "html/homeSchool/notice_add.html": {
-    "refer": [
-      "html/utils/camera_video.html",
-      "html/homeSchool/notice_parentsList.html"
-    ]
-  }
+	"html/sciedu/sciedu_home.html": {
+		"refer": [
+			"html/sciedu/sciedu_show_main.html",
+			"html/utils/customizeCity.html"
+		],
+		"resources": []
+	},
+	"html/login/firstPage.html": {
+		"refer": [
+			"html/login/index2.html",
+			"html/login/index.html",
+			"html/relation/relationStu.html"
+		],
+		"resources": []
+	},
+	"html/login/index2.html": {
+		"resources": [
+			"html/login/loginFnoPermissions.html"
+		],
+		"refer": [
+			"html/Course/courseIndex.html",
+			"html/sciedu/sciedu_home.html",
+			"html/helpStudy/helpStudyIndex.html",
+			"html/login/loginFnoPermissions.html"
+		]
+	},
+	"html/login/index.html": {
+		"resources": [
+			"html/homeSchool/homeSchoolIndex.html",
+			"html/sciedu/sciedu_home.html"
+		],
+		"refer": [
+			"html/Course/courseIndex.html",
+			"html/sciedu/sciedu_home.html",
+			"html/helpStudy/helpStudyIndex.html",
+			"html/homeSchool/homeSchoolIndex.html"
+		]
+	},
+	"html/login/loginFnoPermissions.html": {
+		"refer": [
+			"html/login/index.html",
+			"html/relation/relationStu.html"
+		],
+		"resources": []
+	},
+	"html/homeSchool/homeSchoolIndex.html": {
+		"refer": [
+			"html/homeSchool/mine.html",
+			"html/homeSchool/noticeList.html",
+			"html/homework/parent-homework-index.html",
+			"html/test/student-index.html",
+			"html/student/student-index.html",
+			"html/homework/teacher-index.html"
+		],
+		"resources": []
+	},
+	"html/homeSchool/noticeDetail.html": {
+		"refer": [
+			"html/utils/camera_video.html"
+		]
+	},
+	"html/homeSchool/noticeList.html": {
+		"refer": [
+			"html/homeSchool/noticeDetail.html",
+			"html/homeSchool/notice_add.html"
+		]
+	},
+	"html/homeSchool/notice_add.html": {
+		"refer": [
+			"html/utils/camera_video.html",
+			"html/homeSchool/notice_parentsList.html"
+		]
+	},
+	"html/relation/relationStu.html": {
+		"refer": [
+			"html/login/index.html"
+		]
+	},
+	"html/homeSchool/mine.html": {
+		"refer": [
+			"html/relation/createStuAccount.html",
+			"html/login/firstPage1.html",
+			"html/order/orderList.html",
+			"html/relation/relationStu.html",
+			"html/mine/about.html",
+			"html/mine/modifyPassword.html",
+			"html/mine/headImg.html"
+		]
+	},
+	"html/test/student-index.html": {
+		"resources": [
+			"html/test/student-attendance.html"
+		],
+		"refer": [
+			"html/test/student-review.html",
+			"html/test/student-talkRecord.html",
+			"html/test/student-action.html",
+			"html/test/student-attendance.html"
+		]
+	},
+	"html/login/firstPage1.html": {
+		"refer": [
+			"html/login/index2.html"
+		]
+	},
+	"html/order/orderList.html": {
+		"refer": [
+			"html/order/packageOrder_paymentPage.html",
+			"html/order/packageDetails_renew.html",
+			"html/order/packageDetails_order.html",
+			"html/order/packageRenew_paymentPage.html"
+		]
+	},
+	"html/order/packageDetails_renew.html": {
+		"refer": [
+			"html/order/packageRenew_paymentPage.html"
+		]
+	},
+	"html/test/student-talkRecord.html": {
+		"refer": [
+			"html/test/student-talkRecord-Detail.html"
+		]
+	},
+	"html/student/student-index.html": {
+		"resources": [
+			"html/student/student-attendance.html"
+		],
+		"refer": [
+			"html/student/student-action.html",
+			"html/student/student-talkRecord.html",
+			"html/student/student-review.html",
+			"html/student/student-attendance.html"
+		]
+	},
+	"html/student/student-talkRecord.html": {
+		"refer": [
+			"html/student/student-talkRecord-Detail.html"
+		]
+	},
+	"html/student/student-action.html": {
+		"refer": [
+			"html/student/student-action-count.html",
+			"html/student/student-action-add.html"
+		]
+	},
+	"html/student/student-attendance.html": {
+		"refer": [
+			"html/student/student-action-count.html",
+			"html/student/student-attendance-count.html"
+		]
+	},
+	"html/order/packageDetails_order.html": {
+		"refer": [
+			"html/order/packageOrder_paymentPage.html"
+		]
+	},
+	"html/homework/teacher-index.html": {
+		"resources": [
+			"html/homework/teacher-indexPublish.html"
+		],
+		"refer": [
+			"html/homework/teacher-indexPublish.html",
+			"html/homework/teacher-indexCorrect.html",
+			"html/homework/teacher-indexForm.html",
+			"html/homework/teacher-homework-detail.html",
+			"html/homework/teacher-homework-correctDetail.html"
+		]
+	},
+	"html/homework/teacher-homework-correctDetail.html": {
+		"refer": [
+			"html/homework/teacher-homework-evaluate.html"
+		]
+	}
 }

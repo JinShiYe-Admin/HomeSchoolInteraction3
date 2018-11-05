@@ -234,7 +234,8 @@
 			"html/sciedu/sciedu_home.html": {
 				"resources": [],
 				"refer": [
-					"html/sciedu/sciedu_show_main.html"
+					"html/sciedu/sciedu_show_main.html",
+					"html/utils/customizeCity.html"
 				],
 				"priority": 0
 			},
@@ -242,7 +243,8 @@
 				"resources": [],
 				"refer": [
 					"html/login/index2.html",
-					"html/login/index.html"
+					"html/login/index.html",
+					"html/relation/relationStu.html"
 				],
 				"priority": 0
 			},
@@ -259,11 +261,11 @@
 			},
 			"html/login/index.html": {
 				"resources": [
-					"html/homeSchool/homeSchoolIndex.html"
+					"html/homeSchool/homeSchoolIndex.html",
+					"html/sciedu/sciedu_home.html"
 				],
 				"refer": [
 					"html/Course/courseIndex.html",
-					"html/sciedu/sciedu_home.html",
 					"html/helpStudy/helpStudyIndex.html"
 				],
 				"priority": 0
@@ -271,7 +273,8 @@
 			"html/login/loginFnoPermissions.html": {
 				"resources": [],
 				"refer": [
-					"html/login/index.html"
+					"html/login/index.html",
+					"html/relation/relationStu.html"
 				],
 				"priority": 0
 			},
@@ -279,7 +282,11 @@
 				"resources": [],
 				"refer": [
 					"html/homeSchool/mine.html",
-					"html/homeSchool/noticeList.html"
+					"html/homeSchool/noticeList.html",
+					"html/homework/parent-homework-index.html",
+					"html/test/student-index.html",
+					"html/student/student-index.html",
+					"html/homework/teacher-index.html"
 				],
 				"priority": 0
 			},
@@ -305,6 +312,128 @@
 					"html/homeSchool/notice_parentsList.html"
 				],
 				"priority": 0
+			},
+			"html/relation/relationStu.html": {
+				"resources": [],
+				"refer": [
+					"html/login/index.html"
+				],
+				"priority": 0
+			},
+			"html/homeSchool/mine.html": {
+				"resources": [],
+				"refer": [
+					"html/relation/createStuAccount.html",
+					"html/login/firstPage1.html",
+					"html/order/orderList.html",
+					"html/relation/relationStu.html",
+					"html/mine/about.html",
+					"html/mine/modifyPassword.html",
+					"html/mine/headImg.html"
+				],
+				"priority": 0
+			},
+			"html/test/student-index.html": {
+				"resources": [
+					"html/test/student-attendance.html"
+				],
+				"refer": [
+					"html/test/student-review.html",
+					"html/test/student-talkRecord.html",
+					"html/test/student-action.html"
+				],
+				"priority": 0
+			},
+			"html/login/firstPage1.html": {
+				"resources": [],
+				"refer": [
+					"html/login/index2.html"
+				],
+				"priority": 0
+			},
+			"html/order/orderList.html": {
+				"resources": [],
+				"refer": [
+					"html/order/packageOrder_paymentPage.html",
+					"html/order/packageDetails_renew.html",
+					"html/order/packageDetails_order.html",
+					"html/order/packageRenew_paymentPage.html"
+				],
+				"priority": 0
+			},
+			"html/order/packageDetails_renew.html": {
+				"resources": [],
+				"refer": [
+					"html/order/packageRenew_paymentPage.html"
+				],
+				"priority": 0
+			},
+			"html/test/student-talkRecord.html": {
+				"resources": [],
+				"refer": [
+					"html/test/student-talkRecord-Detail.html"
+				],
+				"priority": 0
+			},
+			"html/student/student-index.html": {
+				"resources": [
+					"html/student/student-attendance.html"
+				],
+				"refer": [
+					"html/student/student-action.html",
+					"html/student/student-talkRecord.html",
+					"html/student/student-review.html"
+				],
+				"priority": 0
+			},
+			"html/student/student-talkRecord.html": {
+				"resources": [],
+				"refer": [
+					"html/student/student-talkRecord-Detail.html"
+				],
+				"priority": 0
+			},
+			"html/student/student-action.html": {
+				"resources": [],
+				"refer": [
+					"html/student/student-action-count.html",
+					"html/student/student-action-add.html"
+				],
+				"priority": 0
+			},
+			"html/student/student-attendance.html": {
+				"resources": [],
+				"refer": [
+					"html/student/student-action-count.html",
+					"html/student/student-attendance-count.html"
+				],
+				"priority": 0
+			},
+			"html/order/packageDetails_order.html": {
+				"resources": [],
+				"refer": [
+					"html/order/packageOrder_paymentPage.html"
+				],
+				"priority": 0
+			},
+			"html/homework/teacher-index.html": {
+				"resources": [
+					"html/homework/teacher-indexPublish.html"
+				],
+				"refer": [
+					"html/homework/teacher-indexCorrect.html",
+					"html/homework/teacher-indexForm.html",
+					"html/homework/teacher-homework-detail.html",
+					"html/homework/teacher-homework-correctDetail.html"
+				],
+				"priority": 0
+			},
+			"html/homework/teacher-homework-correctDetail.html": {
+				"resources": [],
+				"refer": [
+					"html/homework/teacher-homework-evaluate.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {
@@ -325,7 +454,6 @@
 				"js/mui.previewimage.js",
 				"js/libs/crypto-js/hmac-sha3.js",
 				"js/libs/CryptoJS/components/pad-iso10126-min.js",
-				"html/order/packageDetails_renew.html",
 				"js/libs/CryptoJS/rollups/hmac-sha1.js",
 				"js/libs/CryptoJS/rollups/hmac-sha512.js",
 				"js/sciedu/sciedu-list.js",
@@ -361,7 +489,6 @@
 				"js/libs/CryptoJS/components/x64-core-min.js",
 				"js/libs/CryptoJS/rollups/hmac-sha224.js",
 				"js/qiniu/moxie.js",
-				"html/order/packageDetails_order.html",
 				"js/libs/crypto-js/pad-ansix923.js",
 				"js/libs/CryptoJS/components/aes.js",
 				"js/publicProtocol1.js",
@@ -396,8 +523,6 @@
 				"js/libs/CryptoJS/components/sha256.js",
 				"js/libs/CryptoJS/components/format-hex.js",
 				"html/register/register.html",
-				"html/login/firstPage1.html",
-				"html/mine/headImg.html",
 				"js/utils/recordaudioutil.js",
 				"js/libs/CryptoJS/rollups/hmac-sha3.js",
 				"js/utils/vconsole.min.js",
@@ -498,7 +623,6 @@
 				"js/storageKeyName.js",
 				"js/libs/CryptoJS/components/pad-iso97971-min.js",
 				"js/libs/jquery.lazyload.min.js",
-				"html/mine/about.html",
 				"js/libs/CryptoJS/components/pad-ansix923-min.js",
 				"img/utils/default_load_2_1.gif",
 				"js/libs/require/require.js",
@@ -527,7 +651,6 @@
 				"js/utils/storageutil.js",
 				"css/sciedu/sciedu.css",
 				"js/libs/crypto-js/core.js",
-				"html/mine/modifyPassword.html",
 				"js/libs/CryptoJS/components/lib-typedarrays-min.js",
 				"js/libs/CryptoJS/components/core-min.js",
 				"img/homeSchool/schoolPage4.png",
@@ -546,7 +669,6 @@
 				"js/libs/crypto-js/sha384.js",
 				"js/utils/RSAEncrypt.js",
 				"js/libs/CryptoJS/components/evpkdf.js",
-				"html/utils/customizeCity.html",
 				"js/libs/CryptoJS/components/mode-ctr.js",
 				"js/libs/crypto-js/README.md",
 				"js/qiniu/plupload.dev.js",
@@ -573,7 +695,6 @@
 				"js/libs/CryptoJS/components/rabbit-legacy-min.js",
 				"img/homeSchool/schoolPage0.png",
 				"js/cloud/order-member.js",
-				"html/order/orderList.html",
 				"js/libs/crypto-js/cipher-core.js",
 				"js/utils/utils.js",
 				"js/libs/CryptoJS/rollups/ripemd160.js",
