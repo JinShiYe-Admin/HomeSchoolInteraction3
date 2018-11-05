@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>批量评价</title>
+		<title>批量登记</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
@@ -101,23 +101,12 @@
 			    height: 0;
 			}
 			
-			input[type=text]{
-				margin: 5px 0;
-				border: 0;
-				font-size: 15px;
-			    color: #3E4B53;
+			.mui-input-group:after {
+			    height: 0;
 			}
-			textarea::-webkit-input-placeholder,input::-webkit-input-placeholder {
-	        	font-size: 14px;
-     		}
-			textarea{
-				font-size: 15px;
-				width: 100%;
-				padding: 5px 15px 0;
-				border-top:1px solid rgba(0,0,0,.2);
-				border-left:0px;
-				border-right:0px;
-				border-bottom:0px;
+			
+			.mui-input-group .mui-input-row:after {
+			    height: 0;
 			}
 		</style>
 	</head>
@@ -125,16 +114,31 @@
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
 			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title" style="color: white;">批量评价</h1>
+			<h1 class="mui-title" style="color: white;">批量登记</h1>
 			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submit()">提交</a>
 		</header>
 		<div class="mui-content" style="background: white;">
 			<div id="detail">
-				<div class="mui-row">
-					<input name="score" value="" type="text" placeholder="请输入分数（0-100），允许小数点后一位"  onkeyup="clearNoNum(this)">
+				<div class="title-first">
+					递交状态统一修改为
 				</div>
 				<div class="mui-row">
-					<textarea name="critique" value="" rows="5" placeholder="请输入评价评价内容（最多2000字）" style="margin-bottom: 0;"></textarea>
+					<form class="mui-input-group">
+						<div class="mui-input-row mui-radio mui-left">
+							<div class="mui-col mui-col-xs-4" style="float: left;">
+								<label>已交</label>
+								<input name="radio1" type="radio" checked>
+							</div>
+							<div class="mui-col mui-col-xs-4" style="float: left;">
+								<label>未交</label>
+								<input name="radio1" type="radio" >
+							</div>
+							<div class="mui-col mui-col-xs-4" style="float: left;">
+								<label>补交</label>
+								<input name="radio1" type="radio" >
+							</div>
+						</div>
+					</form>
 				</div>
 				<div class="title">
 					请选择学生	
@@ -148,62 +152,6 @@
 					</div>
 					<div class="mui-input-row mui-checkbox mui-left">
 					    	<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张一</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张二</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张三</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张四</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王一</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王二</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王三</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">隔壁老王</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">降央卓玛</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">馹圈哦</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">魑魅魍魉</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">囊囊囊</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">哈哈哈</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">测试</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
 								<label for="checkbox1" class="check-label">张一</label>
 					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
 							</div>
