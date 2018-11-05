@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+	</head>
+
+	<body style="background-color: #FFFFFF;">
+		<header class="mui-bar mui-bar-nav orals-header">
+			<div class="mui-clearfix">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<a id="submitBook" class="mui-btn-link mui-pull-right">完成</a>
+			</div>
+		    <h1 class="mui-title">切换教材</h1>
+		</header>
+		
+		<div class="mui-content">
+			<div id="bookSelect" class="book-select" v-cloak>
+                <p class="title">学段</p>
+                <div class="radio-group mui-row">
+                    <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4" v-if="item.enabled">
+                        <label class="radio-item">
+				    		<input type="radio" v-model="items.per.selected" name="book_per" :value="item.percode" 
+				    			@change="itemChange('per')" />
+				    		<span>{{item.pername}}</span>
+					    </label>
+                    </div>
+                </div>
+                <p class="title">科目</p>
+                <div class="radio-group mui-row">
+                    <div v-for="(item, index) in items.sub.list" :key="index" class="mui-col-xs-4">
+                        <label class="radio-item">
+				    		<input type="radio" v-model="items.sub.selected" name="book_sub" :value="item.subcode" 
+				    			@change="itemChange('sub')"/>
+				    		<span>{{item.subname}}</span>
+					    </label>
+                    </div>
+                </div>
+                <p class="title">教版</p>
+                <div class="radio-group mui-row">
+                    <div v-for="(item, index) in items.mater.list" :key="index" class="mui-col-xs-4">
+                        <label class="radio-item">
+				    		<input type="radio" v-model="items.mater.selected" name="book_mater" :value="item.matercode" 
+				    			@change="itemChange('mater')"/>
+				    		<span>{{item.matername}}</span>
+					    </label>
+                    </div>
+                </div>
+                <p class="title">年级</p>
+                <div class="radio-group mui-row">
+                    <div v-for="(item, index) in items.fasc.list" :key="index" class="mui-col-xs-4">
+                        <label class="radio-item">
+				    		<input type="radio" v-model="items.fasc.selected" name="book_fasc" :value="item.fasccode" 
+				    			@change="fascChange"/>
+				    		<span>{{item.fascname}}</span>
+					    </label>
+                    </div>
+                </div>
+                <p class="title" v-if="items.ser">分册</p>
+                <div class="radio-group mui-row" v-if="items.ser">
+                    <div v-for="(item, index) in items.ser.list" :key="index" class="mui-col-xs-4">
+                        <label class="radio-item">
+				    		<input type="radio" v-model="items.ser.selected" name="book_ser" :value="item.sercode" 
+				    			@change="serChange"/>
+				    		<span>{{item.sername}}</span>
+					    </label>
+                    </div>
+                </div>
+            </div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			var auth={};
+			
+			var book = new Vue({
+				el: "#bookSelect",
+				data: {
+					items: {
+						mater: {list:[]},
+						sub: {list:[]},
+						fasc: {list:[]},
+						per: {list:[]},
+						ser: {list:[]}
+					}
+				},
+				methods: {
+					itemChange: function(item) {
+						var params = {}, _this = this;
+                		params[item+"code"] = this.items[item].selected;
+                		oralsAjax(host+'/persubmat', params, function(res){
+                			var rd = res.data;
+							_this.items.per = rd.per;
+							_this.items.sub = rd.sub;
+							_this.items.mater = rd.mater;
+							_this.items.fasc = rd.fasc;
+							
+							if(rd.per.selected&&rd.sub.selected&&rd.mater.selected&&rd.fasc.selected){
+								_this.fascChange();
+							}else{
+								_this.items.ser = {list:[]};
+							}
+                		});
+					},
+					fascChange: function() {
+						var _this = this;
+						var data = {
+							percode: _this.items.per.selected,
+							subcode: _this.items.sub.selected,
+							matercode: _this.items.mater.selected,
+							fasccode: _this.items.fasc.selected
+						};
+						oralsAjax(host+'/catalog', data, function(r){
+							var book_ser = {list:[], selected:0}
+			               	r.data.forEach(function(v, i){
+			               		book_ser.list.push({sercode: i, sername: v.name});
+			               	});
+			               	_this.items.ser = book_ser;
+			               	
+			               	//请求成功后，保存教材信息
+			               	plus.storage.setItem("orals_menu", JSON.stringify(r.data));
+			               	
+			               	_this.serChange();
+			               	
+						});
+					},
+					serChange: function() {
+						var _this = this;
+						var menu_tree = JSON.parse(plus.storage.getItem("orals_menu"));
+						if(menu_tree.length){
+							//获取最终目录，并存储目录
+							var catalog = [];
+							readTree(menu_tree[_this.items.ser.selected].childList, function(node){
+			                    if(!node.childList||!node.childList.length) {
+			                        catalog.push(node);
+			                    }
+			               });
+			               	catalog.forEach(function(v, i){
+								readTree(menu_tree[_this.items.ser.selected].childList, function(node){
+									if(node.id==v.pid){
+										catalog[i]["pname"] = node.name;
+									}
+								});
+							});
+			               	plus.storage.setItem("book_items", JSON.stringify(_this.items));
+			               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog));
+			               	plus.storage.setItem("orals_catalog_id", String(catalog[0]?catalog[0].id:0));
+						}
+					}
+				}
+			});
+						
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+//				var cover_view = plus.webview.getWebviewById('orals_cover');
+//				var coverCallback;
+//				window.addEventListener("coverHide", function(e){
+//					if(e.detail.type=="dialog"){
+//						e.detail.dialogYes && coverCallback();
+//					}
+//				});
+				
+				auth = JSON.parse(plus.storage.getItem('orals_auth'));
+				
+				//当前教材	
+				book.items = JSON.parse(plus.storage.getItem('book_items'));
+				
+				//点击 确定
+				document.getElementById("submitBook").addEventListener("tap", function(){
+//					if(plus.storage.getItem("orals_test_state")=="4"){
+//						mui.fire(cover_view, "setOption", {
+//				    		type: 'dialog', 
+//				    		opener_id: self.id
+//				    	});
+//				    	coverCallback = function() {
+//				    		mui.fire(self.opener(), "changeBook");
+//							mui.fire(plus.webview.getWebviewById("orals_errs"), "getData");
+//							mui.back();
+//				    	}
+//					}else{
+						mui.fire(self.opener(), "changeBook");
+						mui.fire(plus.webview.getWebviewById("orals_errs"), "getData");
+						mui.back();
+//					}
+				});
+				
+			});
+			
+//			book.items = {"mater":{"list":[{"matername":"人教版（PEP）","matercode":"42"}],"selected":"15"},"sub":{"list":[{"subname":"英语","subcode":"03"}],"selected":"03"},"fasc":{"list":[],"selected":null},"per":{"list":[{"percode":"2","pername":"小学","enabled":true},{"percode":"3","pername":"初中","enabled":true},{"percode":"4","pername":"高中","enabled":false}],"selected":"2"}}
+			
+		</script>
+	</body>
+
+</html>

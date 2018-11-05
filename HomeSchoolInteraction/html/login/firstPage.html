@@ -146,6 +146,7 @@
 						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
 					};
 					//登录
+//					try{
 					postDataEncry('Login', enData1, comData1, 0, function(data1) {
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
@@ -245,6 +246,11 @@
 							mui.toast(data1.RspTxt);
 						}
 					});
+//					}catch(e){
+//						utils.hrefSessionStorage('../../html/login/index2.html', {});
+//						plus.nativeUI.closeWaiting();
+//					}
+					
 				} else {
 					if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 						mui.toast('网络异常，请检查网络设置！');

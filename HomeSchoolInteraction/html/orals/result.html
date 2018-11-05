@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav orals-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title"></h1>
+		</header>
+		
+		<div id="result" class="mui-content" v-cloak>
+		    <ul class="result-list mui-table-view" v-for="(item,index) in model" :key="index" v-if="item.list.length">
+		    	<li class="mui-table-view-cell" v-for="(v, i) in item.list" 
+		    		:class="{'word-cell': v.category=='read_word'}"
+		    		@tap.stop="toggleOpen(index,i)">
+		    		<div :class="{'word-box': v.category=='read_word', 'sentence-box': v.category=='read_sentence'}">
+		    			<h4 v-if="v.category=='read_word'">{{v.words}}
+		    				<span class="symbol" v-if="v.symbol">[{{v.symbol}}]</span>
+		    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
+		    			</h4>
+		    			<h4 v-else>{{v.words}}
+		    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
+		    			</h4>
+		    			<div class="btns" v-if="openLi.index==index&&openLi.i==i">
+		    				<a class="btn-voice" @touchstart.stop="playAudio(v.audio_url, $event)">
+								<svg class="icon" aria-hidden="true">
+								  <use xlink:href="#icon-icon-voice"></use>
+								</svg>
+								<!--<svg class="icon active" aria-hidden="true">
+								  <use xlink:href="#icon-icon-voice-active"></use>
+								</svg>-->
+								<span class="icon active img-icon"></span>
+								<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
+							</a>
+							<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="stopRecord($event)" @touchend.stop="stopRecord($event)">
+								<svg class="icon" aria-hidden="true">
+								  <use xlink:href="#icon-icon-record"></use>
+								</svg>
+								<div class="btn-record-bg">
+									<div class="btn-record-bg-active"></div>
+								</div>
+							</a>
+							<a class="btn-play" @touchstart.stop="playAudio(v.record_url, $event)">
+								<svg class="icon" aria-hidden="true">
+								  <use xlink:href="#icon-icon-play"></use>
+								</svg>
+								<svg class="icon active" aria-hidden="true">
+								  <use xlink:href="#icon-icon-pause"></use>
+								</svg>
+							</a>
+		    			</div>
+		    		</div>
+		    		<div class="result-bar" v-if="v.category=='read_sentence'&&v.total_score!=null">
+		    			<div class="score-item">
+		    				准确度：{{v.accuracy_score}}
+		    			</div>
+		    			<div class="score-item">
+		    				完整度：{{v.integrity_score}}
+		    			</div>
+		    			<div class="score-item">
+		    				流利度：{{v.fluency_score}}
+		    			</div>
+		    		</div>
+		    	</li>
+		    </ul>
+		   	<div class="list-end" v-show="model.length">没有更多了~</div>
+		</div>
+		
+		<audio id="audio" class="mui-hidden"></audio>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			
+			mui.init({
+				beforeback: function() {
+					resultVue.audioStop();
+					if(self) {
+						if(detail_progress&&self.opener().id=="orals_record"){
+							mui.fire(self.opener(), 'refresh');
+						}
+						self.close();
+						return true;
+					}
+				}
+			});
+			
+			var detail_progress = false;
+			var self;
+			var r=null, files=[], gentry;
+			
+			mui.plusReady(function() {
+				plus.nativeUI.showWaiting();
+				self = plus.webview.currentWebview();
+				document.querySelector('.mui-bar .mui-title').innerHTML = self.title;
+				
+				//获取内容
+				oralsAjax(host+'/orals', {category: self.cate, bookCatalogId: self.catalog_id}, function(res){
+					resultVue.key = res.data.key;
+					resultVue.model.push({
+						list: res.data.list
+					});
+					plus.nativeUI.closeWaiting();
+				}, function(res){
+					plus.nativeUI.closeWaiting();
+				}, function(){
+					plus.nativeUI.closeWaiting();
+				});
+				
+				// 获取音频目录对象
+				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
+					entry.getDirectory('audio', {create:true}, function(dir){
+						gentry = dir;
+					}, function(e){
+						outSet('Get directory "audio" failed: '+e.message);
+					});
+				}, function(e){
+					outSet('Resolve "_doc/" failed: '+e.message);
+				} );
+				
+			});
+			
+			//audio元素
+			var audioEle = document.getElementById('audio');
+			var audioErrored = false;
+			audioEle.onended = function() {
+				resultVue.audioStop();
+			}
+			audioEle.onerror = function() {
+				if(!audioErrored) {
+					mui.toast("获取音频失败", {type: 'div'});
+					resultVue.audioStop();
+					audioErrored = true;
+				}
+			}
+			audioEle.onstalled = function() {
+				if(!audioErrored) {
+					mui.toast("获取音频失败", {type: 'div'});
+					resultVue.audioStop();
+					audioErrored = true;
+				}
+			}
+			
+			var resultVue = new Vue({
+				el: "#result",
+				data: {
+					model: [],
+					isRecording: false,
+					valid_touch: false,
+					openLi: {index: -1, i: -1},
+					key: ""
+				},
+				methods: {
+					setScore: function(score) {
+						return Math.round(score*20);
+					},
+					toggleOpen: function(index, i) {
+						this.openLi.index = index;
+						this.openLi.i = i;
+					},
+					//播放录音
+					playAudio: function(url, e) {
+						if(!plus) return false;
+						if(!url) {
+							mui.toast('没有录音', { duration:'short', type:'div' });
+							return false;
+						}
+						audioErrored = false;
+						this.audioStop();
+						audioEle.src = url;
+						audioEle.play();
+						
+						var ele = e.currentTarget;
+						ele.classList.add('active');
+					},
+					audioStop: function() {
+						!audioEle.ended && audioEle.pause();
+						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v){
+							if(v.classList.contains('active')) {
+								v.classList.remove('active');
+							}
+						});
+					},
+					//点击录音
+					record: function(cur, e) {
+						var _this = this;
+						var ele = e.currentTarget;
+						if(!this.isRecording) {
+							ele.classList.add('active');
+							this.isRecording = true;
+							this.startRecord(cur);
+							setTimeout(function(){
+								_this.isRecording && _this.stopRecord();
+							}, cur.time_len*1000||5000);
+						}
+					},
+					//开始录音
+					startRecord: function(cur) {
+						var _this = this;
+						r = plus.audio.getRecorder();
+						if ( r == null ) {
+							console.log('录音对象未获取');
+							return;
+						}
+						gentry.removeRecursively(function(){
+							console.log('已清除缓存！');
+						}, function(e){
+							console.log('操作失败：'+e.message);
+						});
+						setRecorder(r, _this.valid_touch, function(p){
+							files.push({name:"uploadkey",path:p});
+							cur['key'] = _this.key;
+							_this.uploadRecord(cur);
+						});
+					},
+					//停止录音
+					stopRecord: function(e) {
+						if(this.isRecording) {
+							var ele = e?e.currentTarget:false;
+							if(ele){
+								ele.classList.remove('active');
+							}else{
+								document.querySelector("a.btn-record.active").classList.remove('active');
+							}
+							r && r.stop();
+							this.isRecording = false;
+						}
+					},
+					//上传录音
+					uploadRecord: function(record) {
+						if(files.length<=0){
+							plus.nativeUI.alert("没有添加上传文件！");
+							return;
+						}
+						var _this = this;
+						uploadRecordFile(record, files, function(res){
+							var cur_li = record;
+							cur_li.key = res.data.key;
+							cur_li.total_score = res.data.totalScore;
+							cur_li.record_url = res.data.recordUrl;
+							if(cur_li.category=="read_sentence") {
+								cur_li.accuracy_score = res.data.accuracyScore;
+								cur_li.fluency_score = res.data.fluencyScore;
+								cur_li.integrity_score = res.data.integrityScore;
+							}
+							_this.submit(cur_li);
+						});
+					},
+					//提交
+					submit: function(cur) {
+						var _this = this;
+						oralsAjax(host+"/orals/save", {data: JSON.stringify([cur])}, function(res){
+							detail_progress = true;
+//							console.log(res);
+						});
+					}
+					
+				}
+			});
+			
+		</script>
+	</body>
+
+</html>

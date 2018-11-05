@@ -4,7 +4,7 @@
 		"iPhone",
 		"iPad"
 	],
-	"id": "H50A4C97E",/*应用的标识，创建应用时自动生成，勿手动修改*/
+	"id": "H53AA34D8",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "校讯通",/*应用名称，程序桌面图标名称*/
 	"version": {
 		"name": "1.0.0",/*应用版本名称*/
@@ -91,9 +91,7 @@
 		"Maps": {
 			"description": "管理地图插件"
 		},
-		"Speech": {
-			"description": "管理语音识别插件"
-		},
+		"Speech": {},
 		"Webview": {
 			"description": "窗口管理"
 		},
@@ -134,36 +132,7 @@
 				"keystore": "",/*Android应用打包使用的密钥库文件*/
 				"password": "",/*Android应用打包使用密钥库中证书的密码*/
 				"aliasname": "",/*Android应用打包使用密钥库中证书的别名*/
-				"permissions": [
-					"<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-					"<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
-					"<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-					"<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-					"<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
-					"<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-					"<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-					"<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>",
-					"<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
-					"<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-					"<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>",
-					"<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>",
-					"<uses-permission android:name=\"android.permission.CAMERA\"/>",
-					"<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
-					"<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
-					"<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
-					"<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>",
-					"<uses-permission android:name=\"android.permission.INTERNET\"/>",
-					"<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-					"<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
-					"<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-					"<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-					"<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
-					"<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
-					"<uses-feature android:name=\"android.hardware.camera\"/>",
-					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
-					"<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
-					"<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-				]
+				"permissions": ["<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>","<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.READ_LOGS\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-permission  android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>","<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>","<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>","<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>","<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>","<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>","<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.SEND_SMS\"/>","<uses-permission android:name=\"android.permission.INTERNET\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>","<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>","<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>","<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>","<uses-permission android:name=\"android.permission.WRITE_SMS\"/>","<uses-permission android:name=\"android.permission.READ_SMS\"/>"]
 			},
 			"orientation": [
 				"portrait-primary"
@@ -244,7 +213,11 @@
 				"refer": [
 					"html/login/index2.html",
 					"html/login/index.html",
+<<<<<<< HEAD
 					"html/relation/relationStu.html"
+=======
+					"html/login/loginIndex.html"
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				],
 				"priority": 0
 			},
@@ -266,7 +239,12 @@
 				],
 				"refer": [
 					"html/Course/courseIndex.html",
+<<<<<<< HEAD
 					"html/helpStudy/helpStudyIndex.html"
+=======
+					"html/helpStudy/helpStudyIndex.html",
+					"html/login/firstPage.html"
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				],
 				"priority": 0
 			},
@@ -283,10 +261,17 @@
 				"refer": [
 					"html/homeSchool/mine.html",
 					"html/homeSchool/noticeList.html",
+<<<<<<< HEAD
 					"html/homework/parent-homework-index.html",
 					"html/test/student-index.html",
 					"html/student/student-index.html",
 					"html/homework/teacher-index.html"
+=======
+					"html/student/student-index.html",
+					"html/orals/index.html",
+					"html/homework/teacher-index.html",
+					"html/orals/orals_index.html"
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				],
 				"priority": 0
 			},
@@ -313,13 +298,18 @@
 				],
 				"priority": 0
 			},
+<<<<<<< HEAD
 			"html/relation/relationStu.html": {
+=======
+			"html/login/loginIndex.html": {
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				"resources": [],
 				"refer": [
 					"html/login/index.html"
 				],
 				"priority": 0
 			},
+<<<<<<< HEAD
 			"html/homeSchool/mine.html": {
 				"resources": [],
 				"refer": [
@@ -432,6 +422,96 @@
 				"resources": [],
 				"refer": [
 					"html/homework/teacher-homework-evaluate.html"
+=======
+			"html/student/student-index.html": {
+				"resources": [
+					"html/student/student-attendance.html"
+				],
+				"refer": [
+					"html/student/student-action.html",
+					"html/student/student-talkRecord.html",
+					"html/student/student-review.html"
+				],
+				"priority": 0
+			},
+			"html/orals/index.html": {
+				"resources": [
+					"html/orals/errs.html"
+				],
+				"refer": [
+					"html/orals/book.html",
+					"html/orals/result.html",
+					"html/orals/record.html",
+					"html/login/index.html"
+				],
+				"priority": 0
+			},
+			"html/orals/errs.html": {
+				"resources": [],
+				"refer": [
+					"html/orals/book.html"
+				],
+				"priority": 0
+			},
+			"html/student/student-talkRecord.html": {
+				"resources": [],
+				"refer": [
+					"html/student/student-talkRecord-Detail.html"
+				],
+				"priority": 0
+			},
+			"html/homework/teacher-index.html": {
+				"resources": [
+					"html/homework/teacher-indexPublish.html"
+				],
+				"refer": [
+					"html/homework/teacher-indexCorrect.html",
+					"html/homework/teacher-indexForm.html"
+				],
+				"priority": 0
+			},
+			"html/orals/record.html": {
+				"resources": [],
+				"refer": [
+					"html/orals/result.html",
+					"html/orals/book.html"
+				],
+				"priority": 0
+			},
+			"html/homeSchool/mine.html": {
+				"resources": [],
+				"refer": [
+					"html/login/firstPage1.html"
+				],
+				"priority": 0
+			},
+			"html/login/firstPage1.html": {
+				"resources": [],
+				"refer": [
+					"html/login/index2.html"
+				],
+				"priority": 0
+			},
+			"html/orals/orals_index.html": {
+				"resources": [
+					"html/orals/errs.html",
+					"html/orals/orals_test.html"
+				],
+				"refer": [
+					"html/orals/book.html",
+					"html/orals/record.html",
+					"html/orals/cover.html"
+				],
+				"priority": 0
+			},
+			"html/orals/orals_test.html": {
+				"resources": [],
+				"refer": [
+					"html/orals/book.html",
+					"html/orals/cover.html",
+					"html/orals/record.html",
+					"html/orals/result.html"
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				],
 				"priority": 0
 			}
@@ -523,6 +603,10 @@
 				"js/libs/CryptoJS/components/sha256.js",
 				"js/libs/CryptoJS/components/format-hex.js",
 				"html/register/register.html",
+<<<<<<< HEAD
+=======
+				"html/mine/headImg.html",
+>>>>>>> 147ebc3c119c9df3bd1d54a677e5ba479090433a
 				"js/utils/recordaudioutil.js",
 				"js/libs/CryptoJS/rollups/hmac-sha3.js",
 				"js/utils/vconsole.min.js",
@@ -639,7 +723,6 @@
 				"js/libs/crypto-js/hmac-sha384.js",
 				"js/libs/CryptoJS/rollups/hmac-md5.js",
 				"css/utils/notice-img.css",
-				"html/login/loginIndex.html",
 				"img/utils/default_load.png",
 				"html/homeSchool/gradeList.html",
 				"js/sciedu/SciEduHomeItem.js",

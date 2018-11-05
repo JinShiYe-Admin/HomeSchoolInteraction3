@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			.btns-box .btn-record {
+				position: relative;
+			}
+			.btns-box .btn-record:after {
+				display: inline-block;
+				content: "按住录音，松开提交";
+				position: absolute;
+				font-size: 10px;
+				left: -30px;
+			    right: -30px;
+			    top: -15px;
+			    color: #7290A1;
+			}
+			.mui-content {
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div class="mui-content">
+			<div id="testView" v-cloak>
+				
+				<div class="second-title mui-text-center">
+			    	<div class="book-items-box" @tap="bookSelect()">
+			    		<div id="bookItems"></div>
+			    		<a>
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-change"></use>
+							</svg>
+			    		</a>
+			    	</div>
+			    	<div class="content-title">
+			    		<a class="mui-icon" @click.stop="changeMenu(-1)">
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-left"></use>
+							</svg>
+			    		</a>
+			    		<div id="contentTitle" @tap="showMenu"></div>
+			    		<a class="mui-icon" @click.stop="changeMenu(1)">
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-right"></use>
+							</svg>
+			    		</a>
+			    	</div>
+			    </div>
+		    
+				<div class="progress-box">
+					<span>{{(index+1)+"/"+list.length}}</span>
+				</div>
+				
+				<div v-if="list.length" class="test-pannel" :class="{sentence: !isWord}">
+					{{list[index].words}}
+					<p class="read" v-if="isWord" v-show="isTested&&list[index].symbol">[{{list[index].symbol}}]</p>
+					<p class="translation" v-else v-show="isTested&&list[index].translations">{{list[index].translations}}</p>
+				</div>
+				<div v-else-if="state>2" class="test-pannel" style="font-size: 12px;color: #999999;">暂无内容</div>
+				<div v-else class="test-pannel"></div>
+				
+				<div class="action-box">
+					<div class="overflow-cover"></div>
+					<div class="score-box">
+						<span class="score" v-if="isTested">{{setScore(list[index].total_score)}}</span>
+					</div>
+					<div class="btns-box">
+						<a class="btn-voice" :class="{active: playingAudio}" @tap="playAudio(list[index]?list[index].audio_url:'', 'audio')">
+							<!--<img class="icon" v-if="playingAudio" src="../../css/orals/icon-voice.gif"/>-->
+							<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-voice"></use>
+							</svg>
+							<!--<svg class="icon active" aria-hidden="true">
+							  <use xlink:href="#icon-icon-voice-active"></use>
+							</svg>-->
+							<span class="icon active img-icon"></span>
+							<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
+						</a>
+						<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record" @touchmove.stop="stopRecord" @touchend.stop="stopRecord">
+							<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-record"></use>
+							</svg>
+							<div class="btn-record-bg">
+								<div class="btn-record-bg-active"></div>
+							</div>
+							<!--<svg class="icon active" aria-hidden="true">
+							  <use xlink:href="#icon-icon-record-active"></use>
+							</svg>-->
+							<!--<span class="icon active img-icon"></span>-->
+							<!--<img class="icon active" src="../../css/orals/icon-record.gif"/>-->
+						</a>
+						<a class="btn-play" :class="{active: playingRecord}" @tap="playAudio(list[index]?list[index].record_url:'', 'record')">
+							<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-play"></use>
+							</svg>
+							<svg class="icon active" aria-hidden="true">
+							  <use xlink:href="#icon-icon-pause"></use>
+							</svg>
+						</a>
+					</div>
+					
+					<div class="skip-box">
+						<a :class="{disabled: index==0}" @tap="changeIndex(-1)">上一个</a>
+						<a v-show="index<list.length-1" @tap="changeIndex(1)">下一个</a>
+						<a v-show="index==list.length-1" class="btn-submit" @tap="submit">提交</a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+		<div id="beforeLeaveDialog" class="cfm-dialog">
+			<div class="icon-title">
+				<svg class="icon" aria-hidden="true" style="color: #FF8800;">
+				  	<use xlink:href="#icon-icon-warning"></use>
+				</svg>
+			</div>
+			<p class="dialog-content">您还没有提交，离开将不保存成绩！</p>
+		</div>
+		
+		<audio id="audio" class="mui-hidden"></audio>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/orals/layer/layer.js"></script>
+		
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="../../js/orals/orals-common.js"></script>
+		<script type="text/javascript">
+			var bookItems, contentTitle, testVue, self, cover_view;
+			var audioEle = document.getElementById('audio');
+			var coverCallback;
+			
+			function setCategory(category) {
+				testVue.category = category;
+			}
+			
+			mui.plusReady(function() {
+				
+				mui.init();
+				
+				self = plus.webview.currentWebview();
+				cover_view = plus.webview.getWebviewById('orals_cover');
+				var errs_view = plus.webview.getWebviewById("orals_errs");
+				
+				var r=plus.audio.getRecorder(), files=[], gentry, pms_record;
+				// 获取音频目录对象
+				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
+					entry.getDirectory('audio', {create:true}, function(dir){
+						gentry = dir;
+					}, function(e){
+						outSet('Get directory "audio" failed: '+e.message);
+					});
+				}, function(e){
+					outSet('Resolve "_doc/" failed: '+e.message);
+				} );
+				
+				//audio对象
+				audioEle.onpause = function() {
+					testVue.playingAudio = false;
+					testVue.playingRecord = false;
+				}
+				audioEle.onended = function() {
+					testVue.playingAudio = false;
+					testVue.playingRecord = false;
+				}
+				audioEle.onerror = function() {
+					if(testVue.playingAudio||testVue.playingRecord) {
+						mui.toast("获取音频失败", {type: 'div'});
+						testVue.playingAudio = false;
+						testVue.playingRecord = false;
+					}
+				}
+				audioEle.onstalled = function() {
+					if(testVue.playingAudio||testVue.playingRecord) {
+						mui.toast("获取音频失败", {type: 'div'});
+						testVue.playingAudio = false;
+						testVue.playingRecord = false;
+					}
+				}
+				
+				//测评对象
+				testVue = new Vue({
+					el: "#testView",
+					data: {
+						catalogId: 0,
+						list: [],
+						index: 0,
+						category: self.type,
+						isRecording: false,
+						playingAudio: false,
+						playingRecord: false,
+						menu: [],
+						valid_touch: false,
+						state: 1 // 1-unload; 2-loading; 3-loaded; 4-start; 5-submit
+					},
+					computed: {
+						isTested: function() {
+							var cur = this.list[this.index];
+							return cur&&cur.total_score!=null&&cur.total_score>=0;
+						},
+						isWord: function() {
+							return this.list[this.index].category=='read_word';
+						}
+					},
+					watch: {
+						catalogId: function(v, ov) {
+							this.getContent();
+							plus.storage.setItem("orals_catalog_id", String(v));
+						},
+						category: function(v, ov) {
+							this.getContent("category");
+						},
+						state: function(v) {
+							plus.storage.setItem("orals_test_state", String(v));
+						}
+					},
+					mounted: function() {
+						contentTitle = document.getElementById("contentTitle");
+						bookItems = document.getElementById("bookItems");
+						
+						//左滑右滑切换
+						var _this=this, cont=this.$el;
+						cont.addEventListener("swipeleft",function(){
+			            	_this.changeIndex(1);
+			            });
+			            cont.addEventListener("swiperight",function(){
+			            	_this.changeIndex(-1);
+			            });
+					},
+					methods: {
+						setScore: function(score) {
+							return Math.round(score*20);
+						},
+						//选择教材
+						bookSelect: function() {
+							!audioEle.ended && audioEle.pause();
+							if(this.state==4){
+								mui.fire(cover_view, "setOption", {type: 'dialog', opener_id: self.id, dialog_type: 1});
+								coverCallback = goBook;
+							}else{
+								goBook();
+							}
+						},
+						//获取评测内容
+						getContent: function(change_data) {
+							plus.nativeUI.showWaiting();
+							!audioEle.ended && audioEle.pause();
+							var _this = this;
+							if(!_this.catalogId) {
+								plus.nativeUI.closeWaiting();
+								return false;
+							}
+							if(contentTitle&&change_data!="category") {
+								contentTitle.innerHTML = getCatalogName(_this.catalogId);
+							}
+							var data = {
+								category: _this.category=="word"?"read_word":"read_sentence",
+	                    		bookCatalogId: _this.catalogId
+							}
+							_this.state = 2;
+							oralsAjax(host+'/orals', data, function(res){
+								//添加单词句子列表
+								res.data.list.forEach(function(v){
+									//成绩清零
+									v.total_score = null; 
+									v.record_url = null;
+									v.key = res.data.key;
+								});
+								_this.list=res.data.list;
+								_this.index=0;
+								_this.state = 3;
+								plus.nativeUI.closeWaiting();
+							}, function(res){
+								_this.state = 3;
+								plus.nativeUI.closeWaiting();
+							}, function(){
+								_this.state = 3;
+								plus.nativeUI.closeWaiting();
+							});
+						},
+						showMenu: function() {
+							var _this = this;
+							mui.fire(cover_view, "setOption", {
+								type: 'menu', 
+								opener_id: self.id,
+								canSelect: _this.state!=4
+							});
+						},
+						//切换目录
+						changeMenu: function(d) { 
+							if(isNetAbort) {
+								mui.toast("网络异常，请检查网络设置！", {duration:'short', type:'div'});
+								return false;
+							}
+							var _this = this;
+							var catalog = _this.menu;
+							var c_index;
+							catalog.forEach(function(v, i){
+								if(v.id==_this.catalogId) c_index=i;
+							});
+							if(c_index+d>=0&&c_index+d<=catalog.length){
+								if(_this.state==4){
+									mui.fire(cover_view, "setOption", {type: 'dialog', opener_id: self.id, dialog_type: 0});
+									coverCallback = function(){
+										_this.catalogId = catalog[c_index+d].id;
+									}
+								}else{
+									_this.catalogId = catalog[c_index+d].id;
+								}
+							}
+						},
+						//切换单词句子
+						changeIndex: function(d) {
+							if(this.isRecording) {
+								return false;
+							}
+							var f_index = this.index + d;
+							if(f_index>=0&&f_index<this.list.length){
+								this.index = f_index;
+							}
+						},
+						//播放音频
+						playAudio: function(url, type) {
+							if(isNetAbort) {
+								mui.toast("网络异常，请检查网络设置！", {duration:'short', type:'div'});
+								return false;
+							}
+							if(!url){
+								mui.toast(type=="record"?"您还没录音":"没有音频",{ duration:'short', type:'div' });
+								return ;
+							}
+							if(this.playingAudio||this.playingRecord) {
+								this.playingAudio = false;
+								this.playingRecord = false;
+								!audioEle.ended && audioEle.pause();
+							}
+							audioEle.src = url;
+							audioEle.play();
+
+							if(type=="audio"){
+								this.playingAudio = true;
+							}else if(type=="record") {
+								this.playingRecord = true;
+							}
+						},
+						//点击录音
+						record: function() {
+							if(!this.list[this.index]) return;
+							if(pms_record=="denied") {
+								mui.toast("录音已被禁用，请在手机设置中设为允许。");
+								return false;
+							}
+							if(!this.isRecording) {
+								this.isRecording = true;
+								this.startRecord();
+								var _this = this;
+								mui.later(function(){
+									_this.isRecording && _this.stopRecord();
+								}, _this.list[_this.index].time_len*1000||5000);
+							}
+						},
+						//开始录音
+						startRecord: function() {
+							var _this = this;
+							var record = this.list[this.index];
+							gentry.removeRecursively(function(){
+								console.log('已清除缓存！');
+							}, function(e){
+								console.log('操作失败：'+e.message);
+							});
+							setRecorder(r, _this.valid_touch, function(p){
+								files.push({name:"uploadkey",path:p});
+								_this.uploadRecord(record);
+							});
+						},
+						//停止录音
+						stopRecord: function() {
+							if(this.isRecording) {
+								r && r.stop();
+								this.isRecording = false;
+							}
+						},
+						//上传录音
+						uploadRecord: function(record) {
+							if(files.length<=0){
+								return;
+							}
+							var _this = this;
+							uploadRecordFile(record, files, function(res){
+								_this.state = 4;
+								var cur_li = _this.list[_this.index];
+								cur_li.total_score = res.data.totalScore;
+								cur_li.record_url = res.data.recordUrl;
+								if(cur_li.category=="read_sentence") {
+									cur_li.accuracy_score = res.data.accuracyScore;
+									cur_li.fluency_score = res.data.fluencyScore;
+									cur_li.integrity_score = res.data.integrityScore;
+								}
+							});
+						},
+						//提交
+						submit: function() {
+							var _this = this;
+							plus.nativeUI.showWaiting("正在提交");
+							
+							oralsAjax(host+"/orals/save", {data: JSON.stringify(_this.list)}, function(res){
+								_this.state = 5;
+								mui.openWindow({
+									url: "result.html",
+									id: "result.html",
+									extras: {
+										title: contentTitle.innerHTML,
+										cate: _this.list[0].category,
+										catalog_id: _this.catalogId
+									},
+									waiting: {
+										autoShow: true
+									}
+								});
+								mui.fire(errs_view, "getData");
+								plus.nativeUI.closeWaiting();
+							}, function(res){
+								plus.nativeUI.closeWaiting();
+							}, function(){
+								plus.nativeUI.closeWaiting();
+							});
+						}
+					}
+				});
+				
+				//是否获取到上一次记录
+				var isGetLast = self.isGetLast;
+				
+				//首页获取数据
+				if(self.isVisible()) {
+					plus.nativeUI.showWaiting();
+					getInitData();
+				}
+				
+				self.addEventListener('show', function(){
+					var catalog_id = plus.storage.getItem("orals_catalog_id");
+					if(catalog_id!=testVue.catalogId && !isNetAbort){
+						setBaseData();
+					}
+				});
+				
+				window.addEventListener("changeBook", function(e){
+					var catalog_id = plus.storage.getItem("orals_catalog_id");
+					if(catalog_id!=testVue.catalogId){
+						setBaseData();
+					}
+				});
+				
+				window.addEventListener("coverHide", function(e){
+					if(e.detail.type=="dialog"){
+						e.detail.dialogYes && coverCallback();
+					}else if(e.detail.type=="menu"){
+						(e.detail.catalogId!=testVue.catalogId) && setBaseData();
+					}
+				});
+				
+				function getInitData() {
+					var book_items = plus.storage.getItem('book_items');
+					//保存了上一次记录时
+					if(isGetLast&&book_items) {
+						// 获取教材信息
+						var last_book_items = JSON.parse(book_items);
+						getBook({
+							percode: last_book_items.per.selected,
+							subcode: last_book_items.sub.selected,
+							matercode: last_book_items.mater.selected,
+							fasccode: last_book_items.fasc.selected
+						}, last_book_items.ser.selected);
+					}else{
+						// 获取教材信息
+						getBook({});
+					}		
+				}
+				
+				// 获取教材信息
+				var persubmatTime = 0;
+				function getBook(data, ser) {
+					oralsAjax(host+'/persubmat', data, function(res){
+						//教材
+						var auto_book = res.data;
+						//获取目录
+						if(ser){
+							getCatalog(auto_book, ser);
+						}else{
+							getCatalog(auto_book);
+						}
+					}, function(res){
+						persubmatTime++;
+						if(persubmatTime<5) {
+							getBook(data);
+							return "noToast";
+						}else{
+							plus.nativeUI.closeWaiting();
+							netErrorTip();
+						}
+					}, function(){
+						plus.nativeUI.closeWaiting();
+						netErrorTip();
+					});
+				}
+				
+				//获取目录
+				function getCatalog(auto_book, ser) {
+					var data = {
+						percode: auto_book.per.selected,
+						subcode: auto_book.sub.selected,
+						matercode: auto_book.mater.selected,
+						fasccode: auto_book.fasc.selected
+					};
+					oralsAjax(host+'/catalog', data, function(res){
+						//保存教材
+						var book_ser = {list:[], selected: ser||0}
+		               	res.data.forEach(function(v, i){
+		               		book_ser.list.push({sercode: i, sername: v.name});
+		               	});
+		               	auto_book.ser = book_ser;
+		               	//保存教材信息
+		               	plus.storage.setItem("book_items", JSON.stringify(auto_book));
+						
+						//保存目录
+						plus.storage.setItem("orals_menu", JSON.stringify(res.data));
+						var catalog = []; 
+						readTree(res.data[book_ser.selected].childList, function(node){
+		                    if(!node.childList||!node.childList.length) {
+		                        catalog.push(node);
+		                    }
+		               	});
+		               	catalog.forEach(function(v, i){
+							readTree(res.data[book_ser.selected].childList, function(node){
+								if(node.id==v.pid){
+									catalog[i]["pname"] = node.name;
+								}
+							});
+						});
+		               	//保存分册目录
+		               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog)); 
+
+		               	setBaseData();
+		               	
+		               	//错题本数据
+		               	mui.fire(errs_view, "getData");
+		               	
+		               	pms_record = plus.navigator.checkPermission("RECORD");
+		               	
+					}, function(res){
+						plus.nativeUI.closeWaiting();
+					}, function(){
+						plus.nativeUI.closeWaiting();
+						netErrorTip();
+					});
+				}
+				
+				//获取默认节点
+				function getAutoNode(){
+					var auto_node = testVue.menu[0];
+                    if(auto_node) {
+						testVue.catalogId = auto_node.id;
+                    }
+	            }
+				
+				//设置基础数据
+				function setBaseData(){
+					//教材名
+					bookItems.innerHTML = getBookNames();
+					//设置目录列表
+					testVue.menu = JSON.parse(plus.storage.getItem("orals_catalog")||"[]");
+					//设置节点
+					var catalogId = plus.storage.getItem('orals_catalog_id');
+					if(catalogId){
+						testVue.catalogId = catalogId;
+					}else{
+						getAutoNode();
+					}
+				}
+				
+			});
+			
+//			
+//							new Vue({
+//					el: "#testView",
+//					data: {
+//						menu: {
+//							tree: [],
+//							activeId: 0
+//						},
+//						catalogId: 0,
+//						list: [{"symbol":"pεə","orals_id":null,"integrity_score":null,"create_time":null,"words":"pair","content":null,"time_len":3,"sequence":1,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"n.(相关的)两个人,一对。","is_del":false,"accuracy_score":null,"audio_url":"","total_score":null,"id":2774,"category":"read_word","book_catalog_id":1936,"status":1}],
+//						index: 0,
+//						isRecording: true,
+//						key: "",
+//						menuTitle: "Uint 1 My name is jack",
+//						isTested: true,
+//						isWord: true,
+//						playingAudio: false,
+//						playingRecord: false,
+//						isShowMenu: true,
+//					},
+//					methods: {
+//						record: function() {},
+//						stopRecord: function() {},
+//						submit: function() {},
+//						setScore: function() {return "88";},
+//						showMenu: function() {this.isShowMenu=true;},
+//						hideMenu: function() {this.isShowMenu=false;},
+//						selectMenu: function() {}
+//					}
+//			});
+			
+		</script>
+	</body>
+</html>
