@@ -238,12 +238,12 @@
 							//循环找到对应的套餐代码数据，合并
 							for(var i = 0; i < orders.orderList.length; i++) {
 								var orderModel = orders.orderList[i];
-								console.log('orderModel.serviceid:' + orderModel.serviceid);
+//								console.log('orderModel.serviceid:' + orderModel.serviceid);
 								for(var a = 0; a < data1.RspData.userbus.length; a++) {
 									var userBusModel = data1.RspData.userbus[a];
-									console.log('userBusModel.servid:' + userBusModel.servid);
+//									console.log('userBusModel.servid:' + userBusModel.servid);
 									if(orderModel.serviceid == userBusModel.servid) {
-										console.log('hebing');
+//										console.log('hebing');
 										orderModel = $.extend(orderModel, userBusModel);
 										orderModel.orderFlag = 1;
 									}

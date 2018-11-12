@@ -36,7 +36,7 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
 			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">作业列表</h1>
-			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+			<a @tap="revoke2()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+ </a>
 		</header>
 		<div class="mui-content" id="homeworkList">
 			<div id="">
@@ -76,6 +76,21 @@
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
 			mui.init()
+
+
+			var tempVue =new Vue({
+				el:'#tempVue',
+				data:{},
+				methods:{
+					revoke:function(){
+						utils.mOpenWithData("../../html/homework/parent-homework-submit.html", {});
+					},
+					revoke2:function(){
+						console.log(JSON.stringify(1111111111111111));
+						utils.mOpenWithData("../../html/homework/parent-homework-detail.html", {});
+					}
+				}
+			})
 
 			var homeworkListArray = new Vue({
 				el: "#homeworkListArray",
