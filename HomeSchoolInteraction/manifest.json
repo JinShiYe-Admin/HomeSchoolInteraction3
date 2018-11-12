@@ -213,6 +213,7 @@
 				"refer": [
 					"html/login/index2.html",
 					"html/login/index.html",
+					"html/relation/relationStu.html",
 					"html/login/loginIndex.html"
 				],
 				"priority": 0
@@ -236,6 +237,7 @@
 				"refer": [
 					"html/Course/courseIndex.html",
 					"html/helpStudy/helpStudyIndex.html",
+					"html/helpStudy/helpStudyIndex.html",
 					"html/login/firstPage.html"
 				],
 				"priority": 0
@@ -243,7 +245,8 @@
 			"html/login/loginFnoPermissions.html": {
 				"resources": [],
 				"refer": [
-					"html/login/index.html"
+					"html/login/index.html",
+					"html/relation/relationStu.html"
 				],
 				"priority": 0
 			},
@@ -399,7 +402,6 @@
 				"js/mui.previewimage.js",
 				"js/libs/crypto-js/hmac-sha3.js",
 				"js/libs/CryptoJS/components/pad-iso10126-min.js",
-				"html/order/packageDetails_renew.html",
 				"js/libs/CryptoJS/rollups/hmac-sha1.js",
 				"js/libs/CryptoJS/rollups/hmac-sha512.js",
 				"js/sciedu/sciedu-list.js",
@@ -435,7 +437,6 @@
 				"js/libs/CryptoJS/components/x64-core-min.js",
 				"js/libs/CryptoJS/rollups/hmac-sha224.js",
 				"js/qiniu/moxie.js",
-				"html/order/packageDetails_order.html",
 				"js/libs/crypto-js/pad-ansix923.js",
 				"js/libs/CryptoJS/components/aes.js",
 				"js/publicProtocol1.js",
@@ -571,7 +572,6 @@
 				"js/storageKeyName.js",
 				"js/libs/CryptoJS/components/pad-iso97971-min.js",
 				"js/libs/jquery.lazyload.min.js",
-				"html/mine/about.html",
 				"js/libs/CryptoJS/components/pad-ansix923-min.js",
 				"img/utils/default_load_2_1.gif",
 				"js/libs/require/require.js",
@@ -599,7 +599,6 @@
 				"js/utils/storageutil.js",
 				"css/sciedu/sciedu.css",
 				"js/libs/crypto-js/core.js",
-				"html/mine/modifyPassword.html",
 				"js/libs/CryptoJS/components/lib-typedarrays-min.js",
 				"js/libs/CryptoJS/components/core-min.js",
 				"img/homeSchool/schoolPage4.png",
@@ -644,7 +643,6 @@
 				"js/libs/CryptoJS/components/rabbit-legacy-min.js",
 				"img/homeSchool/schoolPage0.png",
 				"js/cloud/order-member.js",
-				"html/order/orderList.html",
 				"js/libs/crypto-js/cipher-core.js",
 				"js/utils/utils.js",
 				"js/libs/CryptoJS/rollups/ripemd160.js",

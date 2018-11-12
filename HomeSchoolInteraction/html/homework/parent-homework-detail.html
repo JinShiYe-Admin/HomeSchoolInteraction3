@@ -7,72 +7,147 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<style type="text/css">
-			.mui-bar-tab .mui-tab-item.mui-active {
-				color: #00CFBD;
+			 body,
+			.mui-content {
+				background: white;
+				/*line-height: 0px;*/
 			}
 			
-			.mui-segmented-control {
-				font-size: 15px;
-				font-weight: 400;
-				position: relative;
-				display: table;
-				overflow: hidden;
-				width: 100%;
-				table-layout: fixed;
-				border: 1px solid red;
-				border-radius: 3px;
-				background-color: transparent;
-				-webkit-touch-callout: none;
+			[v-cloak] {
+				visibility: hidden;
 			}
 			
-			.mui-segmented-control .mui-control-item {
-				line-height: 30px;
-				display: table-cell;
-				overflow: hidden;
-				width: 1%;
-				-webkit-transition: background-color .1s linear;
-				transition: background-color .1s linear;
+			
+			.title {
+				margin:10px 0 10px;
+			    color: #FF9933;
+			    font-size: 15px;
+			    background: #F2F2F2;
+			    padding: 5px 15px;
+			}
+			
+			.title-info {
+				padding: 18px 0 5px 0;
 				text-align: center;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				color: red;
-				border-color: red;
-				border-left: 1px solid red;
+				background: #fff;
+			}
+			.user-title {
+				font-size: 17px;
+				color: #333333;
+				font-weight: bold;
 			}
 			
-			.mui-segmented-control .mui-control-item.mui-active {
-				color: #fff;
-				background-color: red;
+			.time{
+				float: right;
+				padding: 0 15px;
+			}
+			
+			.user-title-se{
+				font-size: 13px;
+				color: #6d6d6d;
+			}
+			
+			.user-title-body {
+				font-size: 15px;
+				text-align: left;
+				margin: 0 10px;
+				color: #6d6d6d;
+				text-indent: 2em;
+			}
+			.score{
+				font-size: 15px;
+				text-align: left;
+				margin: 0 10px;
+				color: #6d6d6d;
+				padding: 0 5px;
+				float: left;
+			}
+			
+			.user-title-footer {
+				text-align: left;
+				margin: 10px 10px 0;
+			}
+			.line{
+				background-color: #f2f3f5;
+				height: 10px;
+				margin-top: 10px;
+			}
+			.more-btn{
+				color:red;
+				float: right;
+				margin-top: -24px;
+				border: 0;
+				padding: 6px 3px;
+				font-size: 13px;
+				background-color: transparent;
+			}
+			.tow-line{/*文字只显示两行*/
+				text-overflow: -o-ellipsis-lastline;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
 			}
 		</style>
 	</head>
 
 	<body>
 		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 v-if="headFlag ==0" id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
-			<div v-else="" style="width: 200px;text-align: center;margin: auto;position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
-				<div id="segmentedControl" class="mui-segmented-control">
-					<a class="mui-control-item mui-active tempA" href="#item1">待办公文</a>
-					<a class="mui-control-item tempA" href="#item2">已办公文</a>
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 v-if="headFlag ==0" id="title" class="mui-title" style="color: white;">作业详情</h1>
+			<!--<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div id="detail">
+				<div class="mui-row title-info">
+					<p v-cloak class="user-title">语文作业</p>
+					<p v-cloak class="user-title-se">王老师&nbsp;|&nbsp;2018-10-19 11:55</p>
+					<p v-cloak class="user-title-body" :class="{ 'tow-line': more }" @tap="showMore()" >
+						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					</p>
+					<button v-cloak class="mui-btn more-btn" @tap="showMore()" >{{btnText}}</button><!--:style="{display:more==-1? 'none':'inherit'}"-->
+				</div>
+				<div class="title">
+					学生答案
+				</div>
+				<div class="mui-row">
+					<p v-cloak class="user-title-body" :class="{ 'tow-line': answerMore }" @tap="answerShowMore()" >
+						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
+					</p>
+					<button v-cloak class="mui-btn more-btn" @tap="answerShowMore()" >{{answerBtnText}}</button><!--:style="{display:more==-1? 'none':'inherit'}"-->
+				</div>
+				<div class="title">
+					得分
+				</div>
+				<div class="mui-row">
+					<p v-cloak class="score"> 
+						95分
+					</p>
+				</div>
+				<div class="title">
+					评语（评价人：王老师）
+				</div>
+				<div class="mui-row">
+					<p v-cloak class="score"> 
+						做的不错！加油做的不错！加油做的不错！加油做的不错！加油做的不错！加油做的不错！加油做的不错！加油
+					</p>
+					<p class="time">2018-11-9 15:06</p>
 				</div>
 			</div>
-			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
-		</header>
-		<nav class="mui-bar mui-bar-tab">
-			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
-				<span class="mui-icon mui-icon-home"></span>
-				<span id="flag0" class="mui-tab-label">布置作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexCorrect.html">
-				<span class="mui-icon mui-icon-email"></span>
-				<span id="flag1" class="mui-tab-label">批改作业</span>
-			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm.html">
-				<span class="mui-icon mui-icon-contact"></span>
-				<span id="flag2" class="mui-tab-label">作业报表</span>
-			</a>
-		</nav>
+		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.js"></script>
 		<script src="../../js/storageKeyName.js"></script>
@@ -81,91 +156,43 @@
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
 		<script type="text/javascript">
-			mui.init()
-			//mui初始化
-			mui.init();
-			var subpages = ['../../html/homework/teacher-indexPublish.html', '../../html/homework/teacher-indexCorrect.html', '../../html/homework/teacher-indexForm.html'];
-			var subpage_style = {
-				top: '45px',
-				bottom: '51px'
-			};
-
-			var aniShow = {};
-			var headData = new Vue({
-				el: '#headData',
+			var curPage='';
+			mui.init({
+				swipeBack: false
+			});
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log(JSON.stringify(curPage))
+			});
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var detail = new Vue({
+				el: "#detail",  
 				data: {
-					headFlag: 0, //0显示标题，1显示分类显示，作业报表
-					titleName: '布置作业'
+					more:true,
+					answerMore:true,
+					btnText:'more',
+					answerBtnText:'more'
 				},
 				methods: {
-
-				}
-			});
-
-			//创建子页面，首个选项卡页面显示，其它均隐藏；
-			mui.plusReady(function() {
-				var self = plus.webview.currentWebview();
-				for(var i = 0; i < 3; i++) {
-					var temp = {};
-					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
-					if(i > 0) {
-						sub.hide();
-					} else {
-						temp[subpages[i]] = "true";
-						mui.extend(aniShow, temp);
+					showMore: function() {
+						if(this.more){
+							this.more=false;
+							this.btnText='hide'
+						}else{
+							this.more=true;
+							this.btnText='more'
+						}
+					},
+					answerShowMore:function(){
+						if(this.answerMore){
+							this.answerMore=false;
+							this.answerBtnText='hide'
+						}else{
+							this.answerMore=true;
+							this.answerBtnText='more'
+						}
 					}
-					self.append(sub);
-				}
-			});
-			//当前激活选项
-			var activeTab = subpages[0];
-			var title = document.getElementById("title");
-			//选项卡点击事件
-			mui('.mui-bar-tab').on('tap', 'a', function(e) {
-				var targetTab = this.getAttribute('href');
-				if(targetTab == activeTab) {
-					return;
-				}
-				//更换标题
-				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-				var tempFlag = this.querySelector('.mui-tab-label').id;
-				if(tempFlag == 'flag0') {
-					headData.headFlag = 0;
-					headData.titleName = '布置作业';
-				} else if(tempFlag == 'flag1') {
-					headData.headFlag = 0;
-					headData.titleName = '作业列表';
-				} else {
-					headData.headFlag = 1;
-					headData.titleName = '作业报表';
-				}
-				console.log('tempFlag:' + tempFlag + ',headData.headFlag:' + headData.headFlag);
-				//显示目标选项卡
-				//若为iOS平台或非首次显示，则直接显示
-				if(mui.os.ios || aniShow[targetTab]) {
-					plus.webview.show(targetTab);
-				} else {
-					//否则，使用fade-in动画，且保存变量
-					var temp = {};
-					temp[targetTab] = "true";
-					mui.extend(aniShow, temp);
-					plus.webview.show(targetTab, "fade-in", 300);
-				}
-				//隐藏当前;
-				plus.webview.hide(activeTab);
-				//更改当前活跃的选项卡
-				activeTab = targetTab;
-			});
-			//自定义事件，模拟点击“首页选项卡”
-			document.addEventListener('gohome', function() {
-				var defaultTab = document.getElementById("defaultTab");
-				//模拟首页点击
-				mui.trigger(defaultTab, 'tap');
-				//切换选项卡高亮
-				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
-				if(defaultTab !== current) {
-					current.classList.remove('mui-active');
-					defaultTab.classList.add('mui-active');
 				}
 			});
 		</script>

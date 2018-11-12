@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>已交未交统计</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			body{
+				background: white;
+			}
+			[v-cloak] {
+				visibility: hidden;
+			}
+			.line{
+				background-color: #f2f3f5;
+				height: 10px;
+				margin-top: 10px;
+			}
+			
+			
+			.title {
+				margin:10px 0 10px;
+			    color: #333333;
+			    font-size: 17px;
+			    padding: 5px 15px;
+			}
+			.student-name{
+				 color:#666666;
+				 font-size: 15px;
+				 margin:0px 0 10px;
+				  padding: 5px 15px 0 30px;
+			}
+			.line{
+				background-color: #f2f3f5;
+				height: 1px;
+				margin-top: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">已交未交统计</h1>
+			<!--<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submit()">提交</a>-->
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div id="detail">
+				<div class="title">
+					已交 （30人）
+				</div>
+				<div class="mui-row">
+					<div class="student-name">
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤
+					</div>
+				</div>
+				<div class="line"></div>
+				<div class="title">
+					未交 （30人）
+				</div>
+				<div class="mui-row">
+					<div class="student-name">
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
+						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/slide/mui.min.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: false
+			});
+			mui.plusReady(function() {
+			});
+			var detail = new Vue({
+				el: "#detail",  
+				data: {
+					more:true,
+					btnText:'more'
+				},
+				methods: {
+					previous:function(){
+						console.log("123")
+					},
+					next:function(){
+						console.log("456")
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

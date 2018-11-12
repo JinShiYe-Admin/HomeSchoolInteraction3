@@ -145,7 +145,7 @@
 			<div id="detail">
 				<div class="mui-row title-info">
 						<p v-cloak class="user-title">语文作业</p>
-						<p v-cloak class="user-title-se">王老师|2018年10月19日11:55:57</p>
+						<p v-cloak class="user-title-se">王老师&nbsp;|&nbsp;2018-10-19 11:55</p>
 						<p v-cloak class="user-title-body" :class="{ 'tow-line': more }" @tap="showMore()" >近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
 						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
 						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
@@ -237,9 +237,11 @@
 					},
 					pj:function(){
 						console.log('点击了批量评价')
+						utils.mOpenWithData("../../html/homework/teacher-homework-evaluate.html", {});
 					},
 					dj:function(){
 						console.log('点击了批量登记')
+						utils.mOpenWithData("../../html/homework/teacher-homework-register.html", {});
 					}
 				}
 			});
