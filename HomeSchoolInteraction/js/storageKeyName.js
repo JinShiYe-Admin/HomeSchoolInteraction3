@@ -3,6 +3,7 @@
 var storageKeyName = (function(mod) {
 
 	mod.key = 0; //0,开发;1,部署外网
+	mod.pay = 0; //0,单个商家接口;1,多商家接口
 	var exLog = console.log;
 	console.log = function(hint, object) {
 		if(mod.key === 0) {
@@ -23,7 +24,11 @@ var storageKeyName = (function(mod) {
 			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';//安卓升级地址
 			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
 			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
-			mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			if(mod.pay==0) {//单商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}else if(mod.pay==1){//多商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
@@ -118,6 +123,8 @@ var storageKeyName = (function(mod) {
 	mod.QNPUBQZKEY = "qz123qwe";
 	//校讯通
 	mod.QNPUBXXT = "jsy@180526";
+	
+	mod.STOREAPPID='wxf9b41cac260dd423';
 
 	//七牛存储子空间（文件二级文件名）
 	mod.QNPUBSPACE = "pb"; //七牛公开空间
