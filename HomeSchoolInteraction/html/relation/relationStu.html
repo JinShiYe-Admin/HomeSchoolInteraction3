@@ -53,7 +53,7 @@
 			
 			.userNameclass {
 				color: #333333;
-				padding-left: 10px;
+				padding-left: 5px;
 				margin-top: 10px;
 				font-size: 14px;
 			}
@@ -145,6 +145,12 @@
 				font-size: 14px;
 				color: #999999;
 			}
+			.orderLose{
+				color: #f96161;
+				padding-left: 10px;
+				margin-top: 10px;
+				font-size: 14px;
+			}
 		</style>
 	</head>
 
@@ -177,10 +183,12 @@
 					<li class="mui-table-view-cell" @click="clickUserBus(userBusModel)" v-for="(userBusModel,index) in orderList">
 						<!--{{userBusModel.stuModel.stuid==null}}-->
 						<div v-if="userBusModel.stuModel.stuid==null">
+							<a v-if="userBusModel.serstat == 0" class="orderLose">[失效]</a>
 							<a class="userNameclass">{{userBusModel.cname}}</a>
 							<a class="stu-name">请关联学生</a>
 						</div>
 						<div v-else>
+							<a v-if="userBusModel.serstat == 0" class="orderLose">[失效]</a>
 							<a class="userNameclass">{{userBusModel.cname}}</a>
 							<a class="stu-name0">{{userBusModel.stuModel.schname}}{{userBusModel.stuModel.grdname}}{{userBusModel.stuModel.clsname}}{{userBusModel.stuModel.stuname}}({{userBusModel.stuModel.sexName}})</a>
 						</div>

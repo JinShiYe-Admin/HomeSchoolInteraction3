@@ -78,6 +78,7 @@ var events = (function(mod) {
 		console.log('content:'+content);
 		var personal = store.get(window.storageKeyName.PERSONALINFO);
 		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+		content = content + '[' +personal.utname+']';
 		var enData0 = {};
 		//不需要加密的数据
 		var comData0 = {
