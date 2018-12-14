@@ -184,8 +184,12 @@ var appPay = (function(mod) {
 		//5S后查询支付结果
 		setTimeout(function() {
 			var data0 = {
-				out_trade_no: mod.order_id //订单编号
+				out_trade_no: mod.order_id, //订单编号
 			}
+			if(window.storageKeyName.pay==1){
+				data0.appid=window.storageKeyName.STOREAPPID;
+			}
+			
 			var xhr = new XMLHttpRequest();
 			xhr.open("post", window.storageKeyName.SEARCHPAYSESULT, true);
 			xhr.timeout = 10000; //10秒超时
