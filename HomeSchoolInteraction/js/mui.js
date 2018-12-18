@@ -6208,14 +6208,15 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
 		var element = document.createElement('div');
 		element.classList.add(CLASS_BACKDROP);
 		element.addEventListener($.EVENT_MOVE, $.preventDefault);
-		element.addEventListener('tap', function(e) {
-			var popover = $.targets._popover;
-			if (popover) {
-				popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
-				popover.classList.remove(CLASS_ACTIVE);
-				removeBackdrop(popover);
-			}
-		});
+		//点击外部遮罩层，popover不会关闭
+//		element.addEventListener('tap', function(e) {
+//			var popover = $.targets._popover;
+//			if (popover) {
+//				popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
+//				popover.classList.remove(CLASS_ACTIVE);
+//				removeBackdrop(popover);
+//			}
+//		});
 
 		return element;
 	}());
