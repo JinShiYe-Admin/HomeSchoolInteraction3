@@ -221,8 +221,8 @@
 									</a>
 								</template>
 								<template v-else>
-									<a href="javaScript:">
-										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="getItemsons(fextModel.itemsons)" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
+									<a :href="'#'+sysfuncModel.fid+fextModel.itemcode+index2">
+										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input0'" type="button" name="" :value="fextModel.labelName" style="width: 72%;color: #8f8f94;border:0;margin-top: 5px;text-align: left;" />
 										<input :id="sysfuncModel.fid+fextModel.itemcode+index2+'input1'" type="hidden" :name=fextModel.itemcode />
 									</a>
 								</template>
@@ -315,7 +315,12 @@
 											<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in fextModel.itemsons" >
 												<div class="mui-input-row mui-checkbox mui-right" @tap="childCheckAll($event)">
 													<label  name="parentLabel" style="width: 100%;">{{getValue(item)}}</label>
-													<input name="parent" :value=item type="checkbox">
+													<template v-if="fextModel.itemsonsc==0">
+														<input name="parent" :value=item type="checkbox" disabled checked>
+													</template>
+													<template v-else>
+														<input name="parent" :value=item type="checkbox">
+													</template>
 												</div>
 												<template v-if="fextModel.itemcode=='prd' && grdItem.itemcode=='grd' && grdItem.gid==getId(item)" v-for="(grdItem,index) in sysfuncModel.fext">
 													<div style="margin-left: 40px;color:#FF6600;">{{grdItem.labelName}}</div>
@@ -323,7 +328,13 @@
 														<li class="mui-table-view-cell" style="padding: 0;" v-for="(item2,index2) in grdItem.itemsons" >
 															<div class="mui-input-row mui-checkbox mui-right" @tap="checkXd($event)">
 																<label style="width: 100%;">{{getValue(item2)}}</label>
-																<input :name=index2 :value=item2 type="checkbox">
+																<template v-if="grdItem.itemsonsc==0">
+																	<input :name=index2 :value=item2 type="checkbox" disabled checked>
+																</template>
+																<template v-else>
+																	<input :name=index2 :value=item2 type="checkbox" >
+																</template>
+																
 															</div>
 														</li>
 													</ul>
@@ -382,7 +393,6 @@
 					monthList.push(month * i)
 				}
 				//end
-				
 				//套餐功能及扩展栏目
 				getSysBusFunc();
 				// 获取支付通道
@@ -455,38 +465,62 @@
 					},
 					childCheckAll:function(e){//如果选中了学段，那么学段下的年级将全选
 						var domDiv = e.target;
+						var isDisabled=false;
 						$(domDiv).parent().find("input[type='checkbox']").each(function() {
-							var isChecked=$(this).prop("checked");//为啥会反着？这里获取到的checkbox的值跟平时正好相反，不知道为啥
-							if(!isChecked){
-								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
-									$(this).prop("checked",true);
-								});
-							}else{
-								$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
-									$(this).prop("checked",false);
-								});
+							var dis=$(this).attr("disabled");
+							if(dis=='disabled'){
+								isDisabled=true;
 							}
 						});
+						if(!isDisabled){
+							$(domDiv).parent().find("input[type='checkbox']").each(function() {
+								var isChecked=$(this).prop("checked"); 
+								if(!isChecked){
+									$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
+										$(this).prop("checked",true);
+									});
+								}else{
+									$(domDiv).parent().parent().find('ul').find("input[type='checkbox']").each(function() {
+										var dis=$(this).attr("disabled");
+										var che=$(this).attr("checked");
+										if(dis=='disabled' && che=='checked'){
+											$(this).prop("checked",true);
+										}else{
+											$(this).prop("checked",false);
+										}
+									});
+								}
+							});
+						} 
 					},
 					checkXd:function(e){//如果选择了学段下的所以年级，那么学段将设置为选中
-						var domDiv = e.target;
-						var isAllCheck=false;
-						var allCheck=[];
-						setTimeout(function(){
-							$(domDiv).parent().parent().parent().find("input[type='checkbox']").each(function() {
-								var isChecked=$(this).prop("checked"); 
-								allCheck.push(isChecked);
+							var domDiv = e.target;
+							var allCheck=[];
+							var isDisabled=false;
+							$(domDiv).parent().find("input[type='checkbox']").each(function() {
+								var dis=$(this).attr("disabled");
+								if(dis=='disabled'){
+									isDisabled=true;
+								}
 							});
-							if(JSON.stringify(allCheck).indexOf("true")==-1){
-								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
-									$(this).prop("checked",false);
-								});
-							}else{
-								$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
-									$(this).prop("checked",true);
-								});
+							if(!isDisabled){
+								setTimeout(function(){
+									$(domDiv).parent().parent().parent().find("input[type='checkbox']").each(function() {
+										var isChecked=$(this).prop("checked"); 
+										allCheck.push(isChecked);
+									});
+									console.log(allCheck);
+									if(JSON.stringify(allCheck).indexOf("true")==-1){
+										$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+											$(this).prop("checked",false);
+										});
+									}else{
+										$(domDiv).parent().parent().parent().parent().find("input[name='parent']").each(function() {
+											$(this).prop("checked",true);
+										});
+									}
+							},10);
 							}
-						},300);
 					},
 					hidePop: function(e,fextModel,fext) { //隐藏弹窗
 						var domDiv = e.target;
@@ -539,8 +573,14 @@
 //						console.log("value_nj========="+value_nj);
 						var itemcode=fextModel.itemcode;
 						if(itemcode=='prd'){
-							if(value.length > max) {
+							if(max==0&&value.length>1){
+								mui.toast('学段最多选1个');
+								return;
+							}else if(max>0&&value.length > max) {
 								mui.toast('学段最多选' + max + '个');
+								return;
+							}else if(value.length==0){
+								mui.toast('请选择学段');
 								return;
 							}
 							
@@ -554,8 +594,14 @@
 										sz.push(gid);
 									}
 								}
-								if(sz.length > max2) {
+								if(max2==0&&sz.length>1){
+									mui.toast(pname+'年级最多选1个');
+									return;
+								}else if(max2>0&&sz.length > max2) {
 									mui.toast(pname+'年级最多选' + max2 + '个');
+									return;
+								}else if(sz.length==0){
+									mui.toast('请选择'+pname+'年级');
 									return;
 								}
 							}
@@ -598,6 +644,7 @@
 							document.getElementById(id + 'input1').value = value;
 							fextModel.checked = value.join(',');
 						}
+						console.log("SYSFUNCLIST:"+JSON.stringify(orderData.sysfuncList));
 						mui('#' + id).popover('toggle');
 					},
 					 getValue: function(item) {
@@ -632,34 +679,39 @@
 							mui.toast('您还没有选择时长')
 						} else {
 							//判断必选项大于0的是否都选择了
-							var strs=[];
+							var strs=[]; 
 							var prdModel;
 							for(var i = 0; i < orderData.sysfuncList.length; i++) {
 								var sysfuncModel = orderData.sysfuncList[i];
 								for(var j=0;j<sysfuncModel.fext.length;j++){
 									var model = sysfuncModel.fext[j];
+									if(model.itemcode=='prd'){
+										_gid=model.checked;
+									}
 									if(model.itemsonsc>0){
 //										console.log(model.itemname+","+model.checked)
 										if(model.checked==undefined){
 											strs.push(model.itemname);
 										}
+										
 									}
 								}
 							}
 							if(strs.length>0){
-								mui.toast("功能："+strs.join(",")+'为必选项')
+//								mui.toast("功能："+strs.join(",")+'为必选项')
+								mui.toast("您选择的信息不完整")
 							}else{
 								//如果是0元套餐，直接走订购
 								if(this.feem==0){
 									order();
 								}else{
-//										order();
-									appPay.payCode=true;
-									//调起支付
-									appPay.pay(appPay.wxpay,function success(){
-									},function fail(code,err){
-											plus.nativeUI.alert("支付失败");
-									});
+										order();
+//									appPay.payCode=true;
+//									//调起支付
+//									appPay.pay(appPay.wxpay,function success(){
+//									},function fail(code,err){
+//											plus.nativeUI.alert("支付失败");
+//									});
 								}
 								
 							}
@@ -684,14 +736,15 @@
 					var sysfuncModel = orderData.sysfuncList[i];
 					for(var a = 0; a < sysfuncModel.fext.length; a++) {
 						var fextModel = sysfuncModel.fext[a];
-						if(fextModel.checked && fextModel.checked.length > 0) {
+						console.log("liushai:"+fextModel.checked);
+						if(fextModel.checked!='' && fextModel.checked!=undefined) {
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
 								itemcode: fextModel.itemcode, //栏目代码
 								itemsons: fextModel.checked //栏目选择子集
 							}
 							funcArray.push(tempModel);
-						}else if(fextModel.itemsonsc==0){
+						}else if(fextModel.itemcode!='prd'&&fextModel.itemcode!='grd'&&fextModel.itemsonsc==0){
 							var sons=fextModel.itemsons[0];
 							var checked=sons.split("|")[0];
 							var tempModel = {
@@ -710,16 +763,16 @@
 					funclist:funcArray//订购的扩展参数
 				}
 				console.log(JSON.stringify(data));
-				appPay.UserFeeFunc('UserFee',data,function success(){
-					mui.toast('套餐订购成功');
-					//通知套餐详情页面刷新时间
-					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
-						newEtime:orderDetailData.newEtime
-					});
-					mui.back();
-				},function fail(err){
-					mui.toast(err);
-				});
+//				appPay.UserFeeFunc('UserFee',data,function success(){
+//					mui.toast('套餐订购成功');
+//					//通知套餐详情页面刷新时间
+//					mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {
+//						newEtime:orderDetailData.newEtime
+//					});
+//					mui.back();
+//				},function fail(err){
+//					mui.toast(err);
+//				});
 			}
  
 			//套餐功能及扩展栏目
@@ -749,7 +802,11 @@
 								if(str.indexOf('prd')!=-1){
 									for(var a = 0; a < tempModel0.fext.length; a++) {
 										var tempModel1 = tempModel0.fext[a];
-										tempModel1.labelName=tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
+										if(tempModel1.itemsonsc==0){ 
+											tempModel1.labelName='请选择'+tempModel1.itemname
+										}else{
+											tempModel1.labelName='请选择'+tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
+										}
 										tempModel1.itemsons = tempModel1.itemsons.split(',');
 										if(tempModel1.itemcode=='grd'){
 											var gid=tempModel1.itemsons[0].split("|")[0].substring(0,1);
@@ -762,6 +819,7 @@
 							}
 						}
 						orderData.sysfuncList = [].concat(sysfunc);
+						console.log("SYSFUNCLIST:"+JSON.stringify(orderData.sysfuncList));
 						mui('.mui-scroll-wrapper').scroll();
 					} else {
 						mui.toast(data1.RspTxt);

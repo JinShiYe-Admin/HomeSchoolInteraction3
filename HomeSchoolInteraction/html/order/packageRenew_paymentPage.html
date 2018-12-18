@@ -380,7 +380,6 @@
 					monthList.push(month*i) 
 				}
 				//end
-				
 				//添加支付返回APP时的监听
 				//第一次查询5秒，连接超时异常会自动调用重查方法，第二次查询10秒。如果第一次查询成功但返回支付异常，则提示是否重新查询支付结果
 				appPay.addListener(function(){//查询成功
@@ -433,13 +432,22 @@
 
 			//年月日加减
 			var addMonths = function(date,months) {
-			   var nd=date.split(".").join("/");
-		       var d=new Date(nd);
-		       d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
-		       var y=d.getFullYear()
-		       var m=d.getMonth()+1; 
-		       var d=d.getDate(); 
-		       return getNowFormatDate(y,m,d); 
+				//orderDetailData.orderDetail.serstat
+				if(orderDetailData.orderDetail.serstat==0){
+					var myDate = new Date();
+					myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+					myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+					myDate.getDate();        //获取当前日(1-31)
+					date=myDate.getFullYear()+"."+(myDate.getMonth()+1)+"."+myDate.getDate();
+				}
+				console.log("计算日期为："+date);
+			    var nd=date.split(".").join("/");
+		        var d=new Date(nd);
+		        d.setMonth(parseInt(d.getMonth())+parseInt(months)); 
+		        var y=d.getFullYear()
+		        var m=d.getMonth()+1; 
+		        var d=d.getDate(); 
+		        return getNowFormatDate(y,m,d); 
 			}
 
 			//获取当前日期
