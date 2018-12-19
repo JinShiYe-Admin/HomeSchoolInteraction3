@@ -802,11 +802,7 @@
 								if(str.indexOf('prd')!=-1){
 									for(var a = 0; a < tempModel0.fext.length; a++) {
 										var tempModel1 = tempModel0.fext[a];
-										if(tempModel1.itemsonsc==0){ 
-											tempModel1.labelName='请选择'+tempModel1.itemname
-										}else{
-											tempModel1.labelName='请选择'+tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
-										}
+										tempModel1.labelName='请选择'+tempModel1.itemname+'（最多可选'+tempModel1.itemsonsc+'个）'
 										tempModel1.itemsons = tempModel1.itemsons.split(',');
 										if(tempModel1.itemcode=='grd'){
 											var gid=tempModel1.itemsons[0].split("|")[0].substring(0,1);
