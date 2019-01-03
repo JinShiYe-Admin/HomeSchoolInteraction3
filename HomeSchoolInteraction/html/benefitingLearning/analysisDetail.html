@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+	<!--学情分析详情-->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.test-line-title {
+				padding: .3rem .34rem;
+				text-align: center;
+				color: #222222;
+			}
+			.test-line-label {
+				text-align: right;
+				color: #222222;
+				font-size: .24rem;
+				padding-right: 30px;
+			}
+			.test-line-label > span {
+				display: inline-block;
+				vertical-align: middle;
+				border-bottom: 1px solid;
+				width: .25rem;
+				margin-right: 8px;
+			}
+			#testLine {
+				/*min-height: 4rem;*/
+				padding-left: 1.1rem;
+				padding-bottom: 0.3rem;
+				position: relative;
+				margin-bottom: 1rem;
+				max-width: 100%;
+				overflow: hidden;
+			}
+			#testLine:before, #testLine:after {
+				display: inline-block;
+				position: absolute;
+				font-size: 86%;
+			}
+			#testLine:before {
+				content: "分值";
+				left: .5rem;
+				top: 5px;
+			}
+			#testLine:after {
+				content: "次数";
+				bottom: 0;
+				right: 25px;
+			}
+			.detail-list {
+				text-align: center;
+				line-height: .6rem;
+			}
+			.detail-list:before {
+				display: none;
+			}
+			.detail-list .mui-ellipsis-2 {
+				line-height: 1.2;
+			}
+			.detail-list .title {
+				text-align: center;
+				padding-bottom: 0.2rem;
+				font-size: 114%;
+			}
+			.detail-list .mui-btn {
+				line-height: 1;
+				padding: 0.16rem 0.26rem;
+				font-size: 0.24rem;
+			}
+			.detail-list .mui-table-view-cell.mui-active {
+				background-color: transparent;
+			}
+			#analysisDetail {
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="analysisDetail" v-cloak>
+			<header class="mui-bar mui-bar-nav blue">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">{{subname}}科目 学情分析</h1>
+			</header>
+			
+			<div class="mui-content">
+				<div class="test-line-title">历次练习得分曲线</div>
+				<div class="test-line-label">
+					<span style="border-color: #E78080;"></span>平均分
+					<span style="border-color: #3C9DFB;margin-left: 15px;"></span>考试分值
+				</div>
+				<div id="testLine" ></div>
+				<ul class="mui-table-view same-line-list detail-list">
+				    <li class="mui-table-view-cell title">
+						薄弱知识点
+				    </li>
+				    <li class="mui-table-view-cell" v-for="(v, i) in failCatalogInfo" :key="i">
+				    	<div class="mui-row">
+				    		<div class="mui-col-xs-4 mui-ellipsis-2">{{v.name}}</div>
+					        <div class="mui-col-xs-4">均分：{{Math.round(v.avg_score)}}</div>
+					        <div class="mui-col-xs-4">
+					        	<button type="button" class="mui-btn mui-btn-primary" @tap="goTest(v)">练习</button>
+					        </div>
+				    	</div>
+				    </li>
+				</ul>
+				<p v-if="!failCatalogInfo.length&&isLoaded" class="mui-text-center" style="padding-top: 10px;">无薄弱知识点</p>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>
+		<!--<script type="text/javascript" src="../../js/vconsole.min.js" ></script>-->
+		<script type="text/javascript" src="../../js/echarts.min.js" ></script>
+		<script src='../../js/utils/jquery-1.8.3.min.js'></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+			
+		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
+		<script type="text/javascript">
+			var self, testLine;
+			
+			mui.init({
+				beforeback: function() {
+					self.opener().evalJS("subRadar.resize();");
+					self.close();
+				}
+			});
+			
+			mui.plusReady(function(){
+				self = plus.webview.currentWebview();
+				analysisDetail.subname = self.subname;
+				
+				getSubDetail();
+
+			});
+			
+			var analysisDetail = new Vue({
+				el: "#analysisDetail",
+				data: {
+					subname: "",
+					subScores: [],
+					avgScore: "",
+					failCatalogInfo: [],
+					isLoaded: false
+				},
+				mounted: function() {
+					testLine = echarts.init(document.getElementById("testLine"));
+				},
+				methods: {
+					//练习
+					goTest: function(item) {
+//						mui.openWindow({
+//							url: "testing.html",
+//							id: "bl-testing",
+//							extras: {
+//								isTested: false,
+//								catalogId: item.book_catalog_id,
+//								title: item.name
+//							}
+//						});
+						newTest(item.book_catalog_id, item.name);
+					}
+				}
+			});
+			
+			//更新数据
+			window.addEventListener("refresh", function(){
+				analysisDetail.isLoaded = false;
+				getSubDetail();
+			});
+			
+			//重新绘图
+			window.addEventListener("rePain", function(){
+				testLine.resize();
+			});
+			
+			//获取分析数据
+			function getSubDetail() {
+				commonAjax("/Ycyx/Analysis/subDetail", {
+					data: {subcode: self.subcode},
+					success: function(res){
+						var data = JSON.parse(res.data);
+						analysisDetail.subScores = data.subScores;
+						analysisDetail.avgScore = data.avgScore;
+						analysisDetail.failCatalogInfo = data.failCatalogInfo;
+						analysisDetail.isLoaded = true;
+						getLine();
+					}
+				});
+			}
+			
+			//生成曲线图
+			function getLine() {
+				testLine.resize();
+				var max_times = analysisDetail.subScores.length;
+				//平均分
+				var avg_data = [[0, analysisDetail.avgScore], [max_times, analysisDetail.avgScore]];
+				//历史记录
+				var his_data=[];
+				analysisDetail.subScores.forEach(function(v, i){
+					his_data.push([i+1, v]);
+					
+				});
+				testLine.setOption({
+					grid:{
+				        left: "35px",
+				        right: "30px",
+				        top: "10px",
+						bottom: "26px"
+				    },
+					xAxis: {
+				        type: 'value',
+				        max: max_times,
+				        minInterval: 1,//最小间隔
+//				        maxInterval: 10,
+						splitNumber: 10,//分割段数
+				        splitLine: false
+				    },
+				    yAxis: {
+				        type: 'value',
+				        max: 100,
+				        name: "分值"
+				    },
+				    series: [{
+				    	data: avg_data,
+				        type: 'line',
+				        lineStyle: {
+				        	color: "#E78080"
+				        },
+				        symbol: "none"
+				    },{
+				        data: his_data,
+				        type: 'line',
+				        lineStyle: {
+				        	color: "#3C9DFB"
+				        },
+				        symbol: "none"
+				    }]
+				});
+			}
+			
+//			analysisDetail.subname = "语文";
+//			analysisDetail.subScores = [10,20,20,20,0,10,0,40,10,40,40];
+//			analysisDetail.avgScore = 19;
+//			analysisDetail.failCatalogInfo = [{"name":"多音字","book_catalog_id":4468,"avg_score":16.666666666666668},{"name":"易误读常见字","book_catalog_id":4469,"avg_score":10.0},{"name":"注音","book_catalog_id":4470,"avg_score":26.0}];
+//			setTimeout(function(){
+//				getLine();
+//			}, 200);
+			
+		</script>
+	</body>
+
+</html>

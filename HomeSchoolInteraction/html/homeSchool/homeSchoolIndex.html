@@ -144,6 +144,13 @@
 							</a>
 						</li>
 						<li class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3" style="border: 0px;">
+							<a href="#" @click="clickFunction(9)">
+								<img class="circular-square" src="../../img/homeSchool/schoolPage4.png" />
+								<span class="mui-icon"></span>
+								<div class="mui-media-body divNameCss" style="font-size: 14px;">易测易学</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3" style="border: 0px;">
 							<a href="#" @click="clickFunction(8)">
 								<img class="circular-square" src="../../img/homeSchool/schoolPage7.png" />
 								<span class="mui-icon"></span>
@@ -745,6 +752,11 @@
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
 								utils.mOpenWithData("../../html/orals/orals_index.html", {});
+
+							}else if(index == 9) { //口语测评
+								console.log('personal.utp====' + personal.utp)
+								//身份 0老师，2学生，1家长
+								utils.mOpenWithData("../../html/benefitingLearning/ycyxIndex.html", {});
 
 							} else {
 								mui.toast('此功能暂未开放');
