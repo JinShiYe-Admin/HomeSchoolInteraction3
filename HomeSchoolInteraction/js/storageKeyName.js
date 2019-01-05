@@ -46,9 +46,6 @@ var storageKeyName = (function(mod) {
 			mod.QNGETTOKENDELETE = 'http://114.215.222.186:8004/Api/QiNiu/Delete'; //获取批量（或者一个）删除七牛文件的token的url
 			//	---七牛空间和接口---开发---end---
 			
-			//益测益学服务端地址
-			//本地：http://192.168.0.125:8080/yiceyixue; 开发：http://139.129.252.49:8080/yiceyixue;
-			mod.YCYXHOST = "http://139.129.252.49:8080/yiceyixue";
 			break;
 		case 1: //部署外网
 //			mod.SCHOOLID = 100102;//学校ID
@@ -77,7 +74,6 @@ var storageKeyName = (function(mod) {
 			mod.QNGETTOKENDELETE = 'http://114.215.222.186:8004/Api/QiNiu/Delete'; //获取批量（或者一个）删除七牛文件的token的url
 			//	---七牛空间和接口---开发---end---
 			
-			mod.YCYXHOST = "http://zhxyx.jiaobaowang.net/yiceyixue";//益测益学服务端地址
 			break;
 		default:
 			break;
