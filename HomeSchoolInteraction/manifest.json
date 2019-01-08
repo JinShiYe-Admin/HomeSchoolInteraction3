@@ -385,7 +385,9 @@
 				"priority": 0
 			},
 			"html/orals/oralsIndex.html": {
-				"resources": [],
+				"resources": [
+					"js/orals/layout.js"
+				],
 				"refer": [
 					"html/orals/record.html",
 					"html/orals/book.html",
