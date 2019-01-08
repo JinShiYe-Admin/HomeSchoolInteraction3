@@ -258,7 +258,8 @@
 					"html/student/student-index.html",
 					"html/orals/index.html",
 					"html/homework/teacher-index.html",
-					"html/orals/orals_index.html"
+					"html/orals/orals_index.html",
+					"html/orals/oralsIndex.html"
 				],
 				"priority": 0
 			},
@@ -379,6 +380,15 @@
 					"html/orals/book.html",
 					"html/orals/cover.html",
 					"html/orals/record.html",
+					"html/orals/result.html"
+				],
+				"priority": 0
+			},
+			"html/orals/oralsIndex.html": {
+				"resources": [],
+				"refer": [
+					"html/orals/record.html",
+					"html/orals/book.html",
 					"html/orals/result.html"
 				],
 				"priority": 0
