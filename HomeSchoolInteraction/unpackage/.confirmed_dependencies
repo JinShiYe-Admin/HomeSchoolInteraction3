@@ -1,1 +1,41 @@
-null
+{
+	"html/sciedu/sciedu_home.html": {
+		"refer": [
+			"html/sciedu/sciedu_show_main.html"
+		]
+	},
+	"html/login/firstPage.html": {
+		"refer": [
+			"html/login/index.html"
+		]
+	},
+	"html/login/index.html": {
+		"resources": [
+			"html/sciedu/sciedu_home.html"
+		],
+		"refer": [
+			"html/sciedu/sciedu_home.html",
+			"html/homeSchool/homeSchoolIndex.html",
+			"html/Course/courseIndex.html",
+			"html/helpStudy/helpStudyIndex.html"
+		]
+	},
+	"html/homeSchool/homeSchoolIndex.html": {
+		"refer": [
+			"html/homeSchool/mine.html",
+			"html/orals/oralsIndex.html"
+		]
+	},
+	"html/orals/oralsIndex.html": {
+		"refer": [
+			"html/orals/record.html",
+			"html/orals/book.html",
+			"html/orals/result.html"
+		]
+	},
+	"html/orals/record.html": {
+		"refer": [
+			"html/orals/result.html"
+		]
+	}
+}

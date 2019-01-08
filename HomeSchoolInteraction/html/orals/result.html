@@ -6,6 +6,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 	</head>
 
@@ -39,7 +40,7 @@
 								<span class="icon active img-icon"></span>
 								<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
 							</a>
-							<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="stopRecord($event)" @touchend.stop="stopRecord($event)">
+							<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
 								<svg class="icon" aria-hidden="true">
 								  <use xlink:href="#icon-icon-record"></use>
 								</svg>
@@ -91,7 +92,7 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		
-		<script src="../../js/orals/orals-common.js"></script>
+		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
 			
 			mui.init({
@@ -109,15 +110,16 @@
 			
 			var detail_progress = false;
 			var self;
-			var r=null, files=[], gentry;
+			var r=null, files=[], gentry, recorderTimer;
 			
 			mui.plusReady(function() {
 				plus.nativeUI.showWaiting();
 				self = plus.webview.currentWebview();
+				self.setStyle({'popGesture':'none'});
 				document.querySelector('.mui-bar .mui-title').innerHTML = self.title;
 				
 				//获取内容
-				oralsAjax(host+'/orals', {category: self.cate, bookCatalogId: self.catalog_id}, function(res){
+				oralsAjax('/orals', {category: self.cate, bookCatalogId: self.catalog_id}, function(res){
 					resultVue.key = res.data.key;
 					resultVue.model.push({
 						list: res.data.list
@@ -163,6 +165,20 @@
 				}
 			}
 			
+			//按住录音按钮时的滑动距离
+			var startX = startY = endX =endY =0;
+			function touchStart(touch) {
+				startX = touch.pageX;
+				startY = touch.pageY;
+			}
+			function touchEnd(touch, callback) {
+				endX = touch.pageX;
+        		endY = touch.pageY;
+        		if(Math.abs(endX-startX)>30 || Math.abs(endY-startY)>30) {
+					callback();
+				}
+			}
+			
 			var resultVue = new Vue({
 				el: "#result",
 				data: {
@@ -173,9 +189,7 @@
 					key: ""
 				},
 				methods: {
-					setScore: function(score) {
-						return Math.round(score*20);
-					},
+					setScore: setWordsScore,
 					toggleOpen: function(index, i) {
 						this.openLi.index = index;
 						this.openLi.i = i;
@@ -211,28 +225,30 @@
 							ele.classList.add('active');
 							this.isRecording = true;
 							this.startRecord(cur);
-							setTimeout(function(){
+							recorderTimer = setTimeout(function(){
 								_this.isRecording && _this.stopRecord();
 							}, cur.time_len*1000||5000);
+							touchStart(e.targetTouches[0]);
 						}
 					},
 					//开始录音
 					startRecord: function(cur) {
 						var _this = this;
-						r = plus.audio.getRecorder();
-						if ( r == null ) {
-							console.log('录音对象未获取');
-							return;
-						}
 						gentry.removeRecursively(function(){
 							console.log('已清除缓存！');
 						}, function(e){
 							console.log('操作失败：'+e.message);
 						});
-						setRecorder(r, _this.valid_touch, function(p){
+						r = setRecorder(_this.valid_touch, function(p){
 							files.push({name:"uploadkey",path:p});
 							cur['key'] = _this.key;
 							_this.uploadRecord(cur);
+						});
+					},
+					touchMove: function(event) {
+						var _this = this;
+						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+							_this.stopRecord();
 						});
 					},
 					//停止录音
@@ -246,6 +262,7 @@
 							}
 							r && r.stop();
 							this.isRecording = false;
+							clearTimeout(recorderTimer);
 						}
 					},
 					//上传录音
@@ -271,14 +288,15 @@
 					//提交
 					submit: function(cur) {
 						var _this = this;
-						oralsAjax(host+"/orals/save", {data: JSON.stringify([cur])}, function(res){
+						oralsAjax("/orals/save", {data: JSON.stringify([cur])}, function(res){
 							detail_progress = true;
-//							console.log(res);
 						});
 					}
 					
 				}
 			});
+			
+//			resultVue.model = [{"list":[{"symbol":"'welkəm","relative_id":0,"orals_id":15094,"integrity_score":0,"create_time":"2018-11-28 15:07:04","words":"welcome","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/273b9efa75494ee59ef2dde8d02d3dd2.mp3?e=1544579795&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:G8vTZwEhEzMqHl4vEQbJkFYixgI=","school_id":100008,"user_id":7,"translations":"adj. 受欢迎的","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/f0bbf55f5e284f5f821ed05803781be8.mp3?e=1544579795&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:LlCMHpo10J4F_ryMOF5psaFcCbI=","total_score":0,"id":15094,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29269},{"symbol":"help","relative_id":0,"orals_id":15093,"integrity_score":0,"create_time":"2018-11-28 15:07:04","words":"help","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/86b308c34ae24e5cb3c26f68134858c6.mp3?e=1544579795&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:kQhi0FYw0pmckzwfUhgSbZpyxLo=","school_id":100008,"user_id":7,"translations":"v.&n. 帮助；援助","accuracy_score":0,"audio_url":""}]}];
 			
 		</script>
 	</body>
