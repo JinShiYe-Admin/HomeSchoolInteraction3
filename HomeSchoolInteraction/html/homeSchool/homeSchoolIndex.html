@@ -614,7 +614,7 @@
 				var getNoReadNoticeCntByMan = function() {
 					var tempData = {
 						manId: personal.utid, //登录人ID
-						schoolId: window.storageKeyName.SCHOOLID, //学校ID,统一部署的时候，学校ID传000000
+						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
 					}
 					//				plus.device.vibrate(500);
 					//				events.showWaiting();
@@ -751,11 +751,11 @@
 							} else if(index == 7) { //口语测评
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
-								utils.mOpenWithData("../../html/orals/oralsIndex.html", {});
+								utils.mOpenWithData("../../html/orals/orals_index.html", {});
 							}else if(index == 9) { //益测益学
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
-								utils.mOpenWithData("../../html/benefitingLearning/ycyxIndex.html", {});
+//								utils.mOpenWithData("../../html/benefitingLearning/ycyxIndex.html", {});
 							} else {
 								mui.toast('此功能暂未开放');
 							}
