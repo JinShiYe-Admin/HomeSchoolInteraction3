@@ -1,0 +1,440 @@
+<!doctype html>
+<html>
+	<!--测试、查看测试结果-->
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.mui-bar {
+				background-color: #FFFFFF;
+			}
+			.mui-action-back {
+				color: #222222;
+			}
+			.question-header {
+				padding: .45rem .2rem .3rem;
+				display: flex;
+				justify-content: space-between;
+			}
+			.question-header .p-title {
+				max-width: 82%;
+				font-size: 0.3rem;
+				line-height: 1.2;
+			}
+			.question-header .progress {
+				color: #666666;
+				font-size: 0.26rem;
+			}
+			.question-box {
+				padding: 0.7rem 0.46rem 0.2rem;
+			}
+			.tested .question-box {
+				padding-top: 0.3rem;
+			}
+			.tested .question-box:after {
+				display: block;
+				content: "";
+				border-bottom: 1px solid #DDDDDD;
+			}
+			.time {
+				color: #666666;
+			}
+			.question-box {
+				font-size: 0.28rem;
+				color: #222222;
+			}
+			.question {
+				line-height: 1.8;
+				margin-bottom: 0.8rem;
+				word-break: break-word;
+			}
+			.option-item {
+				margin-bottom: 0.55rem;
+			}
+			.option-item .option-label {
+				margin-right: 0.15rem;
+			}
+			.option-item .option-label + span {
+				display: inline-block;
+			    max-width: 85%;
+			    vertical-align: middle;
+			    line-height: 1.5;
+			}
+			.answer-box {
+				padding: 0 0.2rem;
+			}
+			.answer-box .answer-key {
+				color: #141414;
+				font-size: 0.26rem;
+			}
+			.answer-box .answer-detail {
+				padding: 0.35rem;
+			}
+			.question-box img {
+				max-width: 100%;
+				background: url(../../img/loading.svg) center/contain no-repeat;
+			}
+			.answer-detail {
+				color: #222222;
+				line-height: 1.6;
+				word-break: break-word;
+			}
+			#testing {
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="testing" v-cloak :class="{tested: isTested}">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<span class="mui-icon mui-pull-right time" v-if="isTested">用时：{{time}}</span>
+				<span class="mui-icon mui-pull-right time" v-else>{{timeStr}}</span>
+				<h1 class="mui-title">{{headerTitle}}</h1>
+			</header>
+			
+			<div class="mui-content">
+				<div class="question-header">
+					<span class="p-title mui-ellipsis">{{paperName}}</span>
+					<span class="progress">{{progress}}</span>
+				</div>
+				
+				<div class="question-box" v-if="questions[index]">
+					<div class="question">{{ (index+1)+".(单选题) " }}<span v-html="questions[index].content"></span></div>
+					<div class="option-box">
+						<div class="option-item" v-for="(item, k) in transOption" :key="k">
+							<span class="option-label" v-if="!isTested" :class="{selected: questions[index].stu_answer==k}" @tap="selectOption(k)">{{k}}</span>
+							<span class="option-label" v-else :class="answerJudge(k)">{{k}}</span>
+							<span v-html="item"></span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="answer-box" v-if="isTested">
+					<div class="answer-key">
+						正确答案：<span style="color: #2CA97F; margin-right: 0.35rem;"> {{getAnswerName(questions[index].answer)}}</span> 
+						你选的：<span style="color: #FF7C6F;"> {{getAnswerName(questions[index].stu_answer)}}</span>
+					</div>
+					<div class="answer-detail">
+						答案解析：<br /> 
+						<div v-html="questions[index].solve"></div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div id="beforeLeaveDialog" class="cfm-dialog">
+			<div class="title">确认退出练习？</div>
+			<p class="dialog-content">退出后不保存本次练习记录</p>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		<script type="text/javascript" src="../../js/layer/layer.js" ></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		
+		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
+		<script type="text/javascript">
+			var self, isImmer;
+			mui.init({
+				beforeback: function() {
+					if(testing.isAnswered&&!testing.isTested){
+						beforeLeaveDialog(function(){
+							testing.isAnswered = false;
+							mui.back();
+						});
+						return false;
+					}else{
+						if(self.isTested){
+							isImmer&&plus.navigator.setStatusBarStyle('light');
+						}else{
+							isImmer&&plus.navigator.setStatusBarStyle('light');
+							self.close(); //返回时,关闭页面
+							return false;
+						}
+					}
+				}
+			});
+			
+			mui.plusReady(function(){
+				
+				self = plus.webview.currentWebview();
+				isImmer = plus.navigator.isImmersedStatusbar();
+				
+				//状态栏样式
+				if(isImmer){
+					self.addEventListener("show", function(e){
+						plus.navigator.setStatusBarStyle('dark');
+					});
+				}
+				
+				
+				// 获取题目
+				testing.isTested = self.isTested;
+				testing.headerTitle = self.title; //知识点名
+				if(self.isTested) { 
+					//测试结果
+					console.log("测试结果: "+JSON.stringify(self.detailInfo));
+					testing.paperName = self.paperName;
+					testing.questions = self.detailInfo;
+					testing.time = self.used_time;
+				}else{ 
+					//新测试
+//					if(self.opener().id=="bl-test-start") {
+//						self.opener().hide();
+//					}
+					testing.paperName = self.data.paperName;
+					testing.questions = self.data.questions;
+					testing.diskey = self.data.diskey;
+					//计时
+					testing.timer();
+				}
+				
+			});
+			
+			//设置测试结果
+			window.addEventListener("setTested", function(e){
+				console.log("测试结果: "+JSON.stringify(e.detail.detailInfo));
+				testing.isTested = true;
+				testing.headerTitle = self.title;
+				testing.paperName = e.detail.paperName;
+				testing.questions = e.detail.detailInfo;
+				testing.time = e.detail.used_time;
+			});
+			
+			//返回查看
+			window.addEventListener("getBack", function(e){
+				testing.index = e.detail.index||0;
+				if(!testing.isTested) {
+					testing.timer();
+				}
+			});
+			
+			var timer;
+			var testing = new Vue({
+				el: "#testing",
+				data: {
+					headerTitle: "",
+					paperName: "",
+					time: 0,
+					index: 0,
+					questions: [],
+					isTested: false,
+					isSelecting: false,
+					diskey: "",
+					isAnswered: false
+				},
+				computed: {
+					//时间显示
+					timeStr: function() {
+						var m = Math.floor(this.time/60);
+						var s = this.time-m*60;
+						m = m>=10 ? m : "0"+m;
+						s = s>=10 ? s : "0"+s;
+						return m+":"+s;
+					},
+					progress: function() {
+						var tt = this.questions.length;
+						if(tt) {
+							var cur = this.index+1;
+							if(this.index+1<10) {
+								var o = 0;
+								while(o<Math.floor(tt/10)) {
+									cur = "0"+cur;
+									o++;
+								}
+							}
+							return cur+"/"+tt;
+						}else{
+							return "0/0"
+						}
+					},
+					//选项
+					transOption: function() {
+						var cur_qes = this.questions[this.index];
+						if(cur_qes&&cur_qes.option) {
+							var op = JSON.parse(cur_qes.option);
+							var new_op = {}
+							op.forEach(function(v){
+								new_op[v.substr(0,1)] = v.split(/^[a-zA-Z]\W/, 2).pop();
+							});
+							return new_op;
+						}else{
+							return [];
+						}
+					}
+				},
+				mounted: function() {
+					var _this = this;
+					//左右划
+					mui(".mui-content").on("swipeleft", ".question-box", function(){
+						!_this.isSelecting&&_this.changeIndex(1);
+					});
+					mui(".mui-content").on("swiperight", ".question-box", function(){
+						!_this.isSelecting&&_this.changeIndex(-1);
+					});
+				},
+				methods: {
+					//计时
+					timer: function() {
+						var _this = this;
+						timer = setInterval(function(){
+							_this.time++;
+						}, 1000);
+					},
+					//切换题目
+					changeIndex: function(d){
+						var des = this.index+d;
+						if(des>=this.questions.length){
+							if(this.isTested) return false;
+							//停止计时
+							clearInterval(timer);
+							//测试数据
+							var _this = this;
+							var ans = [];
+							this.questions.forEach(function(v, i){
+								ans.push({
+									index: i,
+									question_id: v.question_id,
+									stu_answer: v.stu_answer||[]
+								});
+							});
+							//进入提交页
+							mui.openWindow({
+								url: "testSubmit.html",
+								id: "bl-test-submit",
+								extras: {
+									submitData: {
+										title: _this.headerTitle,
+										diskey: _this.diskey,
+										catalogId: self.catalogId,
+										name: _this.paperName,
+										usedTime: _this.timeStr,
+										answerArray: ans
+									}
+								}
+							});
+//							var test_submit = plus.webview.create("testSubmit.html", "bl-test-submit", {}, {
+//								submitData: {
+//										title: _this.headerTitle,
+//										diskey: _this.diskey,
+//										catalogId: self.catalogId,
+//										name: _this.paperName,
+//										usedTime: _this.timeStr,
+//										answerArray: ans
+//									}
+//							});
+//							test_submit.show("slide-in-right");
+						}else if(des<0){
+							return false;
+						}else{
+							this.index = des;
+						}
+					},
+					//选择
+					selectOption: function(k) {
+						if(!this.isTested) {
+							this.isSelecting = true;
+							var cur = this.questions[this.index];
+							var _this = this;
+							if(cur.stu_answer) {
+								cur.stu_answer = [k];
+							}else{
+								this.$set(cur, "stu_answer", [k]);
+							}
+							setTimeout(function(){
+								_this.isSelecting = false;
+								_this.changeIndex(1);
+							}, 500);
+							if(!_this.isAnswered) {
+								_this.isAnswered=true;
+							}
+						}
+					},
+					// 判断答案是正确、错误或没选
+					answerJudge: function(key) {
+						var answer = this.questions[this.index].answer;
+						var stu_answer = this.questions[this.index].stu_answer;
+						if(!answer||!stu_answer) return "";
+						if(answer.indexOf(key)!=-1&&stu_answer.indexOf(key)!=-1) {
+							return "selected";
+						}else if(stu_answer.indexOf(key)!=-1){
+							return "err";
+						}else if(answer.indexOf(key)!=-1) {
+							return "selected";
+						}else{
+							return "";
+						}
+					},
+					getAnswerName: function(answer) {
+						var asr = "";
+						if(answer){
+							var an1 = answer.match(/[a-zA-Z]/);
+							if(an1){
+								asr = an1[0];
+							}
+						}
+						return asr;
+					}
+				}
+			});
+			
+			//离开前对话框
+			function beforeLeaveDialog(yesCallback){
+				layer.closeAll();
+				layer.open({
+				  type: 1,
+				  title: false,
+				  closeBtn: 0,
+				  resize: false,
+				  skin: "beforeLeaveDialog",
+				  area: "6rem",
+				  btn: ["确认", "取消"],
+				  btnAlign: 'c',
+				  shadeClose: true,
+				  isOutAnim: false,
+				  content: $('#beforeLeaveDialog'),
+				  yes: function(index, layero){
+				  	layer.close(index);
+				  	yesCallback();
+				  },
+				  btn2: function(index, layero){
+				   	layer.close(index);
+				  }
+				});
+			}
+			
+			// 测试
+//			mui.ajax("../../test_data/createPaper.json", {
+//				dataType:'json',
+//				success: function(res) {
+//					var data = JSON.parse(res.data);
+//					testing.paperName = data.paperName;
+//					testing.questions = data.questions;
+//					testing.isTested = true;
+//				}
+//			});
+			
+		</script>
+	</body>
+
+</html>

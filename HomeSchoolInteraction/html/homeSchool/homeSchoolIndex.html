@@ -147,7 +147,7 @@
 							<a href="#" @click="clickFunction(9)">
 								<img class="circular-square" src="../../img/homeSchool/schoolPage4.png" />
 								<span class="mui-icon"></span>
-								<div class="mui-media-body divNameCss" style="font-size: 14px;">易测易学</div>
+								<div class="mui-media-body divNameCss" style="font-size: 14px;">益测益学</div>
 							</a>
 						</li>
 						<li class="mui-table-view-cell mui-media mui-col-sm-3 mui-col-xs-3" style="border: 0px;">
@@ -614,7 +614,7 @@
 				var getNoReadNoticeCntByMan = function() {
 					var tempData = {
 						manId: personal.utid, //登录人ID
-						schoolId: window.storageKeyName.SCHOOLID, //学校ID,统一部署的时候，学校ID传000000
+						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
 					}
 					//				plus.device.vibrate(500);
 					//				events.showWaiting();
@@ -752,12 +752,10 @@
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
 								utils.mOpenWithData("../../html/orals/orals_index.html", {});
-
-							}else if(index == 9) { //易测易学
+							}else if(index == 9) { //益测益学
 								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
 //								utils.mOpenWithData("../../html/benefitingLearning/ycyxIndex.html", {});
-
 							} else {
 								mui.toast('此功能暂未开放');
 							}

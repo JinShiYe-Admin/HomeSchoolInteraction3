@@ -6,6 +6,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 	</head>
 
@@ -89,11 +90,11 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		
-		<script src="../../js/orals/orals-common.js"></script>
+		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
 			mui.init();
 			
-			var auth={};
+			var catalog=[];
 			
 			var book = new Vue({
 				el: "#bookSelect",
@@ -104,14 +105,21 @@
 						fasc: {list:[]},
 						per: {list:[]},
 						ser: {list:[]}
-					}
+					},
+					isChange: false
 				},
 				methods: {
 					itemChange: function(item) {
 						var params = {}, _this = this;
+						if(item=="mater"){
+							params.subcode = this.items.sub.selected;
+							params.percode = this.items.per.selected;
+						}
                 		params[item+"code"] = this.items[item].selected;
-                		oralsAjax(host+'/persubmat', params, function(res){
+//              		console.log(JSON.stringify(params));
+                		oralsAjax('/persubmat', params, function(res){
                 			var rd = res.data;
+//              			console.log(JSON.stringify(rd));
 							_this.items.per = rd.per;
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
@@ -122,51 +130,53 @@
 							}else{
 								_this.items.ser = {list:[]};
 							}
+							_this.isChange = true;
                 		});
 					},
+					//改变年级
 					fascChange: function() {
 						var _this = this;
-						var data = {
-							percode: _this.items.per.selected,
-							subcode: _this.items.sub.selected,
-							matercode: _this.items.mater.selected,
-							fasccode: _this.items.fasc.selected
-						};
-						oralsAjax(host+'/catalog', data, function(r){
+						var data = {};
+						if(_this.items.per){
+							data.percode = _this.items.per.selected;
+						}
+						if(_this.items.sub){
+							data.subcode = _this.items.sub.selected;
+						}
+						if(_this.items.mater) {
+							data.matercode = _this.items.mater.selected;
+						}
+						if(_this.items.fasc) {
+							data.fasccode = _this.items.fasc.selected;
+						}
+						oralsAjax('/catalog', data, function(r){
 							var book_ser = {list:[], selected:0}
 			               	r.data.forEach(function(v, i){
 			               		book_ser.list.push({sercode: i, sername: v.name});
 			               	});
-			               	_this.items.ser = book_ser;
-			               	
+							if(_this.items.hasOwnProperty("ser")){
+								_this.items.ser.list = book_ser.list;
+								if(r.data.length-1<_this.items.ser.selected||!_this.items.ser.selected) {
+									_this.items.ser.selected = 0;
+								}
+							}else{
+								Vue.set(_this.items, "ser", book_ser);
+							}
 			               	//请求成功后，保存教材信息
-			               	plus.storage.setItem("orals_menu", JSON.stringify(r.data));
+			               	store.set("orals_menu", r.data);
 			               	
 			               	_this.serChange();
-			               	
+			               	_this.isChange = true;
 						});
 					},
+					//改变分册
 					serChange: function() {
 						var _this = this;
-						var menu_tree = JSON.parse(plus.storage.getItem("orals_menu"));
-						if(menu_tree.length){
+						var menu_tree = store.get("orals_menu");
+						if(menu_tree&&menu_tree.length){
 							//获取最终目录，并存储目录
-							var catalog = [];
-							readTree(menu_tree[_this.items.ser.selected].childList, function(node){
-			                    if(!node.childList||!node.childList.length) {
-			                        catalog.push(node);
-			                    }
-			               });
-			               	catalog.forEach(function(v, i){
-								readTree(menu_tree[_this.items.ser.selected].childList, function(node){
-									if(node.id==v.pid){
-										catalog[i]["pname"] = node.name;
-									}
-								});
-							});
-			               	plus.storage.setItem("book_items", JSON.stringify(_this.items));
-			               	plus.storage.setItem("orals_catalog", JSON.stringify(catalog));
-			               	plus.storage.setItem("orals_catalog_id", String(catalog[0]?catalog[0].id:0));
+							catalog = getFinalCatalog(menu_tree[_this.items.ser.selected].childList);
+							_this.isChange = true;
 						}
 					}
 				}
@@ -174,36 +184,44 @@
 						
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
-//				var cover_view = plus.webview.getWebviewById('orals_cover');
-//				var coverCallback;
-//				window.addEventListener("coverHide", function(e){
-//					if(e.detail.type=="dialog"){
-//						e.detail.dialogYes && coverCallback();
-//					}
-//				});
-				
-				auth = JSON.parse(plus.storage.getItem('orals_auth'));
 				
 				//当前教材	
-				book.items = JSON.parse(plus.storage.getItem('book_items'));
+				var s_items = store.get('book_items');
+				oralsAjax('/persubmat', {}, function(res){
+					var rd = res.data;
+                	book.items.per = rd.per;
+                	var has_per = rd.per.list.some(function(v){return v.percode==s_items.per.selected});
+                	if(has_per){
+                		book.items.per.selected = s_items.per.selected;
+                	}
+					book.items.sub = rd.sub;
+					var has_sub = rd.sub.list.some(function(v){return v.subcode==s_items.sub.selected});
+					if(has_sub) {
+						book.items.sub.selected = s_items.sub.selected;
+					}
+					book.items.mater = rd.mater;
+					var has_mater = rd.mater.list.some(function(v){return v.matercode==s_items.mater.selected});
+					if(has_mater) {
+						book.items.mater.selected = s_items.mater.selected;
+					}
+					book.items.fasc = rd.fasc;
+					var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==s_items.fasc.selected});
+					if(has_fasc){
+						book.items.fasc.selected = s_items.fasc.selected;
+					}
+					book.items.ser = s_items.ser;
+					book.fascChange();
+				});
 				
-				//点击 确定
+				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
-//					if(plus.storage.getItem("orals_test_state")=="4"){
-//						mui.fire(cover_view, "setOption", {
-//				    		type: 'dialog', 
-//				    		opener_id: self.id
-//				    	});
-//				    	coverCallback = function() {
-//				    		mui.fire(self.opener(), "changeBook");
-//							mui.fire(plus.webview.getWebviewById("orals_errs"), "getData");
-//							mui.back();
-//				    	}
-//					}else{
+					if(book.isChange){
+						store.set("book_items", book.items);
+		               	store.set("orals_catalog", catalog);
+		               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);
 						mui.fire(self.opener(), "changeBook");
-						mui.fire(plus.webview.getWebviewById("orals_errs"), "getData");
-						mui.back();
-//					}
+					}
+					mui.back();
 				});
 				
 			});

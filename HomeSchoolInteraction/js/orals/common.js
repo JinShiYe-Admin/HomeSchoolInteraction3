@@ -1,22 +1,44 @@
-//设置rem, 1rem = 100px
-var REM;
-(function(doc, win){
-	var docEl = doc.documentElement,
-        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-        recalc = function () {
-            var clientWidth = docEl.clientWidth>750?750:docEl.clientWidth;
-            if (!clientWidth) return;
-            REM = 100 * (clientWidth / 375); //设计图中 100px=1rem
-            docEl.style.fontSize = REM + 'px';
-        };
-    if (!doc.addEventListener) return;
-    win.addEventListener(resizeEvt, recalc, false);
-    doc.addEventListener('DOMContentLoaded', recalc, false);
-})(document, window);
 
-//var host = "https://res.jiaobaowang.net";
-var host = "http://139.129.252.49:8080/res";
-//var host = "http://192.168.0.122:801/res"
+//重新登录，flag：1关闭所有页面，退出登录；0仅返回登录页
+function reLogin(flag) {
+	plus.webview.open('../../html/index/login.html', "", {}, "fade-in", 150, function(){
+		var wvs = plus.webview.all();
+		for(var i = 0, len = wvs.length; i < len; i++) {
+			//关闭除login页面外的其他页面
+			if(wvs[i]&&wvs[i].getURL()&&wvs[i].getURL().indexOf('login.html') != -1) {
+				continue;
+			}
+			plus.webview.close(wvs[i], "none");
+		}
+	});
+	
+	if(flag==1) {
+		store.remove(window.storageKeyName.PERSONALINFO);
+	}
+}
+
+// 获取套餐学段名
+function getPrdName(fx) {
+	var names = [];
+	fx && fx.forEach(function(v){
+		if(v.itemcode=="prd"){
+			var values = v.itemsons.split(",");
+			for(var i=0;i<values.length;i++){
+				var fv = values[i].split("|").pop();
+				if(fv) names.push(fv);
+			}
+		}
+	});
+    return  names;
+}
+
+//接口地址
+var host = window.storageKeyName.ORALSHOST;
+
+//分数格式
+function setWordsScore(score) {
+	return Math.round(score*20);
+}
 
 //选择教材
 function goBook() {
@@ -45,9 +67,21 @@ function goRecord(activeTab) {
 	});
 }
 
+//打开结果页
+function goResult(extras) {
+	mui.openWindow({
+		url: "result.html",
+		id: "result.html",
+		extras: extras,
+		waiting: {
+			autoShow:true
+		}
+	});
+}
+
 //获取教材名
 function getBookNames() {
-	var book_items = JSON.parse(plus.storage.getItem("book_items"));
+	var book_items = store.get("book_items");
 	if(!book_items){
 		return "";
 	}else{
@@ -58,25 +92,43 @@ function getBookNames() {
 			per: filterArray(book_items.per.list, "percode", book_items.per.selected)[0],
 			ser: filterArray(book_items.ser.list, "sercode", book_items.ser.selected)[0]
 		}
-		return book.sub.subname+book.mater.matername+book.fasc.fascname+book.ser.sername;
+		return (book.sub?book.sub.subname:"")+(book.mater?book.mater.matername:"")+(book.fasc?book.fasc.fascname:"")+(book.ser?book.ser.sername:"");
 	}
 }
 
 //获取目录名
 function getCatalogName(id) {
-	var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+	var catalog = store.get('orals_catalog');
 	var cur_node = filterArray(catalog, 'id', id)[0];
 	var final_name = "";
 	if(cur_node) {
-		final_name = cur_node.pid?(cur_node.pname+"&nbsp;&nbsp;"+cur_node.name):cur_node.name;
+		final_name = cur_node.pid?((cur_node.pname||"")+"&nbsp;&nbsp;"+cur_node.name):cur_node.name;
 	}
 	return final_name;
 }
 
+//根据分册获取最末端目录，list：分册树形目录
+function getFinalCatalog(list){
+	var catalog = []; 
+	readTree(list, function(node){
+        if(!node.childList||!node.childList.length) {
+            catalog.push(node);
+        }
+   	});
+   	catalog.forEach(function(v, i){
+		readTree(list, function(node){
+			if(node.id==v.pid){
+				catalog[i]["pname"] = node.name;
+			}
+		});
+	});
+	return catalog;
+}
+
 //获取 上级+下级 目录节点
 function getSubNode(id) {
-	var menu = JSON.parse(plus.storage.getItem("orals_menu"));
-	var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+	var menu = store.get("orals_menu");
+	var catalog = store.get('orals_catalog');
 	var cur_node = filterArray(catalog, 'id', id)[0];
 	var p_node;
 	readTree(menu, function(node){
@@ -126,12 +178,14 @@ function uploadRecordFile(record, fs, callback) {
 		mui.toast("网络异常，请检查网络设置！", {duration:'long', type:'div'});
 		return false;
 	}
+	record.words = record.words?record.words.trim():record.words;
 	var wt=plus.nativeUI.showWaiting("正在评分");
 	var task=plus.uploader.createUpload(host+"/orals/record/",
 		{
-			method:"POST", timeout: 10
+			method:"POST", timeout: 6, retry: 1, retryInterval: 8
 		},
 		function(t,status){ //上传完成
+//			console.log("上传完成"+t.responseText);
 			if(status==200){
 				var res;
 				try{
@@ -141,18 +195,31 @@ function uploadRecordFile(record, fs, callback) {
 				}
 				if(res.state=="ok") {
 					callback(res);
+					fs = [];
 				}else{
-					mui.toast(res.msg||"评分失败", {duration: "short", type: "div"});
-					console.log(res);
+					if(res.code==6||res.code=="0006"){
+						tokenReset(function(){
+							uploadRecordFile(record, fs, callback);
+						});
+					}else{
+						mui.toast(res.msg||"评分失败，请重试", {duration: "short", type: "div"});
+						fs = [];
+					}
 				}
 			}else{
-				console.log("上传失败");
+				mui.toast("评分失败，请重试", {duration: "short", type: "div"});
+				fs = [];
 			}
-			fs = [];
 			wt.close();
 		}
 	);
-	var orals_auth = JSON.parse(plus.storage.getItem('orals_auth'));
+	var orals_auth = getAuth();
+	if(!orals_auth||!orals_auth.uuid) {
+		plus.nativeUI.closeWaiting();
+		plus.nativeUI.toast("身份过期，请重新登录");
+		reLogin();
+		return false;
+	}
 	task.addData("data", JSON.stringify(record) );
 	task.addData("ext", "amr");
 	task.addData("token", orals_auth.token);
@@ -168,15 +235,29 @@ function uploadRecordFile(record, fs, callback) {
 }
 
 // 设置录音器
-function setRecorder(recorder, touch, success, fail) {
-	if ( recorder == null ) {
+function setRecorder(touch, success, fail) {
+	var recorder = null;
+	if(mui.os.ios){
+		var rdps = plus.navigator.checkPermission("RECORD");
+		recorder = plus.audio.getRecorder();
+		if(["authorized","notdeny"].indexOf(rdps)==-1){
+			if(rdps=="denied"){
+				mui.toast("录音已被禁用，请设置为允许。");
+			}else{
+				recorder.record({filename:"_doc/audio/"},function(){});
+			}
+			return false;
+		}
+	}else{
 		recorder = plus.audio.getRecorder();
 	}
+	
 	//长按是否有效
 	var touchTimer = setTimeout(function(){
 		touch = true;
 	}, 500);
-	recorder.record({filename:'_doc/audio/', format: 'amr', samplerate: 16000}, function(p){
+	var samp = "16000";
+	recorder.record({filename:'_doc/audio/', samplerate: samp}, function(p){
 		//录音完成
 		if(touch) {
 			plus.io.resolveLocalFileSystemURL(p, function(entry){
@@ -188,18 +269,23 @@ function setRecorder(recorder, touch, success, fail) {
 		clearTimeout(touchTimer);
 		touch = false;
 	}, function(e){
-		fail();
-		console.log('录音失败：'+e.message);
+		fail&&fail();
+		var msg = e.message;
+		if(plus.navigator.checkPermission("RECORD")=="denied") {
+			msg = "录音已被禁用，请设置为允许。";
+		}
+		mui.toast(msg);
 		clearTimeout(touchTimer);
 		touch = false;
 	});
+	return recorder;
 }
 
 //断网提示
 var isNetAbort=false;
 mui.plusReady(function(){
 	isNetAbort = (plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE);
-	if(isNetAbort){
+	if(isNetAbort&&plus.webview.currentWebview().id!=plus.webview.getLaunchWebview().id){
 		plus.nativeUI.closeWaiting();
 		plus.webview.currentWebview().isVisible() && mui.toast("网络异常，请检查网络设置！", {duration:'long', type:'div'});
 		netErrorTip();
@@ -234,16 +320,23 @@ function compareDate(d1,d2){
 	return ((new Date(d1.replace(/-/g,"\/")))>(new Date(d2.replace(/-/g,"\/"))));
 }
 
-//token过期
+//请求时判断token过期
+var ajaxTimes = 0;
 function oralsAjax(url, data, success, fail, error) {
 	if(isNetAbort){
 		mui.toast("网络异常，请检查网络设置！", {duration:'long', type:'div'});
 		plus.nativeUI.closeWaiting();
 		return false;
 	}
-	var auth1 = JSON.parse(plus.storage.getItem('orals_auth'));
+	var auth1 = getAuth();
+	if(!auth1||!auth1.uuid) {
+		plus.nativeUI.closeWaiting();
+		plus.nativeUI.toast("身份过期，请重新登录");
+		reLogin();
+		return false;
+	}
 	var cdata = mui.extend(data, auth1);
-	mui.ajax(url, {
+	mui.ajax(host + url, {
 		data: cdata,
 		type: "post",
 		timeout: 6000,
@@ -251,27 +344,14 @@ function oralsAjax(url, data, success, fail, error) {
 		success: function(res) {
 			if(res.state=="ok") {
 				success(res);
+				ajaxTimes = 0;
 			}else{
-				if(res.code==6){
-					console.log("token reset");
-					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-					var personal = store.get(window.storageKeyName.PERSONALINFO);
-					var comData = {
-						uuid: auth1.uuid,
-						utid: auth1.utid,
-						utoken: auth1.token,
-						appid: publicParameter.appid,
-						schid: auth1.schid,
-						utp: personal.utp,
-						utname: auth1.utname
-					};
-					//令牌续订
-					postDataEncry('TokenReset', {}, comData, 0, function(data1) {
-						if(data1.RspCode == 0) {
-							auth1.token = data1.RspData;
-							plus.storage.setItem('orals_auth', JSON.stringify(auth1));
-							cdata.token = data1.RspData;
-							oralsAjax(url, cdata, success, error);
+				if(res.code==6||res.code=="0006"){
+					//续订
+					tokenReset(function(){
+						if(ajaxTimes<5){
+							oralsAjax(url, data, success, fail, error);
+							ajaxTimes++;
 						}
 					});
 				}else{
@@ -283,10 +363,52 @@ function oralsAjax(url, data, success, fail, error) {
 			}
 		},
 		error:function(xhr,type,errorThrown){
-			mui.toast('服务器异常：'+type,{ duration:'short', type:'div' });
-			error && error();
+			if(ajaxTimes>2){
+				mui.toast('服务器异常：'+type,{ duration:'short', type:'div' });
+				error && error();
+			}else{
+				oralsAjax(url, data, success, fail, error);
+				ajaxTimes++;
+			}
 		}
 	});
+}
+//续订
+function tokenReset(callback){
+	console.log("---token-reset---");
+	var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+	var personal = store.get(window.storageKeyName.PERSONALINFO);
+	var comData = {
+		uuid: publicParameter.uuid,
+		utid: personal.utid,
+		utoken: personal.utoken,
+		appid: publicParameter.appid,
+		schid: personal.schid,
+		utp: personal.utp,
+		utname: personal.utname
+	};
+	//令牌续订
+	postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+		if(data1.RspCode == 0) {
+			personal.utoken = data1.RspData;
+			store.set(window.storageKeyName.PERSONALINFO, personal);
+			callback();
+//			oralsAjax(url, data, success, fail, error);
+		}
+	});
+}
+
+//获取认证信息
+function getAuth() {
+	var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+	var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
+	return {
+		uuid: deviceParam.uuid,
+		utid: userInfo.utid,
+		schid: userInfo.schid,
+		utname: userInfo.utname,
+		token: userInfo.utoken
+	}
 }
 
 //svg图标
@@ -329,7 +451,6 @@ function oralsAjax(url, data, success, fail, error) {
                                 '<path d="M585.113 642.518s-39.9-103.7-30.3-113.5c9.6-9.8 113 30.3 113 30.3l-82.7 83.2z m338.8 172.1l-84.1 84.3-240.9-241.3 84.1-84.1 240.9 241.1z m-50 118.5c2.8 2.7 7.3 2.7 10.1 0l73.3-73.3c2.7-2.7 2.7-7.1 0-9.9v-0.3l-21.5-21.6-83.6 83.6 21.7 21.5zM276.913 616.018h92.6c16.4 0 29.6 13.3 29.6 29.7 0 16.3-13.2 29.5-29.6 29.6h-92.6c-17.2-1.4-30.2-16.1-29.6-33.3 0.2-14.6 12.2-26.3 26.9-26.1 0.9 0 1.8 0 2.7 0.1z m0-185.9h240.7c16.4 0 29.6 13.3 29.6 29.7 0 16.3-13.2 29.5-29.6 29.6h-240.7c-16.1 0.2-29.4-12.7-29.6-28.8v-0.8c-1.3-15 9.8-28.3 24.8-29.7 1.6-0.2 3.2-0.2 4.8 0z m0-185.9h240.7c16.4 0 29.7 13.2 29.7 29.6 0 16.4-13.2 29.7-29.6 29.7H276.913c-16.1 0.2-29.4-12.7-29.6-28.8v-0.8c-1.4-15 9.7-28.3 24.7-29.7 1.6-0.2 3.3-0.2 4.9 0z"></path>'+
                             '</symbol>'+
                             '<symbol id="icon-icon-record" viewBox="0 0 1024 1024">'+
-//                              '<path d="M512.3 513.2m-444.5 0a444.5 444.5 0 1 0 889 0 444.5 444.5 0 1 0-889 0Z"></path>'+
                                 '<path d="M512.344 587.716c51.7-0.6 93-43 92.4-94.7v-131c1.2-51-39.2-93.4-90.3-94.5-51-1.2-93.4 39.2-94.5 90.3v135.4c-0.6 51.5 40.8 93.9 92.4 94.5z" fill="#FFFFFF"></path>'+
                                 '<path d="M646.744 455.816c-10.5-0.2-19.2 8.2-19.4 18.7v25.7c-2.3 63.5-55.6 113.1-119.1 110.9-60.3-2.2-108.7-50.6-110.9-110.9v-25.7c-0.4-10.7-9.4-19.1-20.1-18.8-10.2 0.4-18.4 8.5-18.8 18.8v25.7c0.7 76.9 59 141 135.4 149.1v86.2h-49.3c-11 0-24.7 1.4-24.7 12.3s13.6 12.3 24.7 12.3h135.5c11 0 24.7-1.4 24.7-12.3s-13.6-12.3-24.7-12.3h-49.3v-86.2c74.2-10.5 135.4-74.7 135.4-149.1v-25.7c-0.2-10.5-8.8-18.9-19.4-18.7z" fill="#FFFFFF"></path>'+
                             '</symbol>'+
@@ -366,6 +487,19 @@ function oralsAjax(url, data, success, fail, error) {
                             '</symbol>'+
                             '<symbol id="icon-icon-net-error" viewBox="0 0 1024 1024">'+
                             	'<path d="M926.020722 879.616a56.888889 56.888889 0 0 1-80.440889 0c-9.671111 8.874667-18.659556 18.659556-28.16 28.16a459.776 459.776 0 0 1-40.96 36.352H214.795833a459.776 459.776 0 0 1-41.016889-36.408889A455.111111 455.111111 0 0 1 61.309611 449.422222l-44.430223-44.487111A56.888889 56.888889 0 0 1 97.320277 324.266667L125.3665 352.711111a34.133333 34.133333 0 1 0 48.298666-48.298667l-52.280889-52.280888a34.133333 34.133333 0 0 1 48.298667-48.298667l72.476444 72.362667A34.133333 34.133333 0 1 0 290.344277 227.953778l-31.004444-31.118222a455.111111 455.111111 0 0 1 689.379555 431.900444l65.137778 65.706667a34.133333 34.133333 0 1 1-48.298666 48.298666l-63.658667-64.227555a34.133333 34.133333 0 0 0-48.298667 48.298666l72.419556 72.419556a56.888889 56.888889 0 0 1 0 80.384z" fill="#EAF0F7" p-id="1780"/><path d="M82.017166 164.977778m-34.133333 0a34.133333 34.133333 0 1 0 68.266667 0 34.133333 34.133333 0 1 0-68.266667 0Z" fill="#EAF0F7" p-id="1781"/><path d="M96.922055 938.666667h728.177778a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688888H96.922055a5.688889 5.688889 0 0 1-5.688889-5.688888 5.688889 5.688889 0 0 1 5.688889-5.688889zM881.988722 938.666667h34.133333a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688888h-34.133333a5.688889 5.688889 0 0 1-5.688889-5.688888 5.688889 5.688889 0 0 1 5.688889-5.688889zM512.210944 972.8h34.133333a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889h-34.133333a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889zM74.1665 1012.622222h147.911111a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889H74.1665a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889zM347.233166 1012.622222h557.511111a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889H347.233166a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889zM603.233166 972.8h147.911111a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889h-147.911111a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889zM210.699833 972.8h256a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889H210.699833a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889zM660.122055 56.888889a22.755556 22.755556 0 1 0-22.755555-22.755556 22.755556 22.755556 0 0 0 22.755555 22.755556z m0 11.377778a34.133333 34.133333 0 1 1 34.133333-34.133334 34.133333 34.133333 0 0 1-34.133333 34.133334zM802.344277 665.6a22.755556 22.755556 0 1 0-22.755555-22.755556 22.755556 22.755556 0 0 0 22.755555 22.755556z m0 11.377778a34.133333 34.133333 0 1 1 34.133334-34.133334 34.133333 34.133333 0 0 1-34.133334 34.133334zM495.144277 256a22.755556 22.755556 0 1 0-22.755555-22.755556 22.755556 22.755556 0 0 0 22.755555 22.755556z m0 11.377778a34.133333 34.133333 0 1 1 34.133334-34.133334 34.133333 34.133333 0 0 1-34.133334 34.133334zM176.5665 773.688889a22.755556 22.755556 0 1 0-22.755556-22.755556 22.755556 22.755556 0 0 0 22.755556 22.755556z m0 11.377778a34.133333 34.133333 0 1 1 34.133333-34.133334 34.133333 34.133333 0 0 1-34.133333 34.133334zM813.722055 147.911111h34.133333a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889h-34.133333a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889z" fill="#CADAEC" p-id="1782"/><path d="M836.477611 136.533333v34.133334a5.688889 5.688889 0 0 1-5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889-5.688889v-34.133334a5.688889 5.688889 0 0 1 5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889 5.688889z" fill="#CADAEC" p-id="1783"/><path d="M375.677611 62.577778h34.133333a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889h-34.133333a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889z" fill="#CADAEC" p-id="1784"/><path d="M398.433166 51.2v34.133333a5.688889 5.688889 0 0 1-5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889-5.688889V51.2a5.688889 5.688889 0 0 1 5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889 5.688889z" fill="#CADAEC" p-id="1785"/><path d="M125.3665 614.4h34.133333a5.688889 5.688889 0 0 1 5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889 5.688889h-34.133333a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889z" fill="#CADAEC" p-id="1786"/><path d="M148.122055 603.022222v34.133334a5.688889 5.688889 0 0 1-5.688889 5.688888 5.688889 5.688889 0 0 1-5.688889-5.688888v-34.133334a5.688889 5.688889 0 0 1 5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889 5.688889z" fill="#CADAEC" p-id="1787"/><path d="M654.433166 284.444444h34.133334a5.688889 5.688889 0 0 1 5.688888 5.688889 5.688889 5.688889 0 0 1-5.688888 5.688889h-34.133334a5.688889 5.688889 0 0 1-5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889-5.688889z" fill="#CADAEC" p-id="1788"/><path d="M677.188722 273.066667v34.133333a5.688889 5.688889 0 0 1-5.688889 5.688889 5.688889 5.688889 0 0 1-5.688889-5.688889v-34.133333a5.688889 5.688889 0 0 1 5.688889-5.688889 5.688889 5.688889 0 0 1 5.688889 5.688889z" fill="#CADAEC" p-id="1789"/><path d="M711.322055 673.848889a220.728889 220.728889 0 0 0-382.919111 12.344889 37.034667 37.034667 0 0 0 16.270222 50.232889c18.545778 9.443556 32.483556-3.697778 42.040889-22.016 24.462222-46.876444 82.204444-70.997333 136.533333-70.997334a143.872 143.872 0 0 1 123.221334 68.835556 38.058667 38.058667 0 0 0 51.882666 12.743111 36.977778 36.977778 0 0 0 12.970667-51.143111zM780.328277 491.975111a397.539556 397.539556 0 0 0-327.281777-48.64q-0.967111 0.910222-23.324445 19.911111l16.554667 13.482667-12.572445 19.456 21.048889 2.104889 5.688889 2.104889a144.611556 144.611556 0 0 1 22.357333-1.706667c91.534222-26.225778 179.484444-0.512 259.413334 48.64 14.791111 9.102222 42.325333 6.940444 48.583111-4.266667s6.712889-39.936-10.467556-51.086222z" fill="#FFFFFF" p-id="1790"/><path d="M392.744277 452.096l3.356445-4.380444c17.635556-22.755556 25.258667-32.768 26.339555-33.792l1.024-0.967112 1.365334-0.398222A440.604444 440.604444 0 0 1 787.268722 466.488889c21.105778 13.767111 27.306667 53.532444 12.8 75.207111a46.990222 46.990222 0 0 1-64.455111 13.255111A347.022222 347.022222 0 0 0 449.633166 512.398222h-1.991111a157.525333 157.525333 0 0 0-23.324444 1.820445l-7.907556 0.967111 4.778667-20.707556-25.998222-2.616889 16.042666-24.746666z m349.127111 93.127111a35.612444 35.612444 0 0 0 48.810667-10.012444c11.377778-16.554667 6.030222-49.152-9.557333-59.335111a429.169778 429.169778 0 0 0-351.573334-52.849778c-2.275556 2.901333-9.841778 12.629333-21.048888 27.192889l17.806222 14.506666-11.377778 17.692445 20.081778 1.991111-3.754667 17.749333a129.479111 129.479111 0 0 1 16.554667-1.024 358.4 358.4 0 0 1 294.001778 44.088889z" fill="#6C7C9D" p-id="1791"/><path d="M314.237611 469.447111a399.587556 399.587556 0 0 0-96.711111 129.479111 37.888 37.888 0 0 0 17.976888 50.232889c18.773333 8.931556 29.696-4.323556 38.570667-23.153778a324.266667 324.266667 0 0 1 83.057778-109.056q-11.719111-2.673778 7.566222-10.012444l-26.737778-9.272889 3.925334-24.120889q-26.112 3.128889-27.648-4.096z" fill="#FFFFFF" p-id="1792"/><path d="M369.0785 506.709333l11.377777 2.503111-8.704 7.395556a349.013333 349.013333 0 0 0-89.6 117.020444 46.876444 46.876444 0 0 1-62.577777 22.357334c-24.007111-11.377778-38.855111-45.112889-28.046223-67.982222a442.823111 442.823111 0 0 1 107.463111-143.018667l7.281778-6.428445 2.048 9.500445a147.228444 147.228444 0 0 0 8.476445 22.755555h43.064889l-8.362667 31.914667z m-167.310223 86.186667c-7.964444 17.066667 3.982222 44.032 22.755556 52.849778a35.498667 35.498667 0 0 0 47.217778-17.066667A360.618667 360.618667 0 0 1 355.652722 515.413333l-12.401778-2.616889-5.688889-1.194666 7.68-29.240889h-35.896889l-1.479111-3.413333c-3.470222-7.850667-6.087111-14.336-7.964444-19.512889a431.559111 431.559111 0 0 0-98.133334 133.461333z" fill="#6C7C9D" p-id="1793"/><path d="M512.210944 807.822222m-85.333333 0a85.333333 85.333333 0 1 0 170.666666 0 85.333333 85.333333 0 1 0-170.666666 0Z" fill="#FFFFFF" p-id="1794"/><path d="M461.010944 880.981333A86.129778 86.129778 0 0 0 591.400277 779.377778v5.063111a100.977778 100.977778 0 0 1-130.56 96.711111z" fill="#CADAEC" p-id="1795"/><path d="M506.522055 904.533333a102.4 102.4 0 1 1 102.4-102.4 102.4 102.4 0 0 1-102.4 102.4z m0-11.377777a91.022222 91.022222 0 1 0-91.022222-91.022223 91.022222 91.022222 0 0 0 91.022222 91.022223z" fill="#6C7C9D" p-id="1796"/><path d="M506.522055 787.626667l-22.357333-22.357334a10.24 10.24 0 1 0-14.506667 14.506667l22.357333 22.357333-22.357333 22.357334a10.24 10.24 0 1 0 14.506667 14.506666l22.357333-22.357333 22.357333 22.357333a10.24 10.24 0 1 0 14.506667-14.506666L521.028722 802.133333l22.357333-22.357333a10.24 10.24 0 1 0-14.506667-14.506667z" fill="#6C7C9D" p-id="1797"/><path d="M375.677611 437.76l12.003555-3.128889 15.530667-26.908444L375.677611 403.911111v33.848889zM343.819833 440.433778l15.416889 0.853333L340.975388 409.6l-12.743111 16.042667 15.587556 14.791111zM394.735388 513.137778h-5.12L381.3665 548.750222l26.680888-5.859555-13.312-29.752889zM705.633166 738.816a46.933333 46.933333 0 0 1-64.170666-15.872 151.04 151.04 0 0 0-262.883556 8.533333 46.933333 46.933333 0 0 1-62.976 20.024889c-22.755556-11.377778-32.312889-50.574222-20.138667-73.955555a244.622222 244.622222 0 0 1 426.154667-13.824c13.653333 22.357333 5.859556 62.065778-15.985778 75.093333zM512.495388 557.511111a232.732444 232.732444 0 0 0-206.848 125.155556c-9.386667 18.033778-1.308444 50.119111 15.246223 58.595555a35.555556 35.555556 0 0 0 47.672889-15.132444 162.417778 162.417778 0 0 1 282.737777-9.329778 35.555556 35.555556 0 0 0 48.583111 12.003556c16.156444-9.614222 22.755556-42.268444 12.117334-59.505778A232.789333 232.789333 0 0 0 512.495388 557.511111z" fill="#6C7C9D" p-id="1798"/>'+
+                            '</symbol>'+
+                            '<symbol id="icon-icon-user" viewBox="0 0 1024 1024">'+
+                            	'<path d="M623.1 604.2c-4.7 0-37.3-18.2-18.6-77.4 51.2-54.6 93.1-141.1 93.1-223 0-132-88.5-200.2-186.3-200.2-102.4 0-186.3 68.3-186.3 200.2 0 86.5 41.9 172.9 93.1 227.5 18.6 50.1-18.6 72.8-27.9 72.8C287.8 645.1 162 713.3 162 781.6V809c0 91 181.6 113.8 349.2 113.8S860.6 900 860.6 809v-27.3c0-72.8-125.7-141.1-237.5-177.5z m0 0"/>'+
+                            '</symbol>'+
+                            '<symbol id="icon-icon-password" viewBox="0 0 1024 1024">'+
+                            	'<path d="M798.3 412.6H751c0.4-5.3 0.6-10.7 0.6-16.2 0-132.4-107.7-240.2-240.2-240.2S271.2 264 271.2 396.4c0 5.4 0.2 10.8 0.6 16.2h-47.3c-21.7 0-39.3 17.6-39.3 39.3v376.2c0 21.7 17.6 39.3 39.3 39.3h573.9c21.7 0 39.3-17.6 39.3-39.3V451.8c-0.1-21.7-17.7-39.2-39.4-39.2z m-254.8 306c0 17.7-14.4 32.1-32.1 32.1-17.7 0-32.1-14.4-32.1-32.1v-137c0-17.7 14.4-32.1 32.1-32.1 17.7 0 32.1 14.4 32.1 32.1v137z m149.4-306H329.7c-0.5-5.3-0.7-10.7-0.7-16.2 0-100.5 81.8-182.3 182.3-182.3s182.3 81.8 182.3 182.3c0.1 5.4-0.2 10.8-0.7 16.2z"/>'+
+                            '</symbol>'+
+                            '<symbol id="icon-icon-phone" viewBox="0 0 1024 1024">'+
+                            	'<path d="M701.44 138.24c16.896 0 30.72 13.824 30.72 30.72v686.08c0 16.896-13.824 30.72-30.72 30.72H322.56c-16.896 0-30.72-13.824-30.72-30.72V168.96c0-16.896 13.824-30.72 30.72-30.72h378.88m0-61.44H322.56c-50.688 0-92.16 41.472-92.16 92.16v686.08c0 50.688 41.472 92.16 92.16 92.16h378.88c50.688 0 92.16-41.472 92.16-92.16V168.96c0-50.688-41.472-92.16-92.16-92.16z"/>'+
+                            	'<path d="M734.72 756.224h-445.44c-32.256 0-58.88 26.112-58.88 58.88v44.544c0 32.256 26.112 58.88 58.88 58.88h445.44c32.256 0 58.88-26.112 58.88-58.88v-44.544c0-32.768-26.624-58.88-58.88-58.88z m-223.744 120.32c-25.6 0-46.592-20.992-46.592-46.592s20.992-46.592 46.592-46.592 46.592 20.992 46.592 46.592-20.992 46.592-46.592 46.592z"/>'+
+                            '</symbol>'+
+                            '<symbol id="icon-icon-passcode" viewBox="0 0 1024 1024">'+
+                            	'<path d="M895.744 273.28a59.2 59.2 0 0 0-46.72-51.936A1103.36 1103.36 0 0 1 697.92 186.56a561.28 561.28 0 0 1-135.008-78.912 61.76 61.76 0 0 0-72.16 0 354.112 354.112 0 0 1-136.032 78.4 507.264 507.264 0 0 1-146.944 36.32 55.04 55.04 0 0 0-46.208 51.936S160 404.64 160 519.36C160 727.04 405.056 928 527.616 928c122.528 0 330.24-141.76 363.456-405.504 8.32-155.776 2.56-248.704 2.56-248.704l2.112-0.544z m-133.44 160.416l-256 241.44c-11.52 10.976-29.12 12.704-42.56 4.16l-6.72-5.728-141.248-146.912a35.264 35.264 0 0 1 51.904-47.776l116.32 122.016 230.528-218.08a35.264 35.264 0 1 1 47.776 51.936v-1.056z"/>'+
                             '</symbol>'+
                         '</svg>';
         var script = function () {

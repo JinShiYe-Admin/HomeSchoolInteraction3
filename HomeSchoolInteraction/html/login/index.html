@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8">
 		<title>校讯通首页</title>
@@ -7,37 +8,38 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="../../css/mui.min.css">
-		<link rel="stylesheet" type="text/css" href="../../fonts/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../../fonts/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../../fonts/iconfont2.css" />
 		<style>
 			html,
 			body {
 				background-color: #efeff4;
 			}
-			.mui-bar-tab .mui-tab-item.mui-active{
-				color:#00CFBD;
+			
+			.mui-bar-tab .mui-tab-item.mui-active {
+				color: #00CFBD;
 			}
 		</style>
 	</head>
 
 	<body>
 		<nav class="mui-bar mui-bar-tab" id="navIndex">
-				<a id="defaultTab" v-cloak class="mui-tab-item"  href='../../html/homeSchool/homeSchoolIndex.html'>
-					<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
-					<span class="mui-tab-label">家校互动</span>
-				</a>
-				<a id="kejiao" class="mui-tab-item  mui-active" href="../../html/sciedu/sciedu_home.html">
-				<!--<a class="mui-tab-item" href="html/Course/courseIndex.html">-->
-					<span class="mui-icon iconfont icon-jiaoyu"></span>
-					<span class="mui-tab-label">科教活动</span>
-				</a>
-				<a id="kecheng" class="mui-tab-item" href="../../html/Course/courseIndex.html">
-					<span class="mui-icon iconfont icon-kecheng"></span>
-					<span class="mui-tab-label">课程</span>
-				</a>
-				<a id="zhuxue" class="mui-tab-item" href="../../html/helpStudy/helpStudyIndex.html">
-					<span class="mui-icon iconfont icon-iconfontbangzhu"></span>
-					<span class="mui-tab-label">助学</span>
-				</a>
+			<a id="defaultTab" v-cloak class="mui-tab-item" href='../../html/homeSchool/noticeListIndex.html'>
+				<span class="mui-icon iconfont icon-jiaxiaohudong"></span>
+				<span class="mui-tab-label">通知公告</span>
+			</a>
+			<a id="zhuxue" class="mui-tab-item" href="../../html/orals/oralsIndex.html">
+				<span class="mui-icon iconfont icon-kouyu"></span>
+				<span class="mui-tab-label">口语测评</span>
+			</a>
+			<a id="kecheng" class="mui-tab-item" href="../../html/benefitingLearning/ycyxIndex.html">
+				<span class="mui-icon iconfont icon-timu"></span>
+				<span class="mui-tab-label">同步题库</span>
+			</a>
+			<a id="kejiao" class="mui-tab-item mui-active" href="../../html/sciedu/sciedu_home.html">
+				<span class="mui-icon iconfont icon-kejiaowenhua"></span>
+				<span class="mui-tab-label">科教活动</span>
+			</a>
 		</nav>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.js"></script>
@@ -50,24 +52,22 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			var personal = store.get(window.storageKeyName.PERSONALINFO);
-			var subpage_style = { 
+			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
 			};
-			
-			
+
 			window.addEventListener('refush_count', function() {
 				mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
 			});
-			
+
 			window.addEventListener('home_refresh', function(data) {
 				location.reload();
-			});		
-      
-			
+			});
+
 			//创建子页面，首个选项卡页面显示，其它均隐藏；
 			mui.plusReady(function() {
-				
+
 				//安卓的连续点击两次退出程序
 				var backButtonPress = 0;
 				//重写返回键
@@ -83,42 +83,42 @@
 					}, 1000);
 					return false;
 				};
-				
-				var defaultUrl='../../html/sciedu/sciedu_home.html';
+
+				var defaultUrl = '../../html/sciedu/sciedu_home.html';
 				var self = plus.webview.currentWebview();
 				var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style);
 				self.append(sub);
-				
+
 				//当前激活选项
 				activeTab = defaultUrl;
 				var title = document.getElementById("title");
-				
+
 				//选项卡点击事件
 				mui('.mui-bar-tab').on('tap', 'a', function(e) {
-						var targetTab = this.getAttribute('href');
-						if(targetTab == activeTab) {
-							return;
-						}else{
-							var viewIsExists=plus.webview.getWebviewById(targetTab);
-							if(viewIsExists==null||viewIsExists==''||viewIsExists==undefined){
-								var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
-								newSub.hide();
-								self.append(newSub);
-							} 
+					var targetTab = this.getAttribute('href');
+					if(targetTab == activeTab) {
+						return;
+					} else {
+						var viewIsExists = plus.webview.getWebviewById(targetTab);
+						if(viewIsExists == null || viewIsExists == '' || viewIsExists == undefined) {
+							var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
+							newSub.hide();
+							self.append(newSub);
 						}
-						//更换标题
-						//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-						plus.webview.show(targetTab, "fade-in", 300);
-						//隐藏当前;
-						plus.webview.hide(activeTab);
-						//更改当前活跃的选项卡 
-						activeTab = targetTab;
+					}
+					//更换标题
+					//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+					plus.webview.show(targetTab, "fade-in", 300);
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡 
+					activeTab = targetTab;
 				});
-			
+
 				var defaultTab = document.getElementById("kejiao");
 				//模拟首页点击
 				mui.trigger(defaultTab, 'tap');
-				
+
 				//切换选项卡高亮
 				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
 				if(defaultTab !== current) {
