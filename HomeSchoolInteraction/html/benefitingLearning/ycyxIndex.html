@@ -22,7 +22,7 @@
 			}
 			.mui-bar-tab {
 				height: 1rem;
-				background-color: #F9F9F4;
+				/*background-color: #F9F9F4;*/
 			}
 			.mui-bar-tab .mui-tab-item {
 				height: 1rem;
@@ -171,7 +171,7 @@
 	<body>
 		<header id="header" class="mui-bar mui-bar-nav theme">
 			<a v-show="!title" class="mui-icon mui-pull-right grade" @tap.stop="showTopPannel(1)" v-cloak>{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 			<!--个人中心-->
 			<!--<a id="headImg" class="mui-icon mui-pull-left" @tap="openCenter">
 				<img v-if="headImg" :src="headImg" class="head-img"/>
@@ -200,7 +200,7 @@
 				</span>
 				<span class="mui-tab-label">组卷测试</span>
 			</a>
-			<a class="mui-tab-item" data-target="bl-his-menu" href="#his-menu">
+			<!--<a class="mui-tab-item" data-target="bl-his-menu" href="#his-menu">
 				<span class="mui-icon">
 					<svg class="svg-icon" aria-hidden="true">
 			            <use xlink:href="#test-history" />
@@ -215,7 +215,7 @@
 			        </svg>
 				</span>
 				<span class="mui-tab-label">错题本</span>
-			</a>
+			</a>-->
 			<a class="mui-tab-item" data-target="bl-analysis" href="#bl-analysis">
 				<span class="mui-icon">
 					<svg class="svg-icon" aria-hidden="true">

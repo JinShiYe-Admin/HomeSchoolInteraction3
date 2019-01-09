@@ -238,7 +238,9 @@
 					"html/Course/courseIndex.html",
 					"html/helpStudy/helpStudyIndex.html",
 					"html/helpStudy/helpStudyIndex.html",
-					"html/login/firstPage.html"
+					"html/login/firstPage.html",
+					"html/orals/oralsIndex.html",
+					"html/benefitingLearning/ycyxIndex.html"
 				],
 				"priority": 0
 			},

@@ -19,7 +19,9 @@
 			"html/sciedu/sciedu_home.html",
 			"html/homeSchool/homeSchoolIndex.html",
 			"html/Course/courseIndex.html",
-			"html/helpStudy/helpStudyIndex.html"
+			"html/helpStudy/helpStudyIndex.html",
+			"html/orals/oralsIndex.html",
+			"html/benefitingLearning/ycyxIndex.html"
 		]
 	},
 	"html/homeSchool/homeSchoolIndex.html": {
