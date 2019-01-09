@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.lv-box {
+				border-bottom: 1px solid #ECECEC;
+			}
+			.btn-group {
+				display: flex;
+				flex-direction: column;
+			    justify-content: center;
+			    align-items: center;
+			    min-height: 6.8rem;
+			    padding-top: 1.2rem;
+			    padding-bottom: 0.6rem;
+			}
+			.btn-group > .btn {
+				width: 2rem;
+				height: 2rem;
+				border-radius: 50%;
+				text-align: center;
+				line-height: 2rem;
+				color: #FFFFFF;
+				font-size: 0.28rem;
+			}
+			.btn-group > .btn + .btn {
+				margin-top: 0.4rem;
+			}
+			.btn-group > .btn.start {
+				background-color: #3C9DFB;
+			}
+			.btn-group > .btn.cancle {
+				background-color: #EBAE73;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav theme">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title"></h1>
+		</header>
+		
+		<div class="mui-content">
+			<div class="lv-box">
+				<p class="lv-title">学习进度</p>
+				<div class="lv-bar">
+					<div class="lv-item" data-difficulty="1">
+						<div class="lv-icon-box"><span class="lv-icon">LV.1</span></div>
+						<div class="lv-msg">基础<span>(当前)</span></div>
+					</div>
+					<div class="lv-item" data-difficulty="2">
+						<div class="lv-icon-box"><span class="lv-icon">LV.2</span></div>
+						<div class="lv-msg">巩固<span>(当前)</span></div>
+					</div>
+					<div class="lv-item" data-difficulty="3">
+						<div class="lv-icon-box"><span class="lv-icon">LV.3</span></div>
+						<div class="lv-msg">提升<span>(当前)</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-group">
+				<a class="btn start">开始做题</a>
+				<a class="btn cancle" >取消做题</a>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<!--<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>-->
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		
+		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				self = plus.webview.currentWebview();
+				
+				mui.init();
+				
+//				mui.back = function() {
+//					self.hide();
+//				}
+				
+				var headerTitle = document.querySelector('.mui-title');
+				var lvs = document.querySelectorAll(".lv-bar .lv-item");
+				var nodeId = null;
+				
+				//传来 开始数据
+				window.addEventListener("getData", function(e){
+					headerTitle.innerHTML = e.detail.title;
+					nodeId = e.detail.catalogId;
+					lvs.forEach(function(item){
+						if(item.getAttribute('data-difficulty')==e.detail.difficulty){
+							item.classList.add('current');
+						}else{
+							item.classList.remove('current');
+						}
+						if(item.getAttribute('data-difficulty')<=e.detail.difficulty){
+							item.classList.add('active');
+						}else{
+							item.classList.remove('active');
+						}
+					});
+				});
+				
+				//取消做题
+				mui(".btn-group").on("tap", ".cancle", function(e){
+					mui.back();
+				});
+				
+				//开始做题
+				mui(".btn-group").on("tap", ".start", function(e){
+					newTest(nodeId, headerTitle.innerHTML);
+				});
+				
+			});
+		</script>
+	</body>
+
+</html>

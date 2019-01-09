@@ -78,6 +78,9 @@ var storageKeyName = (function(mod) {
 			//可用的地址：https://res.jiaobaowang.net; http://139.129.252.49:8080/res; http://192.168.0.122:801/res; http://139.129.252.49:8080/speeking
 			mod.ORALSHOST = "http://139.129.252.49:8080/speeking";
 			
+			//益测益学服务端地址
+			mod.YCYXHOST = "http://139.129.252.49:8080/yiceyixue";
+			
 			break;
 		default:
 			break;

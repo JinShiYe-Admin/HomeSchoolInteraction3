@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+	<!--提交测试页-->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.card-explain {
+				color: #666666;
+				padding: 0.3rem 0.4rem;
+			}
+			.card-explain > span {
+				padding-right: 0.3rem;
+			}
+			.card-explain > span > span {
+				display: inline-block;
+				width: 0.2rem;
+				height: 0.2rem;
+				border-radius: 50%;
+				margin-right: 0.1rem;
+			}
+			.card-box {
+				padding: 0.2rem 0.1rem 0.2rem 0.1rem;
+				overflow-x: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav theme">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">答题卡</h1>
+		</header>
+		
+		<div class="mui-content">
+			<div id="anserCard">
+				<div class="card-explain">
+					<span><span style="background-color: #2CA97F;"></span>已回答</span>
+					<span><span style="border: 1px solid #222222;"></span>未答</span>
+				</div>	
+				<div class="card-box">
+					<div class="option-wrap mui-row">
+						<div class="mui-col-sm-2-5" v-for="(v, i) in answer" :key="i">
+							<div class="option-label" 
+							:class="{selected: v.stu_answer.length}"
+							@tap="getBack(v.index)">{{v.index+1}}</div>
+						</div>
+					</div>
+				</div>
+				<a class="btn-bottom" @tap.stop="submit">提交</a>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		
+		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
+		<script type="text/javascript">
+			var self;
+			var anserCard = new Vue({
+				el: "#anserCard",
+				data:{
+					answer: []
+				},
+				methods: {
+					//返回查看回答
+					getBack: function(index) {
+						mui.fire(self.opener(), "getBack", {index: index});
+						mui.back();
+					},
+					//提交
+					submit: function() {
+//						var personal = store.get(window.storageKeyName.PERSONALINFO);
+//						personal.utoken = "jjsdkfk";
+//						store.set(window.storageKeyName.PERSONALINFO, personal);
+						
+						plus.nativeUI.showWaiting();
+						var sbData = self.submitData;
+						var answerJson = {};
+						sbData.answerArray.forEach(function(v){
+							answerJson[v.question_id] = v.stu_answer;
+						});
+						commonAjax("/Ycyx/Practice/savePaper", {
+							data: {
+								diskey: sbData.diskey,
+								catalogId: sbData.catalogId,
+								name: sbData.name,
+								usedTime: sbData.usedTime,
+								answerJson: JSON.stringify(answerJson)
+							},
+							success: function(res) {
+								var res_data = JSON.parse(res.data);
+								//结果页
+								var bl_result = plus.webview.getWebviewById('bl-test-result');
+								if(bl_result){
+									mui.fire(bl_result, "resubmit", {
+										report: res_data.report,
+										detailInfo: res_data.detailInfo,
+										nodeTitle: sbData.title
+									});
+									bl_result.show();
+								}else{
+									mui.openWindow({
+										url: "testResult.html",
+										id: "bl-test-result",
+										extras: {
+											report: res_data.report,
+											detailInfo: res_data.detailInfo,
+											nodeTitle: sbData.title
+										}
+									});
+								}
+//								var test_result = plus.webview.create("testResult.html", "bl-test-result", {}, {
+//										report: res_data.report,
+//										detailInfo: res_data.detailInfo,
+//										nodeTitle: sbData.title
+//								});
+//								test_result.show("slide-in-right", 200, function(){
+//									plus.nativeUI.closeWaiting();
+//								});
+								plus.nativeUI.closeWaiting();
+								//刷新其他页面数据
+								mui.fire(plus.webview.getWebviewById('bl-index'), "refresh");
+							},
+							fail: function(res) {
+								console.log(res);
+								plus.nativeUI.closeWaiting();
+							},
+							error: function() {
+								plus.nativeUI.closeWaiting();
+							}
+						});
+					}
+				}
+			});
+			
+			mui.plusReady(function(){
+				var isImmer = plus.navigator.isImmersedStatusbar();
+				mui.init({
+					beforeback: function() {
+						isImmer&&plus.navigator.setStatusBarStyle('dark');
+						//echarts 重新绘图
+						var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
+						als_detail && mui.fire(als_detail, "rePain");
+						//关闭页面
+						self.close();
+					}
+				});
+
+				self = plus.webview.currentWebview();
+				isImmer&&plus.navigator.setStatusBarStyle('light');
+				anserCard.answer = self.submitData.answerArray;
+			});
+			
+//			anserCard.answer=[{"num":1,"question_id":1948936,"stu_answer":["A"]},{"num":2,"question_id":1948942,"stu_answer":["B"]},{"num":3,"question_id":1948929,"stu_answer":["C"]},{"num":4,"question_id":1948934,"stu_answer":["D"]},{"num":5,"question_id":1948935,"stu_answer":[]},{"num":6,"question_id":1948923,"stu_answer":[]},{"num":7,"question_id":1948937,"stu_answer":[]},{"num":8,"question_id":1948941,"stu_answer":[]},{"num":9,"question_id":1948922,"stu_answer":["D"]},{"num":10,"question_id":1948938,"stu_answer":[]}];
+		</script>
+	</body>
+
+</html>
