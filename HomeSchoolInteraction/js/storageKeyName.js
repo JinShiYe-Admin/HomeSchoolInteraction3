@@ -48,13 +48,20 @@ var storageKeyName = (function(mod) {
 			
 			break;
 		case 1: //部署外网
-//			mod.SCHOOLID = 100102;//学校ID
-			mod.SCHOOLID = 100008;
+			mod.SCHOOLID = 100102;//学校ID
+//			mod.SCHOOLID = 100008;
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net:8443/SchoolCommunicationService/';//孔工接口
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/xxt/versionCode.xml';//安卓升级地址
+			mod.WXPAYSERVER='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/AppServer.aspx';//微信支付地址
+			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
+			if(mod.pay==0) {//单商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypay/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}else if(mod.pay==1){//多商家
+				mod.SEARCHPAYSESULT='http://jsypay.jiaobaowang.net/jsypaym/wxpay/sys/PcQRCode.aspx';//获取支付结果的地址
+			}
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
 			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
