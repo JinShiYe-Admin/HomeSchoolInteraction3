@@ -1,1 +1,111 @@
-null
+{
+	"html/sciedu/sciedu_home.html": {
+		"refer": [
+			"html/sciedu/sciedu_show_main.html",
+			"html/utils/customizeCity.html"
+		]
+	},
+	"html/login/firstPage.html": {
+		"refer": [
+			"html/login/index.html",
+			"html/login/index2.html"
+		]
+	},
+	"html/login/index.html": {
+		"resources": [
+			"html/sciedu/sciedu_home.html"
+		],
+		"refer": [
+			"html/sciedu/sciedu_home.html",
+			"html/homeSchool/homeSchoolIndex.html",
+			"html/Course/courseIndex.html",
+			"html/helpStudy/helpStudyIndex.html"
+		]
+	},
+	"html/homeSchool/homeSchoolIndex.html": {
+		"refer": [
+			"html/homeSchool/mine.html",
+			"html/orals/oralsIndex.html",
+			"html/homeSchool/noticeList.html",
+			"html/benefitingLearning/ycyxIndex.html"
+		]
+	},
+	"html/orals/oralsIndex.html": {
+		"refer": [
+			"html/orals/record.html",
+			"html/orals/book.html",
+			"html/orals/result.html"
+		]
+	},
+	"html/orals/record.html": {
+		"refer": [
+			"html/orals/result.html"
+		]
+	},
+	"html/login/index2.html": {
+		"resources": [
+			"html/login/loginFnoPermissions.html"
+		],
+		"refer": [
+			"html/Course/courseIndex.html",
+			"html/sciedu/sciedu_home.html",
+			"html/helpStudy/helpStudyIndex.html",
+			"html/login/loginFnoPermissions.html"
+		]
+	},
+	"html/homeSchool/mine.html": {
+		"refer": [
+			"html/login/firstPage1.html",
+			"html/order/orderList.html",
+			"html/relation/relationStu.html",
+			"html/mine/modifyPassword.html",
+			"html/mine/about.html"
+		]
+	},
+	"html/login/firstPage1.html": {
+		"refer": [
+			"html/login/index2.html"
+		]
+	},
+	"html/login/loginFnoPermissions.html": {
+		"refer": [
+			"html/login/index.html"
+		]
+	},
+	"html/homeSchool/noticeList.html": {
+		"refer": [
+			"html/homeSchool/noticeDetail.html"
+		]
+	},
+	"html/benefitingLearning/ycyxIndex.html": {
+		"refer": [
+			"html/benefitingLearning/testStart.html",
+			"html/benefitingLearning/analysisDetail.html"
+		]
+	},
+	"html/benefitingLearning/testStart.html": {
+		"refer": [
+			"html/benefitingLearning/testing.html"
+		]
+	},
+	"html/benefitingLearning/testResult.html": {
+		"refer": [
+			"html/benefitingLearning/testing.html"
+		]
+	},
+	"html/benefitingLearning/testSubmit.html": {
+		"refer": [
+			"html/benefitingLearning/testResult.html"
+		]
+	},
+	"html/benefitingLearning/testing.html": {
+		"refer": [
+			"html/benefitingLearning/testSubmit.html"
+		]
+	},
+	"html/benefitingLearning/analysisDetail.html": {
+		"refer": [
+			"html/benefitingLearning/testing.html"
+		]
+	}
+}

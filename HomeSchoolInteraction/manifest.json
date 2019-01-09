@@ -258,7 +258,9 @@
 					"html/student/student-index.html",
 					"html/orals/index.html",
 					"html/homework/teacher-index.html",
-					"html/orals/orals_index.html"
+					"html/orals/orals_index.html",
+					"html/orals/oralsIndex.html",
+					"html/benefitingLearning/ycyxIndex.html"
 				],
 				"priority": 0
 			},
@@ -350,7 +352,11 @@
 			"html/homeSchool/mine.html": {
 				"resources": [],
 				"refer": [
-					"html/login/firstPage1.html"
+					"html/login/firstPage1.html",
+					"html/order/orderList.html",
+					"html/relation/relationStu.html",
+					"html/mine/modifyPassword.html",
+					"html/mine/about.html"
 				],
 				"priority": 0
 			},
@@ -380,6 +386,60 @@
 					"html/orals/cover.html",
 					"html/orals/record.html",
 					"html/orals/result.html"
+				],
+				"priority": 0
+			},
+			"html/orals/oralsIndex.html": {
+				"resources": [
+					"js/orals/layout.js"
+				],
+				"refer": [
+					"html/orals/record.html",
+					"html/orals/book.html",
+					"html/orals/result.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/ycyxIndex.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testStart.html",
+					"html/benefitingLearning/analysisDetail.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/testStart.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testing.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/testResult.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testing.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/testSubmit.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testResult.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/testing.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testSubmit.html"
+				],
+				"priority": 0
+			},
+			"html/benefitingLearning/analysisDetail.html": {
+				"resources": [],
+				"refer": [
+					"html/benefitingLearning/testing.html"
 				],
 				"priority": 0
 			}

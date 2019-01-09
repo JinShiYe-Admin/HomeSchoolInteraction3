@@ -6,6 +6,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
 		<style type="text/css">
 			.mui-content {
@@ -85,21 +86,20 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		
-		<script src="../../js/orals/orals-common.js"></script>
+		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
 			
 			var bookItems = document.getElementById("bookItems");
 			var self;
-			var ischangeBook = false;
+//			var ischangeBook = false;
 			
 			mui.init({
 				beforeback: function(){
 					historyLlist.isLoaded = false;
-					if(ischangeBook) {
-						var test_webview = plus.webview.getWebviewById("orals_word");
-						mui.fire(test_webview, "changeBook");
-						ischangeBook = false;
-					}
+//					if(ischangeBook) {
+//						ischangeBook = false;
+//						mui.fire(self.opener(), "changeBook");
+//					}
 					return true;
 				}
 			});
@@ -114,6 +114,7 @@
 					lastPage: false
 				},
 				mounted: function() {
+					var _this = this;
 					//上拉刷新
 					var startX, startY;
 					var pullrefresh = document.getElementById("historyLlist");
@@ -126,8 +127,8 @@
 			            endX = ev.changedTouches[0].pageX;
 			            endY = ev.changedTouches[0].pageY;
 			            var direction = GetSlideDirection(startX, startY, endX, endY);
-			            if(direction==1) {
-			            	if(pullrefresh.scrollHeight==pullrefresh.scrollTop+pullrefresh.clientHeight){
+			            if(direction==1&&!_this.lastPage&&_this.isLoaded) {
+			            	if(this.scrollHeight<=this.scrollTop+this.clientHeight){
 			            		!historyLlist.lastPage && getHistoryList();
 			            	}
 			            }
@@ -136,17 +137,10 @@
 				methods: {
 					goDetaile: function(index) {
 						var cur_li = this.list[index];
-						mui.openWindow({
-							url: "result.html",
-							id: "result.html",
-							extras: {
-								title: cur_li.book_catalog_name,
-								cate: cur_li.category,
-								catalog_id: cur_li.book_catalog_id
-							},
-							waiting: {
-								autoShow:true
-							}
+						goResult({
+							title: cur_li.book_catalog_name,
+							cate: cur_li.category,
+							catalog_id: cur_li.book_catalog_id
 						});
 					}
 				}
@@ -161,15 +155,18 @@
 				window.addEventListener("refresh", function(e) {
 					historyLlist.list = [];
 					getHistoryList(1, (historyLlist.p-1)*historyLlist.s);
+					self.opener().evalJS("resultVue.page = 1; resultVue.isReload = true;");
 				});
 				
 				window.addEventListener("changeBook", function(e) {
-					ischangeBook = true;
+//					ischangeBook = true;
 					bookItems.innerHTML = getBookNames();
 					historyLlist.p = 1;
 					getHistoryList();
+					mui.fire(self.opener(), "changeBook");
 				});
 				
+				//根据高度加载记录数
 				historyLlist.s = Math.ceil(historyLlist.$el.clientHeight/(0.7*REM))||10;
 				
 			});
@@ -177,7 +174,7 @@
 			var catalog_id;
 			function getHistoryList(p, s) {
 				historyLlist.isLoaded = false;
-				var catalog = JSON.parse(plus.storage.getItem('orals_catalog'));
+				var catalog = store.get('orals_catalog')||[];
 				if(historyLlist.p==1) {
 					plus.nativeUI.showWaiting();
 					historyLlist.list = [];
@@ -188,7 +185,7 @@
 					});
 				}
 				
-				oralsAjax(host+'/orals/history', {
+				oralsAjax('/orals/history', {
 					page:true, 
 					p: p||historyLlist.p, 
 					s: s||historyLlist.s, 
@@ -199,8 +196,9 @@
 					historyLlist.isLoaded = true;
 					historyLlist.lastPage = res.data.lastPage;
 					res.data.list.forEach(function(v){
-						if(v.category==self.category) {
-							v['book_catalog_pname'] = filterArray(catalog, 'id', v.book_catalog_id)[0].pname;
+						var book_catalog = filterArray(catalog, 'id', v.book_catalog_id)[0];
+						if(v.category==self.category&&book_catalog) {
+							v['book_catalog_pname'] = book_catalog.pname;
 							historyLlist.list.push(v);
 						}
 					});
@@ -219,27 +217,6 @@
 			mui(".second-title").on("tap", "#bookSelect", function(e){
 				goBook();
 			});
-			
-//			historyLlist.list =  [
-//							{
-//								total_number: "14",
-//								complete_number: "7",
-//								create_time: "2018-06-27 10:01:50",
-//								book_catalog_name: "Uint 1 My name is jack (word)",
-//								book_catalog_pname: "Uint 1 My name is jack (word)",
-//								category: "read_word",
-//								book_catalog_id: 1936
-//							},
-//							{
-//								total_number: "100",
-//								complete_number: "31",
-//								create_time: "2018-06-28 10:01:50",
-//								book_catalog_name: "Uint 1 My name is jack My name is jack(sentence)",
-//								book_catalog_pname: "Uint 1 My name is jack (word)",
-//								category: "read_sentence",
-//								book_catalog_id: 1936
-//							}
-//					];
 			
 		</script>
 	</body>
