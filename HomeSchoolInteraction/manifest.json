@@ -240,7 +240,8 @@
 					"html/helpStudy/helpStudyIndex.html",
 					"html/login/firstPage.html",
 					"html/orals/oralsIndex.html",
-					"html/benefitingLearning/ycyxIndex.html"
+					"html/benefitingLearning/ycyxIndex.html",
+					"html/homeSchool/noticeListIndex.html"
 				],
 				"priority": 0
 			},
@@ -442,6 +443,13 @@
 				"resources": [],
 				"refer": [
 					"html/benefitingLearning/testing.html"
+				],
+				"priority": 0
+			},
+			"html/homeSchool/noticeListIndex.html": {
+				"resources": [],
+				"refer": [
+					"html/homeSchool/mine.html"
 				],
 				"priority": 0
 			}

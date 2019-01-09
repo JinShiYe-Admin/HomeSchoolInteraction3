@@ -48,7 +48,7 @@ var storageKeyName = (function(mod) {
 			
 			break;
 		case 1: //部署外网
-			mod.SCHOOLID = 100102;//学校ID
+			mod.SCHOOLID = 0;//学校ID
 //			mod.SCHOOLID = 100008;
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
 			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/';//顾工接口

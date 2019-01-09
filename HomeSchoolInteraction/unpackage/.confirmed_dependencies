@@ -21,7 +21,8 @@
 			"html/Course/courseIndex.html",
 			"html/helpStudy/helpStudyIndex.html",
 			"html/orals/oralsIndex.html",
-			"html/benefitingLearning/ycyxIndex.html"
+			"html/benefitingLearning/ycyxIndex.html",
+			"html/homeSchool/noticeListIndex.html"
 		]
 	},
 	"html/homeSchool/homeSchoolIndex.html": {
@@ -108,6 +109,11 @@
 	"html/benefitingLearning/analysisDetail.html": {
 		"refer": [
 			"html/benefitingLearning/testing.html"
+		]
+	},
+	"html/homeSchool/noticeListIndex.html": {
+		"refer": [
+			"html/homeSchool/mine.html"
 		]
 	}
 }
