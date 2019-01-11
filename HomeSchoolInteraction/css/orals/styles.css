@@ -614,5 +614,34 @@ nav.mui-bar {
 	border: none;
 }
 
-/*以下为独立版额外样式，整合时可去掉*/
 
+/*校讯通样式*/
+.top-tab.mui-slider-indicator.mui-segmented-control {
+	border-bottom: 7px solid #EEEEEE;
+}
+.top-tab.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+	color: #00CFBD;
+	border-bottom: none;
+	position: relative;
+}
+.top-tab.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active:after {
+	content: "";
+	position: absolute;
+	width: 2em;
+	height: 2px;
+	background: #00CFBD;
+	bottom: 0;
+	left: 50%;
+	margin-left: -1em;
+}
+.top-tab + .second-title ~ .mui-control-content {
+	height: calc(100% - 84px - 45px);
+}
+.top-tab + .second-title.no-second ~ .mui-control-content {
+	height: calc(100% - 53px - 45px);
+}
+.mui-content .second-title {
+	border-bottom-width: 5px;
+}
+
+/*以下为独立版额外样式，整合时可去掉*/
