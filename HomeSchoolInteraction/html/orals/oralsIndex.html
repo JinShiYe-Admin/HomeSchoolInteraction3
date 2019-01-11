@@ -45,6 +45,7 @@
 				border-bottom-width: 1px;
 				height: 53px;
 			}
+			/*内容高度*/
 			.second-title.no-second ~ .mui-control-content {
 				height: calc(100% - 53px);
 			}
@@ -85,10 +86,10 @@
 				</a>-->
 				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
 			</div>
-		    <h1 class="mui-title">单词测评</h1>
+		    <h1 class="mui-title">口语测评</h1>
 		</header>
 		
-		<nav class="mui-bar mui-bar-tab">
+		<!--<nav class="mui-bar mui-bar-tab">
 		    <a class="mui-tab-item mui-active" data-type="word" href="#orals-test">
 		        <span class="mui-icon">
 		        	<svg class="icon" aria-hidden="true">
@@ -113,9 +114,22 @@
 		        </span>
 		        <span class="mui-tab-label">错题本</span>
 		    </a>
-		</nav>
+		</nav>-->
 		
 		<div class="mui-content">
+			
+			<!--校讯通菜单-->
+			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item mui-active" data-type="word" href="#orals-test">
+			        <span>单词测评</span>
+			    </a>
+			    <a class="mui-control-item" data-type="sentence" href="#orals-test">
+			        <span>句子测评</span>
+			    </a>
+			    <a class="mui-control-item" data-type="errs" href="#orals-errs">
+			        <span>错题本</span>
+			    </a>
+			</div>
 			
 			<!--副标题-->
 			<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
@@ -429,7 +443,7 @@
 					}, function(res){
 						persubmatTime++;
 						if(persubmatTime<5) {
-							getBook(data);
+							getBook(data, ser);
 							return "noToast";
 						}else{
 							plus.nativeUI.closeWaiting();
@@ -510,7 +524,8 @@
 				
 				//底部选项卡切换
 				var canTap = true;
-				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+//				mui('.mui-bar-tab').on('tap', 'a', function(e) { //独立版
+				mui('.top-tab').on('tap', 'a', function(e) { //校讯通
 					var targetTab = this.getAttribute('data-type');
 				    if (targetTab == activeTab) {
 				        return;
@@ -533,19 +548,19 @@
 				    switch(targetTab)
 					{
 					    case "word":
-					    	muiTitle.innerHTML = "单词测评";
+//					    	muiTitle.innerHTML = "单词测评";
 					    	go_record.style.display = "block";
 					    	testVue.category = "word";
 					    	secondTitle.isContentTitle = true;
 					        break;
 					    case "sentence":
-					    	muiTitle.innerHTML = "句子测评";
+//					    	muiTitle.innerHTML = "句子测评";
 					    	go_record.style.display = "block";
 					    	testVue.category = "sentence";
 					    	secondTitle.isContentTitle = true;
 					        break;
 					    case "errs":
-					    	muiTitle.innerHTML = "错题本";
+//					    	muiTitle.innerHTML = "错题本";
 					    	go_record.style.display = "none";
 					    	secondTitle.isContentTitle = false;
 					    	if(resultVue.isReload){

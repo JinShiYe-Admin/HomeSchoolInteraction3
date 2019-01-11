@@ -169,14 +169,17 @@
 	</head>
 
 	<body>
-		<header id="header" class="mui-bar mui-bar-nav theme">
-			<a v-show="!title" class="mui-icon mui-pull-right grade" @tap.stop="showTopPannel(1)" v-cloak>{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
+		<header class="mui-bar mui-bar-nav theme">
+			<h1 class="mui-title">同步题库</h1>
+		</header>
+		<!--<header id="header" class="mui-bar mui-bar-nav theme">
+			<a v-show="!title" class="mui-icon mui-pull-right grade" @tap.stop="showTopPannel(1)" v-cloak>{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>-->
 			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 			<!--个人中心-->
 			<!--<a id="headImg" class="mui-icon mui-pull-left" @tap="openCenter">
 				<img v-if="headImg" :src="headImg" class="head-img"/>
 			</a>-->
-			<h1 class="mui-title" v-if="title" v-text="title"></h1>
+			<!--<h1 class="mui-title" v-if="title" v-text="title"></h1>
 			<h1 class="mui-title" v-else>
 				<a class="subject mui-icon" @click.stop="showTopPannel(2)" v-cloak>{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
 			</h1>
@@ -189,9 +192,9 @@
 					</div>
 				</div>
 			</transition>
-		</header>
+		</header>-->
 		
-		<nav class="mui-bar mui-bar-tab">
+		<!--<nav class="mui-bar mui-bar-tab">
 			<a class="mui-tab-item mui-active" data-target="bl-test-menu" href="#test-menu">
 				<span class="mui-icon">
 					<svg class="svg-icon" aria-hidden="true">
@@ -200,7 +203,7 @@
 				</span>
 				<span class="mui-tab-label">组卷测试</span>
 			</a>
-			<!--<a class="mui-tab-item" data-target="bl-his-menu" href="#his-menu">
+			<a class="mui-tab-item" data-target="bl-his-menu" href="#his-menu">
 				<span class="mui-icon">
 					<svg class="svg-icon" aria-hidden="true">
 			            <use xlink:href="#test-history" />
@@ -215,7 +218,7 @@
 			        </svg>
 				</span>
 				<span class="mui-tab-label">错题本</span>
-			</a>-->
+			</a>
 			<a class="mui-tab-item" data-target="bl-analysis" href="#bl-analysis">
 				<span class="mui-icon">
 					<svg class="svg-icon" aria-hidden="true">
@@ -224,9 +227,35 @@
 				</span>
 				<span class="mui-tab-label">学情分析</span>
 			</a>
-		</nav>
+		</nav>-->
 		
 		<div class="mui-content">
+			<!--校讯通菜单-->
+			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item mui-active" data-target="bl-test-menu" href="#test-menu">
+			        <span>组卷测试</span>
+			    </a>
+			    <a class="mui-control-item" data-target="bl-analysis" href="#bl-analysis">
+			        <span>学情分析</span>
+			    </a>
+			</div>	
+			
+			<div id="header" v-show="!title" v-cloak>
+				<div class="header-box">
+					<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
+					<a class="mui-icon" @click.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
+				</div>
+				<transition name="slide-down">	
+					<div class="options-pannel mui-clearfix" v-show="showItem">
+						<div v-for="(v, i) in item.list" class="radio-wrap">
+							<label :class="{selected:v.percode==item.selected||v.subcode==item.selected}" @click="selectItem">
+								<input type="radio" v-model="item.selected" name="item"  :value="v.percode||v.subcode" />{{v.pername||v.subname||"未命名"}}
+							</label>
+						</div>
+					</div>
+				</transition>
+			</div>
+				
 			<!--组卷测试-->
 			<div id="test-menu" class="mui-control-content mui-active">
 				<div id="testMenu" class="mui-content vue-tree">
@@ -384,7 +413,8 @@
 			
 			//底部导航切换
 			var activeTab = "bl-test-menu";
-			mui('.mui-bar-tab').on('tap', '.mui-tab-item', function(e){
+//			mui('.mui-bar-tab').on('tap', '.mui-tab-item', function(e){
+			mui('.top-tab').on('tap', 'a', function(e){
 				var curTab = this.getAttribute('data-target');
 				if(activeTab==curTab) { return false; }
 				activeTab = curTab;
@@ -441,11 +471,11 @@
 					showTopPannel: function(type) {
 						if(this.topPannel==type&&this.showItem) {
 							this.showItem = false;
-							mask.close();
+//							mask.close();
 						}else{
 							this.showItem = true;
 							this.topPannel = type;
-							mask.show();
+//							mask.show();
 						}
 					},
 					// 设置目录
@@ -669,7 +699,7 @@
 			}
 			
 //			analysis.alsList = [{"subname":"语文","count":52,"subcode":"01","remark":"-1","avg_score":14},{"subname":"语文","count":52,"subcode":"01","remark":"0","avg_score":14}];
-			
+//			testMenu.menu = [{"children":[{"name":"太阳花知识点1","pid":20468,"is_finish":0,"id":20474},{"name":"太阳花知识点2","pid":20468,"is_finish":0,"id":20475},{"name":"太阳花知识点3","pid":20468,"is_finish":0,"id":20476}],"name":"上学堂知识点1","pid":0,"is_finish":0,"id":20468},{"name":"上学堂知识点2","pid":0,"is_finish":0,"id":20469},{"name":"上学堂知识点3","pid":0,"is_finish":0,"id":20470}];
 		</script>
 	</body>
 
