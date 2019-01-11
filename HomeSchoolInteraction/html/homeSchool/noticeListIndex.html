@@ -82,12 +82,11 @@
 			</a>
 			<h1 class="mui-title" style="color: white;">学校通知</h1>
 			<a v-show="personal.appxxtservstat>0 && personal.utp==0&&addFlag==1" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
-			<!--<a v-show="personal.appxxtservstat>0 && personal.utp==0" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>-->
 		</header>
 		<div class="mui-content" style="background: white;">
 			<div id="contentData">
 				<template v-if="showFlag==0">
-					<div v-if="noticeArray.length>0" class="mui-content mui-scroll-wrapper mui-fullscreen" id="contentData" style="display: none;">
+					<div v-if="showNoDataFlag>0" class="mui-content mui-scroll-wrapper mui-fullscreen">
 						<div class="mui-scroll">
 							<ul class="mui-table-view" v-for="(noticeModel,index) in noticeArray">
 								<li class="mui-table-view-cell" @click="clickNoticeList(noticeModel)">
@@ -119,7 +118,7 @@
 							</ul>
 						</div>
 					</div>
-					<div v-else="">
+					<div v-else="showNoDataFlag==0">
 						<p style="text-align: center;margin-top: 5px;">暂无通知</p>
 						<div v-cloak style="text-align: center;margin:10% auto;">
 							<img src="../../img/noData.png" style="width: 250px;" />
@@ -134,8 +133,8 @@
 						<p style="text-align: center;margin-top: 5px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
 					</template>
 					<div v-cloak style="text-align: center;margin:10% auto;">
-							<img src="../../img/nolink.png" style="width: 250px;" />
-						</div>
+						<img src="../../img/nolink.png" style="width: 250px;" />
+					</div>
 				</template>
 			</div>
 
@@ -245,7 +244,7 @@
 
 						}
 					});
-					if(personal.utp == 1) { //0老师，2学生，1家长
+					if(personal.utp == 1 || personal.utp == 2) { //0老师，2学生，1家长
 						//4.1.用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
 					}
@@ -417,25 +416,7 @@
 					//学校通知
 					//判断权限,学生、家长
 					if(personal.utp == 1 || personal.utp == 2) {
-						var personal0 = store.get(window.storageKeyName.PERSONALINFO);
-						//判断是否订购家校互通功能，并且状态开启
-						var tempArr = 0;
-						for(var i = 0; i < personal0.userbus.length; i++) {
-							var tempModel = personal0.userbus[i];
-							for(var a = 0; a < tempModel.funcs.length; a++) {
-								var tempM = tempModel.funcs[a];
-								if(tempM.ftype == 'jxht') {
-									//												if(tempM.ftype == 'jxht' && tempModel.serstat == 1) {
-									tempArr++;
-								}
-							}
-						}
-						if(tempArr > 0) {
-							contentData.showFlag = 0;
-						} else {
-							contentData.showFlag = 1;
-							mui.toast('请关联家校互通套餐');
-						}
+
 					} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
 						if(personal.grds.length > 0) { //年级领导
 							contentData.showFlag = 0;
@@ -516,16 +497,40 @@
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
 							if(data1.RspData) {
+								console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
 								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
 								personal.userbus = data1.RspData.userbus; // 绑定的套餐
 								store.set(window.storageKeyName.PERSONALINFO, personal);
-								if(personal.packageCount > 0 && personal.isBdCount > 0) {
-									console.log('showFlag=0');
+								//判断是否订购家校互通功能，并且状态开启
+								var tempArr = 0;
+								if(personal.userbus) {
+									for(var i = 0; i < personal.userbus.length; i++) {
+										var tempModel = personal.userbus[i];
+										for(var a = 0; a < tempModel.funcs.length; a++) {
+											var tempM = tempModel.funcs[a];
+											if(tempM.ftype == 'jxht') {
+												//if(tempM.ftype == 'jxht' && tempModel.serstat == 1) {
+												tempArr++;
+											}
+										}
+									}
+								}
+
+								if(tempArr > 0) {
 									contentData.showFlag = 0;
 								} else {
-									console.log('showFlag=01');
 									contentData.showFlag = 1;
+									mui.toast('请关联家校互通套餐');
 								}
+								contentData.showFlag = 0;
+								contentData.showFlag = 0;
+								//								if(personal.packageCount > 0 && personal.isBdCount > 0) {
+								//									console.log('showFlag=0');
+								//									contentData.showFlag = 0;
+								//								} else {
+								//									console.log('showFlag=01');
+								//									contentData.showFlag = 1;
+								//								}
 							} else {
 								personal.packageCount = 0; //套餐是否绑定学生
 								personal.userbus = []; // 绑定的套餐
@@ -727,9 +732,10 @@
 				var contentData = new Vue({
 					el: "#contentData",
 					data: {
-						showFlag: 0, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
+						showFlag: 9, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
 						NoReadCnt: 0, //未读通知数
 						personal: personal,
+						showNoDataFlag:-1,//是否显示无数据图片
 						//						showFlag: 0, //1有数据，0无数据
 						flag: 0, //0刷新，1加载更多
 						noticeArray: [], //通知列表数组
@@ -810,16 +816,16 @@
 						mui('#contentData').pullRefresh().endPulldownToRefresh();
 						console.log('data:' + JSON.stringify(data));
 						if(data.RspCode == 0) {
-
 							contentData.pageIndex++;
 							for(var i = 0; i < data.RspData.Data.length; i++) {
 								var model = data.RspData.Data[i];
 								model.SendTime = modifyTimeFormat(model.SendTime);
 							}
 							if(contentData.flag == 0) { //刷新
-								contentData.noticeArray = data.RspData.Data;
+//								contentData.noticeArray = data.RspData.Data;
+								contentData.noticeArray = [].concat(data.RspData.Data);
 								if(data.RspData.Data.length == 0) {
-//									mui.toast('数据为空');
+									//									mui.toast('数据为空');
 								}
 							} else { //加载更多
 								contentData.noticeArray = contentData.noticeArray.concat(data.RspData.Data);
@@ -828,6 +834,7 @@
 									//								mui('#contentData').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
 								}
 							}
+							contentData.showNoDataFlag = data.RspData.Data.length;
 							//								contentData.showFlag = 0;
 							$("#contentData").show();
 						} else {
