@@ -8,7 +8,8 @@
 	"html/login/firstPage.html": {
 		"refer": [
 			"html/login/index.html",
-			"html/login/index2.html"
+			"html/login/index2.html",
+			"html/relation/relationStu.html"
 		]
 	},
 	"html/login/index.html": {
@@ -47,7 +48,8 @@
 	},
 	"html/login/index2.html": {
 		"resources": [
-			"html/login/loginFnoPermissions.html"
+			"html/login/loginFnoPermissions.html",
+			"html/sciedu/sciedu_home.html"
 		],
 		"refer": [
 			"html/Course/courseIndex.html",
@@ -114,6 +116,11 @@
 	"html/homeSchool/noticeListIndex.html": {
 		"refer": [
 			"html/homeSchool/mine.html"
+		]
+	},
+	"html/relation/relationStu.html": {
+		"refer": [
+			"html/login/index.html"
 		]
 	}
 }

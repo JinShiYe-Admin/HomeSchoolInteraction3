@@ -220,11 +220,11 @@
 			},
 			"html/login/index2.html": {
 				"resources": [
-					"html/login/loginFnoPermissions.html"
+					"html/login/loginFnoPermissions.html",
+					"html/sciedu/sciedu_home.html"
 				],
 				"refer": [
 					"html/Course/courseIndex.html",
-					"html/sciedu/sciedu_home.html",
 					"html/helpStudy/helpStudyIndex.html"
 				],
 				"priority": 0
@@ -450,6 +450,13 @@
 				"resources": [],
 				"refer": [
 					"html/homeSchool/mine.html"
+				],
+				"priority": 0
+			},
+			"html/relation/relationStu.html": {
+				"resources": [],
+				"refer": [
+					"html/login/index.html"
 				],
 				"priority": 0
 			}
