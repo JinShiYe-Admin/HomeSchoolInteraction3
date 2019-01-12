@@ -118,14 +118,14 @@
 							</ul>
 						</div>
 					</div>
-					<div v-else="showNoDataFlag==0">
+					<div v-else-if="showNoDataFlag==0">
 						<p style="text-align: center;margin-top: 5px;">暂无通知</p>
 						<div v-cloak style="text-align: center;margin:10% auto;">
 							<img src="../../img/noData.png" style="width: 250px;" />
 						</div>
 					</div>
 				</template>
-				<template v-else="">
+				<template v-else-if="showFlag==1">
 					<template v-if="personal.utp==0">
 						<p style="text-align: center;margin-top: 5px;">您没有权限</p>
 					</template>
@@ -834,7 +834,7 @@
 									//								mui('#contentData').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
 								}
 							}
-							contentData.showNoDataFlag = data.RspData.Data.length;
+							contentData.showNoDataFlag = data.RspData.TotalCnt;
 							//								contentData.showFlag = 0;
 							$("#contentData").show();
 						} else {
