@@ -94,7 +94,7 @@
 					<p v-cloak class="user-title">{{orderDetail.cnname}}</p>
 					<p v-cloak class="user-title-body">{{orderDetail.busnote}}</p>
 					<div v-cloak class="user-title-footer">
-						<p class="ul-p">资费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
+						<p class="ul-p">资费金额：{{orderDetail.feecode/100}}元/{{orderDetail.busmonth}}月</p>
 						<button class="ul-btn" class="mui-btn mui-btn-mini" onclick="placeOrder()">立即订购</button>
 					</div>
 				</div>

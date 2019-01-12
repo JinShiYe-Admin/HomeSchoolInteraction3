@@ -201,7 +201,7 @@
 									<p class='mui-ellipsis' v-cloak>{{orderDetail.busnote}}</p>
 								</div>
 								<div style="margin-top: 5px;" v-cloak>
-									<p class="ul-p" style="color:#FF6600">缴费金额：{{orderDetail.feecode}}元/{{orderDetail.busmonth}}月</p>
+									<p class="ul-p" style="color:#FF6600">缴费金额：{{orderDetail.feecode/100}}元/{{orderDetail.busmonth}}月</p>
 								</div>
 							</a>
 						</li>
@@ -212,7 +212,7 @@
 						<div class="mui-input-row line">
 							<a class="">
 								<label>缴费金额</label>
-								<input  type="button" :value=orderDetail.feecode+'元/'+orderDetail.busmonth+'月' disabled/>
+								<input  type="button" :value=orderDetail.feecode/100+'元/'+orderDetail.busmonth+'月' disabled/>
 							</a>
 						</div>
 						<div class="mui-input-row line">
@@ -240,7 +240,7 @@
 							</a>
 						</div>
 						<div class="mui-input-row line">
-							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem}}</span>元</label>
+							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费金额：<span id="zfje-1">{{feem/100}}</span>元</label>
 							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;">缴费时间：{{nowDate}}</label>
 							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;" v-if="newEtime ==''">新结束时间：{{orderDetail.etime}}</label>
 							<label style="text-align: right; font-size: 15px;color: #666666;width: 100%;" v-else>新结束时间：{{newEtime}}</label>
@@ -266,7 +266,7 @@
 				</form>
 				<div class="mui-row bottom-row">
 					<button class="mui-col-xs-8 mui-col-sm-8 pay-btn-je">
-	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">{{feem}}</span>元
+	    				¥&ensp;<span id="zfje-2" style="color: #FF6600; font-size: 20px;">{{feem/100}}</span>元
 	    				<span id="zffs" style="font-size:10px;color: #8f8f94;"></span>
 	    			</button>
 					<button class="mui-btn mui-btn-primary mui-col-xs-4 mui-col-sm-4 pay-btn" @click="payAction()" :disabled="isDisabled">确认支付</button>

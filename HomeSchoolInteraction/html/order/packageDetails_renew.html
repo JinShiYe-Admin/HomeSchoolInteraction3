@@ -140,7 +140,7 @@
 	    			 <div v-cloak class="user-title-footer">
 	    			 	<p class="ul-p">结束时间：{{curPageData.etime}}</p>
 					 	<button class="ul-btn" class="mui-btn mui-btn-mini" onclick="packageRenew()">套餐续费</button>
-					 	<p class="ul-p-right">{{curPageData.feecode}}元/{{curPageData.busmonth}}月</p>
+					 	<p class="ul-p-right">{{curPageData.feecode/100}}元/{{curPageData.busmonth}}月</p>
 	    			 </div>
 	    		</div>
 	    		<div class="mui-row ul-list-title">
@@ -150,7 +150,7 @@
 		    		<ul class="mui-table-view">
 							 <li v-cloak v-for="item in orderRecordList" class="mui-table-view-cell">
 							 	<p class="ul-li-l">{{item.rectime}}</p>
-							 	<p class="ul-li-r">{{item.feem}}元</p>
+							 	<p class="ul-li-r">{{item.feem/100}}元</p>
 							 	<p class="ul-li-r">{{item.servm}}个月</p>
 							 </li>
 					</ul>
