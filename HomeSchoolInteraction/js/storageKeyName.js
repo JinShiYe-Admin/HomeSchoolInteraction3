@@ -46,6 +46,9 @@ var storageKeyName = (function(mod) {
 			mod.QNGETTOKENDELETE = 'http://114.215.222.186:8004/Api/QiNiu/Delete'; //获取批量（或者一个）删除七牛文件的token的url
 			//	---七牛空间和接口---开发---end---
 			
+			//学生管理
+			mod.INTERFACESIGNINKONG = 'https://jbyj.jiaobaowang.net/SchoolAttendanceService/'; //孔工接口IMG
+			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
 			break;
 		case 1: //部署外网
 			mod.SCHOOLID = 0;//学校ID
@@ -88,6 +91,9 @@ var storageKeyName = (function(mod) {
 			//益测益学服务端地址
 			mod.YCYXHOST = "http://139.129.252.49:8080/yiceyixue";
 			
+			//学生管理
+			mod.INTERFACESIGNINKONG = 'https://zyja.zhuxue101.net/SchoolAttendanceService/'; //孔工接口IMG
+			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
 			break;
 		default:
 			break;

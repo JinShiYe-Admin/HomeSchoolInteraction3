@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<style>
+			.pTitle {
+				color: black;
+				font-size: 15px;
+				text-align: center;
+				margin-top: 10px;
+			}
+			
+			.pTime {
+				color: gray;
+				font-size: 13px;
+				text-align: center;
+			}
+			
+			.chart {
+				height: 200px;
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			h5 {
+				margin-top: 30px;
+				font-weight: bold;
+			}
+			
+			h5:first-child {
+				margin-top: 15px;
+			}
+			
+			.p_left {
+				display: inline;
+				font-size: 18px;
+				color: #00A5E0;
+			}
+			
+			.p_right {
+				display: inline;
+			}
+			
+			#div {
+				width: 0px;
+				height: 0px;
+				background: red;
+				position: fixed;
+				top: 70%;
+				left: 50%;
+			}
+			/*移除底部或顶部三角,需要在删除此代码*/
+			
+			.mui-popover .mui-popover-arrow:after {
+				width: 0px;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">班级考评分析</h1>
+		</header>
+
+		<div id="reviewDetialData" class="mui-content" style="background: white;" v-if="dataFlag>0">
+			<p class="pTitle">{{reviewDetial.title}}</p>
+			<p class="pTime">量化时间:{{reviewDetial.fromDateText}}至{{reviewDetial.toDateText}}</p>
+			<div class="mui-content-padded">
+				<a>
+					<h5 class="mui-pull-left">| 考勤/行为趋势</h5>
+					<p @click="changeMarkMap" class="mui-pull-right" style="margin-top: 10px;">{{reviewDetialData.reviewDetial.markMap[reviewDetialData.markMapIndex].text}} ></p>
+				</a>
+				<div class="chart" id="lineChart"></div>
+				<h5 style="margin-top: 50px;">| 量化均分</h5>
+				<!--<p class="mui-pull-right" style="margin-top: -20px;">请假 ></p>-->
+				<img @click="addSubDetail" class="mui-pull-right" style="margin-top: -20px;width: 32px;height: 32	·	px;" src="../../img/utils/addMinScore.png" />
+				<div style="text-align: center;">
+					<p class="p_left">{{reviewDetial.averScore}}分</p>
+					<p class="p_right">/{{reviewDetial.aver2Grade}}</p>
+				</div>
+				<div class="" style="margin-top: 5px;height: 10px;width: 100%;">
+					<a style="">
+						<div style="margin-left: 15%;display: inline;margin-top: 30px;">
+							<p class="p_right">最高:</p>
+							<p class="p_left">/{{reviewDetial.maxScore}}分</p>
+						</div>
+						<div style="margin-left: 15%;display: inline;">
+							<p class="p_right">最低:</p>
+							<p class="p_left">/{{reviewDetial.minScore}}分</p>
+						</div>
+					</a>
+				</div>
+				<h5>| 等级信息</h5>
+				<div class="chart" id="pieChart"></div>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media" @click="clickStuDetail(stuModel)" v-for="(stuModel,index) in reviewDetial.serArray">
+					<a class="mui-navigate-right">
+						<img class="mui-media-object mui-pull-left" :src=stuModel.stuImg>
+						<div class="mui-media-body">
+							<p class="mui-pull-left" style="margin-top: 10px;">{{stuModel.studentName}}</p>
+							<p class="mui-pull-right" style="margin-top: 10px;margin-right: 30px;">{{stuModel.score}}分/{{stuModel.evaGrade}}</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<div id="div"></div>
+		<div id="popoverDetailData" class="mui-popover" style="height: 250px;">
+			<div class="mui-popover-arrow"></div>
+			<p style="font-weight: bold;margin-left: 15px;margin-top: 10px;color: #333;font-size: 14px;"> 加减分行为</p>
+			<div class="mui-scroll-wrapper" style="margin-top: 30px;">
+				<div class="mui-scroll" v-if="popoverDetail.subArray">
+					<ul class="mui-table-view" style="" v-if="popoverDetail.subArray.length>0||popoverDetail.plusArray.length>0">
+						<li class="mui-table-view-cell" v-for="(tempModel,index) in popoverDetail.subArray">
+							<a>
+								<p class="mui-pull-left">{{tempModel.name}}</p>
+								<p class="mui-pull-right">{{tempModel.totalScore}}分</p>
+								<p style="margin-left: 40%;">{{tempModel.value}}次</p>
+							</a>
+						</li>
+						<li class="mui-table-view-cell" v-for="(tempModel,index) in popoverDetail.plusArray">
+							<a>
+								<p class="mui-pull-left">{{tempModel.name}}</p>
+								<p class="mui-pull-right">+{{tempModel.totalScore}}分</p>
+								<p style="margin-left: 40%;">{{tempModel.value}}次</p>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/echarts.common.min.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+
+		<script type="text/javascript">
+			mui.init();
+			var curPage = {};
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				//获取班级考评详情
+				getReviewDetailP();
+			});
+
+			//获取班级考评详情
+			var getReviewDetailP = function() {
+				var tempData = {
+					id: curPage.model.id
+				}
+				events.showWaiting();
+				//4.2.考评详情
+				getReviewEvaluationDetail(tempData, function funcName(data) {
+					events.closeWaiting();
+					console.log('data:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						for(var i = 0; i < data.RspData.serArray.length; i++) {
+							var tempModel = data.RspData.serArray[i];
+							tempModel.gradeId = data.RspData.sqe.grdId;
+							tempModel.classId = data.RspData.sqe.classId;
+						}
+						//合并数组
+						studentMP.setGrdNameClsName(curPage.stuArray, data.RspData.serArray, function(array) {
+							console.log('array:' + JSON.stringify(array));
+							data.RspData.serArray = [].concat(array);
+							reviewDetialData.reviewDetial = data.RspData;
+							reviewDetialData.dataFlag = 1;
+							popoverDetailData.popoverDetail = data.RspData;
+							popoverDetailData.dataFlag = 1;
+							//线图
+							setLineData();
+							//饼图
+							var tempArray3 = [];
+							for(var i = 0; i < data.RspData.gradeArray.length; i++) {
+								var tempModel = data.RspData.gradeArray[i];
+								tempModel.name = tempModel.name + '(' + tempModel.scoreDesc + '):' + tempModel.value;
+								tempArray3.push(tempModel.name);
+							}
+							reviewDetialData.pieChartDetail.legend.data = [].concat(tempArray3);
+							reviewDetialData.pieChartDetail.series[0].data = [].concat(data.RspData.gradeArray);
+							reviewDetialData.dataFlag = 1;
+							setTimeout(function() {
+								var lineChart = echarts.init(document.getElementById('lineChart'));
+								// 使用刚指定的配置项和数据显示图表。
+								lineChart.setOption(reviewDetialData.lineEchartDetail);
+								var pieChart = echarts.init(document.getElementById('pieChart'));
+								// 使用刚指定的配置项和数据显示图表。
+								pieChart.setOption(reviewDetialData.pieChartDetail);
+							}, 300);
+						})
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+			//线图塞数据
+			var setLineData = function() {
+				var tempArray1 = [];
+				var tempArray2 = [];
+				var tempFlag = 0;
+				for(var i = 0; i < reviewDetialData.reviewDetial.markDataMap.length; i++) {
+					var marpModel = reviewDetialData.reviewDetial.markMap[reviewDetialData.markMapIndex];
+					var tempModel = reviewDetialData.reviewDetial.markDataMap[i];
+					if(marpModel.value == tempModel.value) {
+						tempFlag++;
+						for(var a = 0; a < tempModel.dataArray.length; a++) {
+							var tempM = tempModel.dataArray[a];
+							tempArray1.push(tempM.date);
+							tempArray2.push(tempM.count);
+						}
+						break;
+					}
+				}
+				if(tempFlag == 0) {
+					for(var a = 0; a < reviewDetialData.reviewDetial.markEmptyDataArray.length; a++) {
+						var tempM = reviewDetialData.reviewDetial.markEmptyDataArray[a];
+						tempArray1.push(tempM.date);
+						tempArray2.push(tempM.count);
+					}
+				}
+				reviewDetialData.lineEchartDetail.xAxis[0].data = [].concat(tempArray1);
+				reviewDetialData.lineEchartDetail.series[0].data = [].concat(tempArray2);
+			}
+			var popoverDetailData = new Vue({
+				el: "#popoverDetailData",
+				data: {
+					dataFlag: 0,
+					popoverDetail: {}
+				}
+			});
+			var reviewDetialData = new Vue({
+				el: "#reviewDetialData",
+				data: {
+					dataFlag: 0,
+					markMapIndex: 0, //行为趋势选择索引
+					reviewDetial: {},
+					lineEchartDetail: {
+						grid: {
+							x: 45, //到左侧的距离
+							x2: 10, //到右侧的距离
+							y: 30, //到上面的距离
+							y2: 55 //到下面的距离
+						},
+						toolbox: {
+							show: false, //默认值为true，是否显示工具栏组件
+							//各工具配置项。
+							feature: {
+								//辅助线标志 
+								mark: {
+									show: true
+								},
+								//数据视图工具，可以展现当前图表所用的数据，编辑后可以动态更新。show->是否显示该工具，readOnly->是否不可编辑，optionToContent->自定义 dataView 展现函数，用以取代默认的 textarea 使用更丰富的数据编辑。可以返回 dom 对象或者 html 字符串，backgroundColor->数据视图浮层背景色。
+								dataView: {
+									show: true,
+									readOnly: false
+								},
+								//动态类型切换。show->是否显示该工具，type->这是个数组，启用的动态类型，包括'line'（切换为折线图）, 'bar'（切换为柱状图）, 'stack'（切换为堆叠模式）, 'tiled'（切换为平铺模式）。 
+								magicType: {
+									show: true,
+									type: ['line']
+								},
+								//配置项还原。主要属性是show->是否显示该工具。 
+								restore: {
+									show: true
+								},
+								//这个工具可以把图表保存为图片。里面有些常用的参数，type->保存图片的格式，name->保存文件的名字，backgroundColor->保存图片的背景色，show->是否显示该工具 
+								saveAsImage: {
+									show: true
+								}
+							}
+						},
+						//是否启用拖拽重计算特性，默认关闭(即值为false) 
+						calculable: false,
+						//直角坐标系中横轴数组，数组中每一项代表一条横轴坐标轴，仅有一条时可省略数值    
+						//横轴通常为类目型，但条形图时则横轴为数值型，散点图时则横纵均为数值型
+						xAxis: [{
+							axisLabel: {
+								interval: 0,
+								rotate: 40
+							},
+							type: 'category', //坐标轴类型，横轴默认为类目型'category'
+							data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'] //类目型坐标轴文本标签数组，指定label内容。 数组项通常为文本，'\n'指定换行
+						}],
+						//直角坐标系中纵轴数组，数组中每一项代表一条纵轴坐标轴，仅有一条时可省略数值    
+						//纵轴通常为数值型，但条形图时则纵轴为类目型 
+						yAxis: [{
+							type: 'value', //坐标轴类型，纵轴默认为数值型'value'
+							name: '次数',
+//							min: 0,
+							minInterval: 1,
+							nameLocation: 'middle',
+							nameTextStyle: {
+								color: "black",
+								fontSize: 14,
+								padding: 15
+							},
+							splitArea: { //分隔区域，默认不显示
+								show: true
+							}
+						}],
+						//sereis的数据: 用于设置图表数据之用。series是一个对象嵌套的结构；对象内包含对象
+						series: [{
+							symbol: false,
+							showAllSymbol: false,
+							name: '蒸发量', //系列名称，如果启用legend，该值将被legend.data索引相关
+							type: 'line', //图表类型，必要参数！如为空或不支持类型，则该系列数据不被显示。
+							data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6] //系列中的数据内容数组，折线图以及柱状图时数组长度等于所使用类目轴文本标签数组axis.data的长度，并且他们间是一一对应的。数组项通常为数值 
+						}]
+					},
+					pieChartDetail: {
+						tooltip: {
+							trigger: 'item',
+							formatter: "{d}%"
+						},
+						legend: {
+							orient: 'vertical',
+							x: 'left',
+							data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+						},
+						series: [{
+							name: '访问来源',
+							type: 'pie',
+							//饼状图
+							radius: '80%',
+							center: ['70%', '50%'],
+							avoidLabelOverlap: false,
+							//标签
+							label: {
+								normal: {
+									position: 'inner',
+									formatter: '{d}%',
+									backgroundColor: 'transparent',
+									borderColor: 'transparent',
+									//			                    borderWidth: 1,
+									//			                    borderRadius: 4
+								}
+							},
+							data: [{
+									value: 335,
+									name: '直接访问'
+								},
+								{
+									value: 310,
+									name: '邮件营销'
+								},
+								{
+									value: 234,
+									name: '联盟广告'
+								},
+								{
+									value: 135,
+									name: '视频广告'
+								},
+								{
+									value: 1548,
+									name: '搜索引擎'
+								}
+							]
+						}]
+					}
+				},
+				methods: {
+					clickStuDetail: function(model) {
+						utils.mOpenWithData("../../html/studentManage/student-reviewStudent.html", model);
+					},
+					changeMarkMap: function() {
+						var btnArray = [];
+						for(var i = 0; i < reviewDetialData.reviewDetial.markMap.length; i++) {
+							var tempModel = reviewDetialData.reviewDetial.markMap[i];
+							var temp = {
+								title: tempModel.text
+							}
+							btnArray.push(temp);
+						}
+						plus.nativeUI.actionSheet({
+							title: "切换行为趋势类型",
+							cancel: "取消",
+							buttons: btnArray
+						}, function(e) {
+							var index = e.index;
+							console.log('texttexttexttext:' + index);
+							if(index > 0) {
+								reviewDetialData.markMapIndex = index - 1;
+								//线图塞数据
+								setLineData();
+								setTimeout(function() {
+									var lineChart = echarts.init(document.getElementById('lineChart'));
+									// 使用刚指定的配置项和数据显示图表。
+									lineChart.setOption(reviewDetialData.lineEchartDetail);
+								}, 300);
+							}
+						});
+					},
+					addSubDetail: function() { //加减分详情
+						console.log('1111111111')
+						//调用隐藏/显示弹出层
+						mui("#popoverDetailData").popover('toggle', document.getElementById("div"));
+						setTimeout(function() {
+							mui('.mui-scroll-wrapper').scroll();
+						}, 300);
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

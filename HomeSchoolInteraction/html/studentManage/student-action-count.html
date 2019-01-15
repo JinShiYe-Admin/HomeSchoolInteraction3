@@ -1,0 +1,324 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
+		<link href="../../css/mui.picker.min.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link href="../../css/icons-extra.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
+			body{
+				background: #fff;
+			}
+			.mui-segmented-control{
+				border: 0px;
+				background: #F0F0F0;
+			}
+			.mui-segmented-control .mui-control-item{
+				color: #0D0D0D;
+				border: 0px;
+			}			
+			.mui-segmented-control .mui-control-item.mui-active {
+			    color: #0D0D0D;
+			    background-color: transparent;
+			}
+			.mui-segmented-control .mui-control-item span{
+				font-size: 12px;
+				padding: 0 0 0 5px;
+			}
+			.mui-ellipsis{
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			.mui-table-view-cell:after{
+				left:0px;
+			}
+			
+			
+			.mui-icon-extra-calendar:before {
+				content:''
+			}
+			.mui-icon-extra-calendar:after {
+				font-size: 20px;
+				color: #6ABBF0;
+				vertical-align: middle;
+			    content: "\e115";
+			}
+			.mui-table-view:before {
+			    height: 0px;
+			}
+			
+			.dl{
+				font-size: 14px;
+				margin-left: 15px;
+				color: #8f8f94;
+			}
+			.dr{
+				color: #8f8f94;
+				font-size: 14px;
+				float: right;
+			}
+			.line {
+				margin-right: ;
+			    height: 1px;-15px
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			}
+			.spdiv{
+				line-height: 2.5;
+			}
+			.mui-table-view-cell.mui-collapse .mui-collapse-content {
+			    padding: 0 15px;
+			}
+			
+			.title-info {
+				padding: 18px 0 5px 0;
+				text-align: center;
+				background: #fff;
+			}
+			.user-title {
+				font-size: 17px;
+				color: #333333;
+				font-weight: bold;
+			}
+			.user-time{
+				font-size: 13px;
+				color: #8f8f94;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="selectTitle">
+			<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;">
+				<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+				<h1 class="mui-title" style="color: white;">行为统计</h1>
+			</header>
+			<div class="mui-content" style="position: fixed;z-index: 8;background: #fff;padding-top: 0;">
+				<div class="mui-segmented-control" style="margin-top: 46px;">
+					<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+					<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+					<!--<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectGrade()"><span>{{student}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>-->
+				</div>
+				<div class="mui-row title-info">
+					<p v-cloak class="user-title">{{title}}</p>
+					<span class="user-time">周期：</span>
+					<span class="user-time mui-icon-extra mui-icon-extra-calendar" @tap="selectTime($event,1)" data-options='{"type":"date"}'>{{startTime}}</span>
+					<span class="user-time">&nbsp;至&nbsp;</span>
+					<span class="user-time mui-icon-extra mui-icon-extra-calendar" @tap="selectTime($event,2)" data-options='{"type":"date"}'>{{endTime}}</span>
+				</div>
+			</div>
+			<div class="mui-content mui-fullscreen" style="z-index: 6;background: #fff;margin-top: 115px;">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell keep-unfold mui-collapse" v-for="(model,index) in queryList">
+						<a class="mui-navigate-right" href="#" v-if="model.id=='total'">总计</a>
+						<a class="mui-navigate-right" href="#" v-else-if="flag=='2'">{{model.id}}</a>
+						<a class="mui-navigate-right" href="#" v-else>{{model.name}}</a>
+						<div class="mui-collapse-content">
+							<template v-for="val in model.value">
+								<div class="spdiv"><span class="dl">{{val.name}}</span><span class="dr">{{val.count}}次</span></div>
+								<div class="line"></div>
+							</template>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/utils/mui.picker.min.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		<script type="text/javascript">
+			var m$=mui.init();
+			var userPicker;
+			mui.plusReady(function(){
+				//得到年级、班级、学生数据
+				studentMP.getStudentManagePermission(1,1,function(array){
+					console.log("ABCD=="+JSON.stringify(array))
+					selectTitle.gradelist=array; 
+					userPicker = new m$.PopPicker({layer: 2});
+					userPicker.setData(array);
+					if(array.length>0){
+						var allGrade=array[0];
+						var allClasses=allGrade.children[0];
+						selectTitle.grdIds=allGrade.value;
+						selectTitle.clsIds=allClasses.value;
+						getData();
+					}
+				});
+			});
+			var selectTitle =new Vue({
+				el:"#selectTitle",
+				data:{
+					grade:'全部年级',//显示用
+					classes:'全部班级',//显示用
+					title:'全校学生行为统计',
+					grdIds:'',
+					clsIds:'',
+					flag:'0',
+					startTime:getDate(),
+					endTime:getDate2(),
+					gradelist:[],
+					queryList:[]
+				},
+				methods:{
+					selectGrade:function(){
+						userPicker.show(function(items) {
+							var grade=_getParam(items[0], 'text');
+							var classes=_getParam(items[1], 'text');
+							selectTitle.grade=grade;
+							selectTitle.classes=classes;
+							
+							var grdIds=_getParam(items[0], 'value');
+							var clsIds=_getParam(items[1], 'value');
+							selectTitle.grdIds=grdIds;
+							selectTitle.clsIds=clsIds;
+							var tit='';
+							if(grade.indexOf('全部')!=-1&&classes.indexOf('全部')!=-1){
+								tit='全校学生行为统计';
+								selectTitle.flag='0';
+							}else if(grade.indexOf('全部')==-1&&classes.indexOf('全部')!=-1){
+								tit=grade+'学生行为统计'
+								selectTitle.flag='1';
+							}else if(grade.indexOf('全部')==-1&&classes.indexOf('全部')==-1){
+								tit=grade+classes+'学生行为统计'
+								selectTitle.flag='2';
+							}else if(grade.indexOf('全部')==-1&&classes.indexOf('全部')==-1){
+								tit=grade+classes+student+'行为统计'
+							}
+							selectTitle.title=tit;
+							getData();
+						});
+					},
+					selectClass:function(){
+						this.$options.methods.selectGrade();
+					},
+					selectTime:function(event,lx){
+						var _self = event.target;
+						var optionsJson = _self.getAttribute('data-options') || '{}';
+						var options = JSON.parse(optionsJson);
+						_self.picker = new m$.DtPicker(options);
+						_self.picker.show(function(rs) {
+							if(lx=='1'){
+								if(compairTime(rs.text,selectTitle.endTime)){
+									selectTitle.startTime=rs.text;
+									 getData();
+								}else{
+									mui.toast('开始时间不能晚于结束时间');
+								}
+							}else{
+								if(compairTime(selectTitle.startTime,rs.text)){
+									selectTitle.endTime=rs.text;
+									getData();
+								}else{
+									mui.toast('结束时间不能早于开始时间');
+								}
+								
+							}
+							_self.picker.dispose();
+							_self.picker = null;
+						});
+					}
+				}
+			}); 
+			
+			function getData(){
+				var comData ={
+					grdIds:selectTitle.grdIds,
+					clsIds:selectTitle.clsIds,
+					fromDate:selectTitle.startTime,
+					toDate:selectTitle.endTime,
+//					stuId:selectTitle.stuId,
+					flag:selectTitle.flag
+				}
+				console.log(JSON.stringify(comData));
+				var wd = events.showWaiting();
+				getActionStatistics(comData,function(data) {
+					wd.close();
+					console.log('9.行为统计' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						studentMP.getName(selectTitle.flag,selectTitle.gradelist,data.RspData.list,function(array){
+							console.log('array================'+JSON.stringify(array));
+							selectTitle.queryList=array;
+						});
+					} else {
+						mui.toast(data.RspTxt);
+					} 
+				});
+			}
+			
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+			
+			//比对时间大小
+			function compairTime(startTime,endTime){
+				var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+				var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+				if(end>start){
+					return true;
+				}
+				return false;
+			}
+			
+			//获取当前日期
+			function getDate() {
+			    var date = new Date();
+			    var seperator1 = "-";
+			    var seperator2 = ":";
+			    var month = date.getMonth() + 1;
+			    var strDate = date.getDate();
+			    if (month >= 1 && month <= 9) {
+			        month = "0" + month;
+			    }
+			    if (strDate >= 0 && strDate <= 9) {
+			        strDate = "0" + strDate;
+			    }
+			    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+//			            + " " + date.getHours() + seperator2 + date.getMinutes()
+//			            + seperator2 + date.getSeconds();
+			    return currentdate;
+			}
+			
+			//获取当前日期
+			function getDate2() {
+			    var date = new Date();
+			    var seperator1 = "-";
+			    var seperator2 = ":";
+			    var month = date.getMonth() + 1;
+			    var strDate = date.getDate()+1;
+			    if (month >= 1 && month <= 9) {
+			        month = "0" + month;
+			    }
+			    if (strDate >= 0 && strDate <= 9) {
+			        strDate = "0" + strDate;
+			    }
+			    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+//			            + " " + date.getHours() + seperator2 + date.getMinutes()
+//			            + seperator2 + date.getSeconds();
+			    return currentdate;
+			}
+		</script>
+	</body>
+ 
+</html>

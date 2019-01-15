@@ -1,0 +1,417 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
+			
+			body {
+				background: #fff;
+			}
+			
+			.mui-segmented-control {
+				border: 0px;
+				background: #F0F0F0;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				border: 0px;
+				color: #666;
+				font-size: 12px;
+			}
+			
+			.mui-segmented-control .mui-control-item.mui-active {
+				background-color: transparent;
+				color: #666;
+				font-size: 12px;
+			}
+			
+			.mui-segmented-control .mui-control-item span {
+				font-size: 12px;
+				padding: 0 0 0 5px;
+				color: #666;
+			}
+			
+			.leftTag {
+				font-size: 14px;
+			}
+			
+			.rightTag {
+				font-size: 13px;
+				float: right;
+				color: #999999;
+			}
+			
+			.rightTagTh {
+				font-size: 13px;
+				float: right;
+			}
+			
+			.mui-ellipsis {
+				font-size: 13px;
+				float: left;
+				color: #999999;
+				width: 75%;
+			}
+			
+			.mui-table-view-cell:after {
+				left: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="commentHead">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">学生评语</h1>
+			<a @tap="addComment()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+		</header>
+		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 1;">
+			<div class="mui-segmented-control">
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectGrade()"><span>{{student}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+			</div>
+		</div>
+		<div class="mui-content mui-fullscreen" id="actionArrayData" style="background: white;margin-top: 85px;z-index:0;">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray">
+							<div v-if='personalModel.utid==actionModel.createUser' class="mui-slider-right mui-disabled" @tap="deleteItem($event,actionModel,index)">
+								<a class="mui-btn mui-btn-red">删除</a>
+							</div>
+							<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(index,actionModel)">
+								<img class="mui-media-object mui-pull-left" style="width: 40px;height: 40px;" :src=actionModel.stuImg>
+								<div class="mui-media-body">
+									<span class="leftTag" style="font-size: 14px;color: #333;">{{actionModel.studentName}}&nbsp;【{{actionModel.gradeName}}{{actionModel.className}}】</span>
+									<span class="rightTag" style="font-size: 12px;color: #999;">{{actionModel.commentTime}}</span>
+									<span class='mui-ellipsis' style="font-size: 12px;color: #666;">{{actionModel.commentText}}</span>
+									<span class="rightTagTh" style="font-size: 12px;color: #5D9DDA;">{{actionModel.commentTypeName}}</span>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui2.js"></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		<script type="text/javascript">
+			var m$ = mui.init()
+			var pageIndex = 1; //请求数据页面
+			var pageSize = 10; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var userPicker, userPickerType;
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			mui.plusReady(function() {
+				//获取筛选的人员信息
+				getStudnets();
+			});
+
+			//获取筛选的人员信息
+			var getStudnets = function() {
+				studentMP.getStudentManagePermission(1, 2, function(array) {
+					console.log("ABCD==" + JSON.stringify(array))
+					selectTitle.list = array;
+					userPicker = new m$.PopPicker({
+						layer: 3
+					});
+					userPicker.setData(selectTitle.list);
+					userPickerType = new m$.PopPicker({
+						layer: 1
+					});
+					if(array.length > 0) {
+						var allGrade = array[0];
+						var allClasses = allGrade.children[0];
+						var allStudent = allClasses.children[0];
+						selectTitle.sGrade = allGrade.value;
+						selectTitle.sClasses = allClasses.value;
+						selectTitle.sStudent = allStudent.value;
+						getCommentList(pageIndex);
+					}
+				});
+			}
+
+			var actionArrayData = new Vue({
+				el: "#actionArrayData",
+				data: {
+					personalModel: personal,
+					actionArray: []
+				},
+				methods: {
+					deleteItem: function(event, model, index) {
+						var dom = event.target;
+						var li = dom.parentNode.parentNode;
+						var btnArray = ['确认', '取消'];
+						mui.confirm('确认删除该条记录？', '智慧校园', btnArray, function(e) {
+							if(e.index == 0) {
+								m$.swipeoutClose(li);
+								console.log("删除第" + index + "个item");
+								attendanceDelete(index, li, model);
+							} else {
+								setTimeout(function() {
+									m$.swipeoutClose(li);
+								}, 0);
+							}
+						});
+					},
+					gotoDeatil: function(index, model) { //item点击事件
+						utils.mOpenWithData("../../html/studentManage/student-comment-Detail.html", model);
+					}
+				}
+			});
+
+			var commentHead = new Vue({
+				el: '#commentHead',
+				data: {},
+				methods: {
+					addComment: function() {
+						if(personal.appeditstat == 0) {
+							mui.toast('此功能被关闭');
+						} else {
+							if(personal.utp == 0 && personal.clss.length > 0) {
+								//是否可以新增修改，flag=0只班主任，flag=1班主任和任课老师都可以
+								if(utils.canNotAddModify(0)) {
+									utils.mOpenWithData("../../html/studentManage/student-comment-add.html", {});
+								} else {
+									mui.toast('无此权限');
+								}
+							} else {
+								mui.toast("无此权限");
+							}
+						}
+					}
+				}
+			});
+
+			var selectTitle = new Vue({
+				el: "#selectTitle",
+				data: {
+					grade: '全部年级',
+					classes: '全部班级',
+					student: '全部学生', //显示用
+					type: '全部类型',
+					sGrade: "", //存值用
+					sClasses: "", //存值用
+					sStudent: "", //存值用
+					typeValue: "", //存值用
+					list: [],
+					typeList: [{
+						value: '',
+						text: '全部类型'
+					}]
+				},
+				methods: {
+					selectGrade: function() {
+						userPicker.show(function(items) {
+							selectTitle.grade = _getParam(items[0], 'text');
+							selectTitle.classes = _getParam(items[1], 'text');
+							selectTitle.student = _getParam(items[2], 'text');
+
+							selectTitle.sGrade = _getParam(items[0], 'value');
+							selectTitle.sClasses = _getParam(items[1], 'value');
+							selectTitle.sStudent = _getParam(items[2], 'value');
+
+							pageIndex = 1;
+							flagRef = 0;
+							getCommentList(pageIndex);
+						});
+					},
+					selectClass: function() {
+						this.$options.methods.selectGrade();
+					},
+					selectType: function() {
+						userPickerType.setData(selectTitle.typeList);
+						var obj = this;
+						userPickerType.show(function(items) {
+							obj.type = _getParam(items[0], 'text')
+							obj.typeValue = _getParam(items[0], 'value')
+
+							pageIndex = 1;
+							flagRef = 0;
+							getCommentList(pageIndex);
+						});
+					}
+				}
+			});
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+
+			//接收添加或详情页通知的刷新列表事件
+			window.addEventListener('refreshList', function() {
+				pageIndex = 1;
+				flagRef = 0;
+				getCommentList(pageIndex);
+			});
+
+			//阻尼系数、初始化刷新加载更多
+			var deceleration = mui.os.ios ? 0.003 : 0.0009;
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+				indicators: true, //是否显示滚动条
+				deceleration: deceleration
+			});
+
+			//上拉下拉注册
+			mui(".mui-scroll-wrapper .mui-scroll").pullToRefresh({
+				down: {
+					callback: function() {
+						var self = this;
+						if(selectTitle.list.length > 0) {
+							pageIndex = 1;
+							flagRef = 0;
+							getCommentList(pageIndex, this);
+						} else {
+							self.endPullDownToRefresh();
+							//获取筛选的人员信息
+							getStudnets();
+						}
+					}
+				},
+				up: {
+					callback: function() {
+						var self = this;
+						//console.log("上拉加载更多");
+						flagRef = 1;
+						if(pageIndex <= totalPageCount) {
+							//54.科教频道_个人收藏列表
+							getCommentList(pageIndex, this);
+							setTimeout(function() {
+								//结束下拉刷新
+								//								self.endPullUpToRefresh();
+								if(mui(".mui-table-view-cell").length < 10) {
+									mui(".mui-pull-loading")[0].innerHTML = "";
+								}
+							}, 1000);
+						} else {
+							//结束下拉刷新
+							self.endPullUpToRefresh();
+							mui(".mui-pull-loading")[0].innerHTML = "没有更多了";
+						}
+					}
+				}
+			});
+
+			//5.1. 学生评语首页列表
+			function getCommentList(index, self) {
+				console.log("pageIndex====" + pageIndex);
+				console.log("flagRef====" + flagRef);
+				var gradeValue = selectTitle.sGrade;
+				var classesValue = selectTitle.sClasses;
+				var stuValue = selectTitle.sStudent;
+				if(stuValue == 0) {
+					stuValue = '';
+				}
+				var comData = {
+					grdIds: gradeValue,
+					clsIds: classesValue,
+					stuId: stuValue,
+					commentType: selectTitle.typeValue,
+					pageSize: pageSize,
+					pageNumber: index
+				}
+				var wd;
+				if(flagRef == 0) {
+					wd = events.showWaiting();
+				}
+				getCommentIndex(comData, function(data) {
+					if(flagRef == 0) {
+						wd.close();
+					}
+					console.log('5.1. 学生评语首页列表:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						//总页数
+						totalPageCount = data.RspData.totalPage;
+						pageIndex++;
+						selectTitle.typeList = [{
+							value: '',
+							text: '全部类型'
+						}];
+						for(var i = 0; i < data.RspData.commentTypeArray.length; i++) {
+							var tempM = data.RspData.commentTypeArray[i];
+							var tempModel = {
+								value: tempM.value,
+								text: tempM.text
+							}
+							selectTitle.typeList.push(tempModel);
+						}
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+							studentMP.setGrdNameClsName(selectTitle.list, data.RspData.list, function(array) {
+								console.log("array==" + JSON.stringify(array));
+								actionArrayData.actionArray = array;
+								mui('.mui-scroll-wrapper').scroll().setTranslate(0, 0);
+							})
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+							//合并数组
+							studentMP.setGrdNameClsName(selectTitle.list, data.RspData.list, function(array) {
+								console.log("array222222222222==" + JSON.stringify(actionArrayData.actionArray));
+								actionArrayData.actionArray = actionArrayData.actionArray.concat(array);
+							})
+						}
+					} else {
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+						}
+						mui.toast(data.RspTxt);
+					}
+				});
+			};
+			//5.4. 删除评语记录
+			function attendanceDelete(index, li, model) {
+				var comData = {
+					id: model.id
+				}
+				var wd = events.showWaiting();
+				getCommentDelete(comData, function(data) {
+					wd.close();
+					console.log('5.4. 删除评语记录:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						var tempArr = [].concat(actionArrayData.actionArray);
+						tempArr.splice(index, 1);
+						actionArrayData.actionArray = [].concat(tempArr);
+					} else {
+						mui.toast("删除学生评语失败");
+					}
+				});
+			};
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,995 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/common.css" />
+		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
+
+		<style type="text/css">
+			[v-cloak] {
+				visibility: hidden;
+			}
+			
+			body {
+				background: #fff;
+			}
+			
+			.mui-content {
+				background: #f2f3f5;
+			}
+			
+			#notes {
+				border: none;
+				border-radius: initial;
+				height: 20rem;
+				border: 1px solid lightgray;
+				margin: 10px 0 0 0;
+				font-size: 14px;
+			}
+			
+			.mui-popover-arrow {
+				display: none;
+			}
+			
+			.mui-backdrop {
+				background-color: transparent;
+			}
+			
+			.aCss {
+				font-size: 15px;
+				color: #999999;
+				width: 35%;
+				float: left;
+			}
+			
+			.pCss {
+				font-size: 14px;
+				color: #666666;
+				margin-left: 70px;
+				margin-right: 10px;
+			}
+			
+			.rCss {
+				font-size: 14px;
+				color: #666666;
+				float: right;
+				margin: 0 17px 0 0;
+			}
+			
+			.mui-table-view-cell {
+				min-height: 40px;
+			}
+			
+			.mui-checkbox input[type=checkbox]:checked:before {
+				color: #63BBFF;
+			}
+			
+			.title-info {
+				padding: 18px 0 5px 0;
+				text-align: center;
+				background: #fff;
+			}
+			
+			.title-body {
+				margin-top: 5px;
+				background: #fff;
+				padding: 10px 0 0 10px;
+			}
+			
+			.user-title {
+				font-size: 17px;
+				color: #333333;
+				font-weight: bold;
+			}
+			
+			.user-title-se {
+				font-size: 13px;
+				color: #6d6d6d;
+			}
+			
+			.user-title-body {
+				font-size: 15px;
+				text-align: left;
+				margin: 0 10px;
+				color: #6d6d6d;
+				text-indent: 2em;
+			}
+			
+			.user-title-footer {
+				text-align: left;
+				margin: 10px 10px 0;
+			}
+			
+			.ul-btn {
+				display: inline;
+				float: right;
+				height: 5px;
+				font-size: 13px;
+				padding: 2px 12px;
+				color: #6D6D6D;
+			}
+			
+			.ul-p {
+				width: 30%;
+				color: #6D6D6D;
+				display: inline;
+				vertical-align: middle;
+				font-size: 13px;
+			}
+			
+			.body-title {
+				font-size: 15px;
+				margin-left: 5px;
+			}
+			
+			.mui-table-view-cell:after {
+				right: 10px;
+			}
+			
+			.mui-navigate-right.rCss.no-icon:after {
+				content: ' ';
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn).mui-active {
+				background-color: #fff;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--<div id='title'>-->
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">学生考勤添加</h1>
+			<a id="finish" class="mui-pull-right" style="color: white;font-size: 15px;" @tap="submit()">提交</a>
+		</header>
+		<!--</div>-->
+		<div id='talk'>
+			<div class="mui-content mui-fullscreen" style="background: white;">
+				<ul class="mui-table-view" style="margin-top:45px;">
+					<li class="mui-table-view-cell" @tap="selectGrade()">
+						<a class="aCss">年级</a>
+						<span class="mui-navigate-right rCss">{{grade}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectGrade()">
+						<a class="aCss">班级</a>
+						<span class="mui-navigate-right  rCss">{{classes}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectGrade()">
+						<a class="aCss">姓名</a>
+						<span class="mui-navigate-right  rCss">{{student}}</span>
+					</li>
+				</ul>
+				<div style="background-color: #f2f3f5;height: 10px;"></div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @tap="selectkqlxName()">
+						<a class="aCss">考勤类型</a>
+						<span class="mui-navigate-right  rCss">{{kqlxName}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectkqxxName()">
+						<a class="aCss">考勤细项</a>
+						<span class="mui-navigate-right  rCss">{{kqxxName}}</span>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="aCss">考勤说明</a>
+						<textarea id="notes" onfocus="showHidDTPicker()" maxlength="120" v-model="content" placeholder="请输入考勤说明（最多120个字）"></textarea>
+					</li>
+				</ul>
+				<div style="background-color: #f2f3f5;height: 10px;"></div>
+				<div id="test">
+					<!--<ul id="index" class="mui-table-view">
+							<img src="../../img/utils/delete.png" style="width: 30px;float: right;margin:31px 5px 0 0;" >
+							<li class="mui-table-view-cell"data-options='{"type":"date"}' style="margin-right: 35px;">
+								<a  class="aCss">考勤日期</a>
+								<p  class="mui-navigate-right rCss">123</p>
+							</li>
+							<li class="mui-table-view-cell" style="margin-right: 35px;">
+								<a  class="aCss">节次</a> 
+								<a href="'#select'+index" style="float:right;width:85%"><p  class="mui-navigate-right  rCss">11111111</p></a>
+							</li>
+						</ul>-->
+					<template v-for="(ul,index) in nodeSubJson">
+						<ul :id="'ul'+index" class="mui-table-view">
+							<template v-if="jckmShow=='1'">
+								<img src="../../img/utils/delete.png" v-show="ul.canDelete==1" style="width: 30px;float: right;margin:31px 5px 0 0;" @tap="deleteLi($event,index)">
+								<li class="mui-table-view-cell" @tap="selectTime($event,'kqrq',index)" data-options='{"type":"date"}' style="margin-right: 35px;">
+									<a class="aCss">考勤日期</a>
+									<p class="mui-navigate-right rCss">{{ul.attendanceTime}}</p>
+								</li>
+								<li class="mui-table-view-cell" style="margin-right: 35px;">
+									<a class="aCss">节次</a>
+									<a :href="'#select'+index" @tap="selectnodesub()" style="float:right;width:75%">
+										<p class="mui-navigate-right  rCss">{{ul.classNames}}</p>
+									</a>
+								</li>
+								<li class="mui-table-view-cell" @tap="selectKm($event,index)" style="margin-right: 35px;" v-if="ul.kmShow==1">
+									<a class="aCss">科目</a>
+									<p class="mui-navigate-right  rCss">{{ul.subName}}</p>
+								</li>
+							</template>
+							<template v-else-if="jckmShow=='0'">
+								<img src="../../img/utils/delete.png" v-show="ul.canDelete==1" style="width: 30px;float: right;margin:6px 5px 0 0;" @tap="deleteLi($event,index)">
+								<li class="mui-table-view-cell" @tap="selectTime($event,'kqrq',index)" data-options='{"type":"date"}' style="margin-right: 35px;">
+									<a class="aCss">考勤日期</a>
+									<p class="mui-navigate-right rCss">{{ul.attendanceTime}}</p>
+								</li>
+							</template>
+						</ul>
+					</template>
+				</div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" style="text-align: center;" @tap="addLi()">
+						<img src="../../img/utils/add.png" style="width: 30px">
+					</li>
+				</ul>
+				<div style="background-color: #f2f3f5;height: 10px;" v-show="qxShow==1"></div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @tap="selectQx()" v-show="qxShow==1">
+						<a class="aCss">出入权限</a>
+						<span class="mui-navigate-right  rCss">{{qx}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectTime($event,'lxsj',-1)" data-options='{}' v-show="qxShow==1 && sjShow==1">
+						<a class="aCss">离校时间</a>
+						<p class="mui-navigate-right rCss">{{lxsj}}</p>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectTime($event,'hxsj',-1)" data-options='{}' v-show="qxShow==1 && sjShow==1">
+						<a class="aCss">回校时间</a>
+						<p class="mui-navigate-right rCss">{{hxsj}}</p>
+					</li>
+				</ul>
+				<div style="background-color: #f2f3f5;height: 10px;"></div>
+				<div id="bootom-card" style="margin-bottom: 30px">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell">
+							<a class="aCss">记录人</a>
+							<span class="mui-navigate-right rCss no-icon">{{jlr}}</span>
+						</li>
+						<li class="mui-table-view-cell" @tap="selectTime($event,'jlsj',-1)" data-options='{}'>
+							<a class="aCss">记录时间</a>
+							<p class="mui-navigate-right rCss ">{{jlsj}}</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<template v-for="(abc,index) in nodeSubJson">
+				<div :id="'select'+index" class="mui-popover" ref="scrollBox" style="height: 300px;">
+					<div class="mui-popover-arrow" style="display: none;"></div>
+					<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;">
+						<div class="mui-scroll">
+							<ul class="mui-table-view" style="background: #393D49;color: #fff;">
+								<li v-if="dayShow==1" class="mui-table-view-cell" style="padding: 0;" @tap="classItemCheck(index)">
+									<div class="mui-input-row mui-checkbox mui-right">
+										<label style="width: 100%;">全天</label>
+										<input name="全天" value="day" type="checkbox" :checked="checked('day',abc.classNodes,'')" :disabled="abc.dayCanCheck==-1">
+									</div>
+								</li>
+								<li v-if="dayShow==1" class="mui-table-view-cell" style="padding: 0;" @tap="classItemCheckHalf(index)">
+									<div class="mui-input-row mui-checkbox mui-right">
+										<label style="width: 100%;">半天</label>
+										<input name="半天" value="halfDay" type="checkbox" :checked="checked('halfDay',abc.classNodes,'')" :disabled="abc.halfDayCanCheck==-1">
+									</div>
+								</li>
+								<li class="mui-table-view-cell" style="padding: 0;" v-for="jc in jcList" >
+									<div class="mui-input-row mui-checkbox mui-right">
+										<label style="width: 100%;">{{jc.text}}</label>
+										<input :name="jc.text" :value="jc.value" type="checkbox" :checked="checked(jc.value,abc.classNodes,jc.value)" :disabled="abc.classCanCheck==-1">
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="mui-input-row" style=";height:45px;top:255px;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; z-index: 20180704;background: #fff;">
+						<button class="mui-btn mui-btn-primary" style="display: block;margin:5px auto 0;float: none; width: 25%;background: #63BBFF;border: 0px;" @tap="selectJc($event,index)">确定</button>
+					</div>
+				</div>
+			</template>
+		</div>
+		<script src="../../js/utils/mui.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script type="text/javascript" src="../../js/classRoom/mui.picker.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/events.js"></script>
+		<script type="text/javascript" src="../../js/storageKeyName.js"></script>
+		<script type="text/javascript" src="../../js/mui.zoom.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		<script type="text/javascript">
+			var $M = mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			//日期选择器
+			var dtPicker;
+			var showDTPickerFlag = 0; //0不显示，1显示
+			mui.plusReady(function() {
+				mui('.mui-scroll-wrapper').scroll()
+				//得到年级、班级、学生数据
+				studentMP.getStudentManagePermission(2, 1, function(array) {
+					console.log("ABCD==" + JSON.stringify(array))
+					talkTitle.gradelist = array;
+					if(array.length > 0) {
+						var allGrade = array[0];
+						var allClasses = allGrade.children[0];
+						talkTitle.sGrade = allGrade.value;
+						talkTitle.sClasses = allClasses.value;
+					}
+				}, 1);
+				//得到考勤细项、节次、出入权限等列表信息
+				var comData = {
+					id: 666
+				}
+				var wd = events.showWaiting();
+				getAttendanceDetail(comData, function(data) {
+					wd.close();
+					console.log('2.考勤详情' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						talkTitle.kqDetail = data.RspData;
+						talkTitle.kqlxNameList = data.RspData.atArray;
+						if(talkTitle.kqlxNameList.length > 0) {
+							talkTitle.kqlxName = talkTitle.kqlxNameList[0].text;
+							talkTitle.kqlxValue = talkTitle.kqlxNameList[0].value;
+							if(talkTitle.kqlxNameList[0].showCnSub == '1') {
+								talkTitle.jckmShow = '1';
+							} else {
+								talkTitle.jckmShow = '0';
+							}
+
+							setAttendanceType();
+							getSchSubThread();
+						}
+						talkTitle.jcList = data.RspData.cn;
+						talkTitle.qxList = data.RspData.permission;
+					} else {
+						//							mui.toast(data.RspTxt);
+					}
+				});
+			});
+			//将考勤类型、考勤细项的值对应
+			var setAttendanceType = function() {
+				for(var i = 0; i < talkTitle.kqDetail.qa.length; i++) {
+					var tempModel = talkTitle.kqDetail.qa[i];
+					if(tempModel.value == talkTitle.kqlxValue) {
+						talkTitle.kqxxNameList = [].concat(tempModel.dataArray);
+						//						talkTitle.kqxxName = talkTitle.kqxxNameList[0].text;
+						//						talkTitle.kqxxValue = talkTitle.kqxxNameList[0].value;
+						talkTitle.kqxxName = '请选择';
+						talkTitle.kqxxValue = '';
+						break;
+					}
+				}
+			}
+
+			var getSchSubThread = function() {
+				var enData1 = {};
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				//登录
+				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						console.log("data1:" + data1.RspTxt);
+						if(data1.RspData) {
+							var kmList = data1.RspData.subs;
+							var newList = [];
+							for(var i = 0; i < kmList.length; i++) {
+								var temp = {
+									text: kmList[i].subname,
+									value: kmList[i].subcode
+								}
+								newList.push(temp);
+							}
+							talkTitle.kmList = newList;
+						}
+					} else {
+						console.log("data1:" + data1.RspTxt);
+					}
+				});
+			}
+
+			//			var title = new Vue({
+			//				el: '#title',
+			//				data: {},
+			//				methods: {
+			//					submit: function() {
+			//						talkTitle.$options.methods.submit();
+			//					}
+			//				}
+			//			});
+			document.getElementById('finish').addEventListener('tap', function() {
+				talkTitle.$options.methods.submit();
+			})
+
+			var talkTitle = new Vue({
+				el: '#talk',
+				data: {
+					kqDetail: {},
+					grade: '请选择',
+					classes: '请选择',
+					student: '请选择',
+					kqxxName: '请选择',
+					kqlxName: '请选择',
+					jc: '请选择',
+					qx: '请选择',
+					kqrq: '请选择',
+					qxShow: '0',
+					sjShow: '0',
+					dayShow: '0',
+					jckmShow: '0',
+					gradelist: [],
+					kqxxNameList: [],
+					kqlxNameList: [],
+					kmList: [],
+					jcList: [],
+					qxList: [],
+					nodeSubJson: [{
+						canDelete: '1',
+						attendanceTime: "请选择",
+						classNodes: [],
+						classNames: "请选择",
+						subCodes: '',
+						subName: '请选择',
+						classCanCheck: 1,
+						dayCanCheck: 1,
+						halfDayCanCheck: 1,
+						kmShow: 1
+
+					}], //存值用：时间和节次集合
+					jlr: personal.utname, //存值用：记录人
+					lxsj: '请选择', //存值用：离校时间
+					hxsj: '请选择', //存值用:回校时间
+					jlsj: getDate(), //存值用:记录时间
+					content: '', //存值用:考勤说明
+					qValue: '', //存值用:出入权限
+					kqxxValue: '', //存值用:考勤细项
+					kqlxValue: '', //存值用:考勤类型
+					sGrade: "", //存值用:年级ID
+					sClasses: "", //存值用:班级ID
+					sStudent: "" //存值用:学生ID
+				},
+				methods: {
+					selectnodesub: function() {
+						document.activeElement.blur();
+					},
+					selectTime: function(event, lx, index) {
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						showDTPickerFlag = 1; //显示时间选择器
+						var _self = event.target;
+						var obj = this;
+						var optionsJson = _self.getAttribute('data-options') || '{}';
+						if(lx == 'kqrq' || lx == 'jlsj') {
+							optionsJson = '{"type":"date"}';
+						}
+						var options = JSON.parse(optionsJson);
+						var id = _self.getAttribute('id');
+						dtPicker = new $M.DtPicker(options);
+						//设置默认值
+						setTimeout(function() {
+							if(lx == 'lxsj') {
+								dtPicker.setSelectedValue(talkTitle.lxsj);
+							} else if(lx == 'hxsj') {
+								dtPicker.setSelectedValue(talkTitle.hxsj);
+							} else if(lx == 'jlsj') {
+								dtPicker.setSelectedValue(talkTitle.jlsj);
+							} else if(lx == 'kqrq') {
+								var nodes = obj.nodeSubJson[index];
+								dtPicker.setSelectedValue(nodes.attendanceTime);
+							}
+						}, 100);
+						dtPicker.show(function(rs) {
+							if(lx == 'lxsj') {
+								if(compairTime(rs.text, talkTitle.hxsj)) {
+									talkTitle.lxsj = rs.text;
+								} else {
+									mui.toast('开始时间不能晚于结束时间');
+								}
+							} else if(lx == 'hxsj') {
+								if(compairTime(talkTitle.lxsj, rs.text)) {
+									talkTitle.hxsj = rs.text;
+								} else {
+									mui.toast('结束时间不能早于开始时间');
+								}
+							} else if(lx == 'jlsj') {
+								talkTitle.jlsj = rs.text;
+							} else if(lx == 'kqrq') {
+								var stime = rs.text;
+								var nodes = obj.nodeSubJson[index];
+								nodes.attendanceTime = rs.text;
+							}
+							showDTPickerFlag = 0; //干掉时间选择器
+							dtPicker.dispose();
+							dtPicker = null;
+						});
+					},
+					selectGrade: function() { //选择年级 班级 学生
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						if(talkTitle.gradelist.length > 0) {
+							var userPicker = new $M.PopPicker({
+								layer: 3
+							});
+							userPicker.setData(talkTitle.gradelist);
+							setTimeout(function() {
+								userPicker.pickers[0].setSelectedValue(talkTitle.sGrade);
+								userPicker.pickers[1].setSelectedValue(talkTitle.sClasses);
+								userPicker.pickers[2].setSelectedValue(talkTitle.sStudent);
+							}, 100);
+							userPicker.show(function(items) {
+								talkTitle.grade = _getParam(items[0], 'text');
+								talkTitle.classes = _getParam(items[1], 'text');
+								talkTitle.student = _getParam(items[2], 'text');
+								talkTitle.sGrade = _getParam(items[0], 'value');
+								talkTitle.sClasses = _getParam(items[1], 'value');
+								talkTitle.sStudent = _getParam(items[2], 'value');
+							});
+						} else {
+							mui.toast('此班级暂无学生');
+						}
+					},
+					classItemCheck: function(index) {
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var nodeSubJson = talkTitle.nodeSubJson[index];
+						if(nodeSubJson.dayCanCheck == 1) {
+							if(nodeSubJson.classCanCheck == 1) {
+								nodeSubJson.classCanCheck = -1;
+							} else {
+								nodeSubJson.classCanCheck = 1;
+							}
+							if(nodeSubJson.halfDayCanCheck == 1) {
+								nodeSubJson.halfDayCanCheck = -1;
+							} else {
+								nodeSubJson.halfDayCanCheck = 1;
+							}
+							if(JSON.stringify(nodeSubJson.classNodes).indexOf('day')!=-1){
+								nodeSubJson.classNodes=[];
+							}else{
+								nodeSubJson.classNodes.push('day');
+							}
+						}
+
+					},
+					classItemCheckHalf: function(index) {
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var nodeSubJson = talkTitle.nodeSubJson[index];
+						if(nodeSubJson.halfDayCanCheck == 1) {
+							if(nodeSubJson.classCanCheck == 1) {
+								nodeSubJson.classCanCheck = -1;
+							} else {
+								nodeSubJson.classCanCheck = 1;
+							}
+							if(nodeSubJson.dayCanCheck == 1) {
+								nodeSubJson.dayCanCheck = -1;
+							} else {
+								nodeSubJson.dayCanCheck = 1;
+							}
+							if(JSON.stringify(nodeSubJson.classNodes).indexOf('halfDay')!=-1){
+								nodeSubJson.classNodes=[];
+							}else{
+								nodeSubJson.classNodes.push('halfDay');
+							}
+						}
+					},
+					checked:function(lx,value,valueJc){//判断节次弹窗中的节次是否需要选中
+						if(lx=='day'){
+							console.log('day:'+value);
+							if(JSON.stringify(value).indexOf("day")!=-1){
+								return true;
+							}
+						}else if(lx=='halfDay'){
+							console.log('halfDay:'+value);
+							if(JSON.stringify(value).indexOf("halfDay")!=-1){
+								return true;
+							}
+						}else{
+							if(JSON.stringify(value).indexOf(valueJc)!=-1){
+								return true;
+							}
+						}
+						return false;
+					},
+					selectKm: function(e, index) { //选择科目
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var userPicker = new $M.PopPicker({
+							layer: 1
+						});
+						if(talkTitle.kmList.length > 0) {
+							var nodes = talkTitle.nodeSubJson[index];
+							userPicker.setData(talkTitle.kmList);
+							setTimeout(function() {
+								userPicker.pickers[0].setSelectedValue(nodes.subCodes);
+							}, 100);
+							userPicker.show(function(items) {
+								console.log("nodes===" + JSON.stringify(nodes))
+								console.log("index===" + JSON.stringify(index))
+								nodes.subName = _getParam(items[0], 'text');
+								nodes.subCodes = _getParam(items[0], 'value');
+							});
+						} else {
+							mui.toast('暂无数据');
+						}
+					},
+					selectkqxxName: function() { //选择考勤细项
+						console.log(JSON.stringify(talkTitle.nodeSubJson));
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						if(talkTitle.kqxxNameList.length > 0) {
+							var userPicker = new $M.PopPicker({
+								layer: 1
+							});
+							userPicker.setData(talkTitle.kqxxNameList);
+							setTimeout(function() {
+								userPicker.pickers[0].setSelectedValue(talkTitle.kqxxValue);
+							}, 100);
+							userPicker.show(function(items) {
+								talkTitle.kqxxName = _getParam(items[0], 'text');
+								talkTitle.kqxxValue = _getParam(items[0], 'value');
+								talkTitle.qxShow = '0';
+								talkTitle.dayShow = '0';
+								if(_getParam(items[0], 'showInOut') == '1') {
+									talkTitle.qxShow = '1';
+								} else {
+									talkTitle.lxsj = '请选择';
+									talkTitle.hxsj = '请选择';
+									talkTitle.qx = '请选择';
+									talkTitle.qValue = '';
+									talkTitle.sjShow = '0';
+								}
+								var type = _getParam(items[0], 'type');
+								if(type == '1') { //如果是请假和缺勤，显示全天和半天
+									talkTitle.dayShow = '1';
+								}
+								//重置节次为可选状态
+								for(var i=0;i<talkTitle.nodeSubJson.length;i++){
+									var nodesub=talkTitle.nodeSubJson[i];
+									nodesub.classCanCheck = 1;
+									nodesub.dayCanCheck = 1;
+	    							nodesub.halfDayCanCheck = 1;
+									nodesub.classNames='请选择';
+									nodesub.classNodes = [];
+									nodesub.kmShow=1;
+								}
+							});
+						} else {
+							mui.toast('暂无数据');
+						}
+					},
+					selectkqlxName: function() { //选择考勤类型
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						if(talkTitle.kqlxNameList.length > 0) {
+							var userPicker = new $M.PopPicker({
+								layer: 1
+							});
+							userPicker.setData(talkTitle.kqlxNameList);
+							setTimeout(function() {
+								userPicker.pickers[0].setSelectedValue(talkTitle.kqlxValue);
+							}, 100);
+							userPicker.show(function(items) {
+								talkTitle.kqlxName = _getParam(items[0], 'text');
+								talkTitle.kqlxValue = _getParam(items[0], 'value');
+								var showCnSub = _getParam(items[0], 'showCnSub');
+								if(showCnSub == '1') { //如果是课堂考勤，才能选节次和科目
+									talkTitle.jckmShow = '1';
+								} else {
+									talkTitle.jckmShow = '0';
+								}
+								talkTitle.qxShow = '0';
+								setAttendanceType();
+							});
+						} else {
+							mui.toast('暂无数据');
+						}
+					},
+					selectQx: function() { //选择权限
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						if(talkTitle.qxList.length > 0) {
+							var userPicker = new $M.PopPicker({
+								layer: 1
+							});
+							userPicker.setData(talkTitle.qxList);
+							setTimeout(function() {
+								userPicker.pickers[0].setSelectedValue(talkTitle.qValue);
+							}, 100);
+							userPicker.show(function(items) {
+								talkTitle.qx = _getParam(items[0], 'text');
+								talkTitle.qValue = _getParam(items[0], 'value');
+								talkTitle.sjShow = '0';
+								if(_getParam(items[0], 'value') == 'outSchool') {
+									talkTitle.sjShow = '1';
+								}
+							});
+						} else {
+							mui.toast('暂无数据');
+						}
+					},
+					selectJc: function(e, index) { //选择节次
+						document.activeElement.blur(); 
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var classes = [];
+						var names = [];
+						var obj = e.target;
+						var id = '#select' + index;
+						$(id).find('li').each(function() {
+							if($(this).find('input').prop("checked")) {
+								names.push($(this).find('label').text());
+								classes.push($(this).find('input').val());
+							}
+						})
+						var nodes = this.nodeSubJson[index];
+						nodes.classNodes = [];
+						if(names.length > 0) {
+							if(nodes.attendanceTime == "请选择") {
+								mui.toast('请先选择考勤日期');
+								mui(id).popover('toggle');
+								//重置节次为可选状态
+								nodes.classCanCheck = 1;
+								nodes.dayCanCheck = 1;
+    							nodes.halfDayCanCheck = 1;
+								nodes.classNames='请选择';
+								nodes.classNodes = [];
+								nodes.kmShow=1;
+								return 0;
+							}
+
+							if(classes.indexOf("day") != -1) {
+								nodes.classNodes.push('day');
+								nodes.classNames = '全天';
+								nodes.kmShow = -1;
+								nodes.subName = '请选择';
+								nodes.subCodes = '';
+							} else if(classes.indexOf("halfDay") != -1) {
+								nodes.classNodes.push('halfDay');
+								nodes.classNames = '半天';
+								nodes.kmShow = -1;
+								nodes.subName = '请选择';
+								nodes.subCodes = '';
+							} else {
+								for(var i = 0; i < classes.length; i++) {
+									nodes.classNodes.push(classes[i]);
+								}
+								nodes.classNames = names.join(",");
+								if(classes.length == 1) {
+									nodes.kmShow = 1;
+								} else {
+									nodes.kmShow = -1;
+									nodes.subName = '请选择';
+									nodes.subCodes = '';
+								}
+							}
+
+							var nodeSub = this.nodeSubJson;
+							for(var i = 0; i < nodeSub.length; i++) {
+								var nodeChilds = nodeSub[i];
+								if(i == index) {
+									continue
+								} else {
+									if(JSON.stringify(nodeChilds) == JSON.stringify(nodes)) {
+										mui.toast('同一个日期下不能选择相同的节次');
+										nodes.classNames = "请选择";
+										nodes.classNodes = [];
+										mui(id).popover('toggle');
+										return 0;
+									}
+								}
+							}
+
+						} else {
+							nodes.classNodes = [];
+							nodes.classNames = '请选择';
+							nodes.kmShow = 1;
+							nodes.subName = '请选择';
+							nodes.subCodes = '';
+						}
+						mui(id).popover('toggle');
+					},
+					addLi: function() {
+						document.activeElement.blur();
+						var nodes = {
+							canDelete: '1',
+							attendanceTime: "请选择",
+							classNodes: [],
+							classNames: "请选择",
+							subCodes: '',
+							subName: '请选择',
+							classCanCheck: 1,
+							dayCanCheck: 1,
+							halfDayCanCheck: 1,
+							kmShow: 1
+						};
+						Vue.set(this.nodeSubJson, this.nodeSubJson.length, nodes)
+					},
+					deleteLi: function(e, index) { //添加考勤日期节次 项
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var obj = e.target;
+						if(this.nodeSubJson.length == 1) {
+							mui.toast("至少要填写一条考勤数据")
+						} else {
+							this.nodeSubJson.splice(index, 1);
+						}
+
+					},
+					submit: function() {
+						document.activeElement.blur();
+						//判断时间选择器是否在显示，如果显示，给干掉
+						showHidDTPicker();
+						var arr = [];
+						for(var i = 0; i < talkTitle.nodeSubJson.length; i++) {
+							var obj = talkTitle.nodeSubJson[i];
+							console.log('obj.attendanceTime:' + obj.attendanceTime);
+							if(obj.attendanceTime == '请选择') {
+								mui.toast('请选择考勤日期');
+								return 0;
+							}
+							if(talkTitle.jckmShow == 1) {
+								if(obj.classNodes.length === 0) {
+									mui.toast('请选择考勤节次');
+									return 0;
+								}
+							}
+							var params = {
+								attendanceTime: obj.attendanceTime,
+								classNodes: obj.classNodes,
+								subCodes: obj.subCodes
+							}
+							arr.push(params);
+						}
+						if(talkTitle.student == '请选择') {
+							mui.toast('请选择一个学生');
+						} else if(talkTitle.student == '全部学生') {
+							mui.toast('只能选择一个学生');
+						} else if(talkTitle.kqlxValue == '请选择' || talkTitle.kqlxValue == '') {
+							mui.toast('请选择考勤类型');
+						} else if(talkTitle.kqxxValue == '请选择' || talkTitle.kqxxValue == '') {
+							mui.toast('请选择考勤细项');
+						} else if(talkTitle.content.length > 120) {
+							mui.toast('内容最多120字');
+						} else {
+							console.log(JSON.stringify(arr))
+							var lxsj, hxsj;
+							if(talkTitle.lxsj == '请选择') {
+								lxsj = ''
+							} else {
+								lxsj = talkTitle.lxsj;
+							}
+							if(talkTitle.hxsj == '请选择') {
+								hxsj = ''
+							} else {
+								hxsj = talkTitle.hxsj;
+							}
+							var comData = {
+								id: '',
+								gradeId: talkTitle.sGrade, //年级id
+								classId: talkTitle.sClasses, //班级id
+								studentId: talkTitle.sStudent, //学生id
+								studentName: talkTitle.student, //学生姓名
+								quantizationAttendanceId: talkTitle.kqxxValue, //考勤细项id
+								attendanceType: talkTitle.kqlxValue, //考勤类型
+								nodeSubJson: arr, //考勤时间、节次组成的json数组字符串，其中attendanceTime表示考勤时间，classNodes表示考勤节次json数组
+								explain: talkTitle.content, //考勤说明
+								outsidePermisionCode: talkTitle.qValue, //出入校门权限编码
+								recordTime: talkTitle.jlsj, //记录时间
+								recorder: talkTitle.jlr, //记录人
+								leaveSchoolTime: lxsj, //离校时间
+								backSchoolTime: hxsj //回校时间
+							}
+							console.log(JSON.stringify(comData));
+							var wd = events.showWaiting();
+							getSaveAttendance(comData, function(data) {
+								wd.close();
+								console.log('3.保存考勤' + JSON.stringify(data));
+								if(data.RspCode == 0) {
+									mui.toast('保存成功');
+									mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
+									setTimeout(function() {
+										mui.back();
+									}, 2000)
+								} else {
+									mui.toast(data.RspTxt);
+								}
+							});
+						}
+
+					}
+				},
+				watch: {
+					nodeSubJson: function() {
+						mui('.mui-scroll-wrapper').scroll();
+						setTimeout(function() {
+							mui('.mui-scroll-wrapper').scroll();
+						});
+					}
+				}
+			});
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+			//判断时间选择器是否在显示，如果显示，给干掉
+			var showHidDTPicker = function() {
+				if(showDTPickerFlag == 1) {
+					showDTPickerFlag = 0; //干掉时间选择器
+					dtPicker.dispose();
+					dtPicker = null;
+				}
+			}
+
+			//获取当前日期
+			function getDate() {
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				if(month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if(strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+				//			            + " " + date.getHours() + seperator2 + date.getMinutes()
+				//			            + seperator2 + date.getSeconds();
+				return currentdate;
+			}
+
+			//比对时间大小
+			function compairTime(startTime, endTime) {
+				console.log(endTime)
+				if(startTime == '请选择' || endTime == '请选择') {
+					return true;
+				}
+				var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+				var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+				if(end > start) {
+					return true;
+				}
+				return false;
+			}
+
+			//比对时间大小
+			function compairTime2(startTime, endTime) {
+				console.log(endTime)
+				if(startTime == '请选择' || endTime == '请选择') {
+					return true;
+				}
+				var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+				var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+				if(end >= start) {
+					return true;
+				}
+				return false;
+			}
+		</script>
+	</body>
+
+</html>

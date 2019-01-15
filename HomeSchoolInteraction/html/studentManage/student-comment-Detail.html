@@ -1,0 +1,593 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/utils/common.css" />
+		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
+		<link rel="stylesheet" href="../../css/utils/MultiMedia.css" />
+		<link rel="stylesheet" href="../../css/utils/preview.css" />
+		<link rel="stylesheet" href="../../css/utils/audiopopover.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
+		<style>
+			.mui-table-view-cell>a:not(.mui-btn) {
+				position: relative;
+				display: block;
+				overflow: hidden;
+				margin: -11px -15px;
+				padding: inherit;
+				white-space: normal;
+				text-overflow: ellipsis;
+				color: inherit;
+			}
+			
+			.pClass {
+				font-size: 13px;
+				color: blue;
+			}
+			
+			.lineCell {
+				height: 10px;
+				width: 100%;
+				background: #f2f2f2;
+			}
+			
+			.liTitle {
+				font-size: 15px;
+				color: #333;
+			}
+			
+			.liDetail {
+				font-size: 14px;
+				color: #666;
+			}
+			
+			.aCss {
+				font-size: 15px;
+				color: #999999;
+				width: 130px;
+				float: left;
+			}
+			
+			.pCss {
+				font-size: 14px;
+				color: #666666;
+				margin-left: 70px;
+				margin-right: 10px;
+			}
+			
+			.rCss {
+				font-size: 14px;
+				color: #666666;
+				float: right;
+				margin: 0px 17px 0 0;
+			}
+			
+			#notes {
+				border: none;
+				border-radius: initial;
+				height: 10rem;
+				border: 1px solid lightgray;
+				margin: 3%;
+				font-size: 14px;
+				padding-bottom: 25px;
+			}
+			
+			.multimedia-header {
+				width: 94%;
+				border: 0;
+				border-left: 1px solid lightgray;
+				border-right: 1px solid lightgray;
+				border-bottom: 1px solid lightgray;
+				margin: -20px 3% 5px;
+			}
+			
+			.multimedia-footer {
+				border: 0;
+			}
+			
+			.mui-table-view-cell:after {
+				right: 10px;
+			}
+			/**add*/
+			
+			.mui-navigate-right.rCss.no-icon:after {
+				content: ' ';
+			}
+			
+			.mui-popover-arrow {
+				display: none;
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn).mui-active {
+				background-color: #fff;
+			}
+			
+			.mui-table-view.bottom-line:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 0;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #c8c7cc;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#63BBFF;" id="commentHead">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">评语详情</h1>
+			<a v-show="showFlag==1" id="finish" class="mui-pull-right" style="color: white;font-size: 14px;margin-top: 0px;" @tap="update()">{{btnText}}</a>
+		</header>
+		<div class="mui-content" id="commentData" style="background: #fff;">
+			<ul class="mui-table-view" style="margin-top: 0;">
+				<li class="mui-table-view-cell">
+					<a>
+						<p class="mui-pull-right liDetail">{{commentDetail.gradeName}}</p>
+						<div class="mui-media-body liTitle">
+							年级
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a>
+						<p class="mui-pull-right liDetail">{{commentDetail.className}}</p>
+						<div class="mui-media-body liTitle">
+							班级
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a>
+						<p class="mui-pull-right liDetail">{{commentDetail.studentName}}</p>
+						<div class="mui-media-body liTitle">
+							姓名
+						</div>
+					</a>
+				</li>
+			</ul>
+			<p class="lineCell"></p>
+			<template v-if="isEdit=='show'">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" style="margin-top: -10px;">
+						<a>
+							<p class="mui-pull-right liDetail">{{commentDetail.year}}</p>
+							<div class="mui-media-body liTitle">
+								年份
+							</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell" style="">
+						<a>
+							<p class="mui-pull-right liDetail">{{SysTermTypeText}}</p>
+							<div class="mui-media-body liTitle">
+								学期
+							</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell" style="">
+						<a>
+							<p class="mui-pull-right liDetail">{{commentDetail.commentTypeName}}</p>
+							<div class="mui-media-body liTitle">
+								评语类型
+							</div>
+						</a>
+					</li>
+				</ul>
+			</template>
+			<template v-else>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @tap="selectTimeType()" style="margin-top: -10px;">
+						<a class="aCss">年份</a>
+						<span class="mui-navigate-right rCss">{{commentDetail.year}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectSysTermType()">
+						<a class="aCss">学期</a>
+						<span class="mui-navigate-right rCss">{{SysTermTypeText}}</span>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectCommentType()">
+						<a class="aCss">评语类型</a>
+						<span class="mui-navigate-right rCss">{{commentDetail.commentTypeName}}</span>
+					</li>
+				</ul>
+			</template>
+			<ul class="mui-table-view bottom-line">
+				<li class="mui-table-view-cell">
+					<a>
+						<div class="mui-media-body liTitle">
+							学生评语
+						</div>
+					</a>
+				</li>
+			</ul>
+			<template v-if="isEdit=='show'">
+				<textarea id="notes" maxlength="300" v-model="content" disabled style="width: 94%;margin-top: 5px;"></textarea>
+			</template>
+			<template v-else>
+				<textarea id="notes" maxlength="300" v-model="content" placeholder="请输入行为说明（最多300字）" style="width: 94%;margin-top: 5px;"></textarea>
+			</template>
+			<template v-if="isEdit=='show'">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a>
+							<p class="mui-pull-right liDetail">{{commentDetail.beginTime}}</p>
+							<div class="mui-media-body liTitle">
+								评价开始时间
+							</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a>
+							<p class="mui-pull-right liDetail">{{commentDetail.endTime}}</p>
+							<div class="mui-media-body liTitle">
+								评价结束时间
+							</div>
+						</a>
+					</li>
+				</ul>
+			</template>
+			<template v-else>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @tap="selectTime($event,'beginTime')" data-options='{"type":"date"}'>
+						<a class="aCss">评价开始时间</a>
+						<p data-options='{"type":"date"}' class="mui-navigate-right rCss">{{commentDetail.beginTime}}</p>
+					</li>
+					<li class="mui-table-view-cell" @tap="selectTime($event,'endTime')" data-options='{"type":"date"}'>
+						<a class="aCss">评价结束时间</a>
+						<p data-options='{"type":"date"}' class="mui-navigate-right rCss">{{commentDetail.endTime}}</p>
+					</li>
+				</ul>
+			</template>
+			<p class="lineCell"></p>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" style="margin-top: -10px;">
+					<a>
+						<p class="mui-pull-right liDetail">{{commentDetail.createUsername}}</p>
+						<div class="mui-media-body liTitle">
+							撰写人
+						</div>
+					</a>
+				</li>
+
+				<template v-if="isEdit=='show'">
+					<li class="mui-table-view-cell">
+						<a>
+							<p class="mui-pull-right liDetail">{{commentDetail.commentTime}}</p>
+							<div class="mui-media-body liTitle">
+								撰写时间
+							</div>
+						</a>
+					</li>
+				</template>
+				<template v-else-if="isEdit=='edit'">
+					<li class="mui-table-view-cell" @tap="selectTime($event,'commentTime')" data-options='{"type":"date"}'>
+						<a class="aCss">撰写时间</a>
+						<p data-options='{"type":"date"}' class="mui-navigate-right rCss">{{commentDetail.commentTime}}</p>
+					</li>
+				</template>
+			</ul>
+		</div>
+		<script src="../../js/utils/mui.js"></script>
+		<script src="../../js/weui.min.js"></script>
+		<script src="../../js/demoCssJs/jquery-2.1.4.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/demoCssJs/jquery-weui.js"></script>
+		<!--视频、照片控件用-->
+		<script type="text/javascript" src="../../js/utils/events.js"></script>
+		<script type="text/javascript" src="../../js/utils/MultiMedia.js"></script>
+		<script type="text/javascript" src="../../js/cloud/AndroidFileSystem.js"></script>
+		<script type="text/javascript" src="../../js/qiniu/qiniu.js"></script>
+		<script type="text/javascript" src="../../js/utils/cryption.js"></script>
+		<script type="text/javascript" src="../../js/utils/CloudFileUtil.js"></script>
+		<script type="text/javascript" src="../../js/storageKeyName.js"></script>
+		<script type="text/javascript" src="../../js/mui.zoom.js"></script>
+		<script type="text/javascript" src="../../js/mui.previewimage.js"></script>
+		<script type="text/javascript" src="../../js/utils/compress.js"></script>
+		<script type="text/javascript" src="../../js/utils/recordvideoutil.js"></script>
+		<script type="text/javascript" src="../../js/utils/playutil.js"></script>
+		<script type="text/javascript" src="../../js/utils/showvideoutil.js"></script>
+		<script type="text/javascript" src="../../js/utils/showaudio.js"></script>
+		<script type="text/javascript" src="../../js/utils/gallerypick.js"></script>
+
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/cloudutil.js"></script>
+		<script src='../../js/utils/store.js'></script>
+
+		<script type="text/javascript" src="../../js/classRoom/mui.picker.min.js"></script>
+		<!--<script src="../../js/utils/mui.picker.js"></script>-->
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		<script type="text/javascript">
+			var $M = mui.init();
+			var curPage = {};
+			//年份选择器
+			var timeTypePicker = new $M.PopPicker({
+				layer: 1
+			});
+			//学期选择器
+			var systermTypePicker = new $M.PopPicker({
+				layer: 1
+			});
+			//评价类型选择器
+			var commentTypePicker = new $M.PopPicker({
+				layer: 1
+			});
+			var commentHead = new Vue({
+				el: '#commentHead',
+				data: {
+					showFlag: 0, //0隐藏，1显示
+					btnText: '修改'
+				},
+				methods: {
+					update: function() {
+						if(commentData.isEdit == 'show') {
+							commentData.isEdit = 'edit'
+							this.btnText = '提交'
+						} else {
+							commentData.$options.methods.submit();
+						}
+					}
+				}
+			});
+
+			var commentData = new Vue({
+				el: "#commentData",
+				data: {
+					isEdit: 'show',
+					commentDetail: {},
+					stuList: [], //年级、班级、学生数组
+					timeTypeList: [], //年份选择列表
+					timeTypeValue: '', //年份选择的值
+					SysTermTypeList: [], //学期选择列表
+					SysTermTypeText: '', //学期选择的名称
+					commentTypeList: [], //评价类型选择列表
+					commentTypeValue: '', //评价类型选择的值
+					content: ''
+				},
+				methods: {
+					selectTimeType: function() { //选择年份
+						document.activeElement.blur();
+						timeTypePicker.setData(commentData.timeTypeList);
+						setTimeout(function() {
+							timeTypePicker.pickers[0].setSelectedValue(commentData.timeTypeValue);
+						}, 100);
+						timeTypePicker.show(function(items) {
+							commentData.commentDetail.year = _getParam(items[0], 'text');
+							commentData.timeTypeValue = _getParam(items[0], 'value');
+						});
+					},
+					selectCommentType: function() { //选择评价类型
+						document.activeElement.blur();
+						commentTypePicker.setData(commentData.commentTypeList);
+						setTimeout(function() {
+							timeTypePicker.pickers[0].setSelectedValue(commentData.commentTypeValue);
+						}, 100);
+						commentTypePicker.show(function(items) {
+							commentData.commentDetail.commentTypeName = _getParam(items[0], 'text');
+							commentData.commentTypeValue = _getParam(items[0], 'value');
+						});
+					},
+					selectSysTermType: function() { //选择学期
+						document.activeElement.blur();
+						systermTypePicker.setData(commentData.SysTermTypeList);
+						setTimeout(function() {
+							systermTypePicker.pickers[0].setSelectedValue(commentData.commentDetail.termCode);
+						}, 100);
+						systermTypePicker.show(function(items) {
+							commentData.SysTermTypeText = _getParam(items[0], 'text');
+							commentData.commentDetail.termCode = _getParam(items[0], 'value');
+						});
+					},
+					selectTime: function(event, lx) { //三个时间选择
+						document.activeElement.blur();
+						var _self = event.target;
+						//						var optionsJson = _self.getAttribute('data-options') || '{}';
+						//						var options = JSON.parse(optionsJson);
+						_self.picker = new $M.DtPicker({
+							"type": "date"
+						});
+						//设置默认值
+						setTimeout(function() {
+							if(lx == 'beginTime') {
+								_self.picker.setSelectedValue(commentData.commentDetail.beginTime);
+							} else if(lx == 'endTime') {
+								_self.picker.setSelectedValue(commentData.commentDetail.endTime);
+							} else if(lx == 'commentTime') {
+								_self.picker.setSelectedValue(commentData.commentDetail.commentTime);
+							}
+						}, 100);
+						_self.picker.show(function(rs) {
+							console.log('选择结果: ' + rs.text);
+							if(lx == 'beginTime') {
+								if(utils.compairTime(rs.text, commentData.commentDetail.endTime)) {
+									commentData.commentDetail.beginTime = rs.text;
+								} else {
+									mui.toast('开始时间不能晚于结束时间');
+								}
+							} else if(lx == 'endTime') {
+								if(utils.compairTime(commentData.commentDetail.beginTime, rs.text)) {
+									commentData.commentDetail.endTime = rs.text;
+								} else {
+									mui.toast('开始时间不能晚于结束时间');
+								}
+							} else if(lx == 'commentTime') {
+								commentData.commentDetail.commentTime = rs.text;
+							}
+							_self.picker.dispose();
+							_self.picker = null;
+						});
+					},
+					submit: function() {
+						if(commentData.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
+							mui.toast('评语不能为空');
+							document.getElementById("finish").disabled = false;
+						} else if(commentData.content.length > 300) {
+							mui.toast('内容最多300字');
+							document.getElementById("finish").disabled = false;
+						} else {
+							var wd = events.showWaiting();
+							document.getElementById("finish").disabled = true;
+							var tempData = {
+								id: curPage.id, //评语记录id
+								gradeId: commentData.commentDetail.grdId, //年级id
+								classId: commentData.commentDetail.classId, //班级id
+								studentId: commentData.commentDetail.studentId, //学生id
+								studentName: commentData.commentDetail.studentName, //学生姓名
+								year: commentData.timeTypeValue, //年份
+								termCode: commentData.commentDetail.termCode, //学期编码
+								commentType: commentData.commentTypeValue, //评语类型
+								beginTime: commentData.commentDetail.beginTime, //评语开始时间
+								endTime: commentData.commentDetail.endTime, //评语结束时间
+								commentTime: commentData.commentDetail.commentTime, //撰写时间
+								comment: commentData.content //评语
+							}
+							console.log('tempData:' + JSON.stringify(tempData));
+							getCommentSave(tempData, function(data) {
+								wd.close();
+								console.log('5.3. 保存学生评语 ' + JSON.stringify(data));
+								if(data.RspCode == 0) {
+									mui.toast('保存成功');
+									mui.fire(plus.webview.currentWebview().opener(), 'refreshList', {});
+									setTimeout(function() {
+										mui.back();
+									}, 2000)
+								} else {
+									document.getElementById("finish").disabled = false;
+									mui.toast(data.RspTxt);
+								}
+							});
+						}
+					}
+				}
+			});
+
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+
+			var curPage = {};
+
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				//5.2. 学生评语详情
+				var comData = {
+					id: curPage.id
+				}
+				var wd = events.showWaiting();
+				getCommentDetail(comData, function(data) {
+					wd.close();
+					console.log('5.2. 学生评语详情:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						commentData.commentDetail = data.RspData.comment;
+						//将从上个界面传值的年级、班级名称赋值
+						commentData.commentDetail.gradeName = curPage.gradeName;
+						commentData.commentDetail.className = curPage.className;
+						commentData.timeTypeValue = commentData.commentDetail.year;
+						commentData.commentDetail.year = commentData.commentDetail.year + "年";
+						commentData.commentTypeValue = commentData.commentDetail.commentType;
+						commentData.commentTypeList = data.RspData.commentTypeArray;
+						commentData.content = data.RspData.comment.commentText;
+						//判断是否有权限新增、修改
+						var personal = store.get(window.storageKeyName.PERSONALINFO);
+						if(personal.appeditstat == 0) {
+							commentHead.showFlag = 0;
+						} else {
+							var tempCount = 0;
+							for(var i = 0; i < personal.clss.length; i++) {
+								var tempModel = personal.clss[i];
+								if(tempModel.clsid == commentData.commentDetail.classId && tempModel.isms == 1 && tempModel.isfinish == 0 && commentData.commentDetail.createUser == personal.utid) {
+									tempCount++;
+								}
+							}
+							if(tempCount > 0) {
+								commentHead.showFlag = 1;
+							} else {
+								commentHead.showFlag = 0;
+							}
+						}
+						//获取学期列表
+						getSysTerm();
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+				mui('.mui-scroll-wrapper').scroll();
+
+				//获取当前年份，生成年份列表
+				var myDate = new Date().getFullYear();
+				console.log('myDate:' + myDate);
+				for(var i = myDate - 5; i < myDate + 5; i++) {
+					var tepModel = {
+						text: i + '年',
+						value: i
+					}
+					commentData.timeTypeList.push(tepModel);
+				}
+			});
+			//3.4 系统学期
+			var getSysTerm = function() {
+				var enData1 = {};
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				postDataEncry('SysTerm', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						console.log("3.4 系统学期:" + JSON.stringify(data1));
+						if(data1.RspData) {
+							var termList = data1.RspData.systerm;
+							var newList = [];
+							for(var i = 0; i < termList.length; i++) {
+								if(commentData.commentDetail.termCode == termList[i].termcode) {
+									commentData.SysTermTypeText = termList[i].termname;
+								}
+								var temp = {
+									text: termList[i].termname,
+									value: termList[i].termcode
+								}
+								newList.push(temp);
+							}
+							commentData.SysTermTypeList = newList;
+						}
+					} else {
+						console.log("data1:" + data1.RspTxt);
+					}
+				});
+			}
+
+			//获取当前日期
+			function getDate() {
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				if(month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if(strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+				//			            + " " + date.getHours() + seperator2 + date.getMinutes()
+				//			            + seperator2 + date.getSeconds();
+				return currentdate;
+			}
+		</script>
+	</body>
+
+</html>
