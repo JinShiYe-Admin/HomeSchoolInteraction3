@@ -241,7 +241,8 @@
 					"html/login/firstPage.html",
 					"html/orals/oralsIndex.html",
 					"html/benefitingLearning/ycyxIndex.html",
-					"html/homeSchool/noticeListIndex.html"
+					"html/homeSchool/noticeListIndex.html",
+					"html/test112.html"
 				],
 				"priority": 0
 			},
@@ -457,6 +458,27 @@
 				"resources": [],
 				"refer": [
 					"html/login/index.html"
+				],
+				"priority": 0
+			},
+			"html/PDFJS/index.html": {
+				"resources": [],
+				"refer": [
+					"html/PDFJS/pdfjs/web/viewer.html"
+				],
+				"priority": 0
+			},
+			"html/PDFJS/Demo.html": {
+				"resources": [],
+				"refer": [
+					"html/PDFJS/pdfjs/web/viewer.html"
+				],
+				"priority": 0
+			},
+			"html/test112.html": {
+				"resources": [],
+				"refer": [
+					"js/pdfjs/index.html"
 				],
 				"priority": 0
 			}
