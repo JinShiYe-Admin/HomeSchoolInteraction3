@@ -183,6 +183,11 @@ var appPay = (function(mod) {
 		var dialog = plus.nativeUI.showWaiting(msg,{modal:true,back:'none'});
 		//5S后查询支付结果
 		setTimeout(function() {
+			if(mod.order_id==null||mod.order_id==undefined||mod.order_id==''){
+				dialog.close();
+				fail("支付未完成，请重新支付");
+				return 0;
+			}
 			var data0 = {
 				out_trade_no: mod.order_id, //订单编号
 			}
