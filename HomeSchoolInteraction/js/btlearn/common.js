@@ -221,6 +221,44 @@ function filterArray(arr, key, val) {
 	});
 })(document.querySelector(".vue-tree"));
 
+//监听上拉刷新，el被监听的元素
+function setPullRefresh(el, callback) {
+	var startX, startY;
+	refreshBox = document.querySelector(el);
+	if(refreshBox){
+		refreshBox.addEventListener('touchstart',function (ev) {
+            startX = ev.touches[0].pageX;
+            startY = ev.touches[0].pageY;
+        }, false);
+        refreshBox.addEventListener("touchend", function(ev){
+        	var endX, endY;
+            endX = ev.changedTouches[0].pageX;
+            endY = ev.changedTouches[0].pageY;
+            var direction = GetSlideDirection(startX, startY, endX, endY);
+            if(direction==1&&(this.scrollHeight<=this.scrollTop+this.clientHeight)) {
+            	callback();
+            }
+        }, false);
+	}
+}
+
+//滑动方向
+function GetSlideDirection(startX, startY, endX, endY) {
+    var dy = startY - endY;
+    //var dx = endX - startX;
+    var result = 0;
+    if(dy>0) {//向上滑动
+        result=1;
+    }else if(dy<0){//向下滑动
+        result=2;
+    }
+    else
+    {
+        result=0;
+    }
+    return result;
+}
+
 //svg图标
 (function(window) {
 	var svgSprite = '<svg>' +

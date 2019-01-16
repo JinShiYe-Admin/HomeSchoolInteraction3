@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<!--菜单选择页-->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav theme">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">切换知识点</h1>
+		</header>
+		
+		<div class="mui-content">
+			<div id="header" v-cloak>
+				<div class="header-box">
+					<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
+					<a class="mui-icon" @click.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
+				</div>
+				<transition name="slide-down">	
+					<div class="options-pannel mui-clearfix" v-show="showItem">
+						<div v-for="(v, i) in item.list" class="radio-wrap">
+							<label :class="{selected:v.percode==item.selected||v.subcode==item.selected}" @click="selectItem">
+								<input type="radio" v-model="item.selected" name="item"  :value="v.percode||v.subcode" />{{v.pername||v.subname||"未命名"}}
+							</label>
+						</div>
+					</div>
+				</transition>
+			</div>
+			
+			<div id="test-menu" class="mui-control-content mui-active">
+				<div id="testMenu" class="mui-content vue-tree">
+					<div class="kn-menu" v-cloak>
+						<tree-menu v-for="(model, i) in menu" :model="model" :key="i" :depth="0" @node-click="selectNode"></tree-menu>
+						<p v-if="!menu.length&&isLoaded"  style="padding: 0.3rem;">暂无目录</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
+		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script src='../../js/libs/jquery.js'></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		
+		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
+		<script type="text/javascript">
+			
+			//头部
+			var header = new Vue({
+				el: "#header",
+				data: {
+					grade: {selected: 0, list: []},
+					subject: {selected: 0, list: []},
+					topPannel: 0, //1-grade，2-subject
+					showItem: false
+				},
+				computed: {
+					item: function() {
+						if(this.topPannel==1){
+							return this.grade;
+						}else if(this.topPannel==2) {
+							return this.subject;
+						}else{
+							return {selected: 0, list: []};
+						}
+					},
+					gradeItem: function() {
+						var selected = this.grade.list?filterArray(this.grade.list, "percode", this.grade.selected)[0]:null;
+						return selected;
+					},
+					subjectItem: function() {
+						var selected = this.subject.list?filterArray(this.subject.list, "subcode", this.subject.selected)[0]:null;
+						return selected;
+					}
+				},
+				methods: {
+					//显示头部选项
+					showTopPannel: function(type) {
+						if(this.topPannel==type&&this.showItem) {
+							this.showItem = false;
+						}else{
+							this.showItem = true;
+							this.topPannel = type;
+						}
+					},
+					// 设置目录
+					setMenu: function(data) {
+						testMenu.isLoaded = false;
+						plus.nativeUI.showWaiting();
+						var _this = this;
+						//获取目录
+						commonAjax("/Ycyx/Practice/index", {
+							data: data||{},
+							timeout: 5000,
+							type: 'post',
+							success: function(res){
+								console.log("设置目录: "+res.data);
+								var rdata = JSON.parse(res.data);
+								//科目
+								_this.subject = {
+									selected: rdata.subcode,
+									list: rdata.subs||[]
+								};
+								//学段
+								_this.grade = {
+									selected: rdata.percode,
+									list: rdata.pers||[]
+								}
+								//设置test-menu目录
+								testMenu.menu = rdata.catalogs||[];
+								testMenu.isLoaded = true;
+								_this.$nextTick(function(){
+									plus.nativeUI.closeWaiting();
+								});
+							},
+							fail: function(res){
+								plus.nativeUI.closeWaiting();
+							},
+							error: function(){
+								plus.nativeUI.closeWaiting();
+								pageError();
+							}
+						});
+					},
+					//选择选项
+					selectItem: function(){
+						this.showItem = false;
+						mask.close();
+						this.$nextTick(function () {
+							if(this.topPannel==1){
+								this.setMenu({percode: this.grade.selected});
+							}else if(this.topPannel==2){
+								this.setMenu({percode: this.grade.selected, subcode: this.subject.selected});
+							}
+						});
+					}
+				}
+			});
+			
+			//知识点目录
+			var testMenu = new Vue({
+				el: "#testMenu",
+				data: {
+					menu: [],
+					isLoaded: false
+				},
+				methods: {
+					//选择节点
+					selectNode: function(model) {
+						
+					}
+				}
+			});
+			
+			var self;
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				header.setMenu({percode: self.percode, subcode: self.subcode});
+			});
+		</script>
+	</body>
+</html>

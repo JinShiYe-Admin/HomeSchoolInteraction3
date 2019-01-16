@@ -83,7 +83,9 @@
 	"html/benefitingLearning/ycyxIndex.html": {
 		"refer": [
 			"html/benefitingLearning/testStart.html",
-			"html/benefitingLearning/analysisDetail.html"
+			"html/benefitingLearning/analysisDetail.html",
+			"html/benefitingLearning/quesDetail.html",
+			"html/benefitingLearning/selectMenu.html"
 		]
 	},
 	"html/benefitingLearning/testStart.html": {
@@ -113,7 +115,13 @@
 	},
 	"html/homeSchool/noticeListIndex.html": {
 		"refer": [
-			"html/homeSchool/mine.html"
+			"html/homeSchool/mine.html",
+			"html/homeSchool/noticeDetail.html"
+		]
+	},
+	"html/order/orderList.html": {
+		"refer": [
+			"html/order/packageOrder_paymentPage_new.html"
 		]
 	}
 }

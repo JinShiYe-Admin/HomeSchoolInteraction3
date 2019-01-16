@@ -64,15 +64,19 @@ body, .mui-content {
 	overflow-y: auto;				
 }
 .mui-bar-nav {
-	height: auto;
-	min-height: 0.84rem;
+	/*height: auto;*/
 	box-sizing: content-box;
+	/*min-height: 0.84rem;*/
 	/*沉浸式导航栏*/
 	/*padding-top: 0.4rem;*/
 }
 .mui-bar-nav~.mui-content {
 	/*padding-top: 1.24rem;*/
-	padding-top: 0.84rem;
+	/*padding-top: 0.84rem;*/
+}
+.mui-bar-nav.mui-bar .mui-icon, .mui-bar-nav .mui-title {
+	/*line-height: 0.84rem;*/
+	line-height: 44px;
 }
 .mui-bar-tab~.mui-content {
 	padding-bottom: 1rem;
@@ -88,7 +92,6 @@ body, .mui-content {
 	font-size: 0.38rem;
 }
 .mui-bar-nav.mui-bar .mui-icon {
-	line-height: 0.84rem;
     padding-bottom: 0;
     padding-top: 0;
 }
@@ -100,8 +103,7 @@ body, .mui-content {
 	vertical-align: middle;
 }
 .mui-bar-nav .mui-title {
-	font-size: 0.34rem;
-	line-height: 0.84rem;
+	/*font-size: 0.34rem;*/
 	right: 1.1rem;
     left: 1.1rem;
     bottom: 0;
@@ -295,7 +297,7 @@ ul li.navigate-right:before {
 	height: 0.72rem;
 	border-radius: 0.36rem;
 	color: #FFFFFF;
-	background-color: #3DADEF;
+	background-color: #00CFBD;
 	border: none;
 }
 
@@ -461,6 +463,89 @@ ul li.navigate-right:before {
 .mui-icon-extra-university:before { content: "\e605"; }
 .mui-icon-extra-outline:before { content: "\e606"; }
 
+#search.mui-control-content.mui-active {
+	display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+.search-list{
+	overflow-y: auto;
+}
+.search-title, .search-list{
+	padding: 5px .4rem;
+}
+.search-title > p {
+	font-size: 16px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 44px;
+}
+.search-title > p .mui-icon {
+	font-size: 20px;
+	margin-left: 5px;
+}
+.search-box {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+.search-box .mui-search {
+	width: calc(100% - 60px);
+}
+.search-list .list-item {
+	display: block;
+	padding-bottom: 15px;
+}
+
+.kn-menu .label-wrapper {
+	padding: 0.3rem 1rem 0.3rem 0.2rem;
+	border-bottom: 1px solid #ECECEC;
+	position: relative;
+}
+.kn-menu .label-icon {
+	margin-right: -0.3rem;
+	vertical-align: middle;
+}
+.kn-menu .label-name {
+	vertical-align: middle;
+}
+.kn-menu .label-icon + .label-name {
+	padding-left: 0.4rem;
+}
+.options-pannel {
+	position: absolute;
+	left: 0;
+	top: 100%;
+	min-width: 100%;
+	background-color: #FFFFFF;
+	margin-right: -0.26rem;
+	padding: 0.5rem 0.2rem 0.4rem;
+	color: #222222;
+	z-index: -1;
+}
+.options-pannel label input[type="radio"] {
+	display: none;
+}
+.options-pannel .radio-wrap {
+	display: block;
+	float: left;
+	width: 1.58rem;
+	height: 0.63rem;
+	line-height: 0.63rem;
+	margin-right: 0.26rem;
+	margin-bottom: 0.2rem;
+	text-align: center;
+}
+.options-pannel label {
+	display: block;
+	border: 1px solid #D0D0D0;
+	border-radius: 0.05rem;
+	background-color: #F5F5F5;
+	font-size: 0.24rem;
+}
+.options-pannel label.selected {
+	color: #FFFFFF;
+}
 
 /*自适应*/
 @media only screen and (min-width: 320px) {
@@ -528,7 +613,7 @@ ul li.navigate-right:before {
 .top-tab.mui-slider-indicator.mui-segmented-control {
 	border-bottom: 7px solid #EEEEEE;
 	background: #FFFFFF;
-	position: relative;
+	-webkit-backface-visibility: hidden;
 	z-index: 9;
 }
 .top-tab.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
@@ -546,28 +631,40 @@ ul li.navigate-right:before {
 	left: 50%;
 	margin-left: -1em;
 }
-.top-tab ~ #header {
+#header {
 	position: relative;
-	/*border-bottom: 1px solid #CCCCCC;*/
-	box-shadow: 0px 0px 2px rgba(0,0,0,0.4);
-	margin-bottom: 2px;
+	z-index: 3;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
-.top-tab ~ #header .header-box {
+#header:before {
+	position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    content: '';
+    background-color: #CCCCCC;
+    transform: scaleY(.5);
+    transform-origin: top;
+    z-index: 10;
+}
+#header .header-box {
 	text-align: center;
 	background: #FFFFFF;
 	position: relative;
 	z-index: 9;
+	-webkit-backface-visibility: hidden;
 }
-.top-tab ~ #header .header-box a {
+#header .header-box a {
 	font-size: 14px;
-	line-height: 42px;
-	height: 42px;
+	line-height: 44px;
+	height: 44px;
 	color: #929292;
 	display: inline-block;
 	width: 40%;
 	text-align: center;
 }
-.top-tab ~ #header .options-pannel {
+#header .options-pannel {
 	top: calc(100% + 1px);
 	z-index: 1;
 	box-shadow: 0 0, 0 0, 0px 1px 8px rgba(0,0,0,0.4), 0 0;
