@@ -51,9 +51,6 @@
 		<script type="text/javascript" charset="utf-8">
 			//mui初始化
 			mui.init();
-			var subpages = [];
-			subpages = ['../../html/login/loginFnoPermissions.html', '../../html/login/loginFnoPermissions.html', '../../html/login/loginFnoPermissions.html', '../../html/sciedu/sciedu_home.html'];
-
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
@@ -104,24 +101,7 @@
 				};
 				var defaultUrl='../../html/login/loginFnoPermissions.html';
 				var self = plus.webview.currentWebview();
-<<<<<<< HEAD
-				var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style);
-				self.append(sub);
-				
-=======
-				for(var i = 0; i < 4; i++) {
-					var temp = {};
-					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
-					if(i > 0) {
-						sub.hide();
-					} else {
-						temp[subpages[i]] = "true";
-						mui.extend(aniShow, temp);
-					}
-					self.append(sub);
-				}
 
->>>>>>> ac6cd91cd5f713be190c2493ab2f3d85695daec2
 				//当前激活选项
 				activeTab = defaultUrl;
 				var title = document.getElementById("title");
@@ -141,19 +121,15 @@
 						}
 						//更换标题
 						//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-						plus.webview.show(targetTab, "fade-in", 300);
+						plus.webview.show(targetTab, "fade-in", 00);
 						//隐藏当前;
 						plus.webview.hide(activeTab);
 						//更改当前活跃的选项卡 
 						activeTab = targetTab;
 				});
-<<<<<<< HEAD
-			
-				var defaultTab = document.getElementById("navIndex");
-=======
 
+			
 				var defaultTab = document.getElementById("kejiao");
->>>>>>> ac6cd91cd5f713be190c2493ab2f3d85695daec2
 				//模拟首页点击
 				mui.trigger(defaultTab, 'tap');
 				

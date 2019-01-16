@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>学生管理index</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../fonts/iconfont2.css"/>
+		<style type="text/css">
+			.mui-bar-tab .mui-tab-item.mui-active {
+				color: #00CFBD;
+			}
+			
+			.mui-bar-tab .mui-tab-item .mui-icon {
+				width: 16px;
+				height: 16px;
+				left: -5px;
+			}
+			
+			.mui-segmented-control {
+				font-size: 15px;
+				font-weight: 400;
+				position: relative;
+				display: table;
+				overflow: hidden;
+				width: 100%;
+				table-layout: fixed;
+				border: 1px solid red;
+				border-radius: 3px;
+				background-color: transparent;
+				-webkit-touch-callout: none;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				line-height: 30px;
+				display: table-cell;
+				overflow: hidden;
+				width: 1%;
+				-webkit-transition: background-color .1s linear;
+				transition: background-color .1s linear;
+				text-align: center;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: red;
+				border-color: red;
+				border-left: 1px solid red;
+			}
+			
+			.mui-segmented-control .mui-control-item.mui-active {
+				color: #fff;
+				background-color: red;
+			}
+			/*.mui-tab-label {
+				font-size: 12px;
+				color: #999;
+			}*/
+			
+			.mui-backdrop {
+				position: fixed;
+				z-index: 998;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
+			<h1 id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
+			<a class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+		</header>-->
+		<nav class="mui-bar mui-bar-tab" id="pageData">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/studentManage/student-attendance.html">
+				<span class="mui-icon iconfont icon-kaoqinqiandao"></span>
+				<span id="flag0" class="mui-tab-label">学生考勤</span>
+			</a>
+			<a class="mui-tab-item" href="../../html/studentManage/student-action.html">
+				<span class="mui-icon iconfont icon-hangwei"></span>
+				<span id="flag1" class="mui-tab-label">学生行为</span>
+			</a>
+			<a v-show='showPage==1' class="mui-tab-item" href="../../html/studentManage/student-talkRecord.html">
+				<span class="mui-icon iconfont icon-tanhuahanxun"></span>
+				<span id="flag2" class="mui-tab-label">谈话记录</span>
+			</a>
+			<a v-show='showPage==1' class="mui-tab-item" href="../../html/studentManage/student-review.html">
+				<span class="mui-icon iconfont icon-kaoping"></span>
+				<span id="flag3" class="mui-tab-label">量化考评</span>
+			</a>
+			<a v-show='showPage==1' class="mui-tab-item" href="../../html/studentManage/student-comment.html">
+				<span class="mui-icon iconfont icon-xiaozhushouzhijianpingyuweihu"></span>
+				<span id="flag4" class="mui-tab-label">评语</span>
+			</a>
+		</nav>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.min.js"></script>
+		<!--<script src='../../js/lib/vconsole/vconsole.min.js'></script>-->
+		<script src="../../js/publicProtocol.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script type="text/javascript" src="../../js/publicProtocol.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/lib/jquery.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var subpage_style = {
+				top: '0px',
+				bottom: '51px'
+			};
+			var pageData = new Vue({
+				el: "#pageData",
+				data: {
+					showPage: 0
+				}
+			});
+
+			//遮罩层
+			var flag = false;
+			var mask = mui.createMask(closeMask);
+			mask: "rgba(0,0,0,0.1)";
+
+			function closeMask() {
+				return flag;
+			}
+
+			//关闭遮罩
+			window.addEventListener('closeMask', function() {
+				flag = true;
+				mask.close();
+			});
+			//显示遮罩
+			window.addEventListener('showMask', function() {
+				flag = false;
+				mask.show();
+			});
+
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var tempFlag = 0;
+				for(var i = 0; i < personal.clss.length; i++) {
+					var tempModel = personal.clss[i];
+					if(tempModel.isms == 1) {
+						tempFlag++;
+					}
+				}
+				if(personal.grds.length > 0) {
+					tempFlag++;
+				}
+				//判断个人信息的urolestr参数，第16位，学生管理授权用户
+				var tempStr = personal.urolestr.substr(16, 1);
+				if(tempStr == 1) {
+					pageData.showPage = 1;
+				} else {
+					if(tempFlag > 0) {
+						pageData.showPage = 1;
+					} else {
+						pageData.showPage = 0;
+					}
+				}
+				var defaultUrl = '../../html/studentManage/student-attendance.html';
+				var self = plus.webview.currentWebview();
+				var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style);
+				self.append(sub);
+
+				//当前激活选项
+				activeTab = defaultUrl;
+
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('href');
+					if(targetTab == activeTab) {
+						return;
+					} else {
+						var viewIsExists = plus.webview.getWebviewById(targetTab);
+						if(viewIsExists == null || viewIsExists == '' || viewIsExists == undefined) {
+							var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
+							newSub.hide();
+							self.append(newSub);
+						}
+					}
+
+					mui.fire(plus.webview.getWebviewById(activeTab), 'closePop', {});
+
+					plus.webview.show(targetTab, "fade-in", 0);
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡 
+					activeTab = targetTab;
+				});
+
+				var defaultTab = document.getElementById("defaultTab");
+				//模拟首页点击
+				mui.trigger(defaultTab, 'tap');
+
+				//切换选项卡高亮
+				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+				if(defaultTab !== current) {
+					current.classList.remove('mui-active');
+					defaultTab.classList.add('mui-active');
+				}
+			});
+
+			//自定义事件，模拟点击“首页选项卡”
+			document.addEventListener('gohome', function() {
+				var defaultTab = document.getElementById("defaultTab");
+				//模拟首页点击
+				mui.trigger(defaultTab, 'tap');
+				//切换选项卡高亮
+				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+				if(defaultTab !== current) {
+					current.classList.remove('mui-active');
+					defaultTab.classList.add('mui-active');
+				}
+			});
+		</script>
+	</body>
+
+</html>

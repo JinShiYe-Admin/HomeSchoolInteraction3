@@ -220,11 +220,11 @@
 			},
 			"html/login/index2.html": {
 				"resources": [
-					"html/login/loginFnoPermissions.html"
+					"html/login/loginFnoPermissions.html",
+					"html/sciedu/sciedu_home.html"
 				],
 				"refer": [
 					"html/Course/courseIndex.html",
-					"html/sciedu/sciedu_home.html",
 					"html/helpStudy/helpStudyIndex.html"
 				],
 				"priority": 0
@@ -241,7 +241,8 @@
 					"html/login/firstPage.html",
 					"html/orals/oralsIndex.html",
 					"html/benefitingLearning/ycyxIndex.html",
-					"html/homeSchool/noticeListIndex.html"
+					"html/homeSchool/noticeListIndex.html",
+					"html/test112.html"
 				],
 				"priority": 0
 			},
@@ -460,6 +461,34 @@
 				"resources": [],
 				"refer": [
 					"html/order/packageOrder_paymentPage_new.html"
+				],
+				"priority": 0
+			},
+			"html/relation/relationStu.html": {
+				"resources": [],
+				"refer": [
+					"html/login/index.html"
+				],
+				"priority": 0
+			},
+			"html/PDFJS/index.html": {
+				"resources": [],
+				"refer": [
+					"html/PDFJS/pdfjs/web/viewer.html"
+				],
+				"priority": 0
+			},
+			"html/PDFJS/Demo.html": {
+				"resources": [],
+				"refer": [
+					"html/PDFJS/pdfjs/web/viewer.html"
+				],
+				"priority": 0
+			},
+			"html/test112.html": {
+				"resources": [],
+				"refer": [
+					"js/pdfjs/index.html"
 				],
 				"priority": 0
 			}

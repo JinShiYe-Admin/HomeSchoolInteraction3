@@ -10,7 +10,6 @@
 			[v-cloak] {
 				display: none;
 			}
-			
 			/*.circular-square {
 				border-radius: 50%;
 				width: 56px;
@@ -82,12 +81,12 @@
 				<img :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
 			</a>
 			<h1 class="mui-title" style="color: white;">学校通知</h1>
-			<a v-if="personal.appxxtservstat>0 && personal.utp==0" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+			<a v-show="personal.appxxtservstat>0 && personal.utp==0&&addFlag==1" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
 		</header>
 		<div class="mui-content" style="background: white;">
 			<div id="contentData">
 				<template v-if="showFlag==0">
-					<div v-show="showFlag==0" class="mui-content mui-scroll-wrapper mui-fullscreen" id="contentData" style="display: none;">
+					<div v-if="showNoDataFlag>0" class="mui-content mui-scroll-wrapper mui-fullscreen">
 						<div class="mui-scroll">
 							<ul class="mui-table-view" v-for="(noticeModel,index) in noticeArray">
 								<li class="mui-table-view-cell" @click="clickNoticeList(noticeModel)">
@@ -104,596 +103,189 @@
 											<image v-else="" :src=noticeModel.SendManImg style="width: 15px;height: 15px;border-radius: 50%;vertical-align: middle;" />
 											<span class="nameTime">{{noticeModel.SendManName}}  {{noticeModel.SendTime}}</span>
 										</div>
-										<div id="" v-if="noticeModel.ReadCnt==0&&noticeModel.ReplyCnt==0&&noticeModel.SmsSync==0" style="float: right;margin-right: 10px;margin-top: -23px">
-											<div id="" v-if="noticeModel.ReadCnt==0&&noticeModel.ReplyCnt==0&&noticeModel.SendManId==personal.utid&&noticeModel.SmsSync==0" style="float: right;margin-right: 10px;margin-top: 0px">
-												<button @click.stop="deleteNotice(noticeModel)" type="button" class="mui-btn mui-btn-danger mui-btn-outlined" style="width: 50px;border: 1px;font-size: 12px;color: #ff6666;">删除</button>
-											</div>
-											<div id="" v-else="" style="float: right;margin-right: 10px;margin-top: -22px;">
-												<image src='../../img/homeSchool/lookCount.png' style="width: 10px;height: 10px;border-radius: 50%;" />
-												<span class="nameTime">{{noticeModel.ReadCnt}}</span>
-												<image src="../../img/homeSchool/contentCount.png" style="width: 10px;height: 10px;border-radius: 50%;" />
-												<span class="nameTime" style="padding-right: 10px;">{{noticeModel.ReplyCnt}}</span>
-											</div>
+
+										<div id="" v-if="noticeModel.ReadCnt==0&&noticeModel.ReplyCnt==0&&noticeModel.SendManId==personal.utid&&noticeModel.SmsSync==0" style="float: right;margin-right: 10px;margin-top: -23px">
+											<button @click.stop="deleteNotice(noticeModel)" type="button" class="mui-btn mui-btn-danger mui-btn-outlined" style="width: 50px;border: 1px;font-size: 12px;color: #ff6666;">删除</button>
 										</div>
+										<div id="" v-else="" style="float: right;margin-right: 10px;margin-top: -22px;">
+											<image src='../../img/homeSchool/lookCount.png' style="width: 10px;height: 10px;border-radius: 50%;" />
+											<span class="nameTime">{{noticeModel.ReadCnt}}</span>
+											<image src="../../img/homeSchool/contentCount.png" style="width: 10px;height: 10px;border-radius: 50%;" />
+											<span class="nameTime" style="padding-right: 10px;">{{noticeModel.ReplyCnt}}</span>
+										</div>
+									</div>
 								</li>
 							</ul>
-							</div>
 						</div>
+					</div>
+					<div v-else-if="showNoDataFlag==0">
+						<p style="text-align: center;margin-top: 5px;">暂无通知</p>
+						<div v-cloak style="text-align: center;margin:10% auto;">
+							<img src="../../img/noData.png" style="width: 250px;" />
+						</div>
+					</div>
 				</template>
-				<template v-else="">
-					<p style="text-align: center;margin-top: 5px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+				<template v-else-if="showFlag==1">
+					<template v-if="personal.utp==0">
+						<p style="text-align: center;margin-top: 5px;">您没有权限</p>
+					</template>
+					<template v-else="">
+						<p style="text-align: center;margin-top: 5px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					</template>
 					<div v-cloak style="text-align: center;margin:10% auto;">
 						<img src="../../img/nolink.png" style="width: 250px;" />
 					</div>
 				</template>
-				</div>
+			</div>
 
-				<script src="../../js/mui.min.js"></script>
-				<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-				<script type="text/javascript" src="../../js/utils/vue.js"></script>
-				<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-				<!--加密-->
-				<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-				<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-				<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-				<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-				<!---->
-				<script src='../../js/libs/crypto-js/require.js'></script>
-				<script src='../../js/utils/signHmacSHA1.js'></script>
-				<script src='../../js/utils/sortSign.js'></script>
-				<script src="../../js/storageKeyName.js"></script>
-				<script src="../../js/utils/store.js"></script>
-				<script src="../../js/publicProtocolNew.js"></script>
-				<script src="../../js/utils/events.js"></script>
-				<script src="../../js/libs/jquery.js"></script>
-				<script src="../../js/utils/pushPermission.js"></script>
-				<script src="../../js/utils/clearIcon.js"></script>
-				<script type="text/javascript">
-					//获取个人信息
-					var personal = store.get(window.storageKeyName.PERSONALINFO);
-					console.log('personal:' + JSON.stringify(personal));
-					mui.init({
-						statusBarBackground: '#00CFBD',
-						swipeBack: false,
-						beforeback: back,
-						pullRefresh: {
-							container: '#contentData',
-							down: {
-								style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-								color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
-								height: '50px', //可选,默认50px.下拉刷新控件的高度,
-								range: '100px', //可选 默认100px,控件可下拉拖拽的范围
-								offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
-								auto: true, //可选,默认false.首次加载自动上拉刷新一次
-								callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-							},
-							up: {
-								height: 50, //可选.默认50.触发上拉加载拖动距离
-								auto: true, //可选,默认false.自动上拉加载一次
-								contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-								contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-								callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-							}
-						}
-					});
-					//加载更多
-					function pullupRefresh() {
-						contentData.flag = 1;
-						//4.获取学校通知列表
-						getNoticesList();
-					}
-
-					/**
-					 * 下拉刷新具体业务实现
-					 */
-					function pulldownRefresh() {
-						contentData.flag = 0;
-						contentData.pageIndex = 1;
-						//4.获取学校通知列表
-						getNoticesList();
-					}
-
-					function back() {
-						if(showMenu) {
-							//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-							closeMenu();
-							return false;
-						} else {
-							//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
-							menu.close('none');
-							return true;
+			<script src="../../js/mui.min.js"></script>
+			<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+			<script type="text/javascript" src="../../js/utils/vue.js"></script>
+			<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+			<!--加密-->
+			<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+			<!---->
+			<script src='../../js/libs/crypto-js/require.js'></script>
+			<script src='../../js/utils/signHmacSHA1.js'></script>
+			<script src='../../js/utils/sortSign.js'></script>
+			<script src="../../js/storageKeyName.js"></script>
+			<script src="../../js/utils/store.js"></script>
+			<script src="../../js/publicProtocolNew.js"></script>
+			<script src="../../js/utils/events.js"></script>
+			<script src="../../js/libs/jquery.js"></script>
+			<script src="../../js/utils/pushPermission.js"></script>
+			<script src="../../js/utils/clearIcon.js"></script>
+			<script type="text/javascript">
+				//获取个人信息
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log('personal:' + JSON.stringify(personal));
+				mui.init({
+					statusBarBackground: '#00CFBD',
+					swipeBack: false,
+					beforeback: back,
+					pullRefresh: {
+						container: '#contentData',
+						down: {
+							style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+							color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '50px', //可选,默认50px.下拉刷新控件的高度,
+							range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+							auto: true, //可选,默认false.首次加载自动上拉刷新一次
+							callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						},
+						up: {
+							height: 50, //可选.默认50.触发上拉加载拖动距离
+							auto: true, //可选,默认false.自动上拉加载一次
+							contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+							contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+							callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
 						}
 					}
+				});
+				//加载更多
+				function pullupRefresh() {
+					contentData.flag = 1;
+					//4.获取学校通知列表
+					getNoticesList();
+				}
 
-					var main, menu, mask = mui.createMask(_closeMenu);
-					var showMenu = false,
-						mode = 'all-move';
-					//首先改变移动标志
-					slideTogether = true;
-					//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
-					//						menu.setStyle({
-					//							left: '-70%'
-					//						});
-					mui.plusReady(function() {
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					contentData.flag = 0;
+					contentData.pageIndex = 1;
+					//4.获取学校通知列表
+					getNoticesList();
+				}
 
-						//推送绑定
-						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
-						var info = plus.push.getClientInfo();
-						var tempBindData = {
-							appId: info.appid,
-							alias: tempInfo00.utid,
-							cid: info.clientid
-						}
-						console.log('tempBindData:' + JSON.stringify(tempBindData));
-						bindPro(tempBindData, function function_name(data) {
-							console.log('bindpro返回值:' + JSON.stringify(data));
-							if(data.RspCode == 0) {
-								var info = plus.push.getClientInfo();
-								console.log('bindpro:' + JSON.stringify(info));
-							} else {
+				function back() {
+					if(showMenu) {
+						//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+						closeMenu();
+						return false;
+					} else {
+						//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+						menu.close('none');
+						return true;
+					}
+				}
 
-							}
-						});
-						if(personal.utp == 1) { //0老师，2学生，1家长
-							//4.1.用户已订购套餐及功能扩展栏目
-							getUserBusFunc();
-						}
-						if(mui.os.android) {
+				var main, menu, mask = mui.createMask(_closeMenu);
+				var showMenu = false,
+					mode = 'all-move';
+				//首先改变移动标志
+				slideTogether = true;
+				//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
+				//						menu.setStyle({
+				//							left: '-70%'
+				//						});
+				mui.plusReady(function() {
+
+					//推送绑定
+					var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
+					var info = plus.push.getClientInfo();
+					var tempBindData = {
+						appId: info.appid,
+						alias: tempInfo00.utid,
+						cid: info.clientid
+					}
+					console.log('tempBindData:' + JSON.stringify(tempBindData));
+					bindPro(tempBindData, function function_name(data) {
+						console.log('bindpro返回值:' + JSON.stringify(data));
+						if(data.RspCode == 0) {
 							var info = plus.push.getClientInfo();
-							console.log(JSON.stringify(info))
-							//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
-							//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
-							//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
-							//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
-							plus.push.addEventListener("receive", function(msg) {
-								//放置安卓角标
-								try {
-									var iconNum = store.get(window.storageKeyName.ICONNUM) * 1 + 1;
-									var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
-									var context = plus.android.runtimeMainActivity();
-									ShortcutBadger.applyCount(context, iconNum);
-									store.set(window.storageKeyName.ICONNUM, iconNum);
-								} catch(err) {
-									console.log('类加载出错：' + err)
-								}
-								console.log('msg.title========' + JSON.stringify(msg))
-								//设置通知栏消息
-								var options = {
-									cover: false,
-									sound: 'system'
-								};
-								try {
-									if(JSON.parse(msg.content).body == undefined) {
-										plus.push.createMessage(msg.content, msg.content, options);
-									} else {
-										plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options);
-									}
-								} catch(err) {
-									plus.push.createMessage(msg.content, msg.content, options);
-								}
-
-							}, false);
-							plus.push.addEventListener("click", function(msg) {
-								getNoReadNoticeCntByMan();
-								//清空app角标
-								plus.clearIcon.clearIco(function(result) {
-									console.log("result>>>>>>" + result[0]);
-									store.set(window.storageKeyName.ICONNUM, 0);
-									plus.push.clear();
-								}, function(result) {
-									console.log('未知错误：' + result);
-								});
-								//					console.log('msg:'+JSON.stringify(msg))
-								//							console.log('appname:' + msg.title)
-								//							console.log('title:' + msg.content)
-								//							console.log('body:' + JSON.stringify(msg.payload))
-								//							console.log('body.title:' + JSON.parse(msg.payload).title)
-								//							console.log('body.content:' + JSON.parse(msg.payload).content)
-								//							console.log('body.payload:' + JSON.parse(msg.payload).payload)
-							}, false);
-
-							var isFirst = store.get(window.storageKeyName.ISFIRST);
-							console.log('isFirst==========================' + isFirst)
-							if(isFirst == null) {
-								//检测通知权限是否开启
-								plus.pushPermission.isNotificationEnabled(function(result) {
-									console.log("result>>>>>>" + result[0]);
-									var obj = JSON.parse(result[0]);
-									if(obj.code == 0) {
-										if(!obj.msg) { //通知权限没开启，提示打开
-											store.set(window.storageKeyName.ISFIRST, 'noFirst');
-											var btnArray = ['以后再说', '立即开启'];
-											mui.confirm('开启后可第一时间收到消息通知', '校讯通', btnArray, function(e) {
-												if(e.index == 1) { //立即开启
-													plus.pushPermission.gotoSetting();
-												}
-											})
-										}
-									}
-								}, function(result) {
-									console.log('未知错误：' + result);
-								});
-							}
+							console.log('bindpro:' + JSON.stringify(info));
 						} else {
-							document.addEventListener("plusready", function() {
-								message = document.getElementById("message");
-								// 监听点击消息事件
-								plus.push.addEventListener("click", function(msg) {
-									//12.获取某人未读学校通知个数
-									getNoReadNoticeCntByMan();
-									plus.device.vibrate(500);
-									// 判断是从本地创建还是离线推送的消息 
-									switch(msg.payload) {
-										case "LocalMSG":
-											//						outSet("点击本地创建消息启动：");
-											break;
-										default:
-											//						outSet("点击离线推送消息启动：");
-											break;
-									}
-								}, false);
-								// 监听在线消息事件
-								plus.push.addEventListener("receive", function(msg) {
-									//12.获取某人未读学校通知个数
-									getNoReadNoticeCntByMan();
-									plus.device.vibrate(500);
-									if(msg.aps) { // Apple APNS message
-										//					outSet("接收到在线APNS消息：");
-									} else {
-										//					outSet("接收到在线透传消息：");
-									}
-								}, false);
-							}, false);
+
 						}
-
-						//安卓的连续点击两次退出程序
-						//				alert('Hbuildr版本：8.8.3，运行版本:'+plus.runtime.version)
-						var backButtonPress = 0;
-						//重写返回键
-						mui.back = function(event) {
-							backButtonPress++;
-							if(backButtonPress > 1) {
-								plus.runtime.quit();
-							} else {
-								plus.nativeUI.toast('再按一次退出应用');
-							}
-							setTimeout(function() {
-								backButtonPress = 0;
-							}, 1000);
-							return false;
-						};
-						//12.获取某人未读学校通知个数
-						getNoReadNoticeCntByMan();
-
-						main = plus.webview.currentWebview();
-						//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
-						setTimeout(function() {
-							//侧滑菜单默认隐藏，这样可以节省内存；
-							menu = mui.preload({
-								id: '../../html/homeSchool/mine.html',
-								url: '../../html/homeSchool/mine.html',
-								styles: {
-									left: 0,
-									width: '70%',
-									zindex: 9997
-								}
-							});
-						}, 1);
-
-						window.addEventListener('home_setHeadImg', function(data) {
-							tempHead.headImg = data.detail.imgurl;
-						});
-
-						var tempHead = new Vue({
-							el: "#tempHead",
-							data: {
-								personal:personal,
-								headImg: setImg(personal.imgurl)
-							},
-							methods: {
-								revoke: function() {
-									console.log('add通知');
-									utils.mOpenWithData("../../html/homeSchool/notice_add.html", {});
-								},
-								clickLeftImg: function() {
-									console.log('indexweeeeeeeeee:');
-									openMenu();
-								}
-							}
-						});
 					});
-					window.addEventListener('refush_count1', function() {
-						console.log('refush_count000');
+					if(personal.utp == 1 || personal.utp == 2) { //0老师，2学生，1家长
 						//4.1.用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
-					});
-					//4.1.用户已订购套餐及功能扩展栏目
-					function getUserBusFunc() {
-						personal = store.get(window.storageKeyName.PERSONALINFO);
-						var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-						var enData1 = {};
-						//不需要加密的数据
-						var comData1 = {
-							uuid: publicParameter.uuid, //用户设备号
-							uid: personal.uid, //用户账号
-							utoken: personal.utoken, //用户令牌
-							appid: publicParameter.appid //系统所分配的应用ID
-						}
-						events.showWaiting();
-						//发送网络请求，data为网络返回值
-						postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
-							console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
-							events.closeWaiting();
-							if(data1.RspCode == 0) {
-								if(data1.RspData) {
-									personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
-									personal.userbus = data1.RspData.userbus; // 绑定的套餐
-									store.set(window.storageKeyName.PERSONALINFO, personal);
-									if(personal.packageCount > 0 && personal.isBdCount > 0) {
-										console.log('showFlag=0');
-										contentData.showFlag = 0;
-									} else {
-										console.log('showFlag=01');
-										contentData.showFlag = 1;
-									}
-								} else {
-									personal.packageCount = 0; //套餐是否绑定学生
-									personal.userbus = []; // 绑定的套餐
-									store.set(window.storageKeyName.PERSONALINFO, personal);
-									contentData.showFlag = 1;
-								}
-							} else {
-								mui.toast(data1.RspTxt);
-							}
-						});
 					}
-					//关闭侧滑
-					window.addEventListener('closeMinePage', function(data) {
-						closeMenu();
-					});
-					//获取未读数
-					window.addEventListener('getNoticeNoReadCnt', function(data) {
-						//12.获取某人未读学校通知个数
-						getNoReadNoticeCntByMan();
-					});
-
-					//阅读了一条未读状态的通知数据
-					window.addEventListener('readNoticeList', function(data) {
-						contentData.NoReadCnt--;
-					});
-
-					window.addEventListener('hideMenu', function(data) {
-						console.log('侧滑执行方法')
-						closeMenu();
-					});
-
-					/**
-					 * 显示菜单菜单
-					 */
-					function openMenu() {
-						if(!showMenu) {
-							var wvs = plus.webview.getDisplayWebview();
-							for(var i = 0; i < wvs.length; i++) {
-								var url = wvs[i].getURL();
-								if(url.indexOf('/homeSchool/mine') == -1) {
-									if(plus.os.name == 'Android') {
-										wvs[i].setStyle({
-											mask: "rgba(0,0,0,0.1)"
-										});
-									} else {
-										wvs[i].setStyle({
-											mask: "rgba(0,0,0,0.3)"
-										});
-									}
-									wvs[i].addEventListener("maskClick", function() {
-										closeMenu();
-									}, false);
-								}
-							}
-							//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
-							//侧滑菜单处于隐藏状态，则立即显示出来；
-							//显示完毕后，根据不同动画效果移动窗体；
-							menu.show('none', 0, function() {
-								switch(mode) {
-									case 'main-move':
-										//主窗体开始侧滑；
-										main.setStyle({
-											left: '70%',
-											transition: {
-												duration: 150
-											}
-										});
-										break;
-									case 'menu-move':
-										menu.setStyle({
-											left: '0%',
-											transition: {
-												duration: 10
-											}
-										});
-										break;
-									case 'all-move':
-										main.setStyle({
-											left: '70%',
-											transition: {
-												duration: 150
-											}
-										});
-										menu.setStyle({
-											left: '0%',
-											transition: {
-												duration: 10
-											}
-										});
-										break;
-								}
-							});
-							//显示遮罩
-							mask.show();
-							showMenu = true;
-							//通知index页隐藏tab栏
-						}
-					}
-					/**
-					 * 关闭侧滑菜单
-					 */
-					function closeMenu() {
-						_closeMenu();
-						//关闭遮罩
-						mask.close();
-					}
-
-					/**
-					 * 关闭侧滑菜单（业务部分）
-					 */
-					function _closeMenu() {
-						if(showMenu) {
-							//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
-							var wvs = plus.webview.getDisplayWebview();
-							for(var i = 0; i < wvs.length; i++) {
-								wvs[i].setStyle({
-									mask: "none"
-								});
-							}
-							//关闭遮罩；
-							switch(mode) {
-								case 'main-move':
-									//主窗体开始侧滑；
-									main.setStyle({
-										left: '0',
-										transition: {
-											duration: 150
-										}
-									});
-									break;
-								case 'menu-move':
-									//主窗体开始侧滑；
-									menu.setStyle({
-										left: '-70%',
-										transition: {
-											duration: 150
-										}
-									});
-									break;
-								case 'all-move':
-									//主窗体开始侧滑；
-									main.setStyle({
-										left: '0',
-										transition: {
-											duration: 150
-										}
-									});
-									//menu页面同时移动
-									menu.setStyle({
-										left: '-70%',
-										transition: {
-											duration: 150
-										}
-									});
-
-									break;
-							}
-
-							//等窗体动画结束后，隐藏菜单webview，节省资源；
-							setTimeout(function() {
-								menu.hide();
-							}, 200);
-							//改变标志位
-							showMenu = false;
-							//通知index页显示tab栏
-						}
-					}
-					//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
-					mui.menu = function() {
-						if(showMenu) {
-							closeMenu();
-						} else {
-							openMenu();
-						}
-					}
-
-					//12.获取某人未读学校通知个数
-					var getNoReadNoticeCntByMan = function() {
-						var tempData = {
-							manId: personal.utid, //登录人ID
-							schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
-						}
-						//				plus.device.vibrate(500);
-						//				events.showWaiting();
-						getNoReadNoticeCntByManPro(tempData, function function_name(data) {
-							//					events.closeWaiting();
-							console.log('12data:' + JSON.stringify(data));
-							if(data.RspCode == 0) {
-								contentData.NoReadCnt = data.RspData.NoReadCnt;
-								//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-								utils.setBadgeNumber(0, contentData.NoReadCnt);
-								//						$("#NoReadCnt").show();
-							} else {
-								mui.toast(data.RspTxt);
-							}
-						});
-					}
-					//vue数据
-					var contentData = new Vue({
-						el: "#contentData",
-						data: {
-							showFlag: 0, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
-							NoReadCnt: 0, //未读通知数
-							personal: personal,
-							//						showFlag: 0, //1有数据，0无数据
-							flag: 0, //0刷新，1加载更多
-							noticeArray: [], //通知列表数组
-							pageIndex: 1 //第几页
-						},
-						methods: {
-							clickNoticeList: function(model) {
-								console.log('点击li：' + model);
-								model.IsRead = 1;
-								utils.mOpenWithData("../../html/homeSchool/noticeDetail.html", model);
-								//让首页的未读数减1
-								if(model.IsRead == 0 && mode.NoticeType == 1) {
-									//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
-									utils.setBadgeNumber(1, 0);
-								}
-							},
-							deleteNotice: function(noticeModel) {
-								mui.confirm('', '确定删除？', ['取消', '确认'], function(e) {
-									if(e.index == 1) {
-										//2.删除学校通知（假删）
-										var tempData1 = {
-											noticeId: noticeModel.NoticeId //通知ID
-										}
-										events.showWaiting();
-										//2.删除学校通知（假删）
-										setNoticesDelPro(tempData1, function function_name(data) {
-											events.closeWaiting();
-											if(data.RspCode == 0) {
-												pulldownRefresh();
-											} else {
-												mui.toast(data.RspTxt);
-											}
-										});
-									}
-								}, 'div')
-							}
-						}
-					});
-
-					var slider = mui("#slider");
-					//轮播开始
-					slider.slider({
-						interval: 5000
-					});
-
 					if(mui.os.android) {
-						//监听收到通知后，没通过标题栏而是点击app图标进入app的事件，官方用语叫：应用切换到前台运行事件 
-						document.addEventListener("plusready", onPlusReady, false);
+						var info = plus.push.getClientInfo();
+						console.log(JSON.stringify(info))
+						//当设备收到服务器发送的透传消息时，不会触发页面监听的receive事件。当用户点击消息中心消息时会触发监听页面的“click”事件。如果用户点击多个消息时，会多次触发“click”事件。
+						//不符指定合格式的透传消息不会进入系统的消息中心，会在监听“receive”事件的页面触发事件回调。
+						//{title:"通知标题",content:"通知内容",payload:"通知去干嘛这里可以自定义"} 标准格式
+						//{"title":"接收到一条待办","body":"{\"title\":\"通知标题\",\"content\":\"通知内容\",\"payload\":\"通知去干嘛这里可以自定义\"}"}  由于使用标准格式，不会触发receice监听，所以封装了下
+						plus.push.addEventListener("receive", function(msg) {
+							//放置安卓角标
+							try {
+								var iconNum = store.get(window.storageKeyName.ICONNUM) * 1 + 1;
+								var ShortcutBadger = plus.android.importClass("me.leolin.shortcutbadger.ShortcutBadger");
+								var context = plus.android.runtimeMainActivity();
+								ShortcutBadger.applyCount(context, iconNum);
+								store.set(window.storageKeyName.ICONNUM, iconNum);
+							} catch(err) {
+								console.log('类加载出错：' + err)
+							}
+							console.log('msg.title========' + JSON.stringify(msg))
+							//设置通知栏消息
+							var options = {
+								cover: false,
+								sound: 'system'
+							};
+							try {
+								if(JSON.parse(msg.content).body == undefined) {
+									plus.push.createMessage(msg.content, msg.content, options);
+								} else {
+									plus.push.createMessage(msg.title, JSON.parse(msg.content).body, options);
+								}
+							} catch(err) {
+								plus.push.createMessage(msg.content, msg.content, options);
+							}
 
-						function onPlusReady() {
-							document.addEventListener("resume", onAppReume, false);
-						}
-
-						function onAppReume() {
+						}, false);
+						plus.push.addEventListener("click", function(msg) {
+							getNoReadNoticeCntByMan();
+							//清空app角标
 							plus.clearIcon.clearIco(function(result) {
 								console.log("result>>>>>>" + result[0]);
 								store.set(window.storageKeyName.ICONNUM, 0);
@@ -701,51 +293,556 @@
 							}, function(result) {
 								console.log('未知错误：' + result);
 							});
+							//					console.log('msg:'+JSON.stringify(msg))
+							//							console.log('appname:' + msg.title)
+							//							console.log('title:' + msg.content)
+							//							console.log('body:' + JSON.stringify(msg.payload))
+							//							console.log('body.title:' + JSON.parse(msg.payload).title)
+							//							console.log('body.content:' + JSON.parse(msg.payload).content)
+							//							console.log('body.payload:' + JSON.parse(msg.payload).payload)
+						}, false);
+
+						var isFirst = store.get(window.storageKeyName.ISFIRST);
+						console.log('isFirst==========================' + isFirst)
+						if(isFirst == null) {
+							//检测通知权限是否开启
+							plus.pushPermission.isNotificationEnabled(function(result) {
+								console.log("result>>>>>>" + result[0]);
+								var obj = JSON.parse(result[0]);
+								if(obj.code == 0) {
+									if(!obj.msg) { //通知权限没开启，提示打开
+										store.set(window.storageKeyName.ISFIRST, 'noFirst');
+										var btnArray = ['以后再说', '立即开启'];
+										mui.confirm('开启后可第一时间收到消息通知', '校讯通', btnArray, function(e) {
+											if(e.index == 1) { //立即开启
+												plus.pushPermission.gotoSetting();
+											}
+										})
+									}
+								}
+							}, function(result) {
+								console.log('未知错误：' + result);
+							});
 						}
+					} else {
+						document.addEventListener("plusready", function() {
+							message = document.getElementById("message");
+							// 监听点击消息事件
+							plus.push.addEventListener("click", function(msg) {
+								//12.获取某人未读学校通知个数
+								getNoReadNoticeCntByMan();
+								plus.device.vibrate(500);
+								// 判断是从本地创建还是离线推送的消息 
+								switch(msg.payload) {
+									case "LocalMSG":
+										//						outSet("点击本地创建消息启动：");
+										break;
+									default:
+										//						outSet("点击离线推送消息启动：");
+										break;
+								}
+							}, false);
+							// 监听在线消息事件
+							plus.push.addEventListener("receive", function(msg) {
+								//12.获取某人未读学校通知个数
+								getNoReadNoticeCntByMan();
+								plus.device.vibrate(500);
+								if(msg.aps) { // Apple APNS message
+									//					outSet("接收到在线APNS消息：");
+								} else {
+									//					outSet("接收到在线透传消息：");
+								}
+							}, false);
+						}, false);
 					}
 
-					//4.获取学校通知列表
-					var getNoticesList = function() {
-						var tempData = {
-							schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
-							manId: personal.utid, //登录人ID
-							status: 1, //状态,0 全部,1 有效,2 无效
-							pageIndex: contentData.pageIndex, //当前页数
-							pageSize: 10 //每页记录数,0为全部
+					//安卓的连续点击两次退出程序
+					//				alert('Hbuildr版本：8.8.3，运行版本:'+plus.runtime.version)
+					var backButtonPress = 0;
+					//重写返回键
+					mui.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
 						}
-						//				events.showWaiting();
-						getNoticesPro(tempData, function function_name(data) {
-							//					events.closeWaiting();
-							mui('#contentData').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
-							mui('#contentData').pullRefresh().endPulldownToRefresh();
-							console.log('data:' + JSON.stringify(data));
-							if(data.RspCode == 0) {
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+					//12.获取某人未读学校通知个数
+					getNoReadNoticeCntByMan();
 
-								contentData.pageIndex++;
-								for(var i = 0; i < data.RspData.Data.length; i++) {
-									var model = data.RspData.Data[i];
-									model.SendTime = modifyTimeFormat(model.SendTime);
-								}
-								if(contentData.flag == 0) { //刷新
-									contentData.noticeArray = data.RspData.Data;
-									if(data.RspData.Data.length == 0) {
-										mui.toast('数据为空');
-									}
-								} else { //加载更多
-									contentData.noticeArray = contentData.noticeArray.concat(data.RspData.Data);
-									if(data.RspData.Data.length == 0) {
-										mui.toast('已加载全部');
-										//								mui('#contentData').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
-									}
-								}
-								contentData.showFlag = 0;
-								$("#contentData").show();
-							} else {
-								mui.toast(data.RspTxt);
+					main = plus.webview.currentWebview();
+					//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
+					setTimeout(function() {
+						//侧滑菜单默认隐藏，这样可以节省内存；
+						menu = mui.preload({
+							id: '../../html/homeSchool/mine.html',
+							url: '../../html/homeSchool/mine.html',
+							styles: {
+								left: 0,
+								width: '70%',
+								zindex: 9997
 							}
 						});
+					}, 1);
+
+					window.addEventListener('home_setHeadImg', function(data) {
+						tempHead.headImg = data.detail.imgurl;
+					});
+
+					var tempHead = new Vue({
+						el: "#tempHead",
+						data: {
+							personal: personal,
+							addFlag: ifNew(), //是否可以新建，0不可以
+							headImg: setImg(personal.imgurl)
+						},
+						methods: {
+							revoke: function() {
+								console.log('add通知');
+								utils.mOpenWithData("../../html/homeSchool/notice_add.html", {});
+							},
+							clickLeftImg: function() {
+								console.log('indexweeeeeeeeee:');
+								openMenu();
+							}
+						}
+					});
+
+					//学校通知
+					//判断权限,学生、家长
+					if(personal.utp == 1 || personal.utp == 2) {
+
+					} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
+						if(personal.grds.length > 0) { //年级领导
+							contentData.showFlag = 0;
+						} else {
+							//判断是不是班主任
+							var tempFlag = 0;
+							for(var i = 0; i < personal.clss.length; i++) {
+								var classModel = personal.clss[i];
+								if(classModel.isms == 1) {
+									tempFlag++;
+								}
+							}
+							//如果是班主任
+							if(tempFlag > 0) {
+								contentData.showFlag = 0;
+							} else {
+								contentData.showFlag = 1;
+								mui.toast('无权限');
+							}
+						}
+					} else if(personal.urolestrxxt > 1) { //授权用户
+						contentData.showFlag = 0;
 					}
-				</script>
+				});
+				//判断是否可以新建
+				var ifNew = function() {
+					var tempFlag = 0;
+					console.log('1234567890');
+					var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+					if(personal0.utp == 0) {
+						console.log('1111111111111');
+						//年级领导
+						if(personal0.grds.length > 0) {
+							console.log('1111111111112');
+							tempFlag++;
+						}
+						//班主任
+						for(var i = 0; i < personal0.clss.length; i++) {
+							console.log('1111111111113');
+							var tepM = personal0.clss[i];
+							if(tepM.isms == 1) {
+								console.log('1111111111114');
+								tempFlag++;
+							}
+						}
+					}
+					if(personal.urolestrxxt > 1) { //授权用户
+						console.log('1111111111115');
+						tempFlag++;
+					}
+					if(tempFlag == 0) {
+						return 0;
+					} else {
+						return 1;
+					}
+				}
+				window.addEventListener('refush_count1', function() {
+					console.log('refush_count000');
+					//4.1.用户已订购套餐及功能扩展栏目
+					getUserBusFunc();
+				});
+				//4.1.用户已订购套餐及功能扩展栏目
+				function getUserBusFunc() {
+					personal = store.get(window.storageKeyName.PERSONALINFO);
+					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+					var enData1 = {};
+					//不需要加密的数据
+					var comData1 = {
+						uuid: publicParameter.uuid, //用户设备号
+						uid: personal.uid, //用户账号
+						utoken: personal.utoken, //用户令牌
+						appid: publicParameter.appid //系统所分配的应用ID
+					}
+					events.showWaiting();
+					//发送网络请求，data为网络返回值
+					postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+						console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
+						events.closeWaiting();
+						if(data1.RspCode == 0) {
+							if(data1.RspData) {
+								console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
+								personal.userbus = data1.RspData.userbus; // 绑定的套餐
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								//判断是否订购家校互通功能，并且状态开启
+								var tempArr = 0;
+								if(personal.userbus) {
+									for(var i = 0; i < personal.userbus.length; i++) {
+										var tempModel = personal.userbus[i];
+										for(var a = 0; a < tempModel.funcs.length; a++) {
+											var tempM = tempModel.funcs[a];
+											if(tempM.ftype == 'jxht') {
+												//if(tempM.ftype == 'jxht' && tempModel.serstat == 1) {
+												tempArr++;
+											}
+										}
+									}
+								}
+
+								if(tempArr > 0) {
+									contentData.showFlag = 0;
+								} else {
+									contentData.showFlag = 1;
+									mui.toast('请关联家校互通套餐');
+								}
+								contentData.showFlag = 0;
+								contentData.showFlag = 0;
+								//								if(personal.packageCount > 0 && personal.isBdCount > 0) {
+								//									console.log('showFlag=0');
+								//									contentData.showFlag = 0;
+								//								} else {
+								//									console.log('showFlag=01');
+								//									contentData.showFlag = 1;
+								//								}
+							} else {
+								personal.packageCount = 0; //套餐是否绑定学生
+								personal.userbus = []; // 绑定的套餐
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								contentData.showFlag = 1;
+							}
+						} else {
+							mui.toast(data1.RspTxt);
+						}
+					});
+				}
+				//关闭侧滑
+				window.addEventListener('closeMinePage', function(data) {
+					closeMenu();
+				});
+				//获取未读数
+				window.addEventListener('getNoticeNoReadCnt', function(data) {
+					//12.获取某人未读学校通知个数
+					getNoReadNoticeCntByMan();
+				});
+
+				//阅读了一条未读状态的通知数据
+				window.addEventListener('readNoticeList', function(data) {
+					contentData.NoReadCnt--;
+				});
+
+				window.addEventListener('hideMenu', function(data) {
+					console.log('侧滑执行方法')
+					closeMenu();
+				});
+
+				/**
+				 * 显示菜单菜单
+				 */
+				function openMenu() {
+					if(!showMenu) {
+						var wvs = plus.webview.getDisplayWebview();
+						for(var i = 0; i < wvs.length; i++) {
+							var url = wvs[i].getURL();
+							if(url.indexOf('/homeSchool/mine') == -1) {
+								if(plus.os.name == 'Android') {
+									wvs[i].setStyle({
+										mask: "rgba(0,0,0,0.1)"
+									});
+								} else {
+									wvs[i].setStyle({
+										mask: "rgba(0,0,0,0.3)"
+									});
+								}
+								wvs[i].addEventListener("maskClick", function() {
+									closeMenu();
+								}, false);
+							}
+						}
+						//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
+						//侧滑菜单处于隐藏状态，则立即显示出来；
+						//显示完毕后，根据不同动画效果移动窗体；
+						menu.show('none', 0, function() {
+							switch(mode) {
+								case 'main-move':
+									//主窗体开始侧滑；
+									main.setStyle({
+										left: '70%',
+										transition: {
+											duration: 150
+										}
+									});
+									break;
+								case 'menu-move':
+									menu.setStyle({
+										left: '0%',
+										transition: {
+											duration: 10
+										}
+									});
+									break;
+								case 'all-move':
+									main.setStyle({
+										left: '70%',
+										transition: {
+											duration: 150
+										}
+									});
+									menu.setStyle({
+										left: '0%',
+										transition: {
+											duration: 10
+										}
+									});
+									break;
+							}
+						});
+						//显示遮罩
+						mask.show();
+						showMenu = true;
+						//通知index页隐藏tab栏
+					}
+				}
+				/**
+				 * 关闭侧滑菜单
+				 */
+				function closeMenu() {
+					_closeMenu();
+					//关闭遮罩
+					mask.close();
+				}
+
+				/**
+				 * 关闭侧滑菜单（业务部分）
+				 */
+				function _closeMenu() {
+					if(showMenu) {
+						//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
+						var wvs = plus.webview.getDisplayWebview();
+						for(var i = 0; i < wvs.length; i++) {
+							wvs[i].setStyle({
+								mask: "none"
+							});
+						}
+						//关闭遮罩；
+						switch(mode) {
+							case 'main-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '0',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'menu-move':
+								//主窗体开始侧滑；
+								menu.setStyle({
+									left: '-70%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'all-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '0',
+									transition: {
+										duration: 150
+									}
+								});
+								//menu页面同时移动
+								menu.setStyle({
+									left: '-70%',
+									transition: {
+										duration: 150
+									}
+								});
+
+								break;
+						}
+
+						//等窗体动画结束后，隐藏菜单webview，节省资源；
+						setTimeout(function() {
+							menu.hide();
+						}, 200);
+						//改变标志位
+						showMenu = false;
+						//通知index页显示tab栏
+					}
+				}
+				//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+				mui.menu = function() {
+					if(showMenu) {
+						closeMenu();
+					} else {
+						openMenu();
+					}
+				}
+
+				//12.获取某人未读学校通知个数
+				var getNoReadNoticeCntByMan = function() {
+					var tempData = {
+						manId: personal.utid, //登录人ID
+						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
+					}
+					//				plus.device.vibrate(500);
+					//				events.showWaiting();
+					getNoReadNoticeCntByManPro(tempData, function function_name(data) {
+						//					events.closeWaiting();
+						console.log('12data:' + JSON.stringify(data));
+						if(data.RspCode == 0) {
+							contentData.NoReadCnt = data.RspData.NoReadCnt;
+							//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+							utils.setBadgeNumber(0, contentData.NoReadCnt);
+							//						$("#NoReadCnt").show();
+						} else {
+							mui.toast(data.RspTxt);
+						}
+					});
+				}
+				//vue数据
+				var contentData = new Vue({
+					el: "#contentData",
+					data: {
+						showFlag: 9, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
+						NoReadCnt: 0, //未读通知数
+						personal: personal,
+						showNoDataFlag:-1,//是否显示无数据图片
+						//						showFlag: 0, //1有数据，0无数据
+						flag: 0, //0刷新，1加载更多
+						noticeArray: [], //通知列表数组
+						pageIndex: 1 //第几页
+					},
+					methods: {
+						clickNoticeList: function(model) {
+							console.log('点击li：' + model);
+							model.IsRead = 1;
+							utils.mOpenWithData("../../html/homeSchool/noticeDetail.html", model);
+							//让首页的未读数减1
+							if(model.IsRead == 0 && mode.NoticeType == 1) {
+								//设置app角标,flag=0直接设置角标数字，flag=1角标减1,falg=2角标加1
+								utils.setBadgeNumber(1, 0);
+							}
+						},
+						deleteNotice: function(noticeModel) {
+							mui.confirm('', '确定删除？', ['取消', '确认'], function(e) {
+								if(e.index == 1) {
+									//2.删除学校通知（假删）
+									var tempData1 = {
+										noticeId: noticeModel.NoticeId //通知ID
+									}
+									events.showWaiting();
+									//2.删除学校通知（假删）
+									setNoticesDelPro(tempData1, function function_name(data) {
+										events.closeWaiting();
+										if(data.RspCode == 0) {
+											pulldownRefresh();
+										} else {
+											mui.toast(data.RspTxt);
+										}
+									});
+								}
+							}, 'div')
+						}
+					}
+				});
+
+				var slider = mui("#slider");
+				//轮播开始
+				slider.slider({
+					interval: 5000
+				});
+
+				if(mui.os.android) {
+					//监听收到通知后，没通过标题栏而是点击app图标进入app的事件，官方用语叫：应用切换到前台运行事件 
+					document.addEventListener("plusready", onPlusReady, false);
+
+					function onPlusReady() {
+						document.addEventListener("resume", onAppReume, false);
+					}
+
+					function onAppReume() {
+						plus.clearIcon.clearIco(function(result) {
+							console.log("result>>>>>>" + result[0]);
+							store.set(window.storageKeyName.ICONNUM, 0);
+							plus.push.clear();
+						}, function(result) {
+							console.log('未知错误：' + result);
+						});
+					}
+				}
+
+				//4.获取学校通知列表
+				var getNoticesList = function() {
+					var tempData = {
+						schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
+						manId: personal.utid, //登录人ID
+						status: 1, //状态,0 全部,1 有效,2 无效
+						pageIndex: contentData.pageIndex, //当前页数
+						pageSize: 10 //每页记录数,0为全部
+					}
+					//				events.showWaiting();
+					getNoticesPro(tempData, function function_name(data) {
+						//					events.closeWaiting();
+						mui('#contentData').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+						mui('#contentData').pullRefresh().endPulldownToRefresh();
+						console.log('data:' + JSON.stringify(data));
+						if(data.RspCode == 0) {
+							contentData.pageIndex++;
+							for(var i = 0; i < data.RspData.Data.length; i++) {
+								var model = data.RspData.Data[i];
+								model.SendTime = modifyTimeFormat(model.SendTime);
+							}
+							if(contentData.flag == 0) { //刷新
+//								contentData.noticeArray = data.RspData.Data;
+								contentData.noticeArray = [].concat(data.RspData.Data);
+								if(data.RspData.Data.length == 0) {
+									//									mui.toast('数据为空');
+								}
+							} else { //加载更多
+								contentData.noticeArray = contentData.noticeArray.concat(data.RspData.Data);
+								if(data.RspData.Data.length == 0) {
+									mui.toast('已加载全部');
+									//								mui('#contentData').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
+								}
+							}
+							contentData.showNoDataFlag = data.RspData.TotalCnt;
+							//								contentData.showFlag = 0;
+							$("#contentData").show();
+						} else {
+							mui.toast(data.RspTxt);
+						}
+					});
+				}
+			</script>
 	</body>
 
 </html>

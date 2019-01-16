@@ -1,0 +1,425 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			[v-cloak] {
+				visibility: hidden;
+			}
+			
+			body {
+				background: #fff;
+			}
+			
+			.mui-segmented-control {
+				border: 0px;
+				background: #F0F0F0;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				border: 0px;
+				color: #666;
+				font-size: 12px;
+			}
+			
+			.mui-segmented-control .mui-control-item.mui-active {
+				background-color: transparent;
+				color: #666;
+				font-size: 12px;
+			}
+			
+			.mui-segmented-control .mui-control-item span {
+				font-size: 12px;
+				padding: 0 0 0 5px;
+				color: #666;
+			}
+			
+			.leftTag {
+				font-size: 14px;
+				overflow: inherit;
+				white-space: normal;
+			}
+			
+			.leftTag-title {
+				float: left;
+				color: #fff;
+				font-size: 12px;
+				padding: 0 4px 0 4px;
+				border-radius: 4px;
+				margin-right: 5px;
+			}
+			
+			.rightTag-title {
+				font-size: 13px;
+				color: #999999;
+				float: right;
+			}
+			
+			.mui-ellipsis {
+				font-size: 13px;
+				color: #999999;
+				width: 80%;
+			}
+			
+			.mui-table-view-cell:after {
+				left: 0px;
+			}
+			
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			
+			.mui-popover {
+				height: 80px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="actionHead">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">学生量化考评</h1>
+			<!--<a href="#bottomPopover" class="mui-pull-right" style="color: white;width:120px;height: 45px; font-size: 25px;"><img style="width: 17px;float: right;margin: 12px 5px 0 0;" src="../../img/utils/more.png"/></a>-->
+		</header>
+		<div class="mui-content" id="selectTitle" style="position: fixed;z-index: 1;">
+			<div class="mui-segmented-control">
+				<a class="mui-control-item" v-cloak href="javascript:void(0)" @tap="selectGrade()"><span>{{grade}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectClass()"><span>{{classes}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+				<a class="mui-control-item" v-cloak href="javaScript:void(0)" @tap="selectType()"><span>{{type}}</span><span class="mui-icon mui-icon-arrowdown"></span></a>
+			</div>
+		</div>
+		<div id="actionArrayData">
+			<div class="mui-content mui-fullscreen" style="background: white;margin-top: 85px;z-index:0;">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell mui-media" v-for="(actionModel,index) in actionArray">
+								<a class="mui-slider-handle" href="javascript:;" @tap="gotoDeatil(actionModel,index)">
+									<template v-if="actionModel.type=='周评'">
+										<div class="mui-media-body">
+											<span class="leftTag-title" style="background: #FF6AC8;font-size: 12px;">{{actionModel.type}}</span><span class="leftTag" style="font-size: 14px;color: #333;">{{actionModel.gradeName}}{{actionModel.className}}{{actionModel.year}}年{{actionModel.termname}}{{actionModel.week}}学生行为量化考评</span>
+											<br/>
+											<span class='mui-ellipsis' style="font-size: 12px;color: #999;">量化时间：{{actionModel.fromDate}}——{{actionModel.toDate}}</span>
+											<span class='rightTag-title' style="font-size: 12px;color: #333;">{{actionModel.createUsername}}</span>
+										</div>
+									</template>
+									<template v-if="actionModel.type=='月评'">
+										<div class="mui-media-body">
+											<span class="leftTag-title" style="background: #48C6C3;font-size: 12px;">{{actionModel.type}}</span><span class="leftTag" style="font-size: 14px;color: #333;">{{actionModel.gradeName}}{{actionModel.className}}{{actionModel.year}}年{{actionModel.termname}}{{actionModel.month}}月学生行为量化考评</span>
+											<br/>
+											<span class='mui-ellipsis' style="font-size: 12px;color: #999;">量化时间：{{actionModel.fromDate}}——{{actionModel.toDate}}</span>
+											<span class='rightTag-title' style="font-size: 12px;color: #333;">{{actionModel.createUsername}}</span>
+										</div>
+									</template>
+									<template v-if="actionModel.type=='期评'">
+										<div class="mui-media-body">
+											<span class="leftTag-title" style="background: #EC971F;font-size: 12px;">{{actionModel.type}}</span><span class="leftTag" style="font-size: 14px;color: #333;">{{actionModel.gradeName}}{{actionModel.className}}{{actionModel.year}}年{{actionModel.termname}}学生行为量化考评</span>
+											<br/>
+											<span class='mui-ellipsis' style="font-size: 12px;color: #999;">量化时间：{{actionModel.fromDate}}——{{actionModel.toDate}}</span>
+											<span class='rightTag-title' style="font-size: 12px;color: #333;">{{actionModel.createUsername}}</span>
+										</div>
+									</template>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" @tap="toPage('http://')">生成量化报告</li>
+					<li class="mui-table-view-cell" @tap="toPage('http://')">查看量化指标</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../../js/mui2.js"></script>
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src="../../js/utils/vue.min.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.js"></script>
+		<script src="../../js/utils/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		<script type="text/javascript">
+			var m$ = mui.init()
+			var pageIndex = 1; //请求数据页面
+			var pageSize = 10; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			var userPicker = new m$.PopPicker({
+				layer: 2
+			});
+			var typePicker = new m$.PopPicker({
+				layer: 1
+			});
+			mui.plusReady(function() {
+				//3.4 系统学期
+				getSysTerm();
+				//获取筛选的人员信息
+				getStudnets();
+			});
+			//3.4 系统学期
+			var getSysTerm = function() {
+				var enData1 = {};
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				postDataEncry('SysTerm', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						console.log("3.4 系统学期:" + JSON.stringify(data1));
+						if(data1.RspData) {
+							actionArrayData.sysTermArray = data1.RspData.systerm;
+						}
+					} else {
+						console.log("data1:" + data1.RspTxt);
+					}
+				});
+			}
+
+			//获取筛选的人员信息
+			var getStudnets = function() {
+				studentMP.getStudentManagePermission(1, 2, function(array) {
+					console.log("ABCD==" + JSON.stringify(array))
+					selectTitle.list = array;
+					if(array.length > 0) {
+						var allGrade = array[0];
+						var allClasses = allGrade.children[0];
+						selectTitle.sGrade = allGrade.value;
+						selectTitle.sClasses = allClasses.value;
+						getReviewList(pageIndex);
+					}
+				});
+			}
+			//接收student-index发送的close事件
+			window.addEventListener('closePop', function() {
+				$("#bottomPopover").hide();
+				$(".mui-backdrop").hide();
+			});
+
+			var actionArrayData = new Vue({
+				el: "#actionArrayData",
+				data: {
+					sysTermArray:[],//系统学期数组
+					actionArray: []
+				},
+				methods: {
+					gotoDeatil: function(model, index) {
+						console.log('点击第' + index + '个标签进入详情');
+						var tempM = {
+							model: model,
+							stuArray: selectTitle.list
+						}
+						utils.mOpenWithData("../../html/studentManage/student-reviewClass.html", tempM);
+					},
+					toPage: function(url) {
+						//						plus.webview.open(url);
+						$("#bottomPopover").hide();
+						$(".mui-backdrop").hide();
+						utils.mOpenWithData(url, {});
+					}
+				}
+			});
+
+			var selectTitle = new Vue({
+				el: "#selectTitle",
+				data: {
+					grade: '全部年级',
+					classes: '全部班级',
+					type: '全部类型',
+					list: [],
+					sGrade: "", //存值用
+					sClasses: "", //存值用
+					typeValue: "", //存值用
+					typeList: [{
+							value: '',
+							text: '全部类型'
+						},
+						{
+							value: 'termEvaluation',
+							text: '期评'
+						},
+						{
+							value: 'weekEvaluation',
+							text: '周评'
+						},
+						{
+							value: 'monthEvaluation',
+							text: '月评'
+						},
+					]
+				},
+				methods: {
+					selectGrade: function() {
+						userPicker.setData(selectTitle.list);
+						userPicker.show(function(items) {
+							selectTitle.grade = _getParam(items[0], 'text');
+							selectTitle.classes = _getParam(items[1], 'text');
+							selectTitle.sGrade = _getParam(items[0], 'value');
+							selectTitle.sClasses = _getParam(items[1], 'value');
+							pageIndex = 1;
+							flagRef = 0;
+							getReviewList(pageIndex);
+						});
+					},
+					selectClass: function() {
+						this.$options.methods.selectGrade();
+					},
+					selectType: function() {
+						var obj = this;
+						typePicker.setData(this.typeList);
+						typePicker.show(function(items) {
+							obj.type = _getParam(items[0], 'text');
+							obj.typeValue = _getParam(items[0], 'value');
+							pageIndex = 1;
+							flagRef = 0;
+							getReviewList(pageIndex);
+						});
+					}
+				}
+			});
+			var _getParam = function(obj, param) {
+				return obj[param] || '';
+			}
+
+			//阻尼系数、初始化刷新加载更多
+			var deceleration = mui.os.ios ? 0.003 : 0.0009;
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+				indicators: true, //是否显示滚动条
+				deceleration: deceleration
+			});
+
+			//上拉下拉注册
+			mui(".mui-scroll-wrapper .mui-scroll").pullToRefresh({
+				down: {
+					callback: function() {
+						var self = this;
+						if(selectTitle.list.length > 0) {
+							pageIndex = 1;
+							flagRef = 0;
+							getReviewList(pageIndex, this);
+						} else {
+							self.endPullDownToRefresh();
+							//获取筛选的人员信息
+							getStudnets();
+						}
+					}
+				},
+				up: {
+					callback: function() {
+						var self = this;
+						flagRef = 1;
+						if(pageIndex <= totalPageCount) {
+							getReviewList(pageIndex, this);
+							//							setTimeout(function() {
+							//								self.endPullUpToRefresh();
+							//								if(mui(".mui-table-view-cell").length < 10) {
+							//									mui(".mui-pull-loading")[0].innerHTML = "";
+							//								}
+							//							}, 1000);
+						} else {
+							self.endPullUpToRefresh();
+							mui(".mui-pull-loading")[0].innerHTML = "没有更多了";
+						}
+					}
+				}
+			});
+			//4.1 量化考评首页列表
+			function getReviewList(index, self) {
+				console.log("pageIndex====" + pageIndex);
+				console.log("flagRef====" + flagRef);
+				var gradeValue = selectTitle.sGrade;
+				var classesValue = selectTitle.sClasses;
+				var comData = {
+					grdIds: gradeValue,
+					clsIds: classesValue,
+					type: selectTitle.typeValue,
+					pageSize: pageSize,
+					pageNumber: index
+				}
+				var wd;
+				if(flagRef == 0) {
+					wd = events.showWaiting();
+				}
+				getReviewEvaluationIndex(comData, function(data) {
+					if(flagRef == 0) {
+						wd.close();
+					}
+					console.log('4.1 量化考评首页列表' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						for (var i = 0; i < data.RspData.list.length; i++) {
+							var tempM = data.RspData.list[i];
+							for (var a = 0; a < actionArrayData.sysTermArray.length; a++) {
+								var tempTerm = actionArrayData.sysTermArray[a];
+								if (tempM.term == tempTerm.termcode) {
+									tempM.termname = tempTerm.termname;
+								}
+							}
+						}
+						//总页数
+						totalPageCount = data.RspData.totalPage;
+						pageIndex++;
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+							studentMP.setGrdNameClsName(selectTitle.list, data.RspData.list, function(array) {
+								console.log("array==" + JSON.stringify(array));
+								actionArrayData.actionArray = array;
+								mui('.mui-scroll-wrapper').scroll().setTranslate(0, 0);
+							})
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+							//合并数组
+							studentMP.setGrdNameClsName(selectTitle.list, data.RspData.list, function(array) {
+								console.log("array222222222222==" + JSON.stringify(actionArrayData.actionArray));
+								actionArrayData.actionArray = actionArrayData.actionArray.concat(array);
+							})
+						}
+					} else {
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+						}
+						mui.toast(data.RspTxt);
+					}
+				});
+			};
+		</script>
+	</body>
+
+</html>
