@@ -123,7 +123,14 @@
 							_this.items.per = rd.per;
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
-							_this.items.fasc = rd.fasc;
+//							var has_mater = rd.mater.list.some(function(v){return v.matercode==_this.items.mater.selected});
+//							if(!has_mater){
+//								_this.items.mater = rd.mater;
+//							}
+							var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==_this.items.fasc.selected});
+							if(!has_fasc){
+								_this.items.fasc = rd.fasc;
+							}
 							
 							if(rd.per.selected&&rd.sub.selected&&rd.mater.selected&&rd.fasc.selected){
 								_this.fascChange();
@@ -149,6 +156,7 @@
 						if(_this.items.fasc) {
 							data.fasccode = _this.items.fasc.selected;
 						}
+//						console.log(JSON.stringify(data));
 						oralsAjax('/catalog', data, function(r){
 							var book_ser = {list:[], selected:0}
 			               	r.data.forEach(function(v, i){
@@ -187,35 +195,13 @@
 				
 				//当前教材	
 				var s_items = store.get('book_items');
-				oralsAjax('/persubmat', {}, function(res){
-					var rd = res.data;
-                	book.items.per = rd.per;
-                	var has_per = rd.per.list.some(function(v){return v.percode==s_items.per.selected});
-                	if(has_per){
-                		book.items.per.selected = s_items.per.selected;
-                	}
-					book.items.sub = rd.sub;
-					var has_sub = rd.sub.list.some(function(v){return v.subcode==s_items.sub.selected});
-					if(has_sub) {
-						book.items.sub.selected = s_items.sub.selected;
-					}
-					book.items.mater = rd.mater;
-					var has_mater = rd.mater.list.some(function(v){return v.matercode==s_items.mater.selected});
-					if(has_mater) {
-						book.items.mater.selected = s_items.mater.selected;
-					}
-					book.items.fasc = rd.fasc;
-					var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==s_items.fasc.selected});
-					if(has_fasc){
-						book.items.fasc.selected = s_items.fasc.selected;
-					}
-					book.items.ser = s_items.ser;
-					book.fascChange();
-				});
+				book.items = s_items;
+				book.itemChange("mater");
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){
 					if(book.isChange){
+//						console.log(JSON.stringify(book.items))
 						store.set("book_items", book.items);
 		               	store.set("orals_catalog", catalog);
 		               	store.set("orals_catalog_id", catalog[0]?catalog[0].id:0);

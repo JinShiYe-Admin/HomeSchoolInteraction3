@@ -408,7 +408,9 @@
 				"resources": [],
 				"refer": [
 					"html/benefitingLearning/testStart.html",
-					"html/benefitingLearning/analysisDetail.html"
+					"html/benefitingLearning/analysisDetail.html",
+					"html/benefitingLearning/quesDetail.html",
+					"html/benefitingLearning/selectMenu.html"
 				],
 				"priority": 0
 			},
@@ -450,7 +452,15 @@
 			"html/homeSchool/noticeListIndex.html": {
 				"resources": [],
 				"refer": [
-					"html/homeSchool/mine.html"
+					"html/homeSchool/mine.html",
+					"html/homeSchool/noticeDetail.html"
+				],
+				"priority": 0
+			},
+			"html/order/orderList.html": {
+				"resources": [],
+				"refer": [
+					"html/order/packageOrder_paymentPage_new.html"
 				],
 				"priority": 0
 			},

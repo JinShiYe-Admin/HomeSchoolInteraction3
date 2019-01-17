@@ -138,7 +138,7 @@
 //								});
 								plus.nativeUI.closeWaiting();
 								//刷新其他页面数据
-								mui.fire(plus.webview.getWebviewById('bl-index'), "refresh");
+								mui.fire(plus.webview.getWebviewById('bl-index')||self.opener().opener().opener(), "refresh");
 							},
 							fail: function(res) {
 								console.log(res);
@@ -154,6 +154,7 @@
 			
 			mui.plusReady(function(){
 				var isImmer = plus.navigator.isImmersedStatusbar();
+				self = plus.webview.currentWebview();
 				mui.init({
 					beforeback: function() {
 						isImmer&&plus.navigator.setStatusBarStyle('dark');
@@ -164,8 +165,7 @@
 						self.close();
 					}
 				});
-
-				self = plus.webview.currentWebview();
+				
 				isImmer&&plus.navigator.setStatusBarStyle('light');
 				anserCard.answer = self.submitData.answerArray;
 			});
