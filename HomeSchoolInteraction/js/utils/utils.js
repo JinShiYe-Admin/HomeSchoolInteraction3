@@ -58,6 +58,19 @@ var utils = (function(mod) {
 		}
 		return false;
 	}
+	
+	//比对时间大小
+	mod.compairTime = function(startTime, endTime) {
+		if(startTime == '请选择' || endTime == '请选择') {
+			return true;
+		}
+		var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+		var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+		if(end > start) {
+			return true;
+		}
+		return false;
+	}
 
 	mod.getUUID = function() {
 		var s = [];
