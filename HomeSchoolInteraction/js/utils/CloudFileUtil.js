@@ -152,7 +152,8 @@ var CloudFileUtil = (function($, mod) {
 		if(data.type == "2" || data.type == "3") { //视频||音频
 			configure.thumbKey = [];
 		}
-		for(var i in data.fileArray) {
+//		for(var i in data.fileArray) {
+		for (var i = 0; i < data.fileArray.length; i++) {
 			var filePaths = data.fileArray[i].split("/");
 			var QNFileName = filePaths[filePaths.length - 1];
 			var param = {

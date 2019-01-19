@@ -17,7 +17,7 @@ var MultiMedia = (function($, mod) {
 	/**
 	 * 图片Id
 	 */
-	var imageId = 0;
+//	var imageId = 0;
 
 	/**
 	 * 多媒体对象
@@ -26,6 +26,7 @@ var MultiMedia = (function($, mod) {
 	var MultiMedia = function(options) {
 		//配置参数
 		this.options = $.extend(true, {
+			imageId:0,//图片Id
 			Id: '_MSL_MultiMedia', //整个控件的ID
 			Key: 'key', //用户的utid
 			MultiMediaId: '', //存放多媒体对象控件的ID
@@ -35,12 +36,13 @@ var MultiMedia = (function($, mod) {
 			TotalPicture: 0, //图片的个数
 			TotalAudio: 0, //音频的个数
 			TotalVideo: 0, //视频的个数
+			PictureTuke: true //是否显示从相册上传，需先判断拍照
 		}, options || {});
 
 		//初始化
 		this.init();
 		this.initData();
-		//		this.initEvent();
+//		this.initEvent();
 	}
 
 	var proto = MultiMedia.prototype; //属性使您有能力向对象添加属性和方法。
@@ -63,7 +65,11 @@ var MultiMedia = (function($, mod) {
 		if(this.options.Picture) {
 			str_pic_0 = html_picture_header;
 			str_pic_1 = html_picture_footer;
-			str_tuku_0 = html_tuku_header;
+			if(this.options.PictureTuke) {
+				str_tuku_0 = html_tuku_header;
+			} else {
+
+			}
 		}
 		if(this.options.Audio) {
 			str_aud_0 = html_audio_header;
@@ -97,6 +103,7 @@ var MultiMedia = (function($, mod) {
 			this.data.PictureArray = []; //已选取的图片路径
 			this.data.PictureWith = parseInt(document.getElementById(this.options.Id).offsetWidth * 0.2);
 			this.data.PictureMarginLeft = parseInt(document.getElementById(this.options.Id).offsetWidth * 0.04);
+			this.data.deleteImg = []; //已选取的图片路径
 		}
 		if(this.options.Audio) {
 			this.data.AudioNum = options.TotalAudio; //可以录制音频的剩余数量
@@ -122,10 +129,13 @@ var MultiMedia = (function($, mod) {
 			document.getElementById('MultiMedia_Picture_Header').addEventListener('tap', function() {
 				self.initImageEvent(0);
 			});
+			
 			//图库
-			document.getElementById('MultiMedia_Tuku_Header').addEventListener('tap', function() {
-				self.initImageEvent(1);
-			});
+			if(this.options.PictureTuke) {
+				document.getElementById('MultiMedia_Tuku_Header').addEventListener('tap', function() {
+					self.initImageEvent(1);
+				});
+			}
 
 			//显示图片区域，删除按钮的监听
 			mui('#MultiMedia_Picture_Footer').on('tap', '.multimedia-picture-delete', function() {
@@ -208,6 +218,8 @@ var MultiMedia = (function($, mod) {
 		//删除数组
 		for(var i = 0; i < self.data.PictureArray.length; i++) {
 			if(self.data.PictureArray[i].id == id) {
+//				console.log('删除的图片是：'+JSON.stringify(self.data.PictureArray[i]))
+				self.data.deleteImg.push(self.data.PictureArray[i].path);
 				self.data.PictureArray.splice(i, 1);
 				self.data.PictureNum++;
 			}
@@ -248,184 +260,29 @@ var MultiMedia = (function($, mod) {
 					case 0: //取消
 						break;
 					case 1: //录像
-						//recordvideoutil  限制了拍摄时长   gallerypick 限制了相册选取的视频长短
-						if(plus.os.name == 'Android') {
-							RecordVideo.recordVideo({}, function(fpath) {
-								if(self.data.VideoNum > 0) {
-									console.log('录制视频成功 ' + fpath);
-									var path = fpath;
-									var oldPath = path.substring(7, path.length);
-									var newPath = oldPath.substring(0, oldPath.lastIndexOf('/')) + '/compress/' + new Date().getTime() + '.mp4';
-									var json = {
-										filePath: oldPath,
-										newPath: newPath
-									}
-									plus.compressVideo.compress(JSON.stringify(json), function(result) {
-										console.log("result：" + result[0]);
-										var obj = JSON.parse(result[0]);
-										var wd = events.showWaiting('处理中...');
-										if(obj.code == 0) {
-											self.data.VideoNum--;
-
-											self.addVideos(obj.msg, function() {
-												wd.close();
-											});
-										} else {
-											wd.close();
-											//												mui.toast(obj.msg)
-											mui.alert(obj.msg, '校讯通', function() {});
-										}
-									}, function(result) {
-										console.log("result" + result[0]);
-										mui.toast("视频转码失败")
-									});
-								}
-							}, function(err) {
-								mui.toast(err.message);
-							});
-							//							var cmr = plus.camera.getCamera();
-							//							cmr.startVideoCapture(function(p) {
-							//								plus.io.resolveLocalFileSystemURL(p, function(entry) {
-							//									if(self.data.VideoNum > 0) {
-							//										console.log('录制视频成功 ' + entry.toLocalURL());
-							//										var path=entry.toLocalURL();
-							//										var oldPath=path.substring(7,path.length);
-							//										var newPath=oldPath.substring(0,oldPath.lastIndexOf('/'))+'/compress/'+new Date().getTime()+'.mp4';
-							//										var json={
-							//											filePath:oldPath,
-							//											newPath:newPath
-							//										}
-							//										plus.compressVideo.compress(JSON.stringify(json),function(result){
-							//											console.log("result："+result[0]);
-							//											var obj=JSON.parse(result[0]);
-							//											var wd = events.showWaiting('处理中...');
-							//											if(obj.code==0){
-							//												self.data.VideoNum--;
-							//												
-							//													self.addVideos(obj.msg, function() {
-							//														wd.close();
-							//													});
-							//											}else{
-							//												wd.close();
-							////												mui.toast(obj.msg)
-							//												mui.alert(obj.msg, '校讯通', function() {});
-							//											}
-							//										},function(result){
-							//											console.log("result"+result[0]);
-							//											mui.toast("视频转码失败")
-							//										});
-							//									}
-							//								}, function(e) {
-							//									console.log('读取录像文件错误：' + e.message);
-							//								});
-							//							}, function(e) {
-							//								console.log('失败：' + e.message);
-							//							}, {
-							//								filename: '_doc/camera/' + new Date().getTime() + '.mp4',
-							//								index: 0
-							//							});
-						} else if(plus.os.name == 'iOS') {
-							console.log('recordVideo00000');
-							RecordVideo.recordVideo({}, function(fpath) {
-								console.log('recordVideo00001');
-								if(self.data.VideoNum > 0) {
-									console.log('recordVideo00002');
-									var w = plus.nativeUI.showWaiting("转码中，请等待...\n0%");
-									plus.compressVideo.ioscompress(fpath, function(result) {
-										console.log("result:" + result);
-										var tempArr = result.split(',');
-										if(tempArr[0] == 1) {
-											w.onclose = function() {
-												clearInterval();
-											}
-											var n = tempArr[1];
-												w.setTitle("转码中，请等待...\n" + tempArr[1] + '%');
-												if(n >= 100) {
-													w.close();
-													clearInterval();
-												}
-										} else {
-											self.data.VideoNum--;
-											console.log('result000:' + tempArr[1]);
-											self.addVideos('file://' + tempArr[1], function() {
-												console.log("录像 callback");
-											});
-										}
-									}, function(result) {
-										console.log('result001:' + result);
-									});
-
-								}
-							}, function(err) {
-								mui.toast(err.message);
-							});
-						}
+						RecordVideo.recordVideo({}, function(fpath) {
+							if(self.data.VideoNum > 0) {
+								var wd = events.showWaiting('处理中...');
+								self.data.VideoNum--;
+								//console.log('录制视频成功 ' + fpath);
+								self.addVideos(fpath, function() {
+									//console.log("录像 callback");
+									wd.close();
+								});
+							}
+						}, function(err) {
+							mui.toast(err.message);
+						});
 						break;
 					case 2: //从相册选择
 						Gallery.pickVideo(function(data) {
-							if(plus.os.name == 'Android') {
-								if(data.flag == 1) {
-									var path = data.path;
-									var oldPath = path.substring(7, path.length);
-									console.log("path==============" + path + ",oldPath========" + oldPath)
-									var newPath = oldPath.substring(0, oldPath.lastIndexOf('/')) + '/imgCompress/' + new Date().getTime() + '.mp4';
-									var json = {
-										filePath: oldPath,
-										newPath: newPath
-									}
-									plus.compressVideo.compress(JSON.stringify(json), function(result) {
-										console.log(JSON.stringify(result));
-										var obj = JSON.parse(result[0]);
-										var wd = events.showWaiting('处理中...');
-										if(obj.code == 0) {
-											self.data.VideoNum--;
-											self.addVideos(obj.msg, function() {
-												//													data.wd.close();
-												wd.close();
-											});
-										} else {
-											wd.close();
-											//											data.wd.close();
-											mui.alert(obj.msg, '校讯通', function() {});
-										}
-									}, function(result) {
-										console.log("result" + result[0]);
-										mui.toast("视频转码失败")
-									});
-								}
-							} else {
-								var fpath = data.path;
-								//								RecordVideo.recordVideo({}, function(fpath) {
-								if(self.data.VideoNum > 0) {
-									console.log('recordVideo00002');
-									var w = plus.nativeUI.showWaiting("转码中，请等待...\n0%");
-									plus.compressVideo.ioscompress(fpath, function(result) {
-										console.log("result:" + result);
-										var tempArr = result.split(',');
-										if(tempArr[0] == 1) {
-											w.onclose = function() {
-												clearInterval();
-											}
-											var n = tempArr[1];
-												w.setTitle("转码中，请等待...\n" + tempArr[1] + '%');
-												if(n >= 100) {
-													w.close();
-													clearInterval();
-												}
-										} else {
-											self.data.VideoNum--;
-											console.log('result000:' + tempArr[1]);
-											self.addVideos('file://' + tempArr[1], function() {
-												console.log("录像 callback");
-											});
-										}
-									}, function(result) {
-										console.log('result001:' + result);
-									});
-								}
-								//							}, function(err) {
-								//								mui.toast(err.message);
-								//							});
+							//console.log("pickVideo " + JSON.stringify(data));
+							if(data.flag == 1) {
+								self.data.VideoNum--;
+								self.addVideos(data.path, function() {
+									//console.log("从相册选择 callback");
+									data.wd.close();
+								});
 							}
 						});
 						break;
@@ -493,7 +350,7 @@ var MultiMedia = (function($, mod) {
 		}
 		if(self.data.AudioNum > 0) {
 			var main = plus.webview.currentWebview();
-			events.openNewWindowWithData('../utils/record_audio.html', {
+			events.openNewWindowWithData('../../html/utils/record_audio.html', {
 				webid: main.id,
 				winid: 'MultiMediaRecordAudio'
 			});
@@ -557,8 +414,8 @@ var MultiMedia = (function($, mod) {
 			var wd = events.showWaiting('处理中...');
 			var myDate = new Date();
 			var fileName = self.options.Key + myDate.getTime() + (Math.floor(Math.random() * 10)) + '.png';
-			var dst = '_documents/' + imageId + '_' + fileName;
-			imageId++;
+			var dst = '_documents/' + self.options.imageId + '_' + fileName;
+			self.options.imageId++;
 			compress.compressImageTo_1MB({
 				path: path,
 				dst: dst
@@ -582,35 +439,44 @@ var MultiMedia = (function($, mod) {
 	 * @param {Object} num
 	 */
 	proto.picturesPick = function(NumPick) {
-		////console.log('picturesPick');
+//		console.log('picturesPick:'+NumPick);
 		var self = this;
 		mod.galleryPickFalse('image', true, NumPick, function(event) {
+//			console.log('event.files.length:'+event.files.length);
 			var wd = events.showWaiting('处理中...');
-			var files = event.files; // 保存多选的图片或视频文件路径
+			var files = []; // 保存多选的图片或视频文件路径
+			if (NumPick<event.files.length) {
+				files = event.files.slice(0,NumPick);
+			} else{
+				files = event.files;
+			}
+//			console.log('files.length:'+files.length+',self.options.imageId:'+self.options.imageId);
 			var myDate = new Date();
 			var num = 0;
 			var tempArrary = [];
 			for(var i = 0; i < files.length; i++) {
-				var fileName = imageId + '_' + i + '_' + self.options.Key + myDate.getTime() + (Math.floor(Math.random() * 10)) + '.png';
-				imageId++;
+				var fileName = self.options.imageId + '_' + i + '_' + self.options.Key + myDate.getTime() + (Math.floor(Math.random() * 10)) + '.png';
+				self.options.imageId++;
 				var dst = '_documents/' + fileName;
 				tempArrary.push({
 					fpath: files[i], //文件路径
 					dst: dst //压缩后的路径
 				});
 			}
-
+//			console.log('tempArrary:'+tempArrary.length);
 			for(var i = 0; i < tempArrary.length; i++) {
 				compress.compressImageTo_1MB({
 					path: tempArrary[i].fpath,
 					dst: tempArrary[i].dst
 				}, function(event) {
+//					console.log('1111111');
 					num++;
 					var target = event.target;
 					var nameArray = target.split('/');
 					var name = nameArray[nameArray.length - 1];
 					var id = name.split('_')[1];
 					tempArrary[id].target = target;
+//					console.log('num:'+num+',files.length:'+files.length);
 					if(num == files.length) {
 						var tempFiles = [];
 						for(var i = 0; i < tempArrary.length; i++) {
@@ -620,6 +486,7 @@ var MultiMedia = (function($, mod) {
 						wd.close();
 					}
 				}, function(error) {
+//					console.log('1111119');
 					mui.toast(error.message);
 					wd.close();
 				});
@@ -650,12 +517,13 @@ var MultiMedia = (function($, mod) {
 				domain: '', //图片地址
 				thumb: '' //图片缩略图地址
 			};
+//			console.log("images========="+JSON.stringify(images))
 			self.data.PictureNum--;
 			self.data.PictureArray.push(images);
 			var element = document.createElement('div');
 			element.className = 'multimedia-picture-area';
 			//删除按钮
-			var html_0 = '<a id="MultiMedia_Picture_Delete_' + images.id + '" class="mui-icon iconfont icon-guanbi multimedia-picture-delete" style="margin-left: ' + parseInt(width + marginLeft / 2) + 'px;margin-top:' + parseInt(marginLeft / 2) + 'px;"></a>'
+			var html_0 = '<a id="MultiMedia_Picture_Delete_' + images.id + '" class="mui-icon iconfont icon-guanbi multimedia-picture-delete mui-active" style="margin-left: ' + parseInt(width + marginLeft / 2) + 'px;margin-top:' + parseInt(marginLeft / 2) + 'px;"></a>'
 			//显示图片的区域
 			var html_1 = '<div class="multimedia-picture" style="width: ' + width + 'px; height: ' + width + 'px; margin-left: ' + marginLeft + 'px; margin-top: ' + marginLeft + 'px;">'
 			//图片
@@ -721,10 +589,9 @@ var MultiMedia = (function($, mod) {
 	proto.addVideos = function(path, callback) {
 		var self = this;
 		//生成缩略图
-		console.log("addVideos " + path);
+		//console.log("addVideos " + path);
 		self.addVideosThumb(path, callback);
 	}
-
 	/**
 	 * 生成缩略图
 	 * @param {Object} path 视频路径
@@ -755,7 +622,6 @@ var MultiMedia = (function($, mod) {
 				duration: parseInt(video.duration) //视频时长
 			};
 			self.data.VideoArray.push(videos);
-
 			//显示视频
 			var element = document.createElement('div');
 			element.className = 'multimedia-picture-area';
@@ -867,8 +733,14 @@ var MultiMedia = (function($, mod) {
 	 */
 	mod.galleryPickFalse = function(filter, multiple, maximum, successCB, errorCB) {
 		////console.log('galleryPickFalse | filter ' + filter + ' | multiple ' + multiple + ' | maximum ' + maximum);
+		var tempFlag = 0;
 		plus.gallery.pick(function(event) {
-			successCB(event);
+//			console.log('plus.gallery000');
+			if (tempFlag == 0) {
+				tempFlag = 1;
+//				console.log('plus.gallery001');
+				successCB(event);
+			}
 		}, function(error) {
 			mod.galleryPickError(error, errorCB);
 		}, {
