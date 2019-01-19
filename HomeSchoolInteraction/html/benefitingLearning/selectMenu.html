@@ -7,6 +7,11 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.mui-content #test-menu {
+				height: calc(100% - 44px);
+			}
+		</style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav theme">
@@ -15,10 +20,10 @@
 		</header>
 		
 		<div class="mui-content">
-			<div id="header" v-cloak>
+			<div id="header" class="tab-header" v-cloak>
 				<div class="header-box">
 					<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
-					<a class="mui-icon" @click.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
+					<a class="mui-icon" @tap.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
 				</div>
 				<transition name="slide-down">	
 					<div class="options-pannel mui-clearfix" v-show="showItem">
@@ -34,7 +39,7 @@
 			<div id="test-menu" class="mui-control-content mui-active">
 				<div id="testMenu" class="mui-content vue-tree">
 					<div class="kn-menu" v-cloak>
-						<tree-menu v-for="(model, i) in menu" :model="model" :key="i" :depth="0" @node-click="selectNode"></tree-menu>
+						<tree-menu v-for="(model, i) in menu" :model="model" :key="i" :depth="0" :activeid="selectedId" :hidefinish="true" @node-click="selectNode"></tree-menu>
 						<p v-if="!menu.length&&isLoaded"  style="padding: 0.3rem;">暂无目录</p>
 					</div>
 				</div>
@@ -142,7 +147,7 @@
 					//选择选项
 					selectItem: function(){
 						this.showItem = false;
-						mask.close();
+						// mask.close();
 						this.$nextTick(function () {
 							if(this.topPannel==1){
 								this.setMenu({percode: this.grade.selected});
@@ -159,12 +164,20 @@
 				el: "#testMenu",
 				data: {
 					menu: [],
-					isLoaded: false
+					isLoaded: false,
+					selectedId: 0
 				},
 				methods: {
 					//选择节点
 					selectNode: function(model) {
-						
+						var selected = {
+								sub: $.extend({}, header.subjectItem),
+								per: $.extend({}, header.gradeItem),
+								node: model
+							};
+						this.selectedId = model.id;
+						self.opener().evalJS("search.title="+JSON.stringify(selected)+";");
+						mui.back();
 					}
 				}
 			});
@@ -172,8 +185,21 @@
 			var self;
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
-				header.setMenu({percode: self.percode, subcode: self.subcode});
+				setMenuData(self.percode, self.subcode, self.nodeId);
 			});
+			
+			// 设置目录数字
+			function setMenuData(percode,subcode,nodeId) {
+				testMenu.selectedId = nodeId;
+				var menucode = {};
+				if(percode) {
+					menucode.percode = percode;
+				}
+				if(subcode) {
+					menucode.subcode = subcode;
+				}
+				header.setMenu(menucode);
+			}
 		</script>
 	</body>
 </html>

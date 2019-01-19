@@ -127,9 +127,9 @@
 		<div class="mui-content">
 			<!--校讯通菜单-->
 			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-				<!--<a class="mui-control-item" data-target="bl-search" href="#search">
+				<!-- <a class="mui-control-item" data-target="bl-search" href="#search">
 			        <span>找题</span>
-			    </a>-->
+			    </a> -->
 				<a class="mui-control-item mui-active" data-target="bl-test-menu" href="#test-menu">
 			        <span>组卷测试</span>
 			    </a>
@@ -138,10 +138,10 @@
 			    </a>
 			</div>	
 			
-			<div id="header" v-show="!title" v-cloak>
+			<div id="header" class="tab-header" v-show="!title" v-cloak>
 				<div class="header-box">
 					<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
-					<a class="mui-icon" @click.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
+					<a class="mui-icon" @tap.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
 				</div>
 				<transition name="slide-down">	
 					<div class="options-pannel mui-clearfix" v-show="showItem">
@@ -157,7 +157,7 @@
 			<!--找题-->
 			<div id="search" class="mui-control-content">
 				<div class="search-title">
-					<p @tap.stop="selectMenu">{{title.per.pername}} &middot; {{title.sub.subname}} &middot; {{title.node.name}}<span class="mui-icon mui-icon-forward"></span></p>
+					<p @tap.stop="selectMenu"><span class="mui-ellipsis">{{title.per.pername}} &middot; {{title.sub.subname}} &middot; {{title.node.name}}</span><span class="mui-icon mui-icon-forward"></span></p>
 					<form action="" method="post" class="search-box" @submit.prevent="search">
 						<div class="mui-input-row mui-search">
 						    <input type="search" class="mui-input-clear" placeholder="请输入关键字" v-model="keyWord">
@@ -166,7 +166,8 @@
 					</form>
 				</div>
 				<div class="search-list">
-					<a v-for="(v,i) in searchList" :key="i" @tap="goQuesDetail(v)" v-html="v" class="list-item"></a>
+					<a v-for="(v,i) in searchList" :key="i" @tap="goQuesDetail(v)" v-html="v" class="list-item mui-ellipsis-2"></a>
+					<p class="mui-text-center">上拉加载更多</p>
 				</div>
 			</div>
 			<!--组卷测试-->
@@ -290,10 +291,15 @@
 			
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
+				if(mui.os.ios) {
+					self.setStyle({
+					    softinputMode: "adjustResize"
+					});
+				}
 				//禁止横屏
 				plus.screen.lockOrientation("portrait-primary");
 				//状态栏白色
-				plus.navigator.setStatusBarStyle('light');
+				// plus.navigator.setStatusBarStyle('light');
 				
 				//最初数据， 获取目录
 				header.setMenu();
@@ -343,6 +349,9 @@
 						break;
 					case "bl-search":
 						title = "找题";
+						if(autoMenu && !search.title.node.id) {
+							search.title = autoMenu;
+						}
 						break;
 				}
 				header.title = title;
@@ -417,6 +426,24 @@
 								//设置test-menu目录
 								testMenu.menu = rdata.catalogs||[];
 								testMenu.isLoaded = true;
+								// 目录默认知识点
+								if(!autoMenu && testMenu.menu[0]) {
+									var autoNode = null;
+									readTree(rdata.catalogs[0].children||rdata.catalogs, function(node){
+									    if(!node.children||!node.children.length) {
+											if(!autoNode){
+												autoNode = node;
+											}else{
+												return false;
+											}
+									    }
+									});
+									autoMenu = {
+										sub: $.extend({}, _this.subjectItem),
+										per: $.extend({}, _this.gradeItem),
+										node: autoNode
+									}
+								}
 								_this.$nextTick(function(){
 									plus.nativeUI.closeWaiting();
 								});
@@ -611,25 +638,17 @@
 			}
 			
 			//找题
+			var autoMenu = null;
 			var search = new Vue({
 				el: "#search",
 				data: {
 					title: {
-						per: {
-							percode: 0,
-							pername: "小学"
-						},
-						sub: {
-							subcode: 0,
-							subname: "语文"
-						},
-						node: {
-							id: 0,
-							name: "多音字"
-						}
+						per: { percode: 0, pername: ""},
+						sub: { subcode: 0, subname: "" },
+						node: { id: 0, name: "" }
 					},
 					keyWord: "",
-					searchList: ["题1","题2","题3"],
+					searchList: ["题1","题2","题3","4","5","6","7","8","9","10","11","12"],
 					listPage: 0,
 					isLoading: false,
 					isLastPage: false
@@ -637,9 +656,9 @@
 				mounted: function() {
 					var _this = this;
 					//监听上拉刷新
-					setPullRefresh("#search", function(){
+					setPullRefresh("#search .search-list", function(){
 						if(!_this.isLoading&&!_this.isLastPage){
-							
+							alert("上拉刷新");
 						}
 					});
 				},
@@ -660,14 +679,14 @@
 						}
 					},
 					search: function() {
-						alert("search");
+						alert("搜索："+this.keyWord);
 						return false;
 					},
 					selectMenu: function() {
 						var _this = this;
 						var menu = plus.webview.getWebviewById("bl-menu");
 						if(menu){
-							
+							menu.evalJS("setMenuData("+_this.title.per.percode+","+_this.title.sub.subcode+","+_this.title.node.id+");");
 						}else{
 							mui.openWindow({
 								url: "selectMenu.html",
@@ -703,7 +722,7 @@
 			}
 			
 //			analysis.alsList = [{"subname":"语文","count":52,"subcode":"01","remark":"-1","avg_score":14},{"subname":"语文","count":52,"subcode":"01","remark":"0","avg_score":14}];
-//			testMenu.menu = [{"children":[{"name":"太阳花知识点1","pid":20468,"is_finish":0,"id":20474},{"name":"太阳花知识点2","pid":20468,"is_finish":0,"id":20475},{"name":"太阳花知识点3","pid":20468,"is_finish":0,"id":20476}],"name":"上学堂知识点1","pid":0,"is_finish":0,"id":20468},{"name":"上学堂知识点2","pid":0,"is_finish":0,"id":20469},{"name":"上学堂知识点3","pid":0,"is_finish":0,"id":20470}];
+			// testMenu.menu = [{"children":[{"name":"太阳花知识点1","pid":20468,"is_finish":0,"id":20474},{"name":"太阳花知识点2","pid":20468,"is_finish":0,"id":20475},{"name":"太阳花知识点3","pid":20468,"is_finish":0,"id":20476}],"name":"上学堂知识点1","pid":0,"is_finish":0,"id":20468},{"name":"上学堂知识点2","pid":0,"is_finish":0,"id":20469},{"name":"上学堂知识点3","pid":0,"is_finish":0,"id":20470}];
 		</script>
 	</body>
 

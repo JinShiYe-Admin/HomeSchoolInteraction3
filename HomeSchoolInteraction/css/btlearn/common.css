@@ -331,10 +331,10 @@ ul li.navigate-right:before {
 
 /*动画*/
 .slide-down-enter-active, .slide-down-leave-active {
+	transform: translate3d(0, 0, 0);
 	transition: transform .25s ease;
 }
 .slide-down-enter, .slide-down-leave-to {
-	/*top: 0!important;*/
 	transform: translateY(-100%);
 }
 .fade-in-enter-active, .fade-in-leave-active {
@@ -463,13 +463,18 @@ ul li.navigate-right:before {
 .mui-icon-extra-university:before { content: "\e605"; }
 .mui-icon-extra-outline:before { content: "\e606"; }
 
+/*新加-1*/
 #search.mui-control-content.mui-active {
 	display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+	overflow-y: hidden;
 }
 .search-list{
 	overflow-y: auto;
+}
+.search-list::-webkit-scrollbar {
+	display: none;
 }
 .search-title, .search-list{
 	padding: 5px .4rem;
@@ -479,6 +484,14 @@ ul li.navigate-right:before {
 	text-align: center;
 	vertical-align: middle;
 	line-height: 44px;
+	height: 44px;
+}
+.search-title > p span {
+	vertical-align: middle;
+}
+.search-title > p .mui-ellipsis {
+	display: inline-block;
+    max-width: calc(100% - 35px);
 }
 .search-title > p .mui-icon {
 	font-size: 20px;
@@ -488,13 +501,14 @@ ul li.navigate-right:before {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
+	padding-bottom: 15px;
 }
 .search-box .mui-search {
 	width: calc(100% - 60px);
 }
 .search-list .list-item {
 	display: block;
-	padding-bottom: 15px;
+	margin-bottom: 20px;
 }
 
 .kn-menu .label-wrapper {
@@ -508,6 +522,9 @@ ul li.navigate-right:before {
 }
 .kn-menu .label-name {
 	vertical-align: middle;
+}
+.kn-menu .active > .label-name {
+	color: #00CFBD;
 }
 .kn-menu .label-icon + .label-name {
 	padding-left: 0.4rem;
@@ -545,6 +562,47 @@ ul li.navigate-right:before {
 }
 .options-pannel label.selected {
 	color: #FFFFFF;
+}
+
+.tab-header {
+	position: relative;
+	z-index: 3;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.tab-header:before {
+	position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    content: '';
+    background-color: #CCCCCC;
+    transform: scaleY(.5);
+    transform-origin: top;
+    z-index: 10;
+	backface-visibility: hidden;
+}
+.tab-header .header-box {
+	text-align: center;
+	background: #FFFFFF;
+	position: relative;
+	z-index: 9;
+}
+.tab-header .header-box a {
+	font-size: 14px;
+	line-height: 44px;
+	height: 44px;
+	color: #929292;
+	display: inline-block;
+	width: 40%;
+	text-align: center;
+}
+.tab-header .options-pannel {
+	top: calc(100% + 1px);
+	z-index: 1;
+	box-shadow: 0 0, 0 0, 0px 1px 8px rgba(0,0,0,0.4), 0 0;
+	transform-style: preserve-3d; 
+	backface-visibility: hidden;
 }
 
 /*自适应*/
@@ -613,8 +671,8 @@ ul li.navigate-right:before {
 .top-tab.mui-slider-indicator.mui-segmented-control {
 	border-bottom: 7px solid #EEEEEE;
 	background: #FFFFFF;
-	-webkit-backface-visibility: hidden;
 	z-index: 9;
+	backface-visibility: hidden;
 }
 .top-tab.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
 	color: #00CFBD;
@@ -631,50 +689,15 @@ ul li.navigate-right:before {
 	left: 50%;
 	margin-left: -1em;
 }
-#header {
-	position: relative;
-	z-index: 3;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-#header:before {
-	position: absolute;
-    right: 0;
-    bottom: -1px;
-    left: 0;
-    height: 1px;
-    content: '';
-    background-color: #CCCCCC;
-    transform: scaleY(.5);
-    transform-origin: top;
-    z-index: 10;
-}
-#header .header-box {
-	text-align: center;
-	background: #FFFFFF;
-	position: relative;
-	z-index: 9;
-	-webkit-backface-visibility: hidden;
-}
-#header .header-box a {
-	font-size: 14px;
-	line-height: 44px;
-	height: 44px;
-	color: #929292;
-	display: inline-block;
-	width: 40%;
-	text-align: center;
-}
-#header .options-pannel {
-	top: calc(100% + 1px);
-	z-index: 1;
-	box-shadow: 0 0, 0 0, 0px 1px 8px rgba(0,0,0,0.4), 0 0;
-}
 .mui-content .mui-control-content {
 	height: calc(100% - 45px);
-	overflow-y: auto;
+	overflow-y: scroll;
 }
 .mui-content #test-menu {
 	height: calc(100% - 45px - 44px);
+}
+#testMenu .tree-item {
+	backface-visibility: hidden;
 }
 
 /*独立版额外样式*/

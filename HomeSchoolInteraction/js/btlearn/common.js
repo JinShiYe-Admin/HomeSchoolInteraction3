@@ -160,25 +160,41 @@ function filterArray(arr, key, val) {
 	return r;
 }
 
+// 遍历树形菜单，并回调
+function readTree(tree, callback) {
+    for (var i = 0; i < tree.length; i++) {
+        callback(tree[i]);
+        if(tree[i].childList) {
+            readTree(tree[i].childList, callback);
+        }
+    }
+}
+
 //树形菜单
 (function(obj){
 	if(!obj) return;
+	//model当前节点，depth当前节点所在层数，activeid激活项id，showChildren是否打开子级
 	Vue.component('tree-menu', {
 		template: '<div class="tree-item">'+
 					'<div v-if="model.children&&model.children.length" class="label-wrapper mui-ellipsis" @tap="toggleChildren" :style="indent">'+
 						'<i class="label-icon" :class="iconClasses"></i>'+
 						'<span class="label-name">{{model.name}}</span>'+
 					'</div>'+
-					'<div v-else class="label-wrapper mui-ellipsis" @tap="nodeClick(model)" :style="indent">'+
+					'<div v-else class="label-wrapper mui-ellipsis" @tap="nodeClick(model)" :class="{active:model.id==activeid}" :style="indent">'+
 						'<span class="label-name">{{model.name}}</span>'+
-						'<span v-if="model.is_finish" class="done-box icon-true"></span>'+
+						'<span v-if="model.is_finish&&!hideFinish" class="done-box icon-true"></span>'+
 					'</div>'+
-					'<tree-menu v-show="showChildren" v-for="(node, k) in model.children" :model="node" :depth="depth + 1" :key="k" @node-click="outClick"></tree-menu>'+
+					'<tree-menu v-show="showChildren" v-for="(node, k) in model.children" :model="node" :depth="depth + 1" :activeid="activeid" :hidefinish="hidefinish" :key="k" @node-click="outClick"></tree-menu>'+
 				'</div>',
-		props: ['model','depth'],
+		props: ['model','depth','activeid','hidefinish'],
 		data: function() {
 			return {
 				showChildren: false
+			}
+		},
+		watch: {
+			'model': function() {
+				this.showChildren = false;
 			}
 		},
 		computed: {
@@ -191,6 +207,9 @@ function filterArray(arr, key, val) {
 			indent: function() {
 			      return this.depth>0 ? { 'padding-left': this.depth*0.55+"rem" } : null;
 			}
+		},
+		mounted: function() {
+			this.activeid && this.openActive();
 		},
 		methods: {
 			closeChild: function(model) {
@@ -216,7 +235,23 @@ function filterArray(arr, key, val) {
             },
             outClick: function(model){
                 this.$emit('node-click', model);
-            }
+            },
+			//打开激活项
+			openActive: function() {
+                //打开激活项的所有父级
+                if(this.activeid && (this.model.id==this.activeid)) {
+                    var p =  this.$parent;
+                    this.parentOpen(p);
+                }
+            },
+            parentOpen: function(p) {
+                if(p.model){
+                    p.showChildren = true;
+                    return this.parentOpen(p.$parent);
+                }else{
+                    return false;
+                }
+            },
 		}
 	});
 })(document.querySelector(".vue-tree"));
