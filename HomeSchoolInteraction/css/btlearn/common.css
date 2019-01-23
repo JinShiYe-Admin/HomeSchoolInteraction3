@@ -697,7 +697,11 @@ ul li.navigate-right:before {
 	height: calc(100% - 45px - 44px);
 }
 #testMenu .tree-item {
+	transform-style: preserve-3d;
+}
+#testMenu .tree-item .label-icon {
 	backface-visibility: hidden;
+	transform: translate3d(0,0,0);
 }
 
 /*独立版额外样式*/

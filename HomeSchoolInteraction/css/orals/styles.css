@@ -50,7 +50,7 @@ a {
 	color: #101010;
 }
 [v-cloak] {
-  display: none;
+  display: none!important;
 }
 .flex-box {
 	display: flex;
@@ -105,6 +105,7 @@ nav.mui-bar {
 .beforeLeaveDialog .layui-layer-btn {
 	padding-bottom: 0.25rem;
 	padding-top: 0.1rem;
+	background-color: #FFFFFF;
 }
 .beforeLeaveDialog .layui-layer-btn a {
 	border: 2px solid #DDDDDD;
@@ -275,7 +276,7 @@ nav.mui-bar {
 }
 .action-box .score-box {
 	text-align: center;
-	margin-bottom: 20px;
+	margin-bottom: 18px;
 	min-height: 0.5rem;
 }
 .score-box .score {
@@ -295,8 +296,9 @@ nav.mui-bar {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-bottom: 6px;
-	-webkit-backface-visibility: hidden;
+	margin-bottom: 5px;
+	flex-shrink: 0;
+	backface-visibility: hidden;
 }
 .btns-box > a {
 	width: 0.55rem;
