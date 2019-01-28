@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="../../css/utils/MultiMedia.css" />
 		<link rel="stylesheet" href="../../css/utils/preview.css" />
 		<link rel="stylesheet" href="../../css/utils/audiopopover.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
 		<style type="text/css">
 			.subject {
 				margin-top: 8px;
@@ -50,10 +51,10 @@
 			.mui-table-view-cell {
 				min-height: 44px;
 			}
+			
 			.mui-popover-arrow {
 				display: none;
 			}
-			
 		</style>
 	</head>
 
@@ -64,10 +65,12 @@
 			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">提交</a>
 		</header>-->
 		<div class="mui-content" style="background-color: white;" id="addHomeworkContent">
-			<p class="subject">科目</p>
-			<a href="#subject111">
-				<img @click="selectSubject" src="../../img/login/username.png" style="float: right;margin-top: -35px;margin-right: 10px;width: 30px;height: 30px;">
-			</a>
+			<div @click="selectSubject">
+				<p class="subject">科目 {{selectSubjectModel.text}}</p>
+				<a>
+					<img src="../../img/login/username.png" style="float: right;margin-top: -35px;margin-right: 10px;width: 30px;height: 30px;">
+				</a>
+			</div>
 			<p class="line"></p>
 			<textarea id="notes" v-model="content" maxlength="2000" placeholder="请输入发布内容（最多2000字）"></textarea>
 			<div id="MultiMedia"></div>
@@ -92,27 +95,6 @@
 							<p @click="clickSelect(1)" class="mui-navigate-right pCss">{{classStr}}</p>
 						</li>
 					</ul>
-				</div>
-			</div>
-			<!--用户类型多选列表-->
-			<div id="subject111" class="mui-popover" ref="scrollBox" style="height: 300px; background-color: #393D49;">
-				<div class="mui-popover-arrow" style="display: none;"></div>
-				<div class='mui-scroll-wrapper' style="margin: 7px 0 45px 0;">
-					<div class="mui-scroll">
-						<form>
-							<ul class="mui-table-view" style="background: #393D49;color: #fff;">
-								<li class="mui-table-view-cell" style="padding: 0;" v-for="(item,index) in subjectArray">
-									<div class="mui-input-row mui-checkbox mui-right">
-										<label style="width: 100%;">{{item.subjectName}}</label>
-										<input :name=index :value=item type="checkbox">
-									</div>
-								</li>
-							</ul>
-						</form>
-					</div>
-				</div>
-				<div class="mui-input-row" style=";height:45px;top:255px;border-bottom-left-radius: 3px;border-bottom-right-radius: 3px; z-index: 20180704;background: #fff;">
-					<button class="mui-btn mui-btn-primary" style="display: block;margin:5px auto 0;float: none; width: 25%;background: #00CFBD;border: 0px;" @click="hidePop($event)">确定</button>
 				</div>
 			</div>
 		</div>
@@ -158,7 +140,7 @@
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
 		<script src="../../js/utils/utils.js"></script>
-		
+
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
@@ -172,6 +154,7 @@
 		<script src='../../js/utils/signHmacSHA1.js'></script>
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src='../../js/utils/compressVideo.js'></script>
+		<script src='../../js/mui/mui.picker.min.js'></script>
 		<script type="text/javascript">
 			mui.init()
 			//获取个人信息
@@ -200,7 +183,8 @@
 			document.getElementById("bootom-card").style.marginTop = "10px";
 			mui.plusReady(function() {
 				init();
-
+				//获取科目
+				getSchSubThread();
 				initListener(); //初始化监听
 			});
 
@@ -216,7 +200,11 @@
 					classIDsArray: [], //选择的班级id数组
 					gradeIDsArray: [], //全选择班级的年级id数组
 					parentArray: [], //家长列表
-					subjectArray :[{subjectName:'语文',subjectIndex:0},{subjectName:'语文1',subjectIndex:0},{subjectName:'语文2',subjectIndex:0},{subjectName:'语文3',subjectIndex:0},]
+					selectSubjectModel: {
+						'subcode': '-1',
+						'subname': ''
+					}, //选择的科目
+					subjectArray: [] //科目列表
 				},
 				methods: {
 					clickSelect: function(flag) {
@@ -248,38 +236,24 @@
 						}
 					},
 					selectSubject: function() {
-
-					},hidePop: function(e, parms) { //隐藏弹窗
-						var domDiv = e.target;
-//						//遍历已勾选的input的key 和value
-//						var name = [];
-//						var value = [];
-//						var max = $(domDiv).parent().parent().find('ul').attr('maxCheck');
-//						$(domDiv).parent().parent().find('li').each(function() {
-//							if($(this).find('input').prop("checked")) {
-//								name.push($(this).find('label').text());
-//								value.push($(this).find('input').val());
-//							}
-//						})
-//						if(value.length > max) {
-//							mui.toast('最多选' + max + '个');
-//							return;
-//						}
-						var id = $(domDiv).parent().parent().attr("id");
-//						if(name.length == 0 || value.length == 0) {
-//							var label = $('#' + id + 'label').html();
-//							document.getElementById(id + 'input0').value = '请选择' + label+'(最多'+parms.itemsonsc+'个)';
-//							document.getElementById(id + 'input1').value = [];
-//							parms.checked = '';
-//							Vue.delete(parms, 'checked');
-//						} else {
-//							document.getElementById(id + 'input0').value = name;
-//							document.getElementById(id + 'input1').value = value;
-//							parms.checked = value.join(',');
-//						}
-
-						//							console.log(JSON.stringify(parms))
-						mui('#' + id).popover('toggle');
+//						addHomeworkContent.selectSubjectModel = model;
+						document.activeElement.blur();
+						if(addHomeworkContent.subjectArray.length > 0) {
+							var subjectPicker = new mui.PopPicker({
+								layer: 1
+							});
+							subjectPicker.setData(addHomeworkContent.subjectArray);
+							setTimeout(function() {
+								subjectPicker.pickers[0].setSelectedValue(addHomeworkContent.selectSubjectModel.value);
+							}, 100);
+							subjectPicker.show(function(items) {
+								addHomeworkContent.selectSubjectModel = items[0];
+//								talkTitle.actionTypeText = _getParam(items[0], 'text');
+//								talkTitle.actionTypeValue = _getParam(items[0], 'value');
+							});
+						} else {
+							mui.toast('暂无数据');
+						}
 					}
 				}
 			});
@@ -322,7 +296,7 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					functypes:'jxht',//功能类型(见附表2),多个之间用英文逗号隔开,全部留空
+					functypes: 'jxht', //功能类型(见附表2),多个之间用英文逗号隔开,全部留空
 					uuid: publicParameter.uuid, //用户设备号
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid, //系统所分配的应用ID
@@ -372,12 +346,12 @@
 								console.log('classidArr:' + JSON.stringify(classidArr));
 								var tempGradeArray = [];
 								//重新计算年级
-								for (var i = 0; i < classidArr.length; i++) {
+								for(var i = 0; i < classidArr.length; i++) {
 									var temp111 = classidArr[i].parents[0];
 									tempGradeArray.push(temp111.grdname);
 								}
 								tempGradeArray = unique(tempGradeArray);
-//								console.log('tempGradeArray1:'+tempGradeArray);
+								//								console.log('tempGradeArray1:'+tempGradeArray);
 								addHomeworkContent.gradeStr = tempGradeArray.join(',');
 								//判断是否包含班主任身份
 								if(classidArr.length > 0) {
@@ -417,6 +391,40 @@
 						}
 					} else {
 						mui.toast(data.RspTxt, "cancel");
+					}
+				});
+			}
+
+			//获取科目
+			var getSchSubThread = function() {
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						console.log("data1:" + data1.RspTxt);
+						if(data1.RspData) {
+							mui('.mui-scroll-wrapper').scroll();
+							var kmList = data1.RspData.subs;
+							var newList = [];
+							for(var i = 0; i < kmList.length; i++) {
+								var temp = {
+									text: kmList[i].subname,
+									value: kmList[i].subcode
+								}
+								if (i == 0) {
+									addHomeworkContent.selectSubjectModel = temp;
+								}
+								newList.push(temp);
+							}
+							addHomeworkContent.subjectArray = newList;
+						}
+					} else {
+						console.log("data1:" + data1.RspTxt);
 					}
 				});
 			}
@@ -491,24 +499,24 @@
 				});
 
 				//完成
-//				document.getElementById('finish').addEventListener('tap', function() {
-//					events.hideKeyBoard(hideOption);
-//					if(addHomeworkContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
-//						mui.toast('通知内容不能为空');
-//						document.getElementById("finish").disabled = false;
-//					} else if(addHomeworkContent.content.length > 350) {
-//						mui.toast('内容最多350字');
-//						document.getElementById("finish").disabled = false;
-//					} else {
-//						var wd = events.showWaiting();
-//						document.getElementById("finish").disabled = true;
-//						if(multiMedia.data.PictureArray.length == 0 && multiMedia.data.VideoArray.length == 0 && multiMedia.data.AudioArray.length == 0) { //没有传附件
-//							addHomework(wd, '3', '', '', 0);
-//						} else {
-//							uploadFile(wd); //上传文件
-//						}
-//					}
-//				});
+				//				document.getElementById('finish').addEventListener('tap', function() {
+				//					events.hideKeyBoard(hideOption);
+				//					if(addHomeworkContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
+				//						mui.toast('通知内容不能为空');
+				//						document.getElementById("finish").disabled = false;
+				//					} else if(addHomeworkContent.content.length > 350) {
+				//						mui.toast('内容最多350字');
+				//						document.getElementById("finish").disabled = false;
+				//					} else {
+				//						var wd = events.showWaiting();
+				//						document.getElementById("finish").disabled = true;
+				//						if(multiMedia.data.PictureArray.length == 0 && multiMedia.data.VideoArray.length == 0 && multiMedia.data.AudioArray.length == 0) { //没有传附件
+				//							addHomework(wd, '3', '', '', 0);
+				//						} else {
+				//							uploadFile(wd); //上传文件
+				//						}
+				//					}
+				//				});
 			}
 
 			/**
