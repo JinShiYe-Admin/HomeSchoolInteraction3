@@ -53,20 +53,23 @@
 				height: calc(100% - 84px);
 			}
 			.test-pannel {
-				height: calc(40% - 20px);
+				height: calc(40% - 35px);
 			}
 			#testView {
 				background-color: #FFFFFF;
 				height: 100%;
 				position: relative;
 				overflow-y: auto;
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
 			}
 			#testView .action-box {
 				display: flex;
 			    flex-direction: column;
-			    justify-content: space-around;
-				min-height: calc(60% - 20px);
-				padding-bottom: 8px;
+			    justify-content: space-between;
+				min-height: calc(60% - 10px);
+				padding-bottom: 18px;
 			}
 			#pullrefreshBox, #errList {
 				height: 100%;
@@ -86,7 +89,7 @@
 				</a>-->
 				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
 			</div>
-		    <h1 class="mui-title">口语测评</h1>
+		    <h1 class="mui-title">英语听测</h1>
 		</header>
 		
 		<!--<nav class="mui-bar mui-bar-tab">
@@ -142,13 +145,13 @@
 		    		</a>
 		    	</div>
 		    	<div class="content-title" v-show="isContentTitle" v-cloak>
-		    		<a class="mui-icon" @tap.stop="changeMenu(-1)">
+		    		<a class="mui-icon" @click.stop="changeMenu(-1)">
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-left"></use>
 						</svg>
 		    		</a>
-		    		<div id="contentTitle" @tap="showMenu" v-html="contentTitle"></div>
-		    		<a class="mui-icon" @tap.stop="changeMenu(1)">
+		    		<div id="contentTitle" @tap.stop="showMenu" v-html="contentTitle"></div>
+		    		<a class="mui-icon" @click.stop="changeMenu(1)">
 		    			<svg class="icon" aria-hidden="true">
 						  <use xlink:href="#icon-icon-right"></use>
 						</svg>
@@ -350,6 +353,7 @@
 		
 		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
+			setRem(document, window);//设置rem
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
 			var go_record = document.getElementById("goRecord");
 			
@@ -883,7 +887,10 @@
 					},
 					//点击录音
 					record: function(event) {
-						if(!this.list[this.index]) return;
+						if(!this.list[this.index]) {
+							mui.toast("没有测评内容", { duration:'short', type:'div' });
+							return;
+						}
 						if(!this.isRecording) {
 							this.isRecording = true;
 							this.startRecord();
