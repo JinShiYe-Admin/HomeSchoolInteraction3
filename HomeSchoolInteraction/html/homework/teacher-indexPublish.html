@@ -186,7 +186,53 @@
 				//获取科目
 				getSchSubThread();
 				initListener(); //初始化监听
+				//任课老师
+				//获取个人信息中的所有班级
+				var tempArray = [].concat(personal.clss);
+				//将已经毕业、班主任的班级去掉
+				var tempArr = [];
+				//处理年级
+				for(var i = 0; i < tempArray.length; i++) {
+					var tempM = tempArray[i];
+					if(tempM.isfinish == 0 && tempM.isms == 0) {
+						tempArr.push(tempM);
+					}
+				}
+				tempArr = arrayUnique2(tempArr, 'grdid');
+				for(var i = 0; i < tempArr.length; i++) {
+					var classModel = tempArr[i];
+					if(classModel.isfinish == 0 && classModel.isms == 0) {
+						addHomeworkContent.gradeIDsArray.push(classModel.grdid);
+						addHomeworkContent.gradeStr = addHomeworkContent.gradeStr + ',' + classModel.grdname;
+					}
+				}
+				//班级
+				var tempArr1 = [].concat(personal.clss);
+				for(var i = 0; i < tempArr1.length; i++) {
+					var temoCls = tempArr1[i];
+					if(temoCls.isfinish == 0 && temoCls.isms == 0) {
+						addHomeworkContent.classIDsArray.push(temoCls.clsid);
+						addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + temoCls.clsname;
+					}
+				}
+				//去重
+				addHomeworkContent.gradeIDsArray = unique(addHomeworkContent.gradeIDsArray);
+				addHomeworkContent.gradeIDsArray = unique(addHomeworkContent.gradeIDsArray);
+				//去掉首个，
+				if(addHomeworkContent.gradeStr.length > 0) {
+					addHomeworkContent.gradeStr = addHomeworkContent.gradeStr.substr(1);
+					addHomeworkContent.classStr = addHomeworkContent.classStr.substr(1);
+				}
 			});
+
+			//数组去重
+			function arrayUnique2(arr, name) {
+				var hash = {};
+				return arr.reduce(function(item, next) {
+					hash[next[name]] ? '' : hash[next[name]] = true && item.push(next);
+					return item;
+				}, []);
+			}
 
 			var addHomeworkContent = new Vue({
 				el: "#addHomeworkContent",
@@ -194,12 +240,10 @@
 					pageFlag: 0, //页面是否加载完成
 					noticeArray: [], //通知列表数组
 					content: '', //内容
-					gradeStr: '请选择', //年级列表
-					classStr: '请选择', //班级列表
-					classIDs: '', //选择的班级ids
+					gradeStr: '', //年级列表
+					classStr: '', //班级列表
 					classIDsArray: [], //选择的班级id数组
 					gradeIDsArray: [], //全选择班级的年级id数组
-					parentArray: [], //家长列表
 					selectSubjectModel: {
 						'subcode': '-1',
 						'subname': ''
@@ -210,33 +254,19 @@
 					clickSelect: function(flag) {
 						console.log('flag:' + flag);
 						if(flag == 0) { //年级
-							utils.mOpenWithData("../../html/homeSchool/gradeList.html", {
+							utils.mOpenWithData("../../html/homework/teacher-grdClsList.html", {
 								classIDsArray: addHomeworkContent.classIDsArray, //选择的班级id数组
 								gradeIDsArray: [] //全选择班级的年级id数组
 							});
 						} else if(flag == 1) { //班级
-							utils.mOpenWithData("../../html/homeSchool/gradeList.html", {
+							utils.mOpenWithData("../../html/homework/teacher-grdClsList.html", {
 								classIDsArray: addHomeworkContent.classIDsArray, //选择的班级id数组
 								gradeIDsArray: [] //全选择班级的年级id数组
-							});
-						} else if(flag == 2) { //家长
-							var tempArray = [];
-							for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
-								var tempModel = addHomeworkContent.parentArray[i];
-								var tempModel1 = {
-									clsid: tempModel.clsid,
-									stuid: tempModel.stuid,
-								}
-								tempArray.push(tempModel1);
-							}
-							utils.mOpenWithData("../../html/homeSchool/notice_parentsList.html", {
-								classIDs: addHomeworkContent.classIDs,
-								parentArray: tempArray
 							});
 						}
 					},
 					selectSubject: function() {
-//						addHomeworkContent.selectSubjectModel = model;
+						//						addHomeworkContent.selectSubjectModel = model;
 						document.activeElement.blur();
 						if(addHomeworkContent.subjectArray.length > 0) {
 							var subjectPicker = new mui.PopPicker({
@@ -248,8 +278,8 @@
 							}, 100);
 							subjectPicker.show(function(items) {
 								addHomeworkContent.selectSubjectModel = items[0];
-//								talkTitle.actionTypeText = _getParam(items[0], 'text');
-//								talkTitle.actionTypeValue = _getParam(items[0], 'value');
+								//								talkTitle.actionTypeText = _getParam(items[0], 'text');
+								//								talkTitle.actionTypeValue = _getParam(items[0], 'value');
 							});
 						} else {
 							mui.toast('暂无数据');
@@ -264,136 +294,7 @@
 				addHomeworkContent.classStr = tempData.classShow;
 				addHomeworkContent.classIDsArray = [].concat(tempData.classIDsArray);
 				addHomeworkContent.gradeIDsArray = [].concat(tempData.gradeIDsArray);
-				addHomeworkContent.classIDs = tempData.classIDs;
-				if(tempData.classIDs.length > 0) {
-					//6.学校班级学生,获取选择班级中对应的人
-					getClassParents(tempData.classIDs, 1);
-					addHomeworkContent.flag = 0;
-					//判断选择的班级，是否有当前身份是班主任的
-					if(addHomeworkContent.teacherFlag > 0) {
-						for(var i = 0; i < addHomeworkContent.classIDsArray.length; i++) {
-							var temp = addHomeworkContent.classIDsArray[i];
-							//判断是否是班主任
-							for(var a = 0; a < personal.clss.length; a++) {
-								var classModel = personal.clss[a];
-								if(classModel.isms == 1 && temp == classModel.clsid) {
-									addHomeworkContent.flag = 1;
-								}
-							}
-						}
-					}
-				} else {
-					addHomeworkContent.classIDsArray = [];
-					addHomeworkContent.gradeIDsArray = [];
-					addHomeworkContent.gradeStr = '请选择';
-					addHomeworkContent.classStr = '请选择';
-					addHomeworkContent.flag = 0;
-					addHomeworkContent.parentArray = [];
-				}
 			});
-			//4.15.学校班级订购学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
-			var getClassParents = function(classids, flag) {
-				var enData0 = {};
-				//不需要加密的数据
-				var comData0 = {
-					functypes: 'jxht', //功能类型(见附表2),多个之间用英文逗号隔开,全部留空
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					classids: classids //需要查询的班级ID,多个代码用英文逗号隔开
-				}
-				events.showWaiting();
-				//发送网络请求，data为网络返回值
-				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
-					events.closeWaiting();
-					if(data.RspCode == 0) {
-						//						console.log('data:' + JSON.stringify(data));
-						if(data.RspData == null) {
-							addHomeworkContent.parentsStr = '所在班级没有学生';
-						} else {
-							addHomeworkContent.parentArray = [].concat(data.RspData.classuserustus);
-							//默认的班主任数据
-							if(flag == 0) {
-								//将班级ID字符串，分割为数组
-								var classidArray = classids.split(',');
-								//组成班级model数组
-								var classidArr = [];
-								for(var i = 0; i < classidArray.length; i++) {
-									var tempModel = {
-										clsid: classidArray[i],
-										parents: []
-									}
-									classidArr.push(tempModel);
-								}
-								var tempArray = [];
-								for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
-									var tempModel = addHomeworkContent.parentArray[i];
-									for(var a = 0; a < classidArr.length; a++) {
-										var tempClassModel = classidArr[a];
-										if(tempClassModel.clsid == tempModel.clsid) {
-											tempClassModel.parents.push(tempModel);
-										}
-									}
-								}
-								console.log('addHomeworkContent.gradeArray:' + JSON.stringify(addHomeworkContent.gradeArray));
-								//将没有人员的移除
-								for(var a = classidArr.length - 1; a >= 0; a--) {
-									var tempClassModel = classidArr[a];
-									if(tempClassModel.parents.length == 0) {
-										classidArr.splice(a, 1);
-									}
-								}
-								console.log('classidArr:' + JSON.stringify(classidArr));
-								var tempGradeArray = [];
-								//重新计算年级
-								for(var i = 0; i < classidArr.length; i++) {
-									var temp111 = classidArr[i].parents[0];
-									tempGradeArray.push(temp111.grdname);
-								}
-								tempGradeArray = unique(tempGradeArray);
-								//								console.log('tempGradeArray1:'+tempGradeArray);
-								addHomeworkContent.gradeStr = tempGradeArray.join(',');
-								//判断是否包含班主任身份
-								if(classidArr.length > 0) {
-									addHomeworkContent.teacherFlag = 0;
-									addHomeworkContent.flag = 0;
-									addHomeworkContent.classIDsArray = [];
-									addHomeworkContent.gradeIDsArray = [];
-									addHomeworkContent.classIDs = '';
-									addHomeworkContent.classStr = '';
-									addHomeworkContent.parentsStr = '';
-									for(var i = 0; i < classidArr.length; i++) {
-										var classModel = classidArr[i];
-										addHomeworkContent.teacherFlag = 1;
-										addHomeworkContent.flag = 1;
-										addHomeworkContent.classIDsArray.push(classModel.parents[0].clsid);
-										addHomeworkContent.gradeIDsArray.push(classModel.parents[0].grdid);
-										addHomeworkContent.classIDs = addHomeworkContent.classIDs + ',' + classModel.clsid;
-										addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + classModel.parents[0].clsname;
-										addHomeworkContent.parentsStr = addHomeworkContent.parentsStr + ';' + classModel.parents[0].clsname + '全部家长';
-									}
-									//去掉首个，
-									if(addHomeworkContent.classIDs.length > 0) {
-										addHomeworkContent.classIDs = addHomeworkContent.classIDs.substr(1);
-										addHomeworkContent.classStr = addHomeworkContent.classStr.substr(1);
-										addHomeworkContent.parentsStr = addHomeworkContent.parentsStr.substr(1);
-									}
-								} else {
-									addHomeworkContent.classIDsArray = [];
-									addHomeworkContent.gradeIDsArray = [];
-									addHomeworkContent.gradeStr = '请选择';
-									addHomeworkContent.classStr = '请选择';
-									addHomeworkContent.parentsStr = '请选择';
-									addHomeworkContent.flag = 0;
-									addHomeworkContent.parentArray = [];
-								}
-							}
-						}
-					} else {
-						mui.toast(data.RspTxt, "cancel");
-					}
-				});
-			}
 
 			//获取科目
 			var getSchSubThread = function() {
@@ -416,7 +317,7 @@
 									text: kmList[i].subname,
 									value: kmList[i].subcode
 								}
-								if (i == 0) {
+								if(i == 0) {
 									addHomeworkContent.selectSubjectModel = temp;
 								}
 								newList.push(temp);
@@ -497,26 +398,6 @@
 				mui('body').on('tap', 'img', function() {
 					document.activeElement.blur();
 				});
-
-				//完成
-				//				document.getElementById('finish').addEventListener('tap', function() {
-				//					events.hideKeyBoard(hideOption);
-				//					if(addHomeworkContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
-				//						mui.toast('通知内容不能为空');
-				//						document.getElementById("finish").disabled = false;
-				//					} else if(addHomeworkContent.content.length > 350) {
-				//						mui.toast('内容最多350字');
-				//						document.getElementById("finish").disabled = false;
-				//					} else {
-				//						var wd = events.showWaiting();
-				//						document.getElementById("finish").disabled = true;
-				//						if(multiMedia.data.PictureArray.length == 0 && multiMedia.data.VideoArray.length == 0 && multiMedia.data.AudioArray.length == 0) { //没有传附件
-				//							addHomework(wd, '3', '', '', 0);
-				//						} else {
-				//							uploadFile(wd); //上传文件
-				//						}
-				//					}
-				//				});
 			}
 
 			/**
@@ -528,29 +409,6 @@
 			 */
 			function addHomework(wd, encType, encAddr, encImg, encLen) {
 				console.log('encImg:' + encImg);
-				var temp0 = [];
-				var temp1 = [];
-				var temp2 = [];
-				var temp3 = [];
-				var temp4 = [];
-				for(var i = 0; i < addHomeworkContent.parentArray.length; i++) {
-					var stuModel = addHomeworkContent.parentArray[i];
-					temp0.push(stuModel.utid);
-					temp1.push(stuModel.mobile);
-					temp2.push(stuModel.utname + '|' + stuModel.stuname);
-					temp3.push(stuModel.uimg);
-				}
-				if(temp0.length == 0) {
-					mui.toast('选择的接收人为空');
-					events.closeWaiting();
-					document.getElementById("finish").disabled = false;
-					return;
-				}
-				if(addHomeworkContent.msgFlag) {
-					addHomeworkContent.msgFlag = 1;
-				} else {
-					addHomeworkContent.msgFlag = 0;
-				}
 				//附件名称
 				var encName = '';
 				if(encAddr.length > 0) {
@@ -563,7 +421,6 @@
 					}
 					encName = tempArray.join('|');
 				}
-				//				console.log('encName:'+encName);
 
 				//1.新增学校通知（同时增加通知未读）
 				var tempData1 = {

@@ -94,6 +94,9 @@ var storageKeyName = (function(mod) {
 			//学生管理
 			mod.INTERFACESIGNINKONG = 'https://zyja.zhuxue101.net/SchoolAttendanceService/'; //孔工接口IMG
 			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
+			
+			//作业管理
+			mod.HOMEWORK = 'https://gxkf.jiaobaowang.net:9443/hm/app/'; //作业管理
 			break;
 		default:
 			break;
