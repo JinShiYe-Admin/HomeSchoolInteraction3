@@ -6,6 +6,7 @@
 		<title>批改作业</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/utils/pullToRefresh.css" />
 		<style type="text/css">
 			.selectP {
 				margin-right: 10px;
@@ -62,33 +63,72 @@
 	<body>
 		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
 			<!--菜单部分-->
-			<aside class="mui-off-canvas-right" style="background: white;">
-				<div id="offCanvasSideScroll" class="mui-scroll-wrapper" style="margin-bottom: 50px;">
-					<div class="mui-scroll scroll-height" style="">
-						<ul class="mui-table-view" style="height: 90%;">
-							<li class="mui-table-view-cell mui-collapse" v-for="(selectModel,index) in selectArray">
-								<a class="mui-navigate-right" href="#">{{selectModel.selectName}}</a>
-								<div class="mui-collapse-content">
-									<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in selectModel.childSelectArray" @tap="modifySelectCell(selectModel,chlidModel)">
-										{{chlidModel.childName}}
+			<aside id="offCanvasSide" class="mui-off-canvas-right" style="background: white;">
+				<div id="offCanvasSideScroll" class="mui-content mui-scroll-wrapper" style="margin-bottom: 50px;">
+					<div class="mui-scroll">
+						<div id="gradList">
+							<ul class="mui-table-view" style="height: 90%;">
+								<li class="mui-table-view-cell mui-collapse keep-unfold">
+									<a class="mui-navigate-right" href="#">年级</a>
+									<div class="mui-collapse-content">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in grdsClassList" @tap="modifySelectCell(grdsClassList,chlidModel)">
+											{{chlidModel.childName}}
+										</div>
 									</div>
-								</div>
-							</li>
-						</ul>
+								</li>
+								<li class="mui-table-view-cell mui-collapse keep-unfold">
+									<a class="mui-navigate-right" href="#">班级</a>
+									<div class="mui-collapse-content">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in grdsClassList" @tap="modifySelectCell(grdsClassList,chlidModel)">
+											{{chlidModel.childName}}
+										</div>
+									</div>
+								</li>
+								<li class="mui-table-view-cell mui-collapse keep-unfold">
+									<a class="mui-navigate-right" href="#">科目</a>
+									<div class="mui-collapse-content">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in kmList" @tap="modifySelectCell(kmList,chlidModel)">
+											{{chlidModel.childName}}
+										</div>
+									</div>
+								</li>
+								<li class="mui-table-view-cell mui-collapse keep-unfold">
+									<a class="mui-navigate-right" href="#">上交登记</a>
+									<div class="mui-collapse-content">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in sjdjList" @tap="modifySelectCell(sjdjList,chlidModel)">
+											{{chlidModel.childName}}
+										</div>
+									</div>
+								</li>
+								<li class="mui-table-view-cell mui-collapse keep-unfold">
+									<a class="mui-navigate-right" href="#">批改进度</a>
+									<div class="mui-collapse-content">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in pgjdList" @tap="modifySelectCell(pgjdList,chlidModel)">
+											{{chlidModel.childName}}
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 				<div id="" class="bottom-btns">
-					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
-					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-bottom: 5px;width: 40%;margin-left: 7%;">按钮</button>
+					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;">取消</button>
+					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;">确定</button>
 				</div>
 			</aside>
-			<div class="mui-inner-wrap" style="">
-				<div id="homeworkListArray" class="mui-content mui-scroll-wrapper" style="background: white;">
-					<div @tap="selectForm" style="background: gold;margin-top: -10px;height: 30px;">
-						<p class="selectP" style="padding-top: 5px;">筛选</p>
-					</div>
-					<div class="mui-content" id="homeworkList">
-						<div class="" style="background: white;">
+			<div class="mui-inner-wrap" style="margin-top: -8px;">
+				<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+					<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
+					<h1 id="title" class="mui-title" style="color: white;">作业列表</h1>
+				</header> 
+				<div id="rightTag" style="top: 44px;background: white;height: 37px;position: relative;z-index: 3;">
+					<p class="selectP" style="padding-top: 7px;">筛选</p>
+				</div>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 37px;">
+				<!--<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 8px;">-->
+					<div class="mui-scroll main" style="margin-top: -9px;">
+						<div id="homeworkListArray" class="" style="background: white;">
 							<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
 								<div class="mui-card-header">
 									{{homeworkModel.homeworkName}}
@@ -102,67 +142,135 @@
 									<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
 									<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
 									<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
-
+		
 								</div>
 								<div class="mui-card-footer">
 									<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
 								</div>
 							</div>
 						</div>
-
+						<!--<div id="backdrop" class="mui-off-canvas-backdrop"></div>-->
 					</div>
-
 				</div>
 				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
 			</div>
 		</div>
 
-		<script src="../../js/mui.min.js"></script>
-		<script src="../../js/utils/store.js"></script>
+		<script type="text/javascript" src="../../js/mui.js"></script>
+		<script src="../../js/mui/mui.picker.js"></script>
+		<script src="../../js/mui/mui.poppicker.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src="../../js/utils/utils.js"></script>
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
-		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
 		<script type="text/javascript">
 			mui.init()
-			mui.plusReady(function() {
-
+			var pageIndex = 1; //请求数据页面
+			var pageSize = 10; //请求数据页面
+			var totalPageCount; //总页码
+			var flagRef = 0; //是刷新0，还是加载更多1
+			
+			//下拉、上滑加载更多
+			mui(".mui-scroll-wrapper .mui-scroll.main").pullToRefresh({
+				down: {
+					callback: function() {
+						var self = this;
+						if(homeworkListArray.homeworkArray.length>0) {
+							pageIndex = 1;
+							flagRef = 0;
+							getSchSubThread();
+							getTeacheromeworkList(pageIndex, this)
+						} else {
+							self.endPullDownToRefresh();
+						}
+					}
+				},
+				up: {
+					callback: function() {
+						var self = this;
+						//console.log("上拉加载更多");
+						flagRef = 1;
+						if(pageIndex <= totalPageCount) {
+							getSchSubThread();
+							getTeacheromeworkList(pageIndex, this)
+							//结束下拉刷新
+							//self.endPullUpToRefresh();
+							if(mui(".mui-table-view-cell").length < 10) {
+								mui(".mui-pull-loading")[0].innerHTML = "";
+							}
+						} else {
+							//结束下拉刷新
+							self.endPullUpToRefresh();
+							mui(".mui-pull-loading")[0].innerHTML = "没有更多了";
+						}
+					}
+				}
 			});
-			(function($) {
-				$(".mui-card").scroll({
-					//bounce: false,//滚动条是否有弹力默认是true
-					//indicators: false, //是否显示滚动条,默认是true
-				});
-			})(mui);
-			//侧滑容器父节点
-			var offCanvasWrapper = mui('#offCanvasWrapper');
-			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
-			var classList = offCanvasWrapper[0].classList;
-			classList.add('mui-slide-in');
-			offCanvasWrapper.offCanvas().refresh();
-			// 监听点击遮罩关闭事件
-			document.getElementById("backdrop").addEventListener('tap', function() {
-				//阻止默认事件
-				event.detail.gesture.preventDefault();
-				offCanvasWrapper.offCanvas('close');
-				offCanvasWrapper.offCanvas('close');
-				console.log('close222');
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
-					showCloseFlag: 1
-				});
+			
+			//右侧滑出界面数据
+			var selectDetailData = new Vue({
+				el: "#gradList",
+				data: {
+					selectFlag: 0,
+					grdsClassList:[],//年级班级数组
+					kmList:[],//科目数组
+					sjdjList:[{
+							childName: '未登记',
+							childCode: '0',
+							childFlag: 0
+						},{
+							childName: '未交完',
+							childCode: '1',
+							childFlag: 0
+						},{
+							childName: '已交完',
+							childCode: '2',
+							childFlag: 0
+						}],//上交登记数组
+					pgjdList:[{
+							childName: '未批改',
+							childCode: '0',
+							childFlag: 0
+						},{
+							childName: '批改中',
+							childCode: '1',
+							childFlag: 0
+						},{
+							childName: '批改完成',
+							childCode: '2',
+							childFlag: 0
+						}]//批改进度数组
+						
+				},
+				methods: {
+					modifySelectCell: function(sumModel, currentModel) {
+						for(var i = 0; i < sumModel.length; i++) {
+							sumModel[i].childFlag = 0;
+						}
+						currentModel.childFlag = 1;
+					}
+				}
 			});
-			//禁止滑动主界面的时候出现侧滑菜单
-			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
-				event.stopPropagation();
-			});
-			//主界面和侧滑菜单界面均支持区域滚动；
-			mui('#offCanvasSideScroll').scroll();
-
+			
 			var homeworkListArray = new Vue({
 				el: "#homeworkListArray",
-				data: {
+				data: {   
 					homeworkArray: [{
 						homeworkName: '语文作业【一年级 1601班】',
 						homeworkFlag: 1,
@@ -226,160 +334,140 @@
 					},
 					clickBtn: function(model) {
 						console.log('clickBtn:' + JSON.stringify(model));
-					},
-					selectForm: function() {
-						offCanvasWrapper.offCanvas('show');
-						console.log('show');
-						mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
-							showCloseFlag: 0
-						});
 					}
 				}
 			});
-			//右侧滑出界面数据
-			var selectDetailData = new Vue({
-				el: "#offCanvasSideScroll",
-				data: {
-					selectFlag: 0,
-					selectArray: [{
-						selectName: '年级',
-						selectCode: '1',
-						childSelectArray: [{
-							childName: '一年级0',
-							childCode: '0',
-							childFlag: 0
-						}, {
-							childName: '一年级1',
-							childCode: '1',
-							childFlag: 0
-						}, {
-							childName: '一年级2',
-							childCode: '2',
-							childFlag: 0
-						}, {
-							childName: '一年级3',
-							childCode: '3',
-							childFlag: 0
-						}, {
-							childName: '一年级4',
-							childCode: '4',
-							childFlag: 0
-						}, {
-							childName: '一年级5',
-							childCode: '5',
-							childFlag: 0
-						}, {
-							childName: '一年级6',
-							childCode: '6',
-							childFlag: 0
-						}, {
-							childName: '一年级7',
-							childCode: '7',
-							childFlag: 0
-						}, {
-							childName: '一年级8',
-							childCode: '8',
-							childFlag: 0
-						}]
-					}, {
-						selectName: '年级1',
-						selectCode: '1',
-						childSelectArray: [{
-							childName: '一年级10',
-							childCode: '10',
-							childFlag: 0
-						}, {
-							childName: '一年级11',
-							childCode: '11',
-							childFlag: 0
-						}, {
-							childName: '一年级12',
-							childCode: '12',
-							childFlag: 0
-						}, {
-							childName: '一年级13',
-							childCode: '13',
-							childFlag: 0
-						}, {
-							childName: '一年级14',
-							childCode: '14',
-							childFlag: 0
-						}, {
-							childName: '一年级15',
-							childCode: '15',
-							childFlag: 0
-						}, {
-							childName: '一年级16',
-							childCode: '16',
-							childFlag: 0
-						}, {
-							childName: '一年级17',
-							childCode: '17',
-							childFlag: 0
-						}, {
-							childName: '一年级18',
-							childCode: '18',
-							childFlag: 0
-						}, {
-							childName: '一年级19',
-							childCode: '19',
-							childFlag: 0
-						}]
-					}, {
-						selectName: '年级2',
-						selectCode: '2',
-						childSelectArray: [{
-							childName: '一年级20',
-							childCode: '20',
-							childFlag: 0
-						}, {
-							childName: '一年级21',
-							childCode: '21',
-							childFlag: 0
-						}, {
-							childName: '一年级22',
-							childCode: '22',
-							childFlag: 0
-						}, {
-							childName: '一年级23',
-							childCode: '23',
-							childFlag: 0
-						}, {
-							childName: '一年级24',
-							childCode: '24',
-							childFlag: 0
-						}, {
-							childName: '一年级25',
-							childCode: '25',
-							childFlag: 0
-						}, {
-							childName: '一年级26',
-							childCode: '26',
-							childFlag: 0
-						}, {
-							childName: '一年级27',
-							childCode: '27',
-							childFlag: 0
-						}, {
-							childName: '一年级28',
-							childCode: '28',
-							childFlag: 0
-						}]
-					}, ]
-				},
-				methods: {
-					modifySelectCell: function(sumModel, currentModel) {
-						for(var i = 0; i < sumModel.childSelectArray.length; i++) {
-							var tempModel = sumModel.childSelectArray[i];
-							if(tempModel.childCode == currentModel.childCode) {
-								tempModel.childFlag = 1;
-							} else {
-								tempModel.childFlag = 0;
-							}
+			
+			mui.plusReady(function() {
+				//根据老师权限获取年级和班级，去掉学生数组,更改字段
+				studentMP.getStudentManagePermission(1, 1, function(array) {
+					var grdsClassList=[];
+					var parentItem={};
+					for(var i=0;i<array.length;i++){
+						var item=array[i];
+						parentItem.childName=array[i].text;
+						parentItem.childCode=array[i].value;
+						parentItem.childFlag=0;
+						parentItem.children=[];
+						for(var j=0;j<array[i].children.length;j++){
+							var childItem={};
+							childItem.childName=array[i].children[j].text;
+							childItem.childCode=array[i].children[j].value;
+							childItem.childFlag=0;
+							parentItem.children.push(childItem);
 						}
+						grdsClassList.push(parentItem);
 					}
-				}
+					selectDetailData.grdsClassList=grdsClassList;
+					console.log('gradsList:'+JSON.stringify(grdsClassList));
+				}, 1);
+				getSchSubThread();
+				getTeacheromeworkList(pageIndex)
 			});
+			//侧滑容器父节点
+			var offCanvasWrapper = mui('#offCanvasWrapper');
+			var offCanvasSide = document.getElementById("offCanvasSide");
+			//侧滑容器的class列表，增加.mui-slide-in即可实现菜单移动、主界面不动的效果；
+			var classList = offCanvasWrapper[0].classList;
+//			classList.add('mui-slide-in');//加了这个样式，菜单关闭完成事件的监听将不起作用
+			offCanvasWrapper.offCanvas().refresh();
+			
+			
+			// 监听点击遮罩关闭事件
+			document.getElementById("backdrop").addEventListener('tap', function() {
+				//阻止默认事件
+				event.detail.gesture.preventDefault();
+				offCanvasWrapper.offCanvas('close'); 
+				console.log('close222'); 
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {//显示底部tab栏
+					showCloseFlag: 1
+				});
+				setTimeout(function(){offCanvasWrapper.offCanvas('close');},100);
+			});
+			offCanvasWrapper[0].addEventListener('shown', function(e) { //菜单显示完成事件
+			});
+			offCanvasWrapper[0].addEventListener('hidden', function(e) { //菜单关闭完成事件
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {//显示底部tab栏
+					showCloseFlag: 1
+				});
+			});
+			//禁止滑动主界面的时候出现侧滑菜单
+			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
+				event.stopPropagation();
+			});
+			   
+			
+			
+			//获取科目列表
+			var getSchSubThread = function() {
+				var enData1 = {};
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				};
+				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						console.log("data1:" + data1.RspTxt);
+						if(data1.RspData) {
+							var kmList = data1.RspData.subs;
+							var newList = [];
+							for(var i = 0; i < kmList.length; i++) {
+								var temp = {
+									childName: kmList[i].subname,
+									childCode: kmList[i].subcode,
+									childFlag: 0
+								}
+								newList.push(temp);
+							}
+							selectDetailData.kmList=newList;
+							console.log("km:" + JSON.stringify(newList));  
+						}
+					} else {
+						console.log("data1:" + data1.RspTxt);
+					}
+				});
+			}
+			
+			//获取作业列表
+			function getTeacheromeworkList(index, self){
+				var comData = {
+					gradeId:'',
+					classId:'',
+					subCode:'',
+					submitStatus:'',
+					correctStatus:'',
+					pageNumber:pageIndex,
+					pageSize:pageSize
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeacheromeworkList(comData, function(data) {
+					wd.close();
+					console.log('作业列表:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						if(data.RspData){
+							 
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			//筛选按钮点击事件
+			document.getElementById('rightTag').addEventListener('tap', function(event) {
+				offCanvasWrapper.offCanvas('show');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 0
+				});
+			})
+		
+			//主界面和侧滑菜单界面均支持区域滚动；
+			mui('#offCanvasSideScroll').scroll();
+			mui('#offCanvasContentScroll').scroll();
 		</script>
 	</body>
 

@@ -47,7 +47,7 @@
 	</head>
 
 	<body>
-		<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+		<!--<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
 			<h1 v-if="headFlag ==0||headFlag ==1" id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
 			<div v-else="" style="width: 220px;text-align: center;margin: auto;position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
@@ -57,8 +57,8 @@
 				</div>
 			</div>
 			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="toDetail()">提交</a>
-		</header>
-		<nav class="mui-bar mui-bar-tab" id="homeworkNavIndex">
+		</header>-->
+		<nav class="mui-bar mui-bar-tab" id="homeworkNavIndex" style="z-index: 25;">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
 				<span class="mui-icon mui-icon-home"></span>
 				<span id="flag0" class="mui-tab-label">布置作业</span>
@@ -85,7 +85,7 @@
 			mui.init();
 			var subpages = ['../../html/homework/teacher-indexPublish.html', '../../html/homework/teacher-indexCorrect.html', '../../html/homework/teacher-indexForm.html'];
 			var subpage_style = {
-				top: '45px',
+				top: '0px',
 				bottom: '51px'
 			};
 
@@ -126,19 +126,19 @@
 					return;
 				}
 				//更换标题
-				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-				var tempFlag = this.querySelector('.mui-tab-label').id;
-				if(tempFlag == 'flag0') {
-					headData.headFlag = 0;
-					headData.titleName = '布置作业';
-				} else if(tempFlag == 'flag1') {
-					headData.headFlag = 1;
-					headData.titleName = '作业列表';
-				} else {
-					headData.headFlag = 2;
-					headData.titleName = '作业报表';
-				}
-				console.log('tempFlag:' + tempFlag + ',headData.headFlag:' + headData.headFlag);
+//				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+//				var tempFlag = this.querySelector('.mui-tab-label').id;
+//				if(tempFlag == 'flag0') {
+//					headData.headFlag = 0;
+//					headData.titleName = '布置作业';
+//				} else if(tempFlag == 'flag1') {
+//					headData.headFlag = 1;
+//					headData.titleName = '作业列表';
+//				} else {
+//					headData.headFlag = 2;
+//					headData.titleName = '作业报表';
+//				}
+//				console.log('tempFlag:' + tempFlag + ',headData.headFlag:' + headData.headFlag);
 				//显示目标选项卡
 				//若为iOS平台或非首次显示，则直接显示
 				if(mui.os.ios || aniShow[targetTab]) {
@@ -148,7 +148,7 @@
 					var temp = {};
 					temp[targetTab] = "true";
 					mui.extend(aniShow, temp);
-					plus.webview.show(targetTab, "fade-in", 300);
+					plus.webview.show(targetTab, "fade-in", 0);
 				}
 				//隐藏当前;
 				plus.webview.hide(activeTab);
@@ -176,13 +176,28 @@
 				var tempDiv = document.getElementById('homeworkNavIndex');
 				if(tempData.showCloseFlag == 0) {//显示右侧
 					tempDiv.style.display = 'none'
-					for(var i=0;i<wvs.length;i++){
-							wvs[i].setStyle({top: '0px',bottom: '-51px'})
+					if(plus.os.name == 'Android') {
+						for(var i=0;i<wvs.length;i++){
+							console.log('liushuai:'+wvs[i].getURL())
+								wvs[i].setStyle({top: '0px',bottom: '0px'})
+						}
+					} else {
+						for(var i=0;i<wvs.length;i++){
+								wvs[i].setStyle({top: '0px',bottom: '-51px'})
+						}
 					}
+					
 				} else if(tempData.showCloseFlag == 1) {//隐藏右侧
-					tempDiv.style.display = 'inherit';
-					for(var i=0;i<wvs.length;i++){
-						wvs[i].setStyle({top: '0px',bottom: '0px'})
+					tempDiv.style.display = 'inherit'
+					if(plus.os.name == 'Android') {
+						for(var i=0;i<wvs.length;i++){
+							console.log('liushuai:'+wvs[i].getURL())
+							wvs[i].setStyle({top: '0px',bottom: '51px'})
+						}
+					} else {
+						for(var i=0;i<wvs.length;i++){
+								wvs[i].setStyle({top: '0px',bottom: '0px'})
+						}
 					}
 				}
 			});

@@ -748,83 +748,83 @@ var getCommentDetailByStudent = function(data0, callback) {
 //++++++++++++++++++++++++++++++作业管理++++++++++++++++++++++++++++++++++
 // 发布作业 
 var hwTeacherSaveHomework = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'saveHomework', data0, callback);
 }
 
 // 批改作业
 var hwTeacheromeworkList = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'homeworkList', data0, callback);
 }
 
 // 作业详情
 var hwTeacherHomeworketail = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'detail', data0, callback);
 }
 
 // 修改递交状态 
 var hwTeacherditSubmitStatus = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'editSubmitStatus', data0, callback);
 }
 
 // 提交作业点评
 var hwTeacherorrectHomework = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'correctHomework', data0, callback);
 }
 // 获取批量评价学生信息
 var hwTeacheroBatchCorrect = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'goBatchCorrect', data0, callback);
 }
 
 //  批量评价学生作业提交 
 var hwTeacheratchCorrect = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'batchCorrect', data0, callback);
 }
 
 // 获取批量登记学生信息 
 var hwTeacheroBatchCheckIn = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'goBatchCheckIn', data0, callback);
 }
 
 // 批量登记学生作业提交
 var hwTeacheratchCheckIn = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'batchCheckIn', data0, callback);
 }
 
 // 学生作业报表
 var hwTeachertatisticsStudentHomework = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'statisticsStudentHomework', data0, callback);
 }
 
 //  班级作业报表 
 var hwTeachertatisticsClassHomework = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'statisticsClassHomework', data0, callback);
 }
 
 // 统计各个状态的学生姓名
 var hwTeachertatisticStuName = function(data0, callback) {
-	var tempAttendUrl1 = window.storageKeyName.STUDENTMANAGE + 'teacher/';
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
 	data0 = extendParameter1(data0);
 	xhrPost(tempAttendUrl1 + 'statisticStuName', data0, callback);
 }
