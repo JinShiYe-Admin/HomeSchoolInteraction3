@@ -59,11 +59,11 @@
 	</head>
 
 	<body style="background-color: white;">
-		<!--<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
-			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title" style="color: white;">布置作业</h1>
-			<a @click="revoke()" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">提交</a>
-		</header>-->
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
+			<h1 id="title" class="mui-title" style="color: white;">布置作业</h1>
+			<a id="finish" class="mui-pull-right" style="color: white;font-size: 15px;">提交</a>
+		</header>
 		<div class="mui-content" style="background-color: white;" id="addHomeworkContent">
 			<div @click="selectSubject">
 				<p class="subject">科目 {{selectSubjectModel.text}}</p>
@@ -72,7 +72,7 @@
 				</a>
 			</div>
 			<p class="line"></p>
-			<textarea id="notes" v-model="content" maxlength="2000" placeholder="请输入发布内容（最多2000字）"></textarea>
+			<textarea id="notes" v-model="content" maxlength="2000" placeholder="请输入作业内容（最多350字）"></textarea>
 			<div id="MultiMedia"></div>
 			<div class="">
 				<div class="" id="bootom-card" style="margin-top: -15px;">
@@ -155,6 +155,7 @@
 		<script src='../../js/utils/sortSign.js'></script>
 		<script src='../../js/utils/compressVideo.js'></script>
 		<script src='../../js/mui/mui.picker.min.js'></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
 		<script type="text/javascript">
 			mui.init()
 			//获取个人信息
@@ -238,15 +239,14 @@
 				el: "#addHomeworkContent",
 				data: {
 					pageFlag: 0, //页面是否加载完成
-					noticeArray: [], //通知列表数组
 					content: '', //内容
 					gradeStr: '', //年级列表
 					classStr: '', //班级列表
 					classIDsArray: [], //选择的班级id数组
 					gradeIDsArray: [], //全选择班级的年级id数组
 					selectSubjectModel: {
-						'subcode': '-1',
-						'subname': ''
+						'value': '-1',
+						'text': ''
 					}, //选择的科目
 					subjectArray: [] //科目列表
 				},
@@ -277,6 +277,7 @@
 								subjectPicker.pickers[0].setSelectedValue(addHomeworkContent.selectSubjectModel.value);
 							}, 100);
 							subjectPicker.show(function(items) {
+								console.log('items[0]:'+JSON.stringify(items[0]));
 								addHomeworkContent.selectSubjectModel = items[0];
 								//								talkTitle.actionTypeText = _getParam(items[0], 'text');
 								//								talkTitle.actionTypeValue = _getParam(items[0], 'value');
@@ -398,6 +399,26 @@
 				mui('body').on('tap', 'img', function() {
 					document.activeElement.blur();
 				});
+				
+				//完成
+				document.getElementById('finish').addEventListener('tap', function() {
+					events.hideKeyBoard(hideOption);
+					if(addHomeworkContent.content.replace(/(^\s*)|(\s*$)/g, "") == "") { //为空不允许发送
+						mui.toast('作业内容不能为空');
+						document.getElementById("finish").disabled = false;
+					} else if(addHomeworkContent.content.length > 350) {
+						mui.toast('内容最多350字');
+						document.getElementById("finish").disabled = false;
+					} else {
+						var wd = events.showWaiting();
+						document.getElementById("finish").disabled = true;
+						if(multiMedia.data.PictureArray.length == 0 && multiMedia.data.VideoArray.length == 0 && multiMedia.data.AudioArray.length == 0) { //没有传附件
+							addHomework(wd, '3', '', '', 0);
+						} else {
+							uploadFile(wd); //上传文件
+						}
+					}
+				});
 			}
 
 			/**
@@ -408,53 +429,46 @@
 			 * @param {Object} encImg 附件缩略图地址
 			 */
 			function addHomework(wd, encType, encAddr, encImg, encLen) {
+				console.log('encType:' + encType);
+				console.log('encAddr:' + encAddr);
 				console.log('encImg:' + encImg);
-				//附件名称
-				var encName = '';
+				console.log('encLen:' + encLen);
+				//附件数组
+				var tempArray = [];
 				if(encAddr.length > 0) {
-					var tempArray = [];
 					var tempAddr = encAddr.split('|');
 					for(var i = 0; i < tempAddr.length; i++) {
-						var tempModel = tempAddr[i];
-						var temp000 = tempModel.split('/');
-						tempArray.push(temp000[temp000.length - 1]);
+						var tempImg = tempAddr[i];
+						var temp000 = tempImg.split('/');
+						var tempName = temp000[temp000.length - 1];
+						var tmpM = {
+							oriName:tempName,
+							filePath:tempImg
+						}
+						tempArray.push(tmpM);
 					}
-					encName = tempArray.join('|');
 				}
-
-				//1.新增学校通知（同时增加通知未读）
+				//发布作业 
 				var tempData1 = {
-					schoolId: (personal.schid).toString(), //学校ID，统一部署的时候，学校ID传000000
-					noticeContent: addHomeworkContent.content, //内容
-					noticEncName: encName, //附件名称，竖杠隔开
-					noticeEncImgAddr: encImg, //附件缩略图地址，竖杠隔开
-					noticeEncAddr: encAddr, //附件地址，竖杠隔开
-					smsSync: addHomeworkContent.msgFlag, //是否短信同步，先填0
-					sendManId: (personal.utid).toString(), //发布人ID
-					sendManCode: personal.uid, //发布人账号
-					sendManName: personal.utname, //发布人姓名
-					sendManImg: personal.imgurl, //发布人头像
-					receiveManIds: arrayToStr(temp0), //接收人人ID，例如：[“1”,”2”,”3”]
-					receiveManCodes: arrayToStr(temp1), //接收人账号，例如：[“1”,”2”,”3”]
-					receiveManNames: arrayToStr(temp2), //接收人姓名，例如：[“1”,”2”,”3”]
-					receiveManImgs: arrayToStr(temp3) //接收人头像
+					gradeId: addHomeworkContent.gradeIDsArray.join(','), //年级id；必填
+					classId: addHomeworkContent.classIDsArray.join(','), //班级id,多个班级用英文,隔开；必填
+					subCode: addHomeworkContent.selectSubjectModel.value, //科目编码；必填
+					content: addHomeworkContent.content, //作业内容；可选
+					attachs: tempArray, //附件数组；可选
 				}
-				events.showWaiting();
-				//1.新增学校通知（同时增加通知未读）
-				addNoticePro(tempData1, function function_name(data) {
+//				events.showWaiting();
+				//发布作业 
+				hwTeacherSaveHomework(tempData1, function function_name(data) {
 					events.closeWaiting();
+					document.getElementById("finish").disabled = false;
 					if(data.RspCode == 0) {
 						addHomeworkContent.content = '';
-						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
-							var tempMobiles = temp4.join(',').toString();
-							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
-						}
+//						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
+//							var tempMobiles = temp4.join(',').toString();
+//							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
+//						}
 						mui.toast('成功');
-						setTimeout(function() {
-							mui.back();
-						}, 1000);
-					} else {
-						document.getElementById("finish").disabled = false;
+				} else {
 						mui.toast(data.RspTxt);
 					}
 				});
