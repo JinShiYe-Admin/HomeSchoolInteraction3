@@ -71,7 +71,7 @@
 								<li class="mui-table-view-cell mui-collapse keep-unfold">
 									<a class="mui-navigate-right" href="#">年级</a>
 									<div class="mui-collapse-content">
-										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in grdsClassList" @tap="modifySelectCell(grdsClassList,chlidModel)">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in grdsList" @tap="modifySelectCell(grdsList,chlidModel,'grd')">
 											{{chlidModel.childName}}
 										</div>
 									</div>
@@ -79,7 +79,7 @@
 								<li class="mui-table-view-cell mui-collapse keep-unfold">
 									<a class="mui-navigate-right" href="#">班级</a>
 									<div class="mui-collapse-content">
-										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in grdsClassList" @tap="modifySelectCell(grdsClassList,chlidModel)">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in classList" @tap="modifySelectCell(classList,chlidModel)">
 											{{chlidModel.childName}}
 										</div>
 									</div>
@@ -112,9 +112,9 @@
 						</div>
 					</div>
 				</div>
-				<div id="" class="bottom-btns">
-					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;">取消</button>
-					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;">确定</button>
+				<div id="dragRightBtn" class="bottom-btns">
+					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;" @tap='cancel()'>取消</button>
+					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;" @tap='confirm()'>确定</button>
 				</div>
 			</aside>
 			<div class="mui-inner-wrap" style="margin-top: -8px;">
@@ -194,7 +194,6 @@
 						if(homeworkListArray.homeworkArray.length>0) {
 							pageIndex = 1;
 							flagRef = 0;
-							getSchSubThread();
 							getTeacheromeworkList(pageIndex, this)
 						} else {
 							self.endPullDownToRefresh();
@@ -207,7 +206,6 @@
 						//console.log("上拉加载更多");
 						flagRef = 1;
 						if(pageIndex <= totalPageCount) {
-							getSchSubThread();
 							getTeacheromeworkList(pageIndex, this)
 							//结束下拉刷新
 							//self.endPullUpToRefresh();
@@ -228,105 +226,51 @@
 				el: "#gradList",
 				data: {
 					selectFlag: 0,
-					grdsClassList:[],//年级班级数组
+					grdsList:[],//年级班级数组
+					classList:[],//年级班级数组
 					kmList:[],//科目数组
-					sjdjList:[{
-							childName: '未登记',
-							childCode: '0',
-							childFlag: 0
-						},{
-							childName: '未交完',
-							childCode: '1',
-							childFlag: 0
-						},{
-							childName: '已交完',
-							childCode: '2',
-							childFlag: 0
-						}],//上交登记数组
-					pgjdList:[{
-							childName: '未批改',
-							childCode: '0',
-							childFlag: 0
-						},{
-							childName: '批改中',
-							childCode: '1',
-							childFlag: 0
-						},{
-							childName: '批改完成',
-							childCode: '2',
-							childFlag: 0
-						}]//批改进度数组
+					sjdjList:[],//上交登记数组
+					pgjdList:[]//批改进度数组
 						
 				},
 				methods: {
-					modifySelectCell: function(sumModel, currentModel) {
-						for(var i = 0; i < sumModel.length; i++) {
-							sumModel[i].childFlag = 0;
+					modifySelectCell: function(sumModel, currentModel,lx) {
+						if(lx=='grd'&&currentModel.childFlag==0){//如果选择的类型是年纪&&防止重复点击  更改年级对应班级的值
+							var classList=currentModel.children;
+							selectDetailData.classList=classList;
 						}
-						currentModel.childFlag = 1;
+						if(currentModel.childFlag == 1){
+							currentModel.childFlag = 0;
+						}else{
+							currentModel.childFlag = 1;
+						}
 					}
 				}
 			});
 			
+			//侧滑菜单按钮初始化
+			var dragRightBtn=new Vue({
+				el:'#dragRightBtn',
+				data:{},
+				methods:{
+					cancel:function(){//取消按钮点击事件
+						offCanvasWrapper.offCanvas('close'); 
+					},
+					confirm:function(){//确定按钮点击事，相当于下拉刷新
+						offCanvasWrapper.offCanvas('close'); 
+						pageIndex = 1;
+						flagRef = 0;
+						getTeacheromeworkList(pageIndex)
+						
+					}
+				}
+			});
+			
+			//作业列表初始化
 			var homeworkListArray = new Vue({
 				el: "#homeworkListArray",
 				data: {   
-					homeworkArray: [{
-						homeworkName: '语文作业【一年级 1601班】',
-						homeworkFlag: 1,
-						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
-						homeworkImg: '../../img/homeSchool/u292.png',
-						homeworkFlag1: '40',
-						homeworkFlag2: '10',
-						homeworkFlag3: '20',
-						homeworkFlag4: '30',
-						homeworkFlag5: '80',
-						homeworkFlag6: '2018-6-22',
-					}, {
-						homeworkName: '语文作业【一年级 1602班】',
-						homeworkFlag: 0,
-						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
-						homeworkImg: '',
-						homeworkFlag1: '40',
-						homeworkFlag2: '14',
-						homeworkFlag3: '20',
-						homeworkFlag4: '32',
-						homeworkFlag5: '80',
-						homeworkFlag6: '2018-6-15',
-					}, {
-						homeworkName: '语文作业【一年级 1603班】',
-						homeworkFlag: 1,
-						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
-						homeworkImg: '../../img/homeSchool/u292.png',
-						homeworkFlag1: '40',
-						homeworkFlag2: '10',
-						homeworkFlag3: '22',
-						homeworkFlag4: '32',
-						homeworkFlag5: '80',
-						homeworkFlag6: '2018-1-25',
-					}, {
-						homeworkName: '语文作业【一年级 1604班】',
-						homeworkFlag: 1,
-						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
-						homeworkImg: '',
-						homeworkFlag1: '40',
-						homeworkFlag2: '10',
-						homeworkFlag3: '20',
-						homeworkFlag4: '30',
-						homeworkFlag5: '80',
-						homeworkFlag6: '2018-7-25',
-					}, {
-						homeworkName: '语文作业【一年级 1605班】',
-						homeworkFlag: 0,
-						homeworkContent: '包含页眉页脚的卡片，页眉常用来显示面板标题，页脚用来显示额外信息或支持的操作脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操脚用来显示额外信息或支持的操（比如点赞、评论等）',
-						homeworkImg: '../../img/homeSchool/u292.png',
-						homeworkFlag1: '40',
-						homeworkFlag2: '10',
-						homeworkFlag3: '20',
-						homeworkFlag4: '30',
-						homeworkFlag5: '80',
-						homeworkFlag6: '2018-6-25',
-					}, ]
+					homeworkArray: []
 				},
 				methods: {
 					clickHomeworkModel: function(model) {
@@ -341,9 +285,9 @@
 			mui.plusReady(function() {
 				//根据老师权限获取年级和班级，去掉学生数组,更改字段
 				studentMP.getStudentManagePermission(1, 1, function(array) {
-					var grdsClassList=[];
-					var parentItem={};
+					var grdsList=[];//年级数组
 					for(var i=0;i<array.length;i++){
+						var parentItem={};
 						var item=array[i];
 						parentItem.childName=array[i].text;
 						parentItem.childCode=array[i].value;
@@ -356,10 +300,14 @@
 							childItem.childFlag=0;
 							parentItem.children.push(childItem);
 						}
-						grdsClassList.push(parentItem);
+						grdsList.push(parentItem);
 					}
-					selectDetailData.grdsClassList=grdsClassList;
-					console.log('gradsList:'+JSON.stringify(grdsClassList));
+					selectDetailData.grdsList=grdsList;
+					//班级数组
+					var classList=grdsList[0].children;
+					selectDetailData.classList=classList;
+					console.log('gradsList:'+JSON.stringify(grdsList));
+					console.log('classList:'+JSON.stringify(classList));
 				}, 1);
 				getSchSubThread();
 				getTeacheromeworkList(pageIndex)
@@ -384,19 +332,31 @@
 				});
 				setTimeout(function(){offCanvasWrapper.offCanvas('close');},100);
 			});
-			offCanvasWrapper[0].addEventListener('shown', function(e) { //菜单显示完成事件
+			
+			//菜单显示完成事件
+			offCanvasWrapper[0].addEventListener('shown', function(e) { 
 			});
-			offCanvasWrapper[0].addEventListener('hidden', function(e) { //菜单关闭完成事件
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {//显示底部tab栏
+			
+			//菜单关闭完成事件
+			offCanvasWrapper[0].addEventListener('hidden', function(e) { 
+				//显示底部tab栏
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
 					showCloseFlag: 1
 				});
 			});
+			
 			//禁止滑动主界面的时候出现侧滑菜单
 			document.getElementsByClassName('mui-inner-wrap')[0].addEventListener('drag', function(event) {
 				event.stopPropagation();
 			});
-			   
 			
+			//筛选按钮点击事件
+			document.getElementById('rightTag').addEventListener('tap', function(event) {
+				offCanvasWrapper.offCanvas('show');
+				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
+					showCloseFlag: 0
+				});
+			})
 			
 			//获取科目列表
 			var getSchSubThread = function() {
@@ -415,7 +375,7 @@
 						if(data1.RspData) {
 							var kmList = data1.RspData.subs;
 							var newList = [];
-							for(var i = 0; i < kmList.length; i++) {
+							for(var i = 0; i < kmList.length; i++) { 
 								var temp = {
 									childName: kmList[i].subname,
 									childCode: kmList[i].subcode,
@@ -434,37 +394,116 @@
 			
 			//获取作业列表
 			function getTeacheromeworkList(index, self){
-				var comData = {
-					gradeId:'',
-					classId:'',
-					subCode:'',
-					submitStatus:'',
-					correctStatus:'',
-					pageNumber:pageIndex,
-					pageSize:pageSize
-				};
+				var comData =getSelectData();
 				console.log('comData=='+JSON.stringify(comData));
-				var wd = events.showWaiting();
+				var wd;
+				if(flagRef == 0) {
+					wd = events.showWaiting();
+				}
 				hwTeacheromeworkList(comData, function(data) {
-					wd.close();
+					if(flagRef == 0) {
+						wd.close();
+					}
 					console.log('作业列表:' + JSON.stringify(data));
 					if(data.RspCode == 0) {
+						totalPageCount = data.RspData.totalPage;
+						pageIndex++;
 						if(data.RspData){
-							 
+							//解析数据
+							//上交登记
+							var submitArray=data.RspData.submitArray;
+							var submitArrayNew=[];
+							for(var i=0;i<submitArray.length;i++){
+								var item ={};
+								item.childName=submitArray[i].text;
+								item.childCode=submitArray[i].value;
+								item.childFlag=0;
+								submitArrayNew.push(item);
+							}
+							//批改进度
+							var correctArray=data.RspData.correctArray;
+							var correctArrayNew=[];
+							for(var i=0;i<correctArray.length;i++){
+								var item ={};
+								item.childName=correctArray[i].text;
+								item.childCode=correctArray[i].value;
+								item.childFlag=0;
+								correctArrayNew.push(item);
+							}
+							selectDetailData.sjdjList=submitArrayNew;
+							selectDetailData.pgjdList=correctArrayNew;
+							//作业列表
+							var hmList=data.RspData.list;
 						}
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+							homeworkListArray.homeworkArray=hmList;	
+							mui('.mui-scroll-wrapper').scroll().setTranslate(0, 0);
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
+						} 
 					} else {
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+						}
 						mui.toast(data.msg);
 					}
 				});
 			}
-			//筛选按钮点击事件
-			document.getElementById('rightTag').addEventListener('tap', function(event) {
-				offCanvasWrapper.offCanvas('show');
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {
-					showCloseFlag: 0
-				});
-			})
-		
+			//得到侧滑菜单选中的值，如果初次进入页面，默认返回的对象的值为空 
+			function getSelectData(){
+				var comData ={
+					gradeId:'',//年级ID
+					classId:'',//班级ID
+					subCode:'',//科目编码
+					submitStatus:'',//上交登记字段
+					correctStatus:'',//批改进度字段
+					pageNumber:pageIndex,//当前页数
+					pageSize:pageSize//每页记录数
+				};
+				for(var i=0;i<selectDetailData.grdsList.length;i++){
+					var item=selectDetailData.grdsList[i];
+					if(item.childFlag==1){
+						comData.gradeId=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.classList.length;i++){
+					var item=selectDetailData.classList[i];
+					if(item.childFlag==1){
+						comData.classId=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.kmList.length;i++){
+					var item=selectDetailData.kmList[i];
+					if(item.childFlag==1){
+						comData.subCode=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.sjdjList.length;i++){
+					var item=selectDetailData.sjdjList[i];
+					if(item.childFlag==1){
+						comData.submitStatus=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.pgjdList.length;i++){
+					var item=selectDetailData.pgjdList[i];
+					if(item.childFlag==1){
+						comData.correctStatus=item.childCode;
+					}
+				}
+				return comData;
+			}
 			//主界面和侧滑菜单界面均支持区域滚动；
 			mui('#offCanvasSideScroll').scroll();
 			mui('#offCanvasContentScroll').scroll();
