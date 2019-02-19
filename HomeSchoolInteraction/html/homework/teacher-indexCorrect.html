@@ -308,9 +308,9 @@
 					selectDetailData.classList=classList;
 					console.log('gradsList:'+JSON.stringify(grdsList));
 					console.log('classList:'+JSON.stringify(classList));
+					getSchSubThread();
+					getTeacheromeworkList(pageIndex)
 				}, 1);
-				getSchSubThread();
-				getTeacheromeworkList(pageIndex)
 			});
 			//侧滑容器父节点
 			var offCanvasWrapper = mui('#offCanvasWrapper');
@@ -431,6 +431,14 @@
 							//作业列表
 							var hmList=data.RspData.list;
 						}
+						//TODO 根据班级ID 年纪ID 科目ID得到具体的名称
+						for(var i=0;i<hmList.length;i++){
+							
+						}
+						console.log('liushuai1：'+JSON.stringify(selectDetailData.grdsList));
+						console.log('liushuai2：'+JSON.stringify(selectDetailData.classList));
+						console.log('liushuai3：'+JSON.stringify(selectDetailData.kmList));
+						
 						if(flagRef == 0) { //刷新
 							if(self) {
 								self.endPullDownToRefresh();
@@ -442,12 +450,6 @@
 							}
 							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
 						} 
-						//TODO 根据班级ID 年纪ID 科目ID得到具体的名称
-						console.log('liushuai'+JSON.stringify(selectDetailData.grdsList));
-						console.log('liushuai'+JSON.stringify(selectDetailData.classList));
-						console.log('liushuai'+JSON.stringify(selectDetailData.kmList));
-						
-						
 					} else {
 						if(flagRef == 0) { //刷新
 							if(self) {
