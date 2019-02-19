@@ -160,14 +160,17 @@
 					<p @tap.stop="selectMenu"><span class="mui-ellipsis">{{title.per.pername}} &middot; {{title.sub.subname}} &middot; {{title.node.name}}</span><span class="mui-icon mui-icon-forward"></span></p>
 					<form action="" method="post" class="search-box" @submit.prevent="search">
 						<div class="mui-input-row mui-search">
-						    <input type="search" class="mui-input-clear" placeholder="请输入关键字" v-model="keyWord">
+						    <input type="search" class="mui-input-clear" placeholder="请输入关键字">
 						</div>
 						<input type="submit" value="搜索"/>
 					</form>
+					<div class="search-msg">
+						<p v-if="keyWord">"<span style="color: #FF5722;">{{keyWord}}</span>"的搜索结果：</p>
+					</div>
 				</div>
 				<div class="search-list">
-					<a v-for="(v,i) in searchList" :key="i" @tap="goQuesDetail(v)" v-html="v" class="list-item mui-ellipsis-2"></a>
-					<p class="mui-text-center">上拉加载更多</p>
+					<a v-for="(v,i) in searchList" :key="i" @tap="goQuesDetail(v.id)" v-html="v.content" class="list-item mui-ellipsis-2"></a>
+					<p class="mui-text-center" v-show="!isLoading">{{isLastPage?"没有更多题了":"上拉加载更多"}}</p>
 				</div>
 			</div>
 			<!--组卷测试-->
@@ -258,7 +261,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>
-		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>
 		<script type="text/javascript" src="../../js/libs/echarts.min.js" ></script>
 		<script src='../../js/libs/jquery.js'></script>
 		
@@ -351,6 +354,7 @@
 						title = "找题";
 						if(autoMenu && !search.title.node.id) {
 							search.title = autoMenu;
+							search.getSearchList();
 						}
 						break;
 				}
@@ -505,11 +509,11 @@
 							timeout: 5000,
 							success: function(res) {
 //								console.log(res);
-								var res_data = JSON.parse(res.data);
+								var res_data = res.data;
 								mui.fire(test_start, "getData", {
 									title: model.name, 
 									catalogId: model.id,
-									difficulty: res_data.schedule?res_data.schedule.difficulty_level_id:1
+									difficulty: res_data
 								});
 								test_start.show("slide-in-right");
 								plus.nativeUI.closeWaiting();
@@ -648,8 +652,8 @@
 						node: { id: 0, name: "" }
 					},
 					keyWord: "",
-					searchList: ["题1","题2","题3","4","5","6","7","8","9","10","11","12"],
-					listPage: 0,
+					searchList: [],
+					listPage: 1,
 					isLoading: false,
 					isLastPage: false
 				},
@@ -658,12 +662,14 @@
 					//监听上拉刷新
 					setPullRefresh("#search .search-list", function(){
 						if(!_this.isLoading&&!_this.isLastPage){
-							alert("上拉刷新");
+							_this.getSearchList();
 						}
 					});
 				},
 				methods: {
-					goQuesDetail: function(item) {
+					// 查看题目详情
+					goQuesDetail: function(id) {
+						var _this = this;
 						var quesDetail = plus.webview.getWebviewById("bl-question-detail");
 						if(quesDetail) {
 							
@@ -673,15 +679,18 @@
 								id: "bl-question-detail",
 								waiting: {autoShow: false},
 								extras: {
-									
+									nodeId: id,
+									title: _this.title.node.name
 								}
 							});
 						}
 					},
 					search: function() {
-						alert("搜索："+this.keyWord);
-						return false;
+						this.keyWord = document.querySelector("#search input[type='search']").value;
+						this.listPage = 1;
+						this.getSearchList();
 					},
+					// 更改知识点
 					selectMenu: function() {
 						var _this = this;
 						var menu = plus.webview.getWebviewById("bl-menu");
@@ -698,28 +707,49 @@
 								}
 							});
 						}
+					},
+					//获取搜索列表
+					getSearchList: function() {
+						console.log("获取搜索列表");
+						var _this = this;
+						if(_this.listPage==1) {
+							_this.searchList = [];
+						}
+						var _data = {
+							bookCatalogId: _this.title.node.id,
+							keyword: _this.keyWord,
+							pageNumber: _this.listPage,
+							pageSize: 10
+						};
+						_this.isLoading = true;
+						plus.nativeUI.showWaiting();
+						commonAjax("/Ycyx/FindQuestion", {
+							data: _data,
+							success: function(res){
+								console.log(JSON.stringify(res));
+								console.log(res);
+								var pg = res.data.page;
+								_this.searchList = _this.searchList.concat(pg.list);
+								_this.isLastPage = pg.lastPage;
+								if(!pg.lastPage){
+									_this.listPage = pg.pageNumber+1;
+								}
+								plus.nativeUI.closeWaiting();
+								_this.isLoading = false;
+							},
+							fail: function() {
+								plus.nativeUI.closeWaiting();
+								_this.isLoading = false;
+							},
+							error: function() {
+								plus.nativeUI.closeWaiting();
+								_this.isLoading = false;
+							}
+						});
 					}
 				}
 			});
-			
-			//获取搜索列表
-			function getSearchList() {
-				if(search.listPage==0){
-					search.list = [];
-				}
-				plus.nativeUI.showWaiting();
-				commonAjax("", {
-					success: function(res){
-						
-					},
-					fail: function() {
-						plus.nativeUI.closeWaiting();
-					},
-					error: function() {
-						plus.nativeUI.closeWaiting();
-					}
-				});
-			}
+
 			
 //			analysis.alsList = [{"subname":"语文","count":52,"subcode":"01","remark":"-1","avg_score":14},{"subname":"语文","count":52,"subcode":"01","remark":"0","avg_score":14}];
 			// testMenu.menu = [{"children":[{"name":"太阳花知识点1","pid":20468,"is_finish":0,"id":20474},{"name":"太阳花知识点2","pid":20468,"is_finish":0,"id":20475},{"name":"太阳花知识点3","pid":20468,"is_finish":0,"id":20476}],"name":"上学堂知识点1","pid":0,"is_finish":0,"id":20468},{"name":"上学堂知识点2","pid":0,"is_finish":0,"id":20469},{"name":"上学堂知识点3","pid":0,"is_finish":0,"id":20470}];

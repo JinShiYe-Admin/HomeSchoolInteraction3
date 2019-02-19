@@ -473,11 +473,11 @@ ul li.navigate-right:before {
 .search-list{
 	overflow-y: auto;
 }
-.search-list::-webkit-scrollbar {
-	display: none;
-}
 .search-title, .search-list{
 	padding: 5px .4rem;
+}
+.search-title {
+	border-bottom: 1px solid #EEEEEE;
 }
 .search-title > p {
 	font-size: 16px;
@@ -497,18 +497,26 @@ ul li.navigate-right:before {
 	font-size: 20px;
 	margin-left: 5px;
 }
+.search-title .search-msg {
+	height: 15px;
+}
 .search-box {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding-bottom: 15px;
 }
 .search-box .mui-search {
 	width: calc(100% - 60px);
 }
 .search-list .list-item {
-	display: block;
-	margin-bottom: 20px;
+	margin-bottom: 22px;
+	line-height: 1.5;
+	max-height: 3em;
+	color: #666666;
+	text-indent: 2em;
+}
+.search-list .list-item img {
+	max-width: 100%;
 }
 
 .kn-menu .label-wrapper {

@@ -88,10 +88,6 @@
 					},
 					//提交
 					submit: function() {
-//						var personal = store.get(window.storageKeyName.PERSONALINFO);
-//						personal.utoken = "jjsdkfk";
-//						store.set(window.storageKeyName.PERSONALINFO, personal);
-						
 						plus.nativeUI.showWaiting();
 						var sbData = self.submitData;
 						var answerJson = {};
@@ -110,32 +106,22 @@
 								var res_data = JSON.parse(res.data);
 								//结果页
 								var bl_result = plus.webview.getWebviewById('bl-test-result');
+								var result_data = {
+									report: res_data.report,
+									detailInfo: res_data.detailInfo,
+									levels: res_data.levels,
+									nodeTitle: sbData.title
+								};
 								if(bl_result){
-									mui.fire(bl_result, "resubmit", {
-										report: res_data.report,
-										detailInfo: res_data.detailInfo,
-										nodeTitle: sbData.title
-									});
+									mui.fire(bl_result, "resubmit", result_data);
 									bl_result.show();
 								}else{
 									mui.openWindow({
 										url: "testResult.html",
 										id: "bl-test-result",
-										extras: {
-											report: res_data.report,
-											detailInfo: res_data.detailInfo,
-											nodeTitle: sbData.title
-										}
+										extras: result_data
 									});
 								}
-//								var test_result = plus.webview.create("testResult.html", "bl-test-result", {}, {
-//										report: res_data.report,
-//										detailInfo: res_data.detailInfo,
-//										nodeTitle: sbData.title
-//								});
-//								test_result.show("slide-in-right", 200, function(){
-//									plus.nativeUI.closeWaiting();
-//								});
 								plus.nativeUI.closeWaiting();
 								//刷新其他页面数据
 								mui.fire(plus.webview.getWebviewById('bl-index')||self.opener().opener().opener(), "refresh");

@@ -14,33 +14,8 @@
 			.mui-action-back {
 				color: #222222;
 			}
-			.question-header {
-				padding: .45rem .2rem .3rem;
-				display: flex;
-				justify-content: space-between;
-			}
-			.question-header .p-title {
-				max-width: 82%;
-				font-size: 0.3rem;
-				line-height: 1.2;
-			}
-			.question-header .progress {
-				color: #666666;
-				font-size: 0.26rem;
-			}
 			.question-box {
-				padding: 0.7rem 0.46rem 0.2rem;
-			}
-			.tested .question-box {
-				padding-top: 0.3rem;
-			}
-			.tested .question-box:after {
-				display: block;
-				content: "";
-				border-bottom: 1px solid #DDDDDD;
-			}
-			.time {
-				color: #666666;
+				padding: 0.46rem;
 			}
 			.question-box {
 				font-size: 0.28rem;
@@ -48,20 +23,12 @@
 			}
 			.question {
 				line-height: 1.8;
-				margin-bottom: 0.8rem;
+				margin-bottom: 0.25rem;
 				word-break: break-word;
 			}
 			.option-item {
-				margin-bottom: 0.55rem;
-			}
-			.option-item .option-label {
-				margin-right: 0.15rem;
-			}
-			.option-item .option-label + span {
-				display: inline-block;
-			    max-width: 85%;
-			    vertical-align: middle;
-			    line-height: 1.5;
+				margin-bottom: 0.25rem;
+				line-height: 1.5;
 			}
 			.answer-box {
 				padding: 0 0.2rem;
@@ -71,7 +38,7 @@
 				font-size: 0.26rem;
 			}
 			.answer-box .answer-detail {
-				padding: 0.35rem;
+				padding: 0 0.35rem;
 			}
 			.question-box img {
 				max-width: 100%;
@@ -91,41 +58,79 @@
 			<h1 class="mui-title"></h1>
 		</header>
 		
-		<div class="mui-content">
+		<div class="mui-content" id="questionDetail">
 			<div class="question-box">
-				<div class="question"></div>
+				<div class="question" v-html="question.content"></div>
+				<div class="option-box">
+					<div class="option-item" v-for="(v,i) in ops" :key="i" v-html="v"></div>
+				</div>
 			</div>
 			
 			<div class="answer-box">
 				<div class="answer-detail">
 					答案解析：<br /> 
-					<div v-html="questions[index].solve"></div>
+					<div v-html="question.solve"></div>
 				</div>
 			</div>
 		</div>
 		
 		<script src="../../js/mui.min.js"></script>
 		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
-		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>
 		<script src='../../js/libs/jquery.js'></script>
 		
 		<!--加密-->
-		<!--<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
 		<!---->
-		<!--<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
 		<script src='../../js/utils/signHmacSHA1.js'></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/events.js"></script>-->
+		<script src="../../js/utils/events.js"></script>
 		
 		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
 		<script type="text/javascript">
+			var questionDetail = new Vue({
+				el: "#questionDetail",
+				data: {
+					question: {}
+				},
+				computed:{
+					ops: function(){
+						if(this.question.option){
+							return JSON.parse(this.question.option);
+						}else{
+							return [];
+						}
+					}
+				}
+			})
+			
 			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
 				
+				commonAjax("/Ycyx/FindQuestion/detail", {
+					data: {
+						id: self.nodeId
+					},
+					success: function(res){
+						console.log(JSON.stringify(res));
+						console.log(res);
+						questionDetail.question = res.data.question;
+						console.log(self.title);
+						document.querySelector(".mui-title").innerHTML = self.title;
+					},
+					fail: function() {
+						
+					},
+					error: function() {
+						
+					}
+				});
 			});
 		</script>
 	</body>
