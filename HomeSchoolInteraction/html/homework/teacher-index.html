@@ -47,17 +47,6 @@
 	</head>
 
 	<body>
-		<!--<header id="headData" class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" style="color: white;"></a>
-			<h1 v-if="headFlag ==0||headFlag ==1" id="title" class="mui-title" style="color: white;">{{titleName}}</h1>
-			<div v-else="" style="width: 220px;text-align: center;margin: auto;position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
-				<div id="segmentedControl" class="mui-segmented-control">
-					<a class="mui-control-item mui-active tempA" href="#item1">学生作业报表</a>
-					<a class="mui-control-item tempA" href="#item2">班级作业报表</a>
-				</div>
-			</div>
-			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="toDetail()">提交</a>
-		</header>-->
 		<nav class="mui-bar mui-bar-tab" id="homeworkNavIndex" style="z-index: 25;">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="../../html/homework/teacher-indexPublish.html">
 				<span class="mui-icon mui-icon-home"></span>
@@ -80,86 +69,47 @@
 		<script src="../../js/libs/jquery.js"></script>
 		<!--<script src="../../js/utils/vconsole.min.js"></script>-->
 		<script type="text/javascript">
-			mui.init()
 			//mui初始化
 			mui.init();
-			var subpages = ['../../html/homework/teacher-indexPublish.html', '../../html/homework/teacher-indexCorrect.html', '../../html/homework/teacher-indexForm.html'];
 			var subpage_style = {
 				top: '0px',
 				bottom: '51px'
 			};
 
-			var aniShow = {};
-			var headData = new Vue({
-				el: '#headData',
-				data: {
-					headFlag: 0, //0、1显示标题，2显示分类显示，作业报表
-					titleName: '布置作业'
-				},
-				methods: {
-
-				}
-			});
-
-			//创建子页面，首个选项卡页面显示，其它均隐藏；
+				
+			//创建子页面，首个选项卡页面显示，其它均隐藏；---start
 			mui.plusReady(function() {
+				var defaultUrl = '../../html/homework/teacher-indexPublish.html';
 				var self = plus.webview.currentWebview();
-				for(var i = 0; i < 3; i++) {
-					var temp = {};
-					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
-					if(i > 0) {
-						sub.hide();
+				var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style);
+				self.append(sub);
+				//当前激活选项
+				activeTab = defaultUrl;
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('href');
+					if(targetTab == activeTab) {
+						return;
 					} else {
-						temp[subpages[i]] = "true";
-						mui.extend(aniShow, temp);
+						var viewIsExists = plus.webview.getWebviewById(targetTab);
+						if(viewIsExists == null || viewIsExists == '' || viewIsExists == undefined) {
+							var newSub = plus.webview.create(targetTab, targetTab, subpage_style);
+							newSub.hide();
+							self.append(newSub);
+						}
 					}
-					self.append(sub);
-				}
-			});
-			//当前激活选项
-			var activeTab = subpages[0];
-			var title = document.getElementById("title");
-			//选项卡点击事件
-			mui('.mui-bar-tab').on('tap', 'a', function(e) {
-				var targetTab = this.getAttribute('href');
-				if(targetTab == activeTab) {
-					return;
-				}
-				//更换标题
-//				title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
-//				var tempFlag = this.querySelector('.mui-tab-label').id;
-//				if(tempFlag == 'flag0') {
-//					headData.headFlag = 0;
-//					headData.titleName = '布置作业';
-//				} else if(tempFlag == 'flag1') {
-//					headData.headFlag = 1;
-//					headData.titleName = '作业列表';
-//				} else {
-//					headData.headFlag = 2;
-//					headData.titleName = '作业报表';
-//				}
-//				console.log('tempFlag:' + tempFlag + ',headData.headFlag:' + headData.headFlag);
-				//显示目标选项卡
-				//若为iOS平台或非首次显示，则直接显示
-				if(mui.os.ios || aniShow[targetTab]) {
-					plus.webview.show(targetTab);
-				} else {
-					//否则，使用fade-in动画，且保存变量
-					var temp = {};
-					temp[targetTab] = "true";
-					mui.extend(aniShow, temp);
+
 					plus.webview.show(targetTab, "fade-in", 0);
-				}
-				//隐藏当前;
-				plus.webview.hide(activeTab);
-				//更改当前活跃的选项卡
-				activeTab = targetTab;
-			});
-			//自定义事件，模拟点击“首页选项卡”
-			document.addEventListener('gohome', function() {
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡 
+					activeTab = targetTab;
+				});
+
 				var defaultTab = document.getElementById("defaultTab");
 				//模拟首页点击
 				mui.trigger(defaultTab, 'tap');
+
 				//切换选项卡高亮
 				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
 				if(defaultTab !== current) {
@@ -167,7 +117,9 @@
 					defaultTab.classList.add('mui-active');
 				}
 			});
-
+			//---end
+			
+			//批改作业模块 筛选侧滑兼容，监听
 			window.addEventListener('showCloseNav', function(data) {
 				var tempData = data.detail;
 //				console.log("showCloseNav:" + JSON.stringify(tempData));
@@ -178,11 +130,12 @@
 					tempDiv.style.display = 'none'
 					if(plus.os.name == 'Android') {
 						for(var i=0;i<wvs.length;i++){
-							console.log('liushuai:'+wvs[i].getURL())
+							console.log('index:'+wvs[i].getURL())
 								wvs[i].setStyle({top: '0px',bottom: '0px'})
 						}
 					} else {
 						for(var i=0;i<wvs.length;i++){
+							console.log('index:'+wvs[i].getURL())
 								wvs[i].setStyle({top: '0px',bottom: '-51px'})
 						}
 					}
@@ -191,20 +144,17 @@
 					tempDiv.style.display = 'inherit'
 					if(plus.os.name == 'Android') {
 						for(var i=0;i<wvs.length;i++){
-							console.log('liushuai:'+wvs[i].getURL())
+							console.log('index:'+wvs[i].getURL())
 							wvs[i].setStyle({top: '0px',bottom: '51px'})
 						}
 					} else {
 						for(var i=0;i<wvs.length;i++){
+							console.log('index:'+wvs[i].getURL())
 								wvs[i].setStyle({top: '0px',bottom: '0px'})
 						}
 					}
 				}
 			});
-			function toDetail(){
-				console.log("111111111111111111111")
-				utils.mOpenWithData("../../html/homework/teacher-homework-correctDetail.html", {});
-			}
 		</script>
 	</body>
 
