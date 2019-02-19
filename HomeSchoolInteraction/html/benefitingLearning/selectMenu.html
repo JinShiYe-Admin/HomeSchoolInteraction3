@@ -116,7 +116,7 @@
 							timeout: 5000,
 							type: 'post',
 							success: function(res){
-								console.log("设置目录: "+res.data);
+								console.log("找题目录: "+res.data);
 								var rdata = JSON.parse(res.data);
 								//科目
 								_this.subject = {
@@ -176,7 +176,8 @@
 								node: model
 							};
 						this.selectedId = model.id;
-						self.opener().evalJS("search.title="+JSON.stringify(selected)+";");
+						// 设置搜题页面
+						self.opener().evalJS("search.title="+JSON.stringify(selected)+"; search.listPage=1; search.keyWord=''; search.getSearchList();");
 						mui.back();
 					}
 				}

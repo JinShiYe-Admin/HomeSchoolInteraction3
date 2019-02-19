@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
 		<style type="text/css">
@@ -129,17 +129,9 @@
 				<div class="lv-box">
 					<p class="lv-title">学习进度</p>
 					<div class="lv-bar">
-						<div class="lv-item" :class="{active: difficulty_level_id>=1, current: difficulty_level_id==1}">
-							<div class="lv-icon-box"><span class="lv-icon">LV.1</span></div>
-							<div class="lv-msg">基础<span>(当前)</span></div>
-						</div>
-						<div class="lv-item" :class="{active: difficulty_level_id>=2, current: difficulty_level_id==2}">
-							<div class="lv-icon-box"><span class="lv-icon">LV.2</span></div>
-							<div class="lv-msg">巩固<span>(当前)</span></div>
-						</div>
-						<div class="lv-item" :class="{active: difficulty_level_id>=3, current: difficulty_level_id==3}">
-							<div class="lv-icon-box"><span class="lv-icon">LV.3</span></div>
-							<div class="lv-msg">提升<span>(当前)</span></div>
+						<div class="lv-item" v-for="(v,i) in levels" :class="{'active': v<=difficulty_level_id}">
+							<div class="lv-icon-box"><span class="lv-icon">LV.{{v}}</span></div>
+							<div class="lv-msg">{{lv}}<span v-if="v==difficulty_level_id">(当前)</span></div>
 						</div>
 					</div>
 				</div>
@@ -157,9 +149,8 @@
 		
 		
 		<script src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>
-		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
-		<!--<script type="text/javascript" src="../../js/layer/mobile/layer.js"></script>-->
+		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
+		<!-- <script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script> -->
 		<script src='../../js/libs/jquery.js'></script>
 		
 		<!--加密-->
@@ -199,13 +190,13 @@
 			mui.plusReady(function(){
 				self = plus.webview.currentWebview();
 				//首次进入报告页
-				setResult(self.report, self.detailInfo, self.nodeTitle);
+				setResult(self.report, self.detailInfo, self.nodeTitle, self.levels);
 			});
 			
 			//再次进入报告页
 			window.addEventListener("resubmit",function(e){
 				testResult.isLoaded = false;
-				setResult(e.detail.report, e.detail.detailInfo, e.detail.nodeTitle);
+				setResult(e.detail.report, e.detail.detailInfo, e.detail.nodeTitle, self.levels);
 			});
 			
 			//测试结果列表
@@ -217,8 +208,20 @@
 					usedTime: "",
 					score: null,
 					answerList: [],
+					levels: [],
 					difficulty_level_id: 0,
 					isLoaded: false
+				},
+				computed: {
+					lv: function() {
+						if(this.current_id==3) {
+							return "提升";
+						}else if(this.current_id==2) {
+							return "巩固";
+						}else {
+							return "基础";
+						}
+					}
 				},
 				methods: {
 					anserJudge: function(answer, stu_answer){
@@ -247,13 +250,14 @@
 				}
 			});
 			
-			function setResult(report, detail, nodeTitle) {
+			function setResult(report, detail, nodeTitle, levels) {
 				
 				//结果数据，从上一级webview传来
 				testResult.reportName = report.name;
 				testResult.submitTime = report.create_time;
 				testResult.usedTime = report.used_time;
 				testResult.score = report.score;
+				testResult.levels = levels;
 				testResult.difficulty_level_id = report.difficulty_level_id;
 				testResult.answerList = detail;
 				testResult.$nextTick(function(){

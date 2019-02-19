@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
 		<style type="text/css">
@@ -48,20 +48,12 @@
 		</header>
 		
 		<div class="mui-content">
-			<div class="lv-box">
+			<div id="level" class="lv-box">
 				<p class="lv-title">学习进度</p>
 				<div class="lv-bar">
-					<div class="lv-item" data-difficulty="1">
-						<div class="lv-icon-box"><span class="lv-icon">LV.1</span></div>
-						<div class="lv-msg">基础<span>(当前)</span></div>
-					</div>
-					<div class="lv-item" data-difficulty="2">
-						<div class="lv-icon-box"><span class="lv-icon">LV.2</span></div>
-						<div class="lv-msg">巩固<span>(当前)</span></div>
-					</div>
-					<div class="lv-item" data-difficulty="3">
-						<div class="lv-icon-box"><span class="lv-icon">LV.3</span></div>
-						<div class="lv-msg">提升<span>(当前)</span></div>
+					<div class="lv-item" v-for="(v,i) in difficulty" :class="{'active': v<=current_id}">
+						<div class="lv-icon-box"><span class="lv-icon">LV.{{v}}</span></div>
+						<div class="lv-msg">{{lv}}<span v-if="v==current_id">(当前)</span></div>
 					</div>
 				</div>
 			</div>
@@ -72,7 +64,7 @@
 		</div>
 		
 		<script src="../../js/mui.min.js"></script>
-		<!--<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>-->
+		<script type="text/javascript" src="../../js/utils/vue.js" ></script>
 		<!--<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>-->
 		<script src='../../js/libs/jquery.js'></script>
 		
@@ -91,35 +83,41 @@
 		
 		<script type="text/javascript" src="../../js/btlearn/common.js" ></script>
 		<script type="text/javascript">
+			
+			var level = new Vue({
+				el: "#level",
+				data: {
+					difficulty: [],
+					current_id: 0
+				},
+				computed: {
+					lv: function() {
+						if(this.current_id==3) {
+							return "提升";
+						}else if(this.current_id==2) {
+							return "巩固";
+						}else {
+							return "基础";
+						}
+					}
+				},
+				methods: { }
+			});
+			
 			mui.plusReady(function(){
 				self = plus.webview.currentWebview();
 				
 				mui.init();
 				
-//				mui.back = function() {
-//					self.hide();
-//				}
-				
 				var headerTitle = document.querySelector('.mui-title');
-				var lvs = document.querySelectorAll(".lv-bar .lv-item");
 				var nodeId = null;
 				
 				//传来 开始数据
 				window.addEventListener("getData", function(e){
 					headerTitle.innerHTML = e.detail.title;
+					level.difficulty = e.detail.difficulty.levels;
+					level.current_id = e.detail.difficulty.schedule.difficulty_level_id;
 					nodeId = e.detail.catalogId;
-					lvs.forEach(function(item){
-						if(item.getAttribute('data-difficulty')==e.detail.difficulty){
-							item.classList.add('current');
-						}else{
-							item.classList.remove('current');
-						}
-						if(item.getAttribute('data-difficulty')<=e.detail.difficulty){
-							item.classList.add('active');
-						}else{
-							item.classList.remove('active');
-						}
-					});
 				});
 				
 				//取消做题
