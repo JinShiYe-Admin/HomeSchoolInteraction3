@@ -14,7 +14,7 @@ var appPay = (function(mod) {
 	mod.wechatPayUrl = window.storageKeyName.WXPAYSERVER;// 微信支付地址
 	mod.order_id =null; // 订单编号
 	mod.payCode = false;//是否是从第三方支付App返回到本APP的参数
-	mod.feem = '';//是否是从第三方支付App返回到本APP的参数
+	mod.feem = 0;//是否是从第三方支付App返回到本APP的参数
 	/**
 	 * 获取支付通道
 	 */
@@ -60,7 +60,7 @@ var appPay = (function(mod) {
 			body: orderDetailData.orderDetail.cnname, //商品名称
 			attach: orderDetailData.orderDetail.note, //附加描述,最好填写,以区分
 			uid: personal.uid, //订购的注册账户
-			total_fee: mod.feem, //人民币商品总价,以分为单位
+			total_fee: mod.feem*1, //人民币商品总价,以分为单位
 			goods_tag: orderDetailData.orderDetail.bustype.toString(), //商品标签,商品分类标签,根据实际情况填写
 			product_id: orderDetailData.orderDetail.feecode, //商品代码,根据实际情况填写:如套餐填写套餐编码
 			frmtype: "APP" //订购客户端,发起订购的设备:如PC,APP等

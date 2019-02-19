@@ -671,8 +671,8 @@
 						var domDiv = e.target;
 						var selectTime = $(domDiv).val();
 						this.servm = $(domDiv).find("option:selected").attr('monthnum');
-						this.feem = (selectTime * 1 * univlent * 1).toFixed(2);
-						appPay.feem=this.feem;
+						this.feem = (selectTime * 1 * univlent * 1);
+						appPay.feem=this.feem*1;
 					},
 					payAction: function() { //支付
 						if(this.servm == 0) {
@@ -736,7 +736,7 @@
 					var sysfuncModel = orderData.sysfuncList[i];
 					for(var a = 0; a < sysfuncModel.fext.length; a++) {
 						var fextModel = sysfuncModel.fext[a];
-						console.log("liushai:"+fextModel.checked);
+						console.log("fextModel:"+fextModel.checked);
 						if(fextModel.checked!='' && fextModel.checked!=undefined) {
 							var tempModel = {
 								fcode: sysfuncModel.fcode, //功能代码
