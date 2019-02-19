@@ -326,10 +326,6 @@
 				//阻止默认事件
 				event.detail.gesture.preventDefault();
 				offCanvasWrapper.offCanvas('close'); 
-				console.log('close222'); 
-				mui.fire(plus.webview.currentWebview().opener(), 'showCloseNav', {//显示底部tab栏
-					showCloseFlag: 1
-				});
 				setTimeout(function(){offCanvasWrapper.offCanvas('close');},100);
 			});
 			
@@ -440,13 +436,18 @@
 								self.endPullDownToRefresh();
 							}
 							homeworkListArray.homeworkArray=hmList;	
-							mui('.mui-scroll-wrapper').scroll().setTranslate(0, 0);
 						} else { //加载更多
 							if(self) {
 								self.endPullUpToRefresh();
 							}
 							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
 						} 
+						//TODO 根据班级ID 年纪ID 科目ID得到具体的名称
+						console.log('liushuai'+JSON.stringify(selectDetailData.grdsList));
+						console.log('liushuai'+JSON.stringify(selectDetailData.classList));
+						console.log('liushuai'+JSON.stringify(selectDetailData.kmList));
+						
+						
 					} else {
 						if(flagRef == 0) { //刷新
 							if(self) {
