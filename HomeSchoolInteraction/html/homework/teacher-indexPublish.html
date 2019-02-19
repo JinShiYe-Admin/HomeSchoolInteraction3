@@ -202,19 +202,25 @@
 				tempArr = arrayUnique2(tempArr, 'grdid');
 				for(var i = 0; i < tempArr.length; i++) {
 					var classModel = tempArr[i];
-					if(classModel.isfinish == 0 && classModel.isms == 0) {
-						addHomeworkContent.gradeIDsArray.push(classModel.grdid);
-						addHomeworkContent.gradeStr = addHomeworkContent.gradeStr + ',' + classModel.grdname;
-					}
+					//					if(classModel.isfinish == 0 && classModel.isms == 0) {
+					addHomeworkContent.gradeIDsArray.push(classModel.grdid);
+					addHomeworkContent.gradeStr = addHomeworkContent.gradeStr + ',' + classModel.grdname;
+					//					}
 				}
 				//班级
 				var tempArr1 = [].concat(personal.clss);
+				var newList = [];
 				for(var i = 0; i < tempArr1.length; i++) {
 					var temoCls = tempArr1[i];
 					if(temoCls.isfinish == 0 && temoCls.isms == 0) {
-						addHomeworkContent.classIDsArray.push(temoCls.clsid);
-						addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + temoCls.clsname;
+						newList.push(temoCls);
 					}
+				}
+				newList = arrayUnique2(newList, 'clsid');
+				for(var i = 0; i < newList.length; i++) {
+					var temoCls = newList[i];
+					addHomeworkContent.classIDsArray.push(temoCls.clsid);
+					addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + temoCls.clsname;
 				}
 				//去重
 				addHomeworkContent.gradeIDsArray = unique(addHomeworkContent.gradeIDsArray);
@@ -277,7 +283,7 @@
 								subjectPicker.pickers[0].setSelectedValue(addHomeworkContent.selectSubjectModel.value);
 							}, 100);
 							subjectPicker.show(function(items) {
-								console.log('items[0]:'+JSON.stringify(items[0]));
+								console.log('items[0]:' + JSON.stringify(items[0]));
 								addHomeworkContent.selectSubjectModel = items[0];
 								//								talkTitle.actionTypeText = _getParam(items[0], 'text');
 								//								talkTitle.actionTypeValue = _getParam(items[0], 'value');
@@ -299,36 +305,26 @@
 
 			//获取科目
 			var getSchSubThread = function() {
-				var enData1 = {};
-				//不需要加密的数据
-				var comData1 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid //系统所分配的应用ID
-				};
-				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
-					if(data1.RspCode == 0) {
-						console.log("data1:" + data1.RspTxt);
-						if(data1.RspData) {
-							mui('.mui-scroll-wrapper').scroll();
-							var kmList = data1.RspData.subs;
-							var newList = [];
-							for(var i = 0; i < kmList.length; i++) {
-								var temp = {
-									text: kmList[i].subname,
-									value: kmList[i].subcode
-								}
-								if(i == 0) {
-									addHomeworkContent.selectSubjectModel = temp;
-								}
-								newList.push(temp);
-							}
-							addHomeworkContent.subjectArray = newList;
-						}
-					} else {
-						console.log("data1:" + data1.RspTxt);
+				//班级
+				var tempArr1 = [].concat(personal.clss);
+				var newList = [];
+				for(var i = 0; i < tempArr1.length; i++) {
+					var temoCls = tempArr1[i];
+					if(temoCls.isfinish == 0 && temoCls.isms == 0) {
+						newList.push(temoCls);
 					}
-				});
+				}
+				newList = arrayUnique2(newList, 'subcode');
+				for(var i = 0; i < newList.length; i++) {
+					var temp = {
+						text: newList[i].subname,
+						value: newList[i].subcode
+					}
+					if(i == 0) {
+						addHomeworkContent.selectSubjectModel = temp;
+					}
+					addHomeworkContent.subjectArray.push(temp);
+				}
 			}
 			//数组去重
 			function unique(arr) {
@@ -399,7 +395,7 @@
 				mui('body').on('tap', 'img', function() {
 					document.activeElement.blur();
 				});
-				
+
 				//完成
 				document.getElementById('finish').addEventListener('tap', function() {
 					events.hideKeyBoard(hideOption);
@@ -442,8 +438,8 @@
 						var temp000 = tempImg.split('/');
 						var tempName = temp000[temp000.length - 1];
 						var tmpM = {
-							oriName:tempName,
-							filePath:tempImg
+							oriName: tempName,
+							filePath: tempImg
 						}
 						tempArray.push(tmpM);
 					}
@@ -456,19 +452,19 @@
 					content: addHomeworkContent.content, //作业内容；可选
 					attachs: tempArray, //附件数组；可选
 				}
-//				events.showWaiting();
+				//				events.showWaiting();
 				//发布作业 
 				hwTeacherSaveHomework(tempData1, function function_name(data) {
 					events.closeWaiting();
 					document.getElementById("finish").disabled = false;
 					if(data.RspCode == 0) {
 						addHomeworkContent.content = '';
-//						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
-//							var tempMobiles = temp4.join(',').toString();
-//							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
-//						}
+						//						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
+						//							var tempMobiles = temp4.join(',').toString();
+						//							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
+						//						}
 						mui.toast('成功');
-				} else {
+					} else {
 						mui.toast(data.RspTxt);
 					}
 				});
