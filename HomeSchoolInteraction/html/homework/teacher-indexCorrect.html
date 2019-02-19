@@ -181,6 +181,10 @@
 		<script src="../../js/publicProtocol-studentManage.js"></script>
 		<script type="text/javascript">
 			mui.init()
+			
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			
 			var pageIndex = 1; //请求数据页面
 			var pageSize = 10; //请求数据页面
 			var totalPageCount; //总页码
@@ -231,7 +235,6 @@
 					kmList:[],//科目数组
 					sjdjList:[],//上交登记数组
 					pgjdList:[]//批改进度数组
-						
 				},
 				methods: {
 					modifySelectCell: function(sumModel, currentModel,lx) {
@@ -283,35 +286,45 @@
 			});
 			
 			mui.plusReady(function() {
-				//根据老师权限获取年级和班级，去掉学生数组,更改字段
-				studentMP.getStudentManagePermission(1, 1, function(array) {
-					var grdsList=[];//年级数组
-					for(var i=0;i<array.length;i++){
-						var parentItem={};
-						var item=array[i];
-						parentItem.childName=array[i].text;
-						parentItem.childCode=array[i].value;
-						parentItem.childFlag=0;
-						parentItem.children=[];
-						for(var j=0;j<array[i].children.length;j++){
-							var childItem={};
-							childItem.childName=array[i].children[j].text;
-							childItem.childCode=array[i].children[j].value;
-							childItem.childFlag=0;
-							parentItem.children.push(childItem);
-						}
-						grdsList.push(parentItem);
+				//TODO 根据老师权限获取年级和班级，科目数组,更改字段
+				//获取个人信息中的所有班级
+				var tempArray = [].concat(personal.clss);
+				//将已经毕业、班主任的班级去掉
+				var tempArr = [];
+				//处理年级
+				for(var i = 0; i < tempArray.length; i++) {
+					var tempM = tempArray[i];
+					if(tempM.isfinish == 0 && tempM.isms == 0) {
+						tempArr.push(tempM);
 					}
-					selectDetailData.grdsList=grdsList;
-					//班级数组
-					var classList=grdsList[0].children;
-					selectDetailData.classList=classList;
-					console.log('gradsList:'+JSON.stringify(grdsList));
-					console.log('classList:'+JSON.stringify(classList));
-					getSchSubThread();
-					getTeacheromeworkList(pageIndex)
-				}, 1);
+				}
+				tempArr = arrayUnique2(tempArr, 'grdid');
+				//班级
+				var tempArr1 = [].concat(personal.clss);
+				var newList = [];personal
+				for(var i = 0; i < tempArr1.length; i++) {
+					var temoCls = tempArr1[i];
+					if(temoCls.isfinish == 0 && temoCls.isms == 0) {
+						newList.push(temoCls);
+					}
+				}
+				newList = arrayUnique2(newList, 'clsid');
+				alert(1);
+				console.log("年级列表:"+JSON.stringify(tempArr));
+				console.log("班级列表:"+JSON.stringify(newList));
+				//查询作业列表
+//				getTeacheromeworkList(pageIndex)
 			});
+			
+			//数组去重
+			function arrayUnique2(arr, name) {
+				var hash = {};
+				return arr.reduce(function(item, next) {
+					hash[next[name]] ? '' : hash[next[name]] = true && item.push(next);
+					return item;
+				}, []);
+			}
+			
 			//侧滑容器父节点
 			var offCanvasWrapper = mui('#offCanvasWrapper');
 			var offCanvasSide = document.getElementById("offCanvasSide");
@@ -353,40 +366,6 @@
 					showCloseFlag: 0
 				});
 			})
-			
-			//获取科目列表
-			var getSchSubThread = function() {
-				var enData1 = {};
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
-				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
-				//不需要加密的数据
-				var comData1 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid //系统所分配的应用ID
-				};
-				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
-					if(data1.RspCode == 0) {
-						console.log("data1:" + data1.RspTxt);
-						if(data1.RspData) {
-							var kmList = data1.RspData.subs;
-							var newList = [];
-							for(var i = 0; i < kmList.length; i++) { 
-								var temp = {
-									childName: kmList[i].subname,
-									childCode: kmList[i].subcode,
-									childFlag: 0
-								}
-								newList.push(temp);
-							}
-							selectDetailData.kmList=newList;
-							console.log("km:" + JSON.stringify(newList));  
-						}
-					} else {
-						console.log("data1:" + data1.RspTxt);
-					}
-				});
-			}
 			
 			//获取作业列表
 			function getTeacheromeworkList(index, self){
@@ -431,14 +410,10 @@
 							//作业列表
 							var hmList=data.RspData.list;
 						}
-						//TODO 根据班级ID 年纪ID 科目ID得到具体的名称
+						//TODO 根据班级ID 年级ID 科目ID得到具体的名称
 						for(var i=0;i<hmList.length;i++){
 							
 						}
-						console.log('liushuai1：'+JSON.stringify(selectDetailData.grdsList));
-						console.log('liushuai2：'+JSON.stringify(selectDetailData.classList));
-						console.log('liushuai3：'+JSON.stringify(selectDetailData.kmList));
-						
 						if(flagRef == 0) { //刷新
 							if(self) {
 								self.endPullDownToRefresh();
