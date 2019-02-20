@@ -59,15 +59,15 @@
 			<a @click="addNotice()" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>
 		</header>
 		<div class="mui-content" style="background: white;" id="gradeListData">
-			<div class="mui-input-row mui-checkbox mui-left" style="margin-top: 10px;margin-bottom: 5px;">
+			<!--<div class="mui-input-row mui-checkbox mui-left" style="margin-top: 10px;margin-bottom: 5px;">
 				<label class="gradeName">全选</label>
 				<input v-model="selectFlag" name="checkbox1" type="checkbox" @click="clickAll">
-			</div>
+			</div>-->
 
-			<ul class="mui-table-view" v-for="(gradeModel,index) in gradeListArray">
+			<ul class="mui-table-view" v-for="(gradeModel,index) in gradeListArray" style="margin-top: 0px;margin-bottom: 0px;">
 				<li class="mui-table-view-cell">
-					<div style="width: 50%;height: 40px;margin-top: 5px;margin-bottom: -5px;" class="flex-item">
-						<div class="mui-input-row mui-checkbox mui-left" style="margin-top: -10px;height: 30px;">
+					<div style="width: 50%;height: 40px;margin-top: 0px;margin-bottom: 0px;" class="flex-item">
+						<div class="mui-input-row mui-checkbox mui-left" style="margin-top: 0px;height: 30px;">
 							<label class="gradeName">{{gradeModel.grdname}}</label>
 							<input v-model="gradeModel.flag" name="checkbox1" type="checkbox" @click="clickGrade(gradeModel)">
 						</div>
@@ -129,13 +129,13 @@
 				var tempArray = [].concat(personal.clss);
 				//将已经毕业、班主任的班级去掉
 				var tempArr = [];
-				for (var i = 0; i < tempArray.length; i++) {
+				for(var i = 0; i < tempArray.length; i++) {
 					var tempM = tempArray[i];
-					if (tempM.isfinish == 0&&tempM.isms == 0) {
+					if(tempM.isfinish == 0 && tempM.isms == 0) {
 						tempArr.push(tempM);
 					}
 				}
-				
+
 				tempArr = arrayUnique2(tempArr, 'grdid');
 				for(var i = 0; i < tempArr.length; i++) {
 					var tempM = tempArr[i];
@@ -153,16 +153,16 @@
 					var tempGrd = gradeListData.gradeListArray[a];
 					for(var i = 0; i < tempArr1.length; i++) {
 						var temoCls = tempArr1[i];
-						if(temoCls.grdid == tempGrd.grdid&&temoCls.isfinish == 0&&temoCls.isms == 0) {
+						if(temoCls.grdid == tempGrd.grdid && temoCls.isfinish == 0 && temoCls.isms == 0) {
 							var tempFlag = 0;
-							for (var b = 0; b < classIDsArray.length; b++) {
-								if (classIDsArray[b] == temoCls.clsid) {
+							for(var b = 0; b < classIDsArray.length; b++) {
+								if(classIDsArray[b] == temoCls.clsid) {
 									tempFlag++;
 								}
 							}
-							if (tempFlag>0) {
+							if(tempFlag > 0) {
 								temoCls.flag = 1;
-							} else{
+							} else {
 								temoCls.flag = 0;
 							}
 							tempGrd.classArray.push(temoCls);
@@ -222,32 +222,55 @@
 
 			//点击年级
 			var clickGradeLi = function(gradeModel) {
-				for(var a = 0; a < gradeModel.classArray.length; a++) {
-					var classModel = gradeModel.classArray[a];
-					classModel.flag = gradeModel.flag;
+				for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
+					var TempGradeM = gradeListData.gradeListArray[i];
+					if(TempGradeM.grdid == gradeModel.grdid) {
+						for(var a = 0; a < gradeModel.classArray.length; a++) {
+							var classModel = gradeModel.classArray[a];
+							classModel.flag = gradeModel.flag;
+						}
+					} else {
+						TempGradeM.flag = 0;
+						for(var a = 0; a < TempGradeM.classArray.length; a++) {
+							var classModel = TempGradeM.classArray[a];
+							classModel.flag = 0;
+						}
+					}
 				}
 				//判断是否全选、取消全选
-				selectAllOrNo();
+				//				selectAllOrNo();
 			}
 
 			//点击班级
 			var clickClassLi = function(gradeModel, classModel) {
 				console.log('classModel:' + JSON.stringify(classModel));
 				console.log('gradeModel:' + JSON.stringify(gradeModel));
-				var tempFlag = 0;
-				for(var a = 0; a < gradeModel.classArray.length; a++) {
-					var classModel1 = gradeModel.classArray[a];
-					if(classModel1.flag == 1) {
-						tempFlag++;
+				//
+				for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
+					var TempGradeM = gradeListData.gradeListArray[i];
+					if(TempGradeM.grdid == gradeModel.grdid) {
+						var tempFlag = 0;
+						for(var a = 0; a < gradeModel.classArray.length; a++) {
+							var classModel1 = gradeModel.classArray[a];
+							if(classModel1.flag == 1) {
+								tempFlag++;
+							}
+						}
+						if(tempFlag == gradeModel.classArray.length) {
+							gradeModel.flag = 1;
+						} else {
+							gradeModel.flag = 0;
+						}
+					} else {
+						TempGradeM.flag = 0;
+						for(var a = 0; a < TempGradeM.classArray.length; a++) {
+							var classModel = TempGradeM.classArray[a];
+							classModel.flag = 0;
+						}
 					}
 				}
-				if(tempFlag == gradeModel.classArray.length) {
-					gradeModel.flag = 1;
-				} else {
-					gradeModel.flag = 0;
-				}
 				//刚进入页面得到数据时，判断全部的勾选状态
-				allDataSelect();
+				//				allDataSelect();
 			}
 
 			//判断是否全选、取消全选
@@ -281,8 +304,8 @@
 						//循环所有数据
 						for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
 							var gradeModel = gradeListData.gradeListArray[i];
-							var tmpFlag = 0;//当前年级中，是否有选中的班级
-							
+							var tmpFlag = 0; //当前年级中，是否有选中的班级
+
 							for(var a = 0; a < gradeModel.classArray.length; a++) {
 								var classModel = gradeModel.classArray[a];
 								if(classModel.flag == 1) {
@@ -308,7 +331,7 @@
 						mui.fire(plus.webview.currentWebview().opener(), 'selectGradeClass', {
 							gradeShow: tempGrade,
 							classShow: tempClass,
-//							classIDs: tempClassIDs,
+							//							classIDs: tempClassIDs,
 							classIDsArray: tempClassIDsArray,
 							gradeIDsArray: tempGradeIDsArray
 						});
