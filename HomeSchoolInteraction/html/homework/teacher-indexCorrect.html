@@ -42,10 +42,13 @@
 				border-radius: 6px;
 			}
 			.selectCellBG0{
-				background: red;
+				font-size:15px ;
+				background: #EAEAEA;
 			}
 			.selectCellBG1{
-				background: blue;
+				font-size:15px ;
+				background: #def9f7;
+				color: #009387;
 			}
 			
 			.bottom-btns {
@@ -113,8 +116,8 @@
 					</div>
 				</div>
 				<div id="dragRightBtn" class="bottom-btns">
-					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;" @tap='cancel()'>取消</button>
-					<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;" @tap='confirm()'>确定</button>
+					<button type="button" class="mui-btn  mui-btn-outlined" style="margin-bottom: 5px;width: 25%;margin-left: 7%;" @tap='cancel()'>取消</button>
+					<button type="button" class="mui-btn  mui-btn-outlined" style="margin-bottom: 5px;width: 25%;background: #00CFBD;border: #00CFBD;color:white ;margin-left: 7%;" @tap='confirm()'>确定</button>
 				</div>
 			</aside>
 			<div class="mui-inner-wrap" style="margin-top: -8px;">
@@ -125,10 +128,10 @@
 				<div id="rightTag" style="top: 44px;background: white;height: 37px;position: relative;z-index: 3;">
 					<p class="selectP" style="padding-top: 7px;">筛选</p>
 				</div>
-				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 37px;">
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 38px;">
 				<!--<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 8px;">-->
 					<div class="mui-scroll main" style="margin-top: -9px;">
-						<div id="homeworkListArray" class="" style="background: white;">
+						<div id="homeworkListArray" class="" style="background: #F2F2F2;">
 							<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArray">
 								<div class="mui-card-header">
 									{{homeworkModel.subname}}作业&nbsp;[{{homeworkModel.grdname}}&nbsp;{{homeworkModel.clsname}}]
