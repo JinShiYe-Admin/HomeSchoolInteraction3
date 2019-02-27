@@ -79,7 +79,7 @@
 								<li class="mui-table-view-cell mui-collapse keep-unfold">
 									<a class="mui-navigate-right" href="#">班级</a>
 									<div class="mui-collapse-content">
-										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in classList" @tap="modifySelectCell(classList,chlidModel)">
+										<div class="selectCell" :class="chlidModel.childFlag==0?'selectCellBG0':'selectCellBG1'" v-for="(chlidModel,index) in classList" @tap="modifySelectCell(classList,chlidModel,'cid')">
 											{{chlidModel.childName}}
 										</div>
 									</div>
@@ -129,23 +129,25 @@
 				<!--<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 8px;">-->
 					<div class="mui-scroll main" style="margin-top: -9px;">
 						<div id="homeworkListArray" class="" style="background: white;">
-							<div class="mui-card" v-for="homeworkModel in homeworkArray" @click="clickHomeworkModel(homeworkModel)">
+							<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArray">
 								<div class="mui-card-header">
-									{{homeworkModel.homeworkName}}
-									<button v-if="homeworkModel.homeworkFlag ==1" @click.stop="clickBtn(homeworkModel)" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+									{{homeworkModel.subname}}作业&nbsp;[{{homeworkModel.grdname}}&nbsp;{{homeworkModel.clsname}}]
+									<button v-if="homeworkModel.correctCount ==0 && homeworkModel.unSubmitCount ==0" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
 								</div>
 								<div class="mui-card-content">
 									<div class="homewrokContent">
-										{{homeworkModel.homeworkContent}}
+										{{homeworkModel.content}}
 									</div>
-									<img :src="homeworkModel.homeworkImg" alt="" width="100%" />
-									<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.homeworkFlag1}}/{{homeworkModel.homeworkFlag2}}</a>
-									<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.homeworkFlag3}}/{{homeworkModel.homeworkFlag4}}</a>
-									<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.homeworkFlag5}}</a>
+									<template v-if="homeworkModel.files.length!=0">
+										<img style="width: 100%;height: 200px; object-fit: cover;" :src="homeworkModel.files[0].url" />
+									</template>
+									<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.submitStatus}}</a>
+									<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.correctStatus}}</a>
+									<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.avgScore}}</a>
 		
 								</div>
 								<div class="mui-card-footer">
-									<p class="mui-card-link">发布时间:{{homeworkModel.homeworkFlag6}}</p>
+									<p class="mui-card-link">发布时间:{{homeworkModel.createTime}}</p>
 								</div>
 							</div>
 						</div>
@@ -230,22 +232,23 @@
 				el: "#gradList",
 				data: {
 					selectFlag: 0,
-					grdsList:[],//年级班级数组
-					classList:[],//年级班级数组
+					tempArr:[],//将已经毕业、班主任的班级去掉后的数组，重置侧滑选择栏 选择项时会用到
+					grdsList:[],//年级数组
+					classList:[],//班级数组
 					kmList:[],//科目数组
 					sjdjList:[],//上交登记数组
 					pgjdList:[]//批改进度数组
 				},
 				methods: {
 					modifySelectCell: function(sumModel, currentModel,lx) {
-						if(lx=='grd'&&currentModel.childFlag==0){//如果选择的类型是年纪&&防止重复点击  更改年级对应班级的值
-							var classList=currentModel.children;
-							selectDetailData.classList=classList;
-						}
-						if(currentModel.childFlag == 1){
-							currentModel.childFlag = 0;
-						}else{
-							currentModel.childFlag = 1;
+						console.log(JSON.stringify(currentModel));
+						if(currentModel.childFlag==0){//防止重复点击
+							for(var i=0;i<sumModel.length;i++){
+								var model=sumModel[i];
+									model.childFlag=0;
+							}
+							currentModel.childFlag=1;
+							resetData(lx,currentModel);
 						}
 					}
 				}
@@ -276,44 +279,89 @@
 					homeworkArray: []
 				},
 				methods: {
-					clickHomeworkModel: function(model) {
-						console.log('clickHomeworkModel:' + JSON.stringify(model));
+					clickHomeworkModel: function(ev,item) {//作业卡片点击事件
+						var _event = ev.target;
+						if($(_event).attr('class')!=undefined && $(_event).attr('class').indexOf('mui-btn')!=-1) { //点击li下的button
+							this.$options.methods.clickBtn(item);
+						} else { //点击li标签
+							console.log('clickHomeworkModel:' + JSON.stringify(item));
+						}
 					},
-					clickBtn: function(model) {
-						console.log('clickBtn:' + JSON.stringify(model));
+					clickBtn: function(item) {//撤销按钮点击事件
+						console.log('clickBtn:' + JSON.stringify(item));
 					}
 				}
 			});
 			
 			mui.plusReady(function() {
-				//TODO 根据老师权限获取年级和班级，科目数组,更改字段
+				var gid,cid;
 				//获取个人信息中的所有班级
 				var tempArray = [].concat(personal.clss);
 				//将已经毕业、班主任的班级去掉
 				var tempArr = [];
-				//处理年级
 				for(var i = 0; i < tempArray.length; i++) {
 					var tempM = tempArray[i];
 					if(tempM.isfinish == 0 && tempM.isms == 0) {
 						tempArr.push(tempM);
 					}
 				}
-				tempArr = arrayUnique2(tempArr, 'grdid');
-				//班级
-				var tempArr1 = [].concat(personal.clss);
-				var newList = [];personal
-				for(var i = 0; i < tempArr1.length; i++) {
-					var temoCls = tempArr1[i];
-					if(temoCls.isfinish == 0 && temoCls.isms == 0) {
-						newList.push(temoCls);
-					}
+				selectDetailData.tempArr=tempArr;
+				//处理年级
+				var tempGrd = arrayUnique2(tempArr, 'grdid');
+				var grdList=[];
+				//放一个名称为'全部'的选择项
+				var tempMGrd={};
+				tempMGrd.childFlag=1;
+				tempMGrd.childName='全部';
+				tempMGrd.childCode='';
+				grdList.push(tempMGrd);
+				for(var i = 0; i < tempGrd.length; i++) {
+					tempMGrd={};
+					tempMGrd.childFlag=0;
+					tempMGrd.childName=tempGrd[i].grdname;
+					tempMGrd.childCode=tempGrd[i].grdid;
+					grdList.push(tempMGrd);
 				}
-				newList = arrayUnique2(newList, 'clsid');
-				alert(1);
-				console.log("年级列表:"+JSON.stringify(tempArr));
-				console.log("班级列表:"+JSON.stringify(newList));
+//				console.log(JSON.stringify(grdList))
+				//班级
+				var tempCls = arrayUnique2(tempArr, 'clsid');
+				var clsList=[];
+				//放一个名称为'全部'的选择项
+				var tempMCls={};
+				tempMCls.childFlag=1;
+				tempMCls.childName='全部';
+				tempMCls.childCode='';
+				clsList.push(tempMCls);
+				for(var i = 0; i < tempCls.length; i++) {
+					tempMCls={};
+					tempMCls.childFlag=0;
+					tempMCls.childName=tempCls[i].clsname;
+					tempMCls.childCode=tempCls[i].clsid;
+					clsList.push(tempMCls);
+				}
+//				console.log(JSON.stringify(clsList))
+				//科目
+				var tempSubs = arrayUnique2(tempArr, 'subcode');
+				var kmList=[];
+				//放一个名称为'全部'的选择项
+				var tempMKm={};
+				tempMKm.childFlag=1;
+				tempMKm.childName='全部';
+				tempMKm.childCode='';
+				kmList.push(tempMKm);
+				for(var i = 0; i < tempSubs.length; i++) {
+					tempMKm={};
+					tempMKm.childFlag=0;
+					tempMKm.childName=tempSubs[i].subname;
+					tempMKm.childCode=tempSubs[i].subcode;
+					kmList.push(tempMKm);
+				}
+//				console.log(JSON.stringify(kmList))
+				selectDetailData.grdsList=grdList;//年级班级数组
+				selectDetailData.classList=clsList;//年级班级数组
+				selectDetailData.kmList=kmList;//科目数组
 				//查询作业列表
-//				getTeacheromeworkList(pageIndex)
+				getTeacheromeworkList(pageIndex)
 			});
 			
 			//数组去重
@@ -323,6 +371,245 @@
 					hash[next[name]] ? '' : hash[next[name]] = true && item.push(next);
 					return item;
 				}, []);
+			}
+			
+			//重置侧滑选择栏 选择项
+			function resetData(lx,currentModel) {
+				var tempArr=selectDetailData.tempArr;
+				if(lx=='grd'){//根据所选年级 重置班级和科目的值
+				 	var grdid=currentModel.childCode;
+				 	//得到年级下的班级
+					var tempCls = arrayUnique2(tempArr, 'clsid');
+					var clsList=[];
+					var tempMCls={};
+					tempMCls.childFlag=1;
+					tempMCls.childName='全部';
+					tempMCls.childCode='';
+					clsList.push(tempMCls);
+					for(var i = 0; i < tempArr.length; i++) {
+						tempMCls={};
+						if(grdid=='' || grdid==tempArr[i].grdid){//或条件成立的，都放入班级数组。（grdid为空，说明选择的全部年级 || 根据选择的年级ID筛选出班级）
+							tempMCls.childFlag=0;
+							tempMCls.childName=tempArr[i].clsname;
+							tempMCls.childCode=tempArr[i].clsid;
+							clsList.push(tempMCls);
+						}
+					}
+					//得到年级下的科目
+					var kmList=[];
+					var tempMKm={};
+					tempMKm.childFlag=1;
+					tempMKm.childName='全部';
+					tempMKm.childCode='';
+					kmList.push(tempMKm);
+					for(var i = 0; i < tempArr.length; i++) {
+						tempMKm={};
+						if(grdid=='' || grdid==tempArr[i].grdid){//或条件成立的，都放入班级数组。（grdid为空，说明选择的全部年级 || 根据选择的年级ID筛选出科目）
+							tempMKm.childFlag=0;
+							tempMKm.childName=tempArr[i].subname;
+							tempMKm.childCode=tempArr[i].subcode;
+							kmList.push(tempMKm);
+						}
+					}
+//					console.log('grdid:'+grdid+','+JSON.stringify(clsList))
+//					console.log('grdid:'+grdid+','+JSON.stringify(kmList))
+					selectDetailData.classList=clsList;//年级班级数组
+					selectDetailData.kmList=kmList;//科目数组
+				}else if(lx=='cid'){//根据所选班级 重置科目的值
+					var clsid=currentModel.childCode;
+					var comData =getSelectData();
+					var grdid=comData.gradeId;
+					var kmList=[];
+					var tempMKm={};
+					tempMKm.childFlag=1;
+					tempMKm.childName='全部';
+					tempMKm.childCode='';
+					kmList.push(tempMKm);
+					for(var i = 0; i < tempArr.length; i++) {
+						tempMKm={};
+						if(grdid!='' && clsid!=''){//（grdid，clsid为空不为空，根据选择的班级和年级ID筛选出科目）
+							if(grdid==tempArr[i].grdid && clsid==tempArr[i].clsid){
+								tempMKm.childFlag=0;
+								tempMKm.childName=tempArr[i].subname;
+								tempMKm.childCode=tempArr[i].subcode;
+								kmList.push(tempMKm);
+							}
+						}else if(grdid!='' && clsid==''){//（grdid不为空，clsid为空，选择了全部班级，根据选择的年级ID筛选出科目）
+							if(grdid==tempArr[i].grdid){
+								tempMKm.childFlag=0;
+								tempMKm.childName=tempArr[i].subname;
+								tempMKm.childCode=tempArr[i].subcode;
+								kmList.push(tempMKm);
+							}
+						}else if(grdid=='' && clsid!=''){//（grdid为空，clsid不为空，选择了全部年级，根据选择的班级ID筛选出科目）
+							if(clsid==tempArr[i].clsid){
+								tempMKm.childFlag=0;
+								tempMKm.childName=tempArr[i].subname;
+								tempMKm.childCode=tempArr[i].subcode;
+								kmList.push(tempMKm);
+							}
+						}else if(grdid=='' && clsid==''){//（grdid，clsid为空，选择了全部年级和班级，只筛选出去重后的科目）
+							var tempSubs = arrayUnique2(tempArr, 'subcode');
+							for(var i = 0; i < tempSubs.length; i++) {
+								tempMKm={};
+								tempMKm.childFlag=0;
+								tempMKm.childName=tempSubs[i].subname;
+								tempMKm.childCode=tempSubs[i].subcode;
+								kmList.push(tempMKm);
+							}
+						}
+					}
+					selectDetailData.kmList=kmList;//科目数组
+//					console.log(grdid+","+clsid+','+JSON.stringify(kmList));
+				}
+				console.log("重置完成"+JSON.stringify(getSelectData()));
+			}
+			
+			
+			//获取作业列表
+			function getTeacheromeworkList(index, self){
+				var comData =getSelectData();
+				console.log('comData=='+JSON.stringify(comData));
+				var wd;
+				if(flagRef == 0) {
+					wd = events.showWaiting();
+				}
+				hwTeacheromeworkList(comData, function(data) {
+					if(flagRef == 0) {
+						wd.close();
+					}
+					if(data.RspCode == 0) {
+						totalPageCount = data.RspData.totalPage;
+						pageIndex++;
+						if(data.RspData){
+							//解析数据
+							//上交登记
+							var submitArray=data.RspData.submitArray;
+							var submitArrayNew=[];
+							var itemDj ={};
+							itemDj.childFlag=1;
+							itemDj.childName='全部';
+							itemDj.childCode='';
+							submitArrayNew.push(itemDj);
+							for(var i=0;i<submitArray.length;i++){
+								itemDj ={};
+								itemDj.childName=submitArray[i].text;
+								itemDj.childCode=submitArray[i].value;
+								itemDj.childFlag=0;
+								submitArrayNew.push(itemDj);
+							}
+							//批改进度
+							var correctArray=data.RspData.correctArray;
+							var correctArrayNew=[];
+							var itemJd ={};
+							itemJd.childFlag=1;
+							itemJd.childName='全部';
+							itemJd.childCode='';
+							correctArrayNew.push(itemJd);
+							for(var i=0;i<correctArray.length;i++){
+								itemJd ={};
+								itemJd.childName=correctArray[i].text;
+								itemJd.childCode=correctArray[i].value;
+								itemJd.childFlag=0;
+								correctArrayNew.push(itemJd);
+							}
+							selectDetailData.sjdjList=submitArrayNew;
+							selectDetailData.pgjdList=correctArrayNew;
+							//作业列表
+							var hmList=data.RspData.list;
+						}
+						for(var i=0;i<hmList.length;i++){
+							var model=getName(hmList[i].grdId,hmList[i].classId,hmList[i].subCode);
+							hmList[i].grdname=model.grdname||'';
+							hmList[i].clsname=model.clsname||'';
+							hmList[i].subname=model.subname||'';
+						}
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+							homeworkListArray.homeworkArray=hmList;	
+						} else { //加载更多 
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
+						} 
+						console.log('作业列表:' + JSON.stringify(homeworkListArray.homeworkArray));
+					} else {
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+						} else { //加载更多
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+						}
+						mui.toast(data.msg);
+					}
+				});
+			}
+			//根据作业数组传回的ID，得到年级、班级、科目名称
+			function getName(grdId,classId,subCode){
+				var tempArr=selectDetailData.tempArr;
+				var model={}
+				for(var i=0;i<tempArr.length;i++){
+					if(grdId==tempArr[i].grdid){
+						model.grdname=tempArr[i].grdname;
+					}
+					if(classId==tempArr[i].clsid){
+						model.clsname=tempArr[i].clsname;
+					}
+					if(subCode==tempArr[i].subcode){
+						model.subname=tempArr[i].subname;
+					}
+				}
+				return model;
+			}
+			
+			//得到侧滑菜单选中的值，如果初次进入页面，默认返回的对象的值为空 
+			function getSelectData(){
+				var comData ={
+					gradeId:'',//年级ID
+					classId:'',//班级ID
+					subCode:'',//科目编码
+					submitStatus:'',//上交登记字段
+					correctStatus:'',//批改进度字段
+					pageNumber:pageIndex,//当前页数
+					pageSize:pageSize//每页记录数
+				};
+				for(var i=0;i<selectDetailData.grdsList.length;i++){
+					var item=selectDetailData.grdsList[i];
+					if(item.childFlag==1){
+						comData.gradeId=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.classList.length;i++){
+					var item=selectDetailData.classList[i];
+					if(item.childFlag==1){
+						comData.classId=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.kmList.length;i++){
+					var item=selectDetailData.kmList[i];
+					if(item.childFlag==1){
+						comData.subCode=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.sjdjList.length;i++){
+					var item=selectDetailData.sjdjList[i];
+					if(item.childFlag==1){
+						comData.submitStatus=item.childCode;
+					}
+				}
+				for(var i=0;i<selectDetailData.pgjdList.length;i++){
+					var item=selectDetailData.pgjdList[i];
+					if(item.childFlag==1){
+						comData.correctStatus=item.childCode;
+					}
+				}
+				return comData;
 			}
 			
 			//侧滑容器父节点
@@ -367,121 +654,6 @@
 				});
 			})
 			
-			//获取作业列表
-			function getTeacheromeworkList(index, self){
-				var comData =getSelectData();
-				console.log('comData=='+JSON.stringify(comData));
-				var wd;
-				if(flagRef == 0) {
-					wd = events.showWaiting();
-				}
-				hwTeacheromeworkList(comData, function(data) {
-					if(flagRef == 0) {
-						wd.close();
-					}
-					console.log('作业列表:' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-						totalPageCount = data.RspData.totalPage;
-						pageIndex++;
-						if(data.RspData){
-							//解析数据
-							//上交登记
-							var submitArray=data.RspData.submitArray;
-							var submitArrayNew=[];
-							for(var i=0;i<submitArray.length;i++){
-								var item ={};
-								item.childName=submitArray[i].text;
-								item.childCode=submitArray[i].value;
-								item.childFlag=0;
-								submitArrayNew.push(item);
-							}
-							//批改进度
-							var correctArray=data.RspData.correctArray;
-							var correctArrayNew=[];
-							for(var i=0;i<correctArray.length;i++){
-								var item ={};
-								item.childName=correctArray[i].text;
-								item.childCode=correctArray[i].value;
-								item.childFlag=0;
-								correctArrayNew.push(item);
-							}
-							selectDetailData.sjdjList=submitArrayNew;
-							selectDetailData.pgjdList=correctArrayNew;
-							//作业列表
-							var hmList=data.RspData.list;
-						}
-						//TODO 根据班级ID 年级ID 科目ID得到具体的名称
-						for(var i=0;i<hmList.length;i++){
-							
-						}
-						if(flagRef == 0) { //刷新
-							if(self) {
-								self.endPullDownToRefresh();
-							}
-							homeworkListArray.homeworkArray=hmList;	
-						} else { //加载更多
-							if(self) {
-								self.endPullUpToRefresh();
-							}
-							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
-						} 
-					} else {
-						if(flagRef == 0) { //刷新
-							if(self) {
-								self.endPullDownToRefresh();
-							}
-						} else { //加载更多
-							if(self) {
-								self.endPullUpToRefresh();
-							}
-						}
-						mui.toast(data.msg);
-					}
-				});
-			}
-			//得到侧滑菜单选中的值，如果初次进入页面，默认返回的对象的值为空 
-			function getSelectData(){
-				var comData ={
-					gradeId:'',//年级ID
-					classId:'',//班级ID
-					subCode:'',//科目编码
-					submitStatus:'',//上交登记字段
-					correctStatus:'',//批改进度字段
-					pageNumber:pageIndex,//当前页数
-					pageSize:pageSize//每页记录数
-				};
-				for(var i=0;i<selectDetailData.grdsList.length;i++){
-					var item=selectDetailData.grdsList[i];
-					if(item.childFlag==1){
-						comData.gradeId=item.childCode;
-					}
-				}
-				for(var i=0;i<selectDetailData.classList.length;i++){
-					var item=selectDetailData.classList[i];
-					if(item.childFlag==1){
-						comData.classId=item.childCode;
-					}
-				}
-				for(var i=0;i<selectDetailData.kmList.length;i++){
-					var item=selectDetailData.kmList[i];
-					if(item.childFlag==1){
-						comData.subCode=item.childCode;
-					}
-				}
-				for(var i=0;i<selectDetailData.sjdjList.length;i++){
-					var item=selectDetailData.sjdjList[i];
-					if(item.childFlag==1){
-						comData.submitStatus=item.childCode;
-					}
-				}
-				for(var i=0;i<selectDetailData.pgjdList.length;i++){
-					var item=selectDetailData.pgjdList[i];
-					if(item.childFlag==1){
-						comData.correctStatus=item.childCode;
-					}
-				}
-				return comData;
-			}
 			//主界面和侧滑菜单界面均支持区域滚动；
 			mui('#offCanvasSideScroll').scroll();
 			mui('#offCanvasContentScroll').scroll();
