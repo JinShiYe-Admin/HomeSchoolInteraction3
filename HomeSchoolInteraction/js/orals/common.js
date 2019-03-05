@@ -155,6 +155,40 @@ function readTree(tree, callback) {
     }
 }
 
+//监听上拉刷新，el被监听的元素
+function setPullRefresh(el, callback) {
+	var startX, startY;
+	refreshBox = document.querySelector(el);
+	if(refreshBox){
+		refreshBox.addEventListener('touchstart',function (ev) {
+            startX = ev.touches[0].pageX;
+            startY = ev.touches[0].pageY;
+        }, false);
+        refreshBox.addEventListener("touchend", function(ev){
+        	var endX, endY;
+            endX = ev.changedTouches[0].pageX;
+            endY = ev.changedTouches[0].pageY;
+            var direction = GetSlideDirection(startX, startY, endX, endY);
+			// console.log(this.scrollHeight+"---"+this.scrollTop);
+            if(direction==1&&(this.scrollHeight<=this.scrollTop+this.clientHeight)) {
+            	callback();
+            }
+        }, false);
+		if(mui.os.android&&parseFloat(mui.os.version)<6.0){
+			refreshBox.addEventListener("touchcancel", function(ev){
+			 	var endX, endY;
+			     endX = ev.changedTouches[0].pageX;
+			     endY = ev.changedTouches[0].pageY;
+			     var direction = GetSlideDirection(startX, startY, endX, endY);
+			 	// console.log(this.scrollHeight+"---"+this.scrollTop);
+			     if(direction==1&&(this.scrollHeight<=this.scrollTop+this.clientHeight)) {
+			     	callback();
+			     }
+			 }, false);
+		}
+	}
+}
+
 //滑动方向
 function GetSlideDirection(startX, startY, endX, endY) {
     var dy = startY - endY;

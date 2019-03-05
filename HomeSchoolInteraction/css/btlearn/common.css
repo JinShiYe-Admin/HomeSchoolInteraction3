@@ -7,7 +7,7 @@ body {
     font-size: 0.28rem;
 }
 [v-cloak] {
-	display: none;
+	display: none!important;
 }
 .svg-icon, .icon {
 	width: 1em;
@@ -478,6 +478,8 @@ ul li.navigate-right:before {
 }
 .search-title {
 	border-bottom: 1px solid #EEEEEE;
+	background-color: #FFFFFF;
+	flex-shrink: 0;
 }
 .search-title > p {
 	font-size: 16px;

@@ -90,7 +90,9 @@
 				margin-left: -1.6rem;
 				margin-right: 0.4rem;
 				transform: scale(0.5);
+				-webkit-transform: scale(0.5);
 				transform-origin: 150% 50%;
+				-webkit-transform-origin: 150% 50%;
 			}
 			ul.als-list li .sub .label.bad {
 				color: #DB4848;
@@ -127,9 +129,9 @@
 		<div class="mui-content">
 			<!--校讯通菜单-->
 			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-				<!-- <a class="mui-control-item" data-target="bl-search" href="#search">
+				<a class="mui-control-item" data-target="bl-search" href="#search">
 			        <span>找题</span>
-			    </a> -->
+			    </a>
 				<a class="mui-control-item mui-active" data-target="bl-test-menu" href="#test-menu">
 			        <span>组卷测试</span>
 			    </a>
@@ -685,6 +687,7 @@
 							});
 						}
 					},
+					// 搜索
 					search: function() {
 						this.keyWord = document.querySelector("#search input[type='search']").value;
 						this.listPage = 1;
@@ -710,7 +713,6 @@
 					},
 					//获取搜索列表
 					getSearchList: function() {
-						console.log("获取搜索列表");
 						var _this = this;
 						if(_this.listPage==1) {
 							_this.searchList = [];
@@ -721,13 +723,13 @@
 							pageNumber: _this.listPage,
 							pageSize: 10
 						};
+						console.log("获取搜索列表参数："+JSON.stringify(_data));
 						_this.isLoading = true;
 						plus.nativeUI.showWaiting();
 						commonAjax("/Ycyx/FindQuestion", {
 							data: _data,
 							success: function(res){
 								console.log(JSON.stringify(res));
-								console.log(res);
 								var pg = res.data.page;
 								_this.searchList = _this.searchList.concat(pg.list);
 								_this.isLastPage = pg.lastPage;

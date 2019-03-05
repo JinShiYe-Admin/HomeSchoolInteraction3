@@ -103,6 +103,7 @@
 								answerJson: JSON.stringify(answerJson)
 							},
 							success: function(res) {
+								plus.nativeUI.closeWaiting();
 								var res_data = JSON.parse(res.data);
 								//结果页
 								var bl_result = plus.webview.getWebviewById('bl-test-result');
@@ -122,9 +123,17 @@
 										extras: result_data
 									});
 								}
-								plus.nativeUI.closeWaiting();
 								//刷新其他页面数据
 								mui.fire(plus.webview.getWebviewById('bl-index')||self.opener().opener().opener(), "refresh");
+								//关闭开始页
+								var test_start = plus.webview.getWebviewById('bl-test-start');
+								test_start && test_start.hide("none");
+								//关闭测试页 
+								var bl_testing = plus.webview.getWebviewById('bl-testing');
+								bl_testing && bl_testing.close('none');
+								//echarts 重新绘图
+								var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
+								als_detail && mui.fire(als_detail, "rePain");
 							},
 							fail: function(res) {
 								console.log(res);
