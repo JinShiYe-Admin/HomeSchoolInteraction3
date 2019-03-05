@@ -195,6 +195,8 @@
 			var totalPageCount; //总页码
 			var flagRef = 0; //是刷新0，还是加载更多1
 			
+			
+			var hmList;//作业数组
 			//下拉、上滑加载更多
 			mui(".mui-scroll-wrapper .mui-scroll.main").pullToRefresh({
 				down: {
@@ -288,6 +290,7 @@
 							this.$options.methods.clickBtn(item);
 						} else { //点击li标签
 							console.log('clickHomeworkModel:' + JSON.stringify(item));
+							utils.mOpenWithData("../../html/homework/teacher-homework-correctDetail.html", item);
 						}
 					},
 					clickBtn: function(item) {//撤销按钮点击事件
@@ -519,7 +522,7 @@
 							selectDetailData.sjdjList=submitArrayNew;
 							selectDetailData.pgjdList=correctArrayNew;
 							//作业列表
-							var hmList=data.RspData.list;
+							hmList=data.RspData.list;
 						}
 						for(var i=0;i<hmList.length;i++){
 							var model=getName(hmList[i].grdId,hmList[i].classId,hmList[i].subCode);
