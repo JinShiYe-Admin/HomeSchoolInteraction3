@@ -56,7 +56,7 @@
 				<span class="mui-icon mui-icon-email"></span>
 				<span id="flag1" class="mui-tab-label">批改作业</span>
 			</a>
-			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm.html">
+			<a class="mui-tab-item" href="../../html/homework/teacher-indexForm1.html">
 				<span class="mui-icon mui-icon-contact"></span>
 				<span id="flag2" class="mui-tab-label">作业报表</span>
 			</a>
@@ -130,13 +130,11 @@
 					tempDiv.style.display = 'none'
 					if(plus.os.name == 'Android') {
 						for(var i=0;i<wvs.length;i++){
-							console.log('index:'+wvs[i].getURL())
-								wvs[i].setStyle({top: '0px',bottom: '0px'})
+							wvs[i].setStyle({top: '0px',bottom: '0px'})
 						}
 					} else {
 						for(var i=0;i<wvs.length;i++){
-							console.log('index:'+wvs[i].getURL())
-								wvs[i].setStyle({top: '0px',bottom: '-51px'})
+							wvs[i].setStyle({top: '0px',bottom: '-51px'})
 						}
 					}
 					
@@ -144,13 +142,11 @@
 					tempDiv.style.display = 'inherit'
 					if(plus.os.name == 'Android') {
 						for(var i=0;i<wvs.length;i++){
-							console.log('index:'+wvs[i].getURL())
 							wvs[i].setStyle({top: '0px',bottom: '51px'})
 						}
 					} else {
 						for(var i=0;i<wvs.length;i++){
-							console.log('index:'+wvs[i].getURL())
-								wvs[i].setStyle({top: '0px',bottom: '0px'})
+							wvs[i].setStyle({top: '0px',bottom: '0px'})
 						}
 					}
 				}

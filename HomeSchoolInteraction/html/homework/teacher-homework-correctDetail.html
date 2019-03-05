@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<title>批改详情</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mui.css" rel="stylesheet" />
 		<style type="text/css">
 			body{
 				background: #fff;
@@ -60,6 +60,7 @@
 				margin: 0 10px;
 				color: #6d6d6d;
 				text-indent: 2em;
+				word-wrap:break-word
 			}
 			
 			.tow-line{/*文字只显示两行*/
@@ -71,7 +72,7 @@
 				-webkit-box-orient: vertical;
 			}
 			.more-btn{
-				color:red;
+				color:#6d6d6d;
 				float: right;
 				margin-top: -24px;
 				border: 0;
@@ -133,6 +134,176 @@
 				white-space:nowrap;
 				word-break:keep-all;
 			}
+			
+			 .mui-btn:enabled:active, button:enabled:active {
+				color: #fff;
+				background-color: #fff;
+			}  
+			
+			.mui-grid-view{
+				text-align: left;
+				padding: 0px 0px 10px 0 !important;
+			}
+			.mui-table-view:before {
+				height: 0;
+			}
+			.img-design{
+				float: left;
+				margin-top: 10px;
+			}
+			
+			.mui-slider .mui-segmented-control.mui-segmented-control-inverted ~ .mui-slider-group .mui-slider-item {
+				border-bottom: 0;
+			}
+			
+			/*图片预览相关*/
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
 		</style>
 	</head>
 
@@ -144,16 +315,15 @@
 		<div class="mui-content" style="background: white;">
 			<div id="detail">
 				<div class="mui-row title-info">
-						<p v-cloak class="user-title">语文作业</p>
-						<p v-cloak class="user-title-se">王老师&nbsp;|&nbsp;2018-10-19 11:55</p>
-						<p v-cloak class="user-title-body" :class="{ 'tow-line': more }" @tap="showMore()" >近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。
-						近期市场资金面仍显宽松，银行间流动性保持充裕。18日，早间公布的上海银行间同业拆放利率（Shibor）各品种价格大部分上行，银行间市场上早盘开市后，银行机构积极融出，银行体系间流动性充足。交易所市场上，在资金面宽松的背景下，各期限回购品种价格大多下行。</p>
+						<p v-cloak class="user-title">{{homeworkDetail.subname}}作业</p>
+						<p v-cloak class="user-title-se">{{homeworkDetail.createUsername}}&nbsp;|&nbsp;{{homeworkDetail.createTime}}</p>
+						<p v-cloak class="user-title-body" :class="{'tow-line': more}" @tap="showMore()" >{{homeworkDetail.content}}</p>
 						<button v-cloak class="mui-btn more-btn" @tap="showMore()" >{{btnText}}</button><!--:style="{display:more==-1? 'none':'inherit'}"-->
+						<ul v-cloak v-show="!more" class="mui-table-view mui-grid-view">
+							<li class="mui-table-view-cell mui-media img-design" :class="getWidth(homeworkDetail.files)"  v-for="item in homeworkDetail.files">
+								<a href="#"><img class="mui-media-object" :src="item.url" data-preview-src="" data-preview-group="1" ></a>
+							</li>
+						</ul>
 					</div>
 					<div class="right-btn">
 						<button class="mui-btn btn-pl" @tap="pj()" >批量评价</button>
@@ -161,7 +331,7 @@
 					</div>
 				<div class="line"></div>
 			</div>
-			<div id="slider" class="mui-slider">
+			<div id="slider" class="mui-slider" style="height: 100%;">
 				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 						<a class="mui-control-item" href="#item1mobile">未批</a>
 						<a class="mui-control-item" href="#item2mobile">已批</a>
@@ -172,13 +342,23 @@
 						<div id="scroll1" >
 							<div class="mui-scroll">
 								<ul class="mui-table-view">
-									<li class="mui-table-view-cell" v-for="(item,index) in wp" @tap="toCritique(index,item)">
-										<a class="mui-navigate-right">
-											<img class="li-img" :src=item.img />
-											<span class="li-name">{{item.name}}</span>
-											<span class="li-time">{{item.time}}</span>
-										</a>
-									</li>
+									<template v-if="wp.length>0">
+										<li class="mui-table-view-cell" v-for="(item,index) in wp" @tap="toCritique(index,item)">
+											<a class="mui-navigate-right">
+												<img class="li-img" src='../../img/homeSchool/schoolPage2.png' />
+												<span class="li-name">{{item.studentName}}</span>
+												<template v-if="item.correctStatus==0 || item.correctStatus==1"><!--既不是1未提交也不是0未登记 就显示提交时间  已交2 补交3-->
+													<span class="li-time" style="text-align: center;">{{item.correctStatusTxt}}</span>
+												</template> 
+												<template v-else>
+													<span class="li-time">{{item.correctStatusTxt}}({{getSubTime(item.submitTime)}})</span>
+												</template>
+											</a>
+										</li>
+									</template>
+									<template v-else>
+										<p style="margin-left: 15px;">暂无数据</p>
+									</template>
 								</ul>
 							</div>
 						</div>
@@ -187,14 +367,18 @@
 						<div id="scroll2" class="mui-scroll-wrapper">
 							<div class="mui-scroll">
 								<ul class="mui-table-view">
-									<li class="mui-table-view-cell" v-for="(item,index) in yp" @tap="toCritique(index,item)">
-										<a class="mui-navigate-right">
-											<img class="li-img" src="../../img/homeSchool/schoolPage2.png" />
-											<span class="li-name">淼淼描</span>
-											<span class="li-score">80分</span>
-											<span class="li-py">非常非常非常非常不错~~~~非常非常非常非常不错~~~~</span>
-										</a>
-									</li>
+									<template v-if="yp.length>0">
+										<li class="mui-table-view-cell" v-for="(item,index) in yp" @tap="toCritique(index,item)">
+											<a class="mui-navigate-right">
+												<img class="li-img" src='../../img/homeSchool/schoolPage2.png' />
+												<span class="li-name">{{item.studentName}}</span>
+												<span class="li-time">{{item.correctStatusTxt}}({{getSubTime(item.submitTime)}})</span>
+											</a>
+										</li>
+									</template>
+									<template v-else>
+										<p style="margin-left: 15px;">暂无数据</p>
+									</template>
 								</ul>
 							</div>
 						</div>
@@ -203,74 +387,151 @@
 			</div>
 		</div>
 		<script src="../../js/slide/mui.min.js"></script>
-		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/events.js"></script>
-		<script src="../../js/libs/jquery.js"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
+		
 		<script type="text/javascript">
+			var	homeworkDetail = utils.getDataFromUrl(window.location.href);
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			var	publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			mui.init({
 				swipeBack: false
 			});
 			mui.plusReady(function() {
-				console.log("hahhaha:"+plus.screen.resolutionHeight);
+				console.log("resolutionHeight:"+plus.screen.resolutionHeight);
 				var heigh=$(window).height()-270;
-				$('.mui-slider-group').height(heigh);
+				$('#item1mobile').height(heigh);
+				getHomeworkDetail();
 			});
+			//初始化图片预览
+			mui.previewImage();
+			//作业详情
 			var detail = new Vue({
 				el: "#detail",  
 				data: {
-					more:true,
-					btnText:'more'
+					more:true,//该参数如果为true ,讲只显示两行文本,多余的以...省略
+					btnText:'>>',//更多按钮
+					homeworkDetail:{}//作业对象
 				},
 				methods: {
 					showMore: function(model) {
-						if(this.more){
+						if(this.more){//展开
 							this.more=false;
-							this.btnText='hide'
-						}else{
+							this.btnText='<<';
+						}else{//缩放
 							this.more=true;
-							this.btnText='more'
+							this.btnText='>>'
 						}
+					},
+					getWidth:function(files){//根据附件数量，返回每张图片占位宽度
+						if(files.length>=3){
+							return 'mui-col-xs-4';
+						}else if(files.length<3){
+							return 'mui-col-xs-6';
+						} 
 					},
 					pj:function(){
 						console.log('点击了批量评价')
-						utils.mOpenWithData("../../html/homework/teacher-homework-evaluate.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-evaluate.html", this.homeworkDetail);
 					},
 					dj:function(){
 						console.log('点击了批量登记')
-						utils.mOpenWithData("../../html/homework/teacher-homework-register.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-submit.html", this.homeworkDetail);
 					}
 				}
 			});
 			
+			detail.homeworkDetail=homeworkDetail;
+			//已批未批列表
 			var slider =new Vue({
 				el:'#slider',
 				data:{
-					wp:[{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描1",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描2",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描3",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描4",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描5",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描6",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描7",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描8",time:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描9",time:"已交（2018-10-20）"}],
-					yp:[{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描1",score:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描2",score:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描3",score:"已交（2018-10-20）"},
-						{img:"../../img/homeSchool/schoolPage2.png",name:"淼淼描4",score:"已交（2018-10-20）"}]
+					wp:[],//未批作业数组
+					yp:[]//已批作业数组
 				},
 				methods:{
 					toCritique:function(index,item){
 						console.log("点击第"+index+"个标签，内容为："+JSON.stringify(item))
-						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", item);
+					},
+					getSubTime:function(submitTime){
+						return submitTime.substring(0,10)
 					}
 				}
 			});
+			
+			//获取作业已批未批数组
+			function getHomeworkDetail(){
+				var comData ={
+					classId:homeworkDetail.classId,//班级ID
+					id:homeworkDetail.id//作业ID
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeacherHomeworketail(comData, function(data) {
+					if(data.RspCode == 0) {
+//						console.log('作业列表:' + JSON.stringify(data));
+						slider.yp=data.RspData.shArray;//已批列表
+						slider.wp=data.RspData.unshArray;//未批列表
+						getStudentsInfo(wd);
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			//根据班级ID获取班级下的学生信息
+			function getStudentsInfo(wd){
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					uuid: publicParameter.uuid, //用户设备号
+					utoken: personal.utoken, //用户令牌
+					classids: homeworkDetail.classId, //需要查询的班级ID，多个代码用英文逗号隔开
+					appid: publicParameter.appid //系统所分配的应用ID
+				}
+				//2.6 学校班级学生
+				postDataEncry('ClassStu', enData0, comData0, 0, function(data) {
+					console.log('2.6 学校班级学生:' + JSON.stringify(data));
+					wd.close();
+					if(data.RspCode == 0) {
+						if(data.RspData) {
+							//已批作业数组 拿到学生头像
+							for(var i = 0; i < slider.yp; i++) {
+								var tempHomework = slider.yp[i];
+								for(var a = 0; a < data.RspData.clssstus; a++) {
+									var tempStu = data.RspData.clssstus[a];
+									if(tempHomework.studentId==tempStu.stuid){
+										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
+									}
+								}
+							}
+							//未批作业数组 拿到学生头像
+							for(var i = 0; i < slider.wp; i++) {
+								var tempHomework = slider.wp[i];
+								for(var a = 0; a < data.RspData.clssstus; a++) {
+									var tempStu = data.RspData.clssstus[a];
+									if(tempHomework.studentId==tempStu.stuid){
+										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
+									}
+								}
+							}
+						}
+						console.log('已批作业列表:' + JSON.stringify(slider.yp));
+						console.log('未批作业列表:' + JSON.stringify(slider.wp));
+					} else {
+						mui.toast(data.RspTxt, "cancel");
+					}
+				});
+			}
 		</script>
 	</body>
-
 </html>

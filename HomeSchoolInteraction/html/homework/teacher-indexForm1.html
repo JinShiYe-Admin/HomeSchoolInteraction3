@@ -60,6 +60,81 @@
 				z-index: 999;
 				padding: 10px 0;
 			}
+			
+			.selectP {
+				margin-right: 10px;
+				margin-top: 8px;
+				margin-left: 10px;
+				text-align: right;
+			}
+			
+			.homeworkTitle {
+				color: black;
+				text-align: center;
+				font-size: 15px;
+			}
+			
+			.homeworkTime {
+				color: gray;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.homeworkCount {
+				height: 60px;
+				width: 20%;
+				float: left;
+				text-align: center;
+			}
+			
+			.homeworkFlag {
+				height: 20px;
+				width: 40px;
+				float: left;
+				text-align: center;
+			}
+			
+			.homeworkCountP1 {
+				color: goldenrod;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.homeworkCountP2 {
+				color: black;
+				text-align: center;
+				font-size: 12px;
+			}
+			
+			.selectCell {
+				width: 48%;
+				margin-left: 2%;
+				float: left;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				margin-bottom: 5px;
+				border-radius: 6px;
+			}
+			.selectCellBG0{
+				font-size:15px ;
+				background: #EAEAEA;
+			}
+			.selectCellBG1{
+				font-size:15px ;
+				background: #def9f7;
+				color: #009387;
+			}
+			
+			.bottom-btns {
+				width: 100%;
+				bottom: 0;
+				position: fixed;
+				height: 50px;
+				background-color: #fff;
+				z-index: 999;
+				padding: 10px 0;
+			}
 		</style>
 	</head>
 
@@ -129,32 +204,80 @@
 					<p class="selectP" style="padding-top: 7px;">筛选</p>
 				</div>
 				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 38px;">
-				<!--<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 8px;">-->
 					<div class="mui-scroll main" style="margin-top: -9px;">
-						<div id="homeworkListArray" class="" style="background: #F2F2F2;">
-							<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArray">
-								<div class="mui-card-header">
-									{{homeworkModel.subname}}作业&nbsp;[{{homeworkModel.grdname}}&nbsp;{{homeworkModel.clsname}}]
-									<button v-if="homeworkModel.correctCount ==0 && homeworkModel.unSubmitCount ==0" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+						<div class="" style="margin-top: 10px;">
+							<p class="homeworkTitle">一年级106班王龙作业统计表【语文】</p>
+							<p class="homeworkTime">统计周期 ：2018-6-23至2018-6-27</p>
+							<div class="" style="height: 60px;">
+								<div class="homeworkCount">
+									<p class="homeworkCountP1">共计作业</p>
+									<p class="homeworkCountP2">6次</p>
 								</div>
-								<div class="mui-card-content">
-									<div class="homewrokContent">
-										{{homeworkModel.content}}
-									</div>
-									<template v-if="homeworkModel.files.length!=0">
-										<img style="width: 100%;height: 200px; object-fit: cover;" :src="homeworkModel.files[0].url" />
-									</template>
-									<a class="mui-card-link carlinkContent" style="margin-left: 10px;">已交/未交:{{homeworkModel.submitStatus}}</a>
-									<a class="mui-card-link carlinkContent">已批/未批:{{homeworkModel.correctStatus}}</a>
-									<a class="mui-card-link carlinkContent">平均分:{{homeworkModel.avgScore}}</a>
-		
+								<div class="homeworkCount">
+									<p class="homeworkCountP1">已交作业</p>
+									<p class="homeworkCountP2">5次</p>
 								</div>
-								<div class="mui-card-footer">
-									<p class="mui-card-link">发布时间:{{homeworkModel.createTime}}</p>
+								<div class="homeworkCount">
+									<p class="homeworkCountP1">未交作业</p>
+									<p class="homeworkCountP2">4次</p>
+								</div>
+								<div class="homeworkCount">
+									<p class="homeworkCountP1">已批作业</p>
+									<p class="homeworkCountP2">3次</p>
+								</div>
+								<div class="homeworkCount">
+									<p class="homeworkCountP1">未批作业</p>
+									<p class="homeworkCountP2">2次</p>
 								</div>
 							</div>
+							<ul class="mui-table-view">
+								<li class="mui-table-view-cell">
+									<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已交</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已批</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">80分</p>
+									</div>
+									<div class="" style="float: right;color: gray;font-size: 12px;">
+										李云 | 2018-6-6
+									</div>
+								</li>
+								<li class="mui-table-view-cell">
+									<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已交</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已批</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">80分</p>
+									</div>
+									<div class="" style="float: right;color: gray;font-size: 12px;">
+										李云 | 2018-6-6
+									</div>
+								</li>
+								<li class="mui-table-view-cell">
+									<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">语文：在此随笔发出的几个小时之后，有大神提出了质疑：没有清除浮动，并给我了一个差评。</p>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已交</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">已批</p>
+									</div>
+									<div class="homeworkFlag">
+										<p class="homeworkCountP1">80分</p>
+									</div>
+									<div class="" style="float: right;color: gray;font-size: 12px;">
+										李云 | 2018-6-6
+									</div>
+								</li>
+							</ul>
 						</div>
-						<!--<div id="backdrop" class="mui-off-canvas-backdrop"></div>-->
 					</div>
 				</div>
 				<div id="backdrop" class="mui-off-canvas-backdrop"></div>
@@ -195,8 +318,6 @@
 			var totalPageCount; //总页码
 			var flagRef = 0; //是刷新0，还是加载更多1
 			
-			
-			var hmList;//作业数组
 			//下拉、上滑加载更多
 			mui(".mui-scroll-wrapper .mui-scroll.main").pullToRefresh({
 				down: {
@@ -290,7 +411,6 @@
 							this.$options.methods.clickBtn(item);
 						} else { //点击li标签
 							console.log('clickHomeworkModel:' + JSON.stringify(item));
-							utils.mOpenWithData("../../html/homework/teacher-homework-correctDetail.html", item);
 						}
 					},
 					clickBtn: function(item) {//撤销按钮点击事件
@@ -522,7 +642,7 @@
 							selectDetailData.sjdjList=submitArrayNew;
 							selectDetailData.pgjdList=correctArrayNew;
 							//作业列表
-							hmList=data.RspData.list;
+							var hmList=data.RspData.list;
 						}
 						for(var i=0;i<hmList.length;i++){
 							var model=getName(hmList[i].grdId,hmList[i].classId,hmList[i].subCode);

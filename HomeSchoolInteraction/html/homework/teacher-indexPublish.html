@@ -202,10 +202,10 @@
 				tempArr = arrayUnique2(tempArr, 'grdid');
 				for(var i = 0; i < tempArr.length; i++) {
 					var classModel = tempArr[i];
-					//					if(classModel.isfinish == 0 && classModel.isms == 0) {
-					addHomeworkContent.gradeIDsArray.push(classModel.grdid);
-					addHomeworkContent.gradeStr = addHomeworkContent.gradeStr + ',' + classModel.grdname;
-					//					}
+					if(i == 0) {
+						addHomeworkContent.gradeIDsArray.push(classModel.grdid);
+						addHomeworkContent.gradeStr = addHomeworkContent.gradeStr + ',' + classModel.grdname;
+					}
 				}
 				//班级
 				var tempArr1 = [].concat(personal.clss);
@@ -219,8 +219,17 @@
 				newList = arrayUnique2(newList, 'clsid');
 				for(var i = 0; i < newList.length; i++) {
 					var temoCls = newList[i];
-					addHomeworkContent.classIDsArray.push(temoCls.clsid);
-					addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + temoCls.clsname;
+					if(addHomeworkContent.gradeIDsArray.length > 0) {
+						console.log('111111111');
+						var tempID = addHomeworkContent.gradeIDsArray[0];
+						console.log('111111111333:'+tempM.grdid+','+temoCls.grdid);
+						if(tempID == temoCls.grdid) {
+							console.log('1111111112222222');
+							addHomeworkContent.classIDsArray.push(temoCls.clsid);
+							addHomeworkContent.classStr = addHomeworkContent.classStr + ',' + temoCls.clsname;
+						}
+					}
+
 				}
 				//去重
 				addHomeworkContent.gradeIDsArray = unique(addHomeworkContent.gradeIDsArray);
