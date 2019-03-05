@@ -49,61 +49,80 @@
 		<div class="mui-content" style="background: white;">
 			<div id="detail">
 				<div class="title">
-					已批 （30人）
+					已批 （{{correctCount}}人）
 				</div>
 				<div class="mui-row">
 					<div class="student-name">
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤
+						{{correctStuName}}
 					</div>
 				</div>
 				<div class="line"></div>
 				<div class="title">
-					未批 （30人）
+					未批 （{{unCorrectCount}}人）
 				</div>
 				<div class="mui-row">
 					<div class="student-name">
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大
+						{{unCorrectStuName}}
 					</div>
 				</div>
 			</div>
 		</div>
 		<script src="../../js/slide/mui.min.js"></script>
-		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/events.js"></script>
-		<script src="../../js/libs/jquery.js"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
 		<script type="text/javascript">
 			mui.init({
 				swipeBack: false
 			});
+			
+			var	homeworkDetail = utils.getDataFromUrl(window.location.href);
+			
 			mui.plusReady(function() {
+				getEvaluteCount();
 			});
 			var detail = new Vue({
 				el: "#detail",  
 				data: {
-					more:true,
-					btnText:'more'
-				},
-				methods: {
-					previous:function(){
-						console.log("123")
-					},
-					next:function(){
-						console.log("456")
-					}
+					correctCount:0,//已批改人数
+					unCorrectCount:0,//未批改人数
+					correctStuName:'暂无数据！',//已批改学生姓名
+					unCorrectStuName:'暂无数据！'//未批改学生姓名
 				}
 			});
+			
+			//获取已批未批统计学生
+			function getEvaluteCount(){
+				var comData ={
+					classId:homeworkDetail.classId,//班级ID
+					gradeId:homeworkDetail.grdId,//年级ID
+					homeworkId:homeworkDetail.id//作业ID
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeachertatisticStuName(comData, function(data) {
+					wd.close();
+					if(data.RspCode == 0) {
+						console.log('已批未批统计:' + JSON.stringify(data));
+						if(data.RspData && JSON.stringify(data.RspData.statisJson)!='{}'){
+							detail.correctCount=data.RspData.statisJson.correctCount;//已批学生人数
+							detail.unCorrectCount=data.RspData.statisJson.unCorrectCount;//未批学生人数
+							detail.correctStuName=data.RspData.statisJson.correctStuName;//已批学生姓名
+							detail.unCorrectStuName=data.RspData.statisJson.unCorrectStuName;//未批学生姓名
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
 		</script>
 	</body>
 

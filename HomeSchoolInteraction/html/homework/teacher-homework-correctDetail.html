@@ -441,11 +441,11 @@
 					},
 					pj:function(){
 						console.log('点击了批量评价')
-						utils.mOpenWithData("../../html/homework/teacher-homework-evaluate.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-evaluate.html", this.homeworkDetail);
 					},
 					dj:function(){
 						console.log('点击了批量登记')
-						utils.mOpenWithData("../../html/homework/teacher-homework-register.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-submit.html", this.homeworkDetail);
 					}
 				}
 			});
@@ -461,7 +461,7 @@
 				methods:{
 					toCritique:function(index,item){
 						console.log("点击第"+index+"个标签，内容为："+JSON.stringify(item))
-						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", {});
+						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", item);
 					},
 					getSubTime:function(submitTime){
 						return submitTime.substring(0,10)
@@ -479,7 +479,7 @@
 				var wd = events.showWaiting();
 				hwTeacherHomeworketail(comData, function(data) {
 					if(data.RspCode == 0) {
-						console.log('作业列表:' + JSON.stringify(data));
+//						console.log('作业列表:' + JSON.stringify(data));
 						slider.yp=data.RspData.shArray;//已批列表
 						slider.wp=data.RspData.unshArray;//未批列表
 						getStudentsInfo(wd);
@@ -504,32 +504,33 @@
 					wd.close();
 					if(data.RspCode == 0) {
 						if(data.RspData) {
-							//将获取到的学生，塞到对应的班级数组
-//							for(var i = 0; i < data.RspData.clssstus.length; i++) {
-//								var tempStu = data.RspData.clssstus[i];
-//								for(var a = 0; a < grdsArray.length; a++) {
-//									var tempModel = grdsArray[a]; //年级
-//									for(var b = 0; b < tempModel.classArray.length; b++) {
-//										var tempCls = tempModel.classArray[b]; //班级
-//										if(tempCls.clsid == tempStu.clsid) {
-//											tempCls.studentArray.push(tempStu);
-//										}
-//									}
-//								}
-//							}
-//							console.log('获取到学生后合并:' + JSON.stringify(grdsArray));
-//							dataFormat(callback);
- 							getStudentHeadImg();
+							//已批作业数组 拿到学生头像
+							for(var i = 0; i < slider.yp; i++) {
+								var tempHomework = slider.yp[i];
+								for(var a = 0; a < data.RspData.clssstus; a++) {
+									var tempStu = data.RspData.clssstus[a];
+									if(tempHomework.studentId==tempStu.stuid){
+										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
+									}
+								}
+							}
+							//未批作业数组 拿到学生头像
+							for(var i = 0; i < slider.wp; i++) {
+								var tempHomework = slider.wp[i];
+								for(var a = 0; a < data.RspData.clssstus; a++) {
+									var tempStu = data.RspData.clssstus[a];
+									if(tempHomework.studentId==tempStu.stuid){
+										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
+									}
+								}
+							}
 						}
+						console.log('已批作业列表:' + JSON.stringify(slider.yp));
+						console.log('未批作业列表:' + JSON.stringify(slider.wp));
 					} else {
 						mui.toast(data.RspTxt, "cancel");
 					}
 				});
-			}
-			
-			//TODO 根据传回来的作业数组中的学生ID，去班级下学生信息数组中找到该学生对应的头像，因为传回来的作业数组中没有该学生的头像
-			function getStudentHeadImg(){
-				console.log('liushuai');
 			}
 		</script>
 	</body>

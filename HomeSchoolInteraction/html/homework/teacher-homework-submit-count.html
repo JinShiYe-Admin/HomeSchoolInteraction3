@@ -49,57 +49,80 @@
 		<div class="mui-content" style="background: white;">
 			<div id="detail">
 				<div class="title">
-					已交 （30人）
+					已交 （{{submitCount}}人）
 				</div>
 				<div class="mui-row">
 					<div class="student-name">
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤
+						{{submitStuName}}
 					</div>
 				</div>
 				<div class="line"></div>
 				<div class="title">
-					未交 （30人）
+					未交 （{{unSubmitCount}}人）
 				</div>
 				<div class="mui-row">
 					<div class="student-name">
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大锤、
-						张三、李四、王大锤、张三、李四、王大锤、张三、李四、王大
+						{{unSubmitStuName}}
 					</div>
 				</div>
 			</div>
 		</div>
 		<script src="../../js/slide/mui.min.js"></script>
-		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src="../../js/utils/utils.js"></script>
-		<script src="../../js/utils/events.js"></script>
-		<script src="../../js/libs/jquery.js"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
+		<script src="../../js/publicProtocol-studentManage.js"></script>
 		<script type="text/javascript">
 			mui.init({
 				swipeBack: false
 			});
+			
+			var	homeworkDetail = utils.getDataFromUrl(window.location.href);
+			
 			mui.plusReady(function() {
+				getSubmitCount();
 			});
 			var detail = new Vue({
 				el: "#detail",  
 				data: {
-					more:true,
-					btnText:'more'
-				},
-				methods: {
-					previous:function(){
-						console.log("123")
-					},
-					next:function(){
-						console.log("456")
-					}
+					submitCount:0,//已交人数
+					unSubmitCount:0,//未交人数
+					submitStuName:'暂无数据！',//已交学生姓名
+					unSubmitStuName:'暂无数据！'//未交学生姓名
 				}
 			});
+			
+			//获取已交未交统计学生
+			function getSubmitCount(){
+				var comData ={
+					classId:homeworkDetail.classId,//班级ID
+					gradeId:homeworkDetail.grdId,//年级ID
+					homeworkId:homeworkDetail.id//作业ID
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeachertatisticStuName(comData, function(data) {
+					wd.close();
+					if(data.RspCode == 0) {
+						console.log('已交未交统计:' + JSON.stringify(data));
+						if(data.RspData && JSON.stringify(data.RspData.statisJson)!='{}'){
+							detail.submitCount=data.RspData.statisJson.submitCount;//已交学生人数
+							detail.unSubmitCount=data.RspData.statisJson.unSubmitCount;//未交学生人数
+							detail.submitStuName=data.RspData.statisJson.submitStuName;//已交学生姓名
+							detail.unSubmitStuName=data.RspData.statisJson.unSubmitStuName;//未交学生姓名
+						}
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
 		</script>
 	</body>
 
