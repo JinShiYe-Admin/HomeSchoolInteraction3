@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>资源包内页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+			
+			.mui-table-view .mui-media-object {
+				max-width: 100px;
+			}
+			
+			.mui-table-view .mui-media-object.mui-pull-left {
+				margin-right: 15px;
+			}
+			
+			.mui-ellipsis-title {
+				font-size: 18px;
+				color: #000;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				white-space: normal;
+			}
+			.mui-media-body{
+				margin: 2px 0 0 0;
+			}
+			.mui-ellipsis {
+				margin: 0px 0 0 0;
+				height: 20px;
+				overflow: hidden;
+				word-break: break-all;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				white-space: normal;
+			}
+			
+			.ul-btn {
+				display: inline;
+				vertical-align: middle;
+				float: right;
+				height: 24px;
+				padding: 2px 12px;
+				background: #33CCFF;
+				color: #fff;
+				border: none;
+			}
+			
+			.ul-p {
+				width: 30%;
+				display: inline;
+				vertical-align: middle;
+				font-size: 12px;
+			}
+			.page-img{
+				width: 40px !important;
+				height: 40px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav v-cloak" style="background-color:#00CFBD;" id="packHead">
+			<a id="returnBtn" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+			<h1 class="mui-title" style="color: white;font-size: 16px;">{{headTitle}}</h1>
+		</header>
+		<div id='scroll' class="mui-content">
+			<div id='pages'>
+				<!--<div v-if="orderList.length == 0" v-cloak style="text-align: center;margin:40% auto;">
+					<img src="../../img/homeSchool/noData.png" style="width: 200px;" />
+				</div>-->
+				<div v-cloak class="mui-scroll">
+					<ul class="mui-table-view">
+						<li v-for="item in pageList" @click="toMealDetails(item)" class="mui-table-view-cell mui-media">
+							<a href="javascript:;">
+								<img v-if="item.file_ext == 'mp4'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp4.png">
+								<img v-else-if="item.file_ext == 'doc'" class="mui-media-object mui-pull-left" src="../../img/swiper/doc.png" />
+								<img v-else-if="item.file_ext == 'docx'" class="mui-media-object mui-pull-left" src="../../img/swiper/docx.png" />
+								<img v-else-if="item.file_ext == 'mp3'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp3.png">
+								<img v-else-if="item.file_ext == 'asf'" class="mui-media-object mui-pull-left" src="../../img/swiper/asf.png">
+								<img v-else-if="item.file_ext == 'avi'" class="mui-media-object mui-pull-left" src="../../img/swiper/avi.png">
+								<img v-else-if="item.file_ext == 'flv'" class="mui-media-object mui-pull-left" src="../../img/swiper/flv.png">
+								<img v-else-if="item.file_ext == 'gif'" class="mui-media-object mui-pull-left" src="../../img/swiper/gif.png">
+								<img v-else-if="item.file_ext == 'ppt'" class="mui-media-object mui-pull-left" src="../../img/swiper/ppt.png">
+								<img v-else-if="item.file_ext == 'pptx'" class="mui-media-object mui-pull-left" src="../../img/swiper/pptx.png">
+								<img v-else-if="item.file_ext == 'xlsx'" class="mui-media-object mui-pull-left" src="../../img/swiper/xlsx.png">
+								<img v-else-if="item.file_ext == 'xls'" class="mui-media-object mui-pull-left" src="../../img/swiper/xls.png">
+								<img v-else-if="item.file_ext == 'mpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/mpg.png">
+								<img v-else-if="item.file_ext == 'swf'" class="mui-media-object mui-pull-left" src="../../img/swiper/swf.png">
+								<img v-else-if="item.file_ext == 'ts'" class="mui-media-object mui-pull-left" src="../../img/swiper/ts.png">
+								<img v-else-if="item.file_ext == 'wav'" class="mui-media-object mui-pull-left" src="../../img/swiper/wav.png">
+								<img v-else-if="item.file_ext == 'wma'" class="mui-media-object mui-pull-left" src="../../img/swiper/wma.png">
+								<img v-else-if="item.file_ext == 'wmv'" class="mui-media-object mui-pull-left" src="../../img/swiper/wmv.png">
+								<img v-else-if="item.file_ext == 'pdf'" class="mui-media-object mui-pull-left" src="../../img/swiper/pdf.png">
+								<img v-else-if="item.file_ext == 'exe'" class="mui-media-object mui-pull-left" src="../../img/swiper/exe.png">
+								<img v-else-if="item.file_ext == 'jpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/jpg.png">
+								<img v-else-if="item.file_ext == 'png'" class="mui-media-object mui-pull-left" src="../../img/swiper/png.png">
+								<img v-else-if="item.file_ext == 'rar'" class="mui-media-object mui-pull-left" src="../../img/swiper/rar.png">
+								<img v-else-if="item.file_ext == 'zip'" class="mui-media-object mui-pull-left" src="../../img/swiper/zip.png">
+								<img v-else-if="item.file_ext == 'txt'" class="mui-media-object mui-pull-left" src="../../img/swiper/txt.png">
+								<img v-else="" class="mui-media-object mui-pull-left" src="../../img/swiper/other.png">
+								<div class="mui-media-body">
+									<div class="mui-media-body" style="font-size: 14px;color: #333;">
+										{{item.name}}
+										<p class='mui-ellipsis' style="font-size: 12px;color: #999;">{{item.create_time}} | {{item.owner_name}}</p>
+									</div>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/utils/openFiles.js"></script>
+		<script src="../../js/publicProtocol-ziyuan.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script>
+			
+			mui.init();
+			document.getElementById('returnBtn').addEventListener('tap',function () {
+			    mui.back();
+			});
+			var personal;
+			var publicParameter;
+			var curPage = {};
+			mui.plusReady(function() {
+				curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(curPage));
+				getPageList();
+				packHead.headTitle = curPage.name;
+			});
+			var packHead = new Vue({
+				el: '#packHead',
+				data: {
+					headTitle:''
+				}
+			});
+			var pages = new Vue({
+				el: '#pages',
+				data: {
+					pageList: [],
+					personal:""
+				},
+				methods: {
+					toMealDetails: function(model) {
+						console.log('toMealDetails:'+JSON.stringify(model));
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+							mui.toast('网络异常，请检查网络设置！');
+							return;
+						}
+						if(model.is_pack) { //资源包
+							utils.mOpenWithData("inside_page.html", model);
+						} else if(model.file_ext == 'mp4'||model.file_ext == 'mp3'||model.file_ext == 'wmv'||model.file_ext == 'wma'||model.file_ext == 'mpg'||model.file_ext == 'avi'||model.file_ext == 'flv'||model.file_ext == 'mkv'||model.file_ext == 'asf') { //视频、音频
+							if (model.file_ext == 'mp4'||model.file_ext == 'mp3') {
+								utils.mOpenWithData("playVideo.html", model);
+							} else{
+								plus.runtime.openWeb(model.openFileUrl);
+							}
+						} else if(model.file_ext == 'jpg'||model.file_ext == 'png'||model.file_ext == 'gif') { //照片
+//							var imgUrl=model.original_file_url;
+							if(plus.os.name == 'Android') {
+								plus.nativeUI.previewImage([model.openFileUrl]);
+							} else {
+								plus.nativeUI.previewImage(model.openFileUrl, {
+									current: 0,
+									loop: false,
+									indicator: 'number'
+								});
+							}
+						} else if(model.file_ext == 'ppt'||model.file_ext == 'pptx'||model.file_ext == 'doc'||model.file_ext == 'docx'||model.file_ext == 'pdf'||model.file_ext == 'xlsx'||model.file_ext == 'xls') {//文档
+							if(plus.os.name == 'Android') {
+								console.log('000000005');
+								plus.openFiles.openFileFromURL(JSON.stringify(model), function(result) {
+									console.log("result>>>>>>" + result[0]);
+								}, function(result) {
+									console.log('未知错误：' + result);
+								});
+							} else {
+								console.log('000000006');
+								plus.runtime.openWeb(model.openFileUrl);
+							}
+						} else {
+							mui.toast('不支持查看此类型文件');
+						}
+					}
+				}
+			});
+			//获取资源包下的资源列表
+			function getPageList() {
+				var comData = {
+					id: curPage.id //资源包id 必须
+				}
+				var wd = events.showWaiting();
+				getZiYuanResList(comData, function(data) {
+					wd.close();
+					console.log('获取资源包下的资源列表:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						for (var i = 0; i < data.RspData.length; i++) {
+							var tempM = data.RspData[i];
+							if (tempM.convert_file_url==null||tempM.convert_file_url.length==0) {
+								tempM.openFileUrl = tempM.original_file_url;
+							} else{
+								tempM.openFileUrl = tempM.convert_file_url;
+							}
+						}
+						pages.pageList = data.RspData;
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

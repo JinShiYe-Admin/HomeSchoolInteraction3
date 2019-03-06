@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>播放视频</title>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+	</head>
+
+	<body style="background: black;">
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="headVue">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">{{curPage.name}}</h1>
+		</header>
+		<div id="pages">
+			<br/><br/><br/><br/><br/><br/>
+			<div id="video" style="width:100%;height:300px;background-color:#000000;margin:auto"></div>
+			<br/>
+			<p style="margin-left: 10px;font-size: 16px;color: white;">{{curPage.name}}</p>
+			<div class="">
+				<p style="margin-left: 10px;float: left;">{{curPage.owner_name}} | {{curPage.create_time}}</p>
+				<p style="float: right;background: #13B6FA;margin-right: 10px;padding-left: 8px;padding-right: 8px;border-radius:4px;color: white;">{{curPage.category_name}}</p>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/vconsole.min.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script type="text/javascript">
+			var video = null;
+			// H5 plus事件处理
+			function plusReady() {
+				pages.curPage = utils.getDataFromUrl(window.location.href);
+				headVue.curPage = utils.getDataFromUrl(window.location.href);
+				console.log('2222:' + JSON.stringify(pages.curPage));
+				// 创建视频播放控件
+				video = new plus.video.VideoPlayer('video', {
+					src: pages.curPage.openFileUrl
+				});
+				playVideo();
+				setTimeout("fullscreenVideo()", 1000);
+			}
+			document.addEventListener('plusready', plusReady, false);
+			// 播放视频
+			function playVideo() {
+				video.play();
+			}
+			// 全屏播放
+			function fullscreenVideo() {
+				video.requestFullScreen();
+			}
+			var headVue = new Vue({
+				el: '#headVue',
+				data: {
+					curPage: {}
+				}
+			});
+
+			var pages = new Vue({
+				el: '#pages',
+				data: {
+					curPage: {}
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,672 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../js/swiper/swiper.min.css">
+		<!--<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>-->
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+			
+			.comment_inner {
+				/*width: 200px;*/
+				word-break: break-all;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				/** 对象作为伸缩盒子模型显示 **/
+				-webkit-box-orient: vertical;
+				/** 设置或检索伸缩盒对象的子元素的排列方式 **/
+				-webkit-line-clamp: 2;
+				/** 显示的行数 **/
+				overflow: hidden;
+				/** 隐藏超出的内容 **/
+			}
+			
+			.nameTime {
+				font-size: 12px;
+				color: #999999;
+				padding-top: 15px;
+			}
+			
+			p {
+				text-overflow: ellipsis;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				margin-right: 10px;
+			}
+			
+			.mui-content>.mui-table-view:first-child {
+				margin-top: -1px;
+			}
+			
+			.mui-pull-caption {
+				font-size: 14px; //字体大小
+				color: #666666;
+				font-weight: normal;
+			}
+			
+			.catalogs {
+				margin-top: 10px;
+			}
+			/*滑动菜单行高*/
+			
+			.swiper-slide {
+				height: 35px;
+			}
+			
+			.swiper-container {
+				margin-left: 20px !important;
+			}
+			
+			.fontcolor {
+				color: #00CFBD;
+			}
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" v-cloak style="background-color:#00CFBD;" id="tempHead">
+			<a @click="clickLeftImg" v-cloak class="mui-icon mui-pull-left">
+				<img :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
+			</a>
+			<h1 @click="clickTitle()" class="mui-title" v-cloak style="color: white;">
+				<a class="mui-icon" style="font-size: 16px;">{{titleName}}<span class="mui-icon-arrowdown"></span></a>
+			</h1>
+		</header>
+		<div class="mui-content mui-scroll-wrapper mui-fullscreen" v-cloak style="background: white;" id="contentData">
+			<div class="swiper-container catalogs" id="ziyuanbao">
+				<div class="swiper-wrapper">
+					<div class="swiper-slide" style="font-size: 14px;" :class="cate.ischeck==1?'fontcolor':''" v-for="(cate,index) in categoryArray" @tap="catalogItemClick(categoryArray,cate)">{{cate.name}}</div>
+				</div>
+			</div>
+			<div class="mui-scroll">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media" v-for="(resourceModel,index) in resourceArray" @click="clickResourceModel(resourceModel,index)">
+						<a href="javascript:;">
+							<div v-if="resourceModel.is_pack">
+								<img class="mui-media-object mui-pull-left" src="../../img/ziyuan/ziyuanPack.png" />
+							</div>
+							<div v-else="">
+								<img v-if="resourceModel.file_ext == 'mp4'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp4.png">
+								<img v-else-if="resourceModel.file_ext == 'doc'" class="mui-media-object mui-pull-left" src="../../img/swiper/doc.png" />
+								<img v-else-if="resourceModel.file_ext == 'docx'" class="mui-media-object mui-pull-left" src="../../img/swiper/docx.png" />
+								<img v-else-if="resourceModel.file_ext == 'mp3'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp3.png">
+								<img v-else-if="resourceModel.file_ext == 'asf'" class="mui-media-object mui-pull-left" src="../../img/swiper/asf.png">
+								<img v-else-if="resourceModel.file_ext == 'avi'" class="mui-media-object mui-pull-left" src="../../img/swiper/avi.png">
+								<img v-else-if="resourceModel.file_ext == 'flv'" class="mui-media-object mui-pull-left" src="../../img/swiper/flv.png">
+								<img v-else-if="resourceModel.file_ext == 'gif'" class="mui-media-object mui-pull-left" src="../../img/swiper/gif.png">
+								<img v-else-if="resourceModel.file_ext == 'ppt'" class="mui-media-object mui-pull-left" src="../../img/swiper/ppt.png">
+								<img v-else-if="resourceModel.file_ext == 'pptx'" class="mui-media-object mui-pull-left" src="../../img/swiper/pptx.png">
+								<img v-else-if="resourceModel.file_ext == 'xls'" class="mui-media-object mui-pull-left" src="../../img/swiper/xls.png">
+								<img v-else-if="resourceModel.file_ext == 'xlsx'" class="mui-media-object mui-pull-left" src="../../img/swiper/xlsx.png">
+								<img v-else-if="resourceModel.file_ext == 'mpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/mpg.png">
+								<img v-else-if="resourceModel.file_ext == 'swf'" class="mui-media-object mui-pull-left" src="../../img/swiper/swf.png">
+								<img v-else-if="resourceModel.file_ext == 'ts'" class="mui-media-object mui-pull-left" src="../../img/swiper/ts.png">
+								<img v-else-if="resourceModel.file_ext == 'wav'" class="mui-media-object mui-pull-left" src="../../img/swiper/wav.png">
+								<img v-else-if="resourceModel.file_ext == 'wma'" class="mui-media-object mui-pull-left" src="../../img/swiper/wma.png">
+								<img v-else-if="resourceModel.file_ext == 'wmv'" class="mui-media-object mui-pull-left" src="../../img/swiper/wmv.png">
+								<img v-else-if="resourceModel.file_ext == 'pdf'" class="mui-media-object mui-pull-left" src="../../img/swiper/pdf.png">
+								<img v-else-if="resourceModel.file_ext == 'exe'" class="mui-media-object mui-pull-left" src="../../img/swiper/exe.png">
+								<img v-else-if="resourceModel.file_ext == 'jpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/jpg.png">
+								<img v-else-if="resourceModel.file_ext == 'png'" class="mui-media-object mui-pull-left" src="../../img/swiper/png.png">
+								<img v-else-if="resourceModel.file_ext == 'rar'" class="mui-media-object mui-pull-left" src="../../img/swiper/rar.png">
+								<img v-else-if="resourceModel.file_ext == 'zip'" class="mui-media-object mui-pull-left" src="../../img/swiper/zip.png">
+								<img v-else-if="resourceModel.file_ext == 'txt'" class="mui-media-object mui-pull-left" src="../../img/swiper/txt.png">
+								<img v-else="" class="mui-media-object mui-pull-left" src="../../img/swiper/other.png">
+							</div>
+							<div class="mui-media-body" style="font-size: 14px;color: #333;">
+								{{resourceModel.name}}
+								<p class="mui-ellipsis" style="font-size: 12px;color: #999;">{{resourceModel.create_time}} | {{resourceModel.owner_name}}</p>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/demoCssJs/jquery-2.1.4.js"></script>
+		<script type="text/javascript" src="../../js/swiper/swiper.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/publicProtocol-ziyuan.js"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/libs/jquery.js"></script>
+		<script src="../../js/utils/openFiles.js"></script>
+		<script type="text/javascript">
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			mui.init({
+				statusBarBackground: '#00CFBD',
+				swipeBack: false,
+				beforeback: back,
+				pullRefresh: {
+					container: '#contentData',
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: false, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});
+			//加载更多
+			function pullupRefresh() {
+				contentData.flag = 1;
+				//4.获取学校通知列表
+				getZiYuanList();
+			}
+			//选择章节目录监听
+			window.addEventListener('selectCatalog', function(data) {
+				console.log(JSON.stringify(data.detail));
+				tempHead.titleName = data.detail[0].name; //给标题赋值
+				//当前章节
+				contentData.catalogModel = data.detail[0];
+				//资源类型
+				contentData.categoryArray = data.detail[1];
+				//教材
+				contentData.bookModel = data.detail[2]; //教材
+				//刷新数据
+				pulldownRefresh();
+			});
+
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				contentData.flag = 0;
+				contentData.pageIndex = 1;
+				//4.获取学校通知列表
+				getZiYuanList();
+			}
+
+			function back() {
+				if(showMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					closeMenu();
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					menu.close('none');
+					return true;
+				}
+			}
+
+			var main;
+			var menu;
+			var mask = mui.createMask(_closeMenu);
+			var showMenu = false,
+				mode = 'all-move';
+			//首先改变移动标志
+			slideTogether = true;
+			//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
+			//						menu.setStyle({
+			//							left: '-70%'
+			//						});
+			mui.plusReady(function() {
+				var backButtonPress = 0;
+				//重写返回键
+				mui.back = function(event) {
+					backButtonPress++;
+					if(backButtonPress > 1) {
+						plus.runtime.quit();
+					} else {
+						plus.nativeUI.toast('再按一次退出应用');
+					}
+					setTimeout(function() {
+						backButtonPress = 0;
+					}, 1000);
+					return false;
+				};
+
+				main = plus.webview.currentWebview();
+				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
+				setTimeout(function() {
+					//侧滑菜单默认隐藏，这样可以节省内存；
+					menu = mui.preload({
+						id: '../../html/ziyuan/mine.html',
+						url: '../../html/ziyuan/mine.html',
+						styles: {
+							left: 0,
+							width: '70%',
+							zindex: 9997
+						}
+					});
+				}, 1000);
+
+				window.addEventListener('home_setHeadImg', function(data) {
+					tempHead.headImg = data.detail.imgurl;
+				});
+
+				//获取教材
+				getTextBook();
+			});
+
+			var tempHead = new Vue({
+				el: "#tempHead",
+				data: {
+					personal: personal,
+					//							addFlag: ifNew(), //是否可以新建，0不可以
+					headImg: setImg(personal.imgurl),
+					titleName: ''
+				},
+				methods: {
+					clickLeftImg: function() {
+						console.log('indexweeeeeeeeee:');
+						openMenu();
+					},
+					clickTitle: function() {
+						console.log('点击标题');
+						utils.mOpenWithData("catalogPage.html", {});
+					}
+				}
+			});
+
+			//获取教材
+			var getTextBook = function() {
+				var comData = {
+					percode: '', //学段代码 可选
+					subcode: '', //科目代码 可选
+					matercode: '', //教材代码 可选
+					fasccode: '' //分册代码 可选
+				}
+				var wd = events.showWaiting();
+				getZiYuanTextbook(comData, function(data) {
+					wd.close();
+					console.log('获取教材:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						contentData.textBookDetail = data.RspData;
+						if(data.RspData.catalog.length > 0) {
+							var tempModel = data.RspData.catalog[0];
+							if(tempModel.childList.length > 0) {
+								var tempModel2 = tempModel.childList[0];
+								//给标题赋值
+								tempHead.titleName = tempModel2.name;
+								//当前章节
+								contentData.catalogModel = tempModel2;
+								//根据选择的章节model对应的类别，给滑动菜单赋值
+								var cate = data.RspData.category;
+								var newCategory = [];
+								newCategory.push({
+									name: '全部',
+									id: '',
+									ischeck: 1
+								});
+								for(var i = 0; i < cate.length; i++) {
+									var temp = cate[i];
+									temp.ischeck = 0;
+									newCategory.push(temp);
+								}
+								//资源类型
+								contentData.categoryArray = newCategory;
+								//教材
+								contentData.bookModel = data.RspData.book;
+								var catalogObj = {
+									percode: data.RspData.per.selected, //学段代码 
+									subcode: data.RspData.sub.selected, //科目代码 
+									matercode: data.RspData.mater.selected, //教材代码 
+									fasccode: data.RspData.fasc.selected //分册代码
+								}
+								store.set(window.storageKeyName.CATALOGOBJ, catalogObj);
+							}
+						}
+						//获取资源(分页) 
+						getZiYuanList();
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+
+			//关闭侧滑
+			window.addEventListener('closeMinePage', function(data) {
+				console.log('closeMinePage,菜单已关闭')
+				closeMenu();
+			});
+
+			window.addEventListener('hideMenu', function(data) {
+				console.log('hideMenu,菜单已关闭')
+				mask.close();
+				menu.hide();
+				showMenu = false;
+			});
+			/**
+			 * 显示菜单菜单
+			 */
+			function openMenu() {
+//				if(!showMenu) {
+					var wvs = plus.webview.getDisplayWebview();
+					for(var i = 0; i < wvs.length; i++) {
+						var url = wvs[i].getURL();
+						if(url.indexOf('/ziyuan/mine') == -1) {
+							if(plus.os.name == 'Android') {
+								wvs[i].setStyle({
+									mask: "rgba(0,0,0,0.1)"
+								});
+							} else {
+								wvs[i].setStyle({
+									mask: "rgba(0,0,0,0.3)"
+								});
+							}
+							wvs[i].addEventListener("maskClick", function() {
+								closeMenu();
+							}, false);
+						}
+					}
+					//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
+					//侧滑菜单处于隐藏状态，则立即显示出来；
+					//显示完毕后，根据不同动画效果移动窗体；
+					menu.show('none', 0, function() {
+						switch(mode) {
+							case 'main-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '70%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'menu-move':
+								menu.setStyle({
+									left: '0%',
+									transition: {
+										duration: 10
+									}
+								});
+								break;
+							case 'all-move':
+//								main.setStyle({
+//									left: '70%',
+//									transition: {
+//										duration: 150
+//									}
+//								});
+								menu.setStyle({
+									left: '0%',
+									transition: {
+										duration: 10
+									}
+								});
+								break;
+						}
+					});
+					//显示遮罩
+					mask.show();
+					showMenu = true;
+					//通知index页隐藏tab栏
+//				}
+			}
+			/**
+			 * 关闭侧滑菜单
+			 */
+			function closeMenu() {
+				_closeMenu();
+				//关闭遮罩
+				mask.close();
+			}
+
+			/**
+			 * 关闭侧滑菜单（业务部分）
+			 */
+			function _closeMenu() {
+//				if(showMenu) {
+					//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
+					var wvs = plus.webview.getDisplayWebview();
+					for(var i = 0; i < wvs.length; i++) {
+						wvs[i].setStyle({
+							mask: "none"
+						});
+					}
+					//关闭遮罩；
+					switch(mode) {
+						case 'main-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'menu-move':
+							//主窗体开始侧滑；
+							menu.setStyle({
+								left: '-70%',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'all-move':
+							//主窗体开始侧滑；
+//							main.setStyle({
+//								left: '0',
+//								transition: {
+//									duration: 150
+//								}
+//							});
+							//menu页面同时移动
+							menu.setStyle({
+								left: '-70%',
+								transition: {
+									duration: 150
+								}
+							});
+
+							break;
+					}
+
+					//等窗体动画结束后，隐藏菜单webview，节省资源；
+					setTimeout(function() {
+						menu.hide();
+					}, 200);
+					//改变标志位
+					showMenu = false;
+					//通知index页显示tab栏
+//				}
+			}
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(showMenu) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			}
+			//vue数据
+			var contentData = new Vue({
+				el: "#contentData",
+				data: {
+					showFlag: 0, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
+					personal: personal,
+					showNoDataFlag: 9, //是否显示无数据图片
+					textBookDetail: {}, //获取到的教材
+					flag: 0, //0刷新，1加载更多
+					resourceArray: [], //资源列表数组
+					pageIndex: 1, //第几页
+					categoryArray: [], //资源类型数组
+					bookModel: '', //教材model
+					catalogModel: '' //章节
+				},
+				methods: {
+					clickResourceModel: function(model) {
+						console.log('点击li：' + JSON.stringify(model));
+						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
+							mui.toast('网络异常，请检查网络设置！');
+							return;
+						}
+						if(model.is_pack) { //资源包
+							console.log('000000001');
+							utils.mOpenWithData("inside_page.html", model);
+						} else if(model.file_ext == 'mp4' || model.file_ext == 'mp3' || model.file_ext == 'wmv' || model.file_ext == 'wma' || model.file_ext == 'mpg' || model.file_ext == 'avi' || model.file_ext == 'flv' || model.file_ext == 'mkv' || model.file_ext == 'asf') { //视频、音频
+							if(model.file_ext == 'mp4' || model.file_ext == 'mp3') {
+								utils.mOpenWithData("playVideo.html", model);
+							} else {
+								plus.runtime.openWeb(model.openFileUrl);
+							}
+						} else if(model.file_ext == 'jpg' || model.file_ext == 'png' || model.file_ext == 'gif') { //照片
+							console.log('000000003');
+							//							var imgUrl=model.original_file_url;
+							if(plus.os.name == 'Android') {
+								plus.nativeUI.previewImage([model.openFileUrl]);
+							} else {
+								plus.nativeUI.previewImage(model.openFileUrl, {
+									current: 0,
+									loop: false,
+									indicator: 'number'
+								});
+							}
+						} else if(model.file_ext == 'ppt' || model.file_ext == 'pptx' || model.file_ext == 'doc' || model.file_ext == 'docx' || model.file_ext == 'pdf' || model.file_ext == 'xlsx' || model.file_ext == 'xls') { //文档
+							if(plus.os.name == 'Android') {
+								console.log('000000005');
+								plus.openFiles.openFileFromURL(JSON.stringify(model), function(result) {
+									console.log("result>>>>>>" + result[0]);
+								}, function(result) {
+									console.log('未知错误：' + result);
+								});
+							} else {
+								console.log('000000006');
+								plus.runtime.openWeb(model.openFileUrl);
+							}
+						} else {
+							mui.toast('不支持查看此类型文件');
+						}
+					},
+					catalogItemClick: function(parent, item) {
+						console.log("选择的是这个:" + JSON.stringify(item) + ",教材：" + JSON.stringify(contentData.bookModel));
+						if(item.ischeck == 0) {
+							for(var i = 0; i < parent.length; i++) {
+								var child = parent[i];
+								child.ischeck = 0;
+							}
+							item.ischeck = 1;
+							pulldownRefresh();
+						}
+					}
+				},
+				mounted: function() {
+					//初始化滑动菜单
+					var swiper = new Swiper('.swiper-container', {
+						slidesPerView: 5, //菜单可见个数
+						spaceBetween: 10, //间隔
+						freeMode: true, //自由滑动模式
+						noSwiping: true, //禁止滑动
+					});
+				},
+				computed: {
+					getKm: function() {
+						return this.categoryArray;
+					}
+				},
+				watch: {
+					getKm: function(val) {
+						//初始化滑动菜单，防止数据请求慢，导致的初始化失败问题
+						setTimeout(function() {
+							var swiper = new Swiper('.swiper-container', {
+								slidesPerView: 5, //菜单可见个数
+								spaceBetween: 10, //间隔
+								freeMode: true, //自由滑动模式
+								noSwiping: true, //禁止滑动
+							});
+						}, 500);
+					}
+				}
+			});
+
+			var slider = mui("#slider");
+			//轮播开始
+			slider.slider({
+				interval: 5000
+			});
+
+			//获取资源(分页) 
+			var getZiYuanList = function() {
+				//资源类型
+				var tempCategoryid = '';
+				for(var i = 0; i < contentData.categoryArray.length; i++) {
+					var tempModel = contentData.categoryArray[i];
+					if(tempModel.ischeck == 1) {
+						tempCategoryid = tempModel.id;
+					}
+				}
+				var tempData = {
+					categoryid: tempCategoryid, //资源类型id 可选
+					bookid: contentData.bookModel.id, //教材id 必须
+					catalogid: contentData.catalogModel.id, //目录id 可选
+					p: contentData.pageIndex, //当前页码 默认1
+					s: '10' //每页记录数量 默认10
+				}
+				//				events.showWaiting();
+				getZiYuanRes(tempData, function function_name(data) {
+					//					events.closeWaiting();
+					mui('#contentData').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+					mui('#contentData').pullRefresh().endPulldownToRefresh();
+					console.log('获取资源(分页) :' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						contentData.pageIndex++;
+						for(var i = 0; i < data.RspData.list.length; i++) {
+							var model = data.RspData.list[i];
+							model.create_time = modifyTimeFormat(model.create_time);
+							if(model.convert_file_url == null || model.convert_file_url.length == 0) {
+								model.openFileUrl = model.original_file_url;
+							} else {
+								model.openFileUrl = model.convert_file_url;
+							}
+						}
+						if(contentData.flag == 0) { //刷新
+							contentData.resourceArray = [].concat(data.RspData.list);
+							if(data.RspData.list.length == 0) {
+								//									mui.toast('数据为空');
+							}
+						} else { //加载更多
+							contentData.resourceArray = contentData.resourceArray.concat(data.RspData.list);
+							if(data.RspData.list.length == 0) {
+								mui.toast('已加载全部');
+								//								mui('#contentData').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
+							}
+						}
+						contentData.showNoDataFlag = data.RspData.TotalCnt;
+						contentData.showFlag = 0;
+						$("#contentData").show();
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>
