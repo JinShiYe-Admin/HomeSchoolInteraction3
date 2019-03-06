@@ -179,17 +179,17 @@ var utils = (function(mod) {
 		if(string == '' || string == null || string == 'null' || string == undefined) { //赋值
 			switch(flag) {
 				case 0:
-					tempStr = 'image/utils/default_personalimage.png';
+					tempStr = '../../img/utils/default_personalimage.png';
 					break;
 				case 1:
-					tempStr = '../image/utils/default_personalimage.png';
+					tempStr = '../../img/utils/default_personalimage.png';
 					break;
 				case 2:
 				default:
-					tempStr = '../../image/utils/default_personalimage.png';
+					tempStr = '../../img/utils/default_personalimage.png';
 					break;
 				case 3:
-					tempStr = '../../image/utils/default_personalimage.png';
+					tempStr = '../../img/utils/default_personalimage.png';
 					break;
 			}
 		} else {

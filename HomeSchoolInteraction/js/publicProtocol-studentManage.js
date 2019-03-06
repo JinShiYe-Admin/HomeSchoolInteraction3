@@ -774,6 +774,13 @@ var hwTeacherditSubmitStatus = function(data0, callback) {
 	xhrPost(tempAttendUrl1 + 'editSubmitStatus', data0, callback);
 }
 
+// 修改递交状态 
+var hwTeacherdReturnBack = function(data0, callback) {
+	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';
+	data0 = extendParameter1(data0);
+	xhrPost(tempAttendUrl1 + 'returnBack', data0, callback);
+}
+
 // 提交作业点评
 var hwTeacherorrectHomework = function(data0, callback) {
 	var tempAttendUrl1 = window.storageKeyName.HOMEWORK + 'teacher/';

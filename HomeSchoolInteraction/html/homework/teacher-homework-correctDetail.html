@@ -345,7 +345,7 @@
 									<template v-if="wp.length>0">
 										<li class="mui-table-view-cell" v-for="(item,index) in wp" @tap="toCritique(index,item)">
 											<a class="mui-navigate-right">
-												<img class="li-img" src='../../img/homeSchool/schoolPage2.png' />
+												<img class="li-img" :src=item.studentImg  />
 												<span class="li-name">{{item.studentName}}</span>
 												<template v-if="item.correctStatus==0 || item.correctStatus==1"><!--既不是1未提交也不是0未登记 就显示提交时间  已交2 补交3-->
 													<span class="li-time" style="text-align: center;">{{item.correctStatusTxt}}</span>
@@ -370,7 +370,7 @@
 									<template v-if="yp.length>0">
 										<li class="mui-table-view-cell" v-for="(item,index) in yp" @tap="toCritique(index,item)">
 											<a class="mui-navigate-right">
-												<img class="li-img" src='../../img/homeSchool/schoolPage2.png' />
+												<img class="li-img" :src=item.studentImg />
 												<span class="li-name">{{item.studentName}}</span>
 												<span class="li-time">{{item.correctStatusTxt}}({{getSubTime(item.submitTime)}})</span>
 											</a>
@@ -480,16 +480,14 @@
 				hwTeacherHomeworketail(comData, function(data) {
 					if(data.RspCode == 0) {
 //						console.log('作业列表:' + JSON.stringify(data));
-						slider.yp=data.RspData.shArray;//已批列表
-						slider.wp=data.RspData.unshArray;//未批列表
-						getStudentsInfo(wd);
+						getStudentsInfo(wd,data);
 					} else {
 						mui.toast(data.msg);
 					}
 				});
 			}
 			//根据班级ID获取班级下的学生信息
-			function getStudentsInfo(wd){
+			function getStudentsInfo(wd,ypwpData){
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
@@ -504,27 +502,31 @@
 					wd.close();
 					if(data.RspCode == 0) {
 						if(data.RspData) {
-							//已批作业数组 拿到学生头像
-							for(var i = 0; i < slider.yp; i++) {
-								var tempHomework = slider.yp[i];
-								for(var a = 0; a < data.RspData.clssstus; a++) {
-									var tempStu = data.RspData.clssstus[a];
-									if(tempHomework.studentId==tempStu.stuid){
-										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
-									}
-								}
-							}
+							var wpList=ypwpData.RspData.unshArray;
+							var ypList=ypwpData.RspData.shArray;
 							//未批作业数组 拿到学生头像
-							for(var i = 0; i < slider.wp; i++) {
-								var tempHomework = slider.wp[i];
-								for(var a = 0; a < data.RspData.clssstus; a++) {
+							for(var i = 0; i < wpList.length; i++) {
+								var tempHomework = wpList[i];
+								for(var a = 0; a < data.RspData.clssstus.length; a++) {
 									var tempStu = data.RspData.clssstus[a];
 									if(tempHomework.studentId==tempStu.stuid){
-										tempHomework.studentImg=updateHeadImage(tempStu.imgurl,0);
+										wpList[i].studentImg=utils.updateHeadImage(tempStu.imgurl,0);
 									}
 								}
 							}
-						}
+							//已批作业数组 拿到学生头像
+							for(var i = 0; i < ypList.length; i++) {
+								var tempHomework = ypList[i];
+								for(var a = 0; a < data.RspData.clssstus.length; a++) {
+									var tempStu = data.RspData.clssstus[a];
+									if(tempHomework.studentId==tempStu.stuid){
+										ypList[i].studentImg=utils.updateHeadImage(tempStu.imgurl,0);
+									}
+								}
+							}
+						} 
+						slider.yp=ypList;
+						slider.wp=wpList;
 						console.log('已批作业列表:' + JSON.stringify(slider.yp));
 						console.log('未批作业列表:' + JSON.stringify(slider.wp));
 					} else {
