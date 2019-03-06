@@ -135,7 +135,7 @@
 							<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArray">
 								<div class="mui-card-header">
 									{{homeworkModel.subname}}作业&nbsp;[{{homeworkModel.grdname}}&nbsp;{{homeworkModel.clsname}}]
-									<button v-if="homeworkModel.correctCount ==0 && homeworkModel.unSubmitCount ==0" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
+									<button v-if="homeworkModel.returnBack ==1" type="button" class="mui-btn mui-btn-red mui-btn-outlined">撤销</button>
 								</div>
 								<div class="mui-card-content">
 									<div class="homewrokContent">
@@ -287,14 +287,34 @@
 					clickHomeworkModel: function(ev,item) {//作业卡片点击事件
 						var _event = ev.target;
 						if($(_event).attr('class')!=undefined && $(_event).attr('class').indexOf('mui-btn')!=-1) { //点击li下的button
-							this.$options.methods.clickBtn(item);
+							this.$options.methods.clickBtn(ev,item);
 						} else { //点击li标签
 							console.log('clickHomeworkModel:' + JSON.stringify(item));
 							utils.mOpenWithData("../../html/homework/teacher-homework-correctDetail.html", item);
 						}
 					},
-					clickBtn: function(item) {//撤销按钮点击事件
+					clickBtn: function(ev,item) {//撤销按钮点击事件
 						console.log('clickBtn:' + JSON.stringify(item));
+						var btnArray = ['否', '是'];
+						mui.confirm('确定要撤销该条作业吗？', '提醒', btnArray, function(e) {
+							if (e.index == 1) { 
+								var _event = ev.target;
+								var comData ={
+									homeworkId:item.id//作业ID
+								};
+								var wd = events.showWaiting();
+								hwTeacherdReturnBack(comData, function(data) {
+									wd.close();
+									console.log('data=='+JSON.stringify(data));
+									if(data.RspCode == 0) {
+										mui.toast(data.msg);
+										$(_event).parent().parent().remove();//后台撤销成功，删除该条div
+									} else {
+										mui.toast(data.msg);
+									}
+								});
+							}  
+						})
 					}
 				}
 			});
