@@ -55,8 +55,8 @@ var storageKeyName = (function(mod) {
 			mod.SCHOOLID = 0;//学校ID
 //			mod.SCHOOLID = 100008;
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
-			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/';//顾工接口
-			// mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
+//			mod.INTERFACEGU = 'https://zhxy.jiaobaowang.net:8515/schadminwebapi/api/data/';//顾工接口
+			 mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
 			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net:8443/SchoolCommunicationService/';//孔工接口
 			mod.TEACHERIMG = 'https://zhxy.jiaobaowang.net:8515/schadminwebadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://zhxy.jiaobaowang.net:8015/appupdate/xxt/versionCode.xml';//安卓升级地址
