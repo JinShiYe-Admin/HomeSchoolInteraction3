@@ -105,6 +105,30 @@
 							success: function(res) {
 								plus.nativeUI.closeWaiting();
 								var res_data = JSON.parse(res.data);
+								
+								//刷新其他页面数据
+								var allWv = plus.webview.all();
+								for(var i=0;i<allWv.length;i++) {
+									// 刷新测试首页
+									if(allWv[i].getURL().indexOf("ycyxIndex.html")!=-1){
+										// mui.fire(allWv[i], "checkFinish", {catalogId: sbData.catalogId});
+										mui.fire(allWv[i], "refresh", {
+											nodeId: res_data.report.book_catalog_id,
+											isFinish: res_data.report.is_finish
+										});
+									}
+								}
+								
+								//关闭开始页
+								var test_start = plus.webview.getWebviewById('bl-test-start');
+								test_start && test_start.hide("none");
+								//关闭测试页 
+								var bl_testing = plus.webview.getWebviewById('bl-testing');
+								bl_testing && bl_testing.close('none');
+								//echarts 重新绘图
+								var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
+								als_detail && mui.fire(als_detail, "rePain");
+								
 								//结果页
 								var bl_result = plus.webview.getWebviewById('bl-test-result');
 								var result_data = {
@@ -115,7 +139,11 @@
 								};
 								if(bl_result){
 									mui.fire(bl_result, "resubmit", result_data);
-									bl_result.show();
+									bl_result.show("slide-in-right",250,function(){
+										//关闭提交页
+										var bl_submit = plus.webview.getWebviewById('bl-test-submit');
+										bl_submit && bl_submit.close('none');
+									});
 								}else{
 									mui.openWindow({
 										url: "testResult.html",
@@ -123,17 +151,6 @@
 										extras: result_data
 									});
 								}
-								//刷新其他页面数据
-								mui.fire(plus.webview.getWebviewById('bl-index')||self.opener().opener().opener(), "refresh");
-								//关闭开始页
-								var test_start = plus.webview.getWebviewById('bl-test-start');
-								test_start && test_start.hide("none");
-								//关闭测试页 
-								var bl_testing = plus.webview.getWebviewById('bl-testing');
-								bl_testing && bl_testing.close('none');
-								//echarts 重新绘图
-								var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
-								als_detail && mui.fire(als_detail, "rePain");
 							},
 							fail: function(res) {
 								console.log(res);

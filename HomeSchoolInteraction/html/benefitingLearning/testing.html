@@ -106,8 +106,8 @@
 				<div class="question-box" v-if="questions[index]">
 					<div class="question">{{ (index+1)+".(单选题) " }}<span v-html="questions[index].content"></span></div>
 					<div class="option-box">
-						<div class="option-item" v-for="(item, k) in transOption" :key="k">
-							<span class="option-label" v-if="!isTested" :class="{selected: questions[index].stu_answer==k}" @tap="selectOption(k)">{{k}}</span>
+						<div class="option-item" v-for="(item, k) in transOption" :key="k" @tap="selectOption(k)">
+							<span class="option-label" v-if="!isTested" :class="{selected: questions[index].stu_answer==k}">{{k}}</span>
 							<span class="option-label" v-else :class="answerJudge(k)">{{k}}</span>
 							<span v-html="item"></span>
 						</div>

@@ -129,9 +129,9 @@
 		<div class="mui-content">
 			<!--校讯通菜单-->
 			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-				<a class="mui-control-item" data-target="bl-search" href="#search">
+				<!-- <a class="mui-control-item" data-target="bl-search" href="#search">
 			        <span>找题</span>
-			    </a>
+			    </a> -->
 				<a class="mui-control-item mui-active" data-target="bl-test-menu" href="#test-menu">
 			        <span>组卷测试</span>
 			    </a>
@@ -157,7 +157,7 @@
 			</div>
 				
 			<!--找题-->
-			<div id="search" class="mui-control-content">
+			<!-- <div id="search" class="mui-control-content">
 				<div class="search-title">
 					<p @tap.stop="selectMenu"><span class="mui-ellipsis">{{title.per.pername}} &middot; {{title.sub.subname}} &middot; {{title.node.name}}</span><span class="mui-icon mui-icon-forward"></span></p>
 					<form action="" method="post" class="search-box" @submit.prevent="search">
@@ -174,7 +174,7 @@
 					<a v-for="(v,i) in searchList" :key="i" @tap="goQuesDetail(v.id)" v-html="v.content" class="list-item mui-ellipsis-2"></a>
 					<p class="mui-text-center" v-show="!isLoading">{{isLastPage?"没有更多题了":"上拉加载更多"}}</p>
 				</div>
-			</div>
+			</div> -->
 			<!--组卷测试-->
 			<div id="test-menu" class="mui-control-content mui-active">
 				<div id="testMenu" class="mui-content vue-tree">
@@ -283,6 +283,7 @@
 		<script type="text/javascript" src="../../js/btlearn/common.js"></script>
 		<script type="text/javascript">
 			var self, bookMenuView, center, test_start;
+			var autoMenu = null;
 			
 			//认证信息
 			var userInfo = store.get(window.storageKeyName.PERSONALINFO);
@@ -324,6 +325,17 @@
 					}
 					var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
 					als_detail && mui.fire(als_detail, "refresh");
+					// 检测目录是否完成
+					console.log(e.detail);
+					if(e.detail.hasOwnProperty("isFinish")){
+						e.detail.isFinish && readTree(testMenu.menu, function(node){
+							if(node.id==e.detail.nodeId){
+								node.is_finish=1;
+							}
+						});
+					}else{
+						header.setMenu({percode: header.grade.selected, subcode: header.subject.selected});
+					}
 				});
 				
 				//有个人中心时
@@ -352,13 +364,13 @@
 							getAnalysisData();
 						}
 						break;
-					case "bl-search":
-						title = "找题";
-						if(autoMenu && !search.title.node.id) {
-							search.title = autoMenu;
-							search.getSearchList();
-						}
-						break;
+// 					case "bl-search":
+// 						title = "找题";
+// 						if(autoMenu && !search.title.node.id) {
+// 							search.title = autoMenu;
+// 							search.getSearchList();
+// 						}
+// 						break;
 				}
 				header.title = title;
 			});
@@ -644,113 +656,112 @@
 			}
 			
 			//找题
-			var autoMenu = null;
-			var search = new Vue({
-				el: "#search",
-				data: {
-					title: {
-						per: { percode: 0, pername: ""},
-						sub: { subcode: 0, subname: "" },
-						node: { id: 0, name: "" }
-					},
-					keyWord: "",
-					searchList: [],
-					listPage: 1,
-					isLoading: false,
-					isLastPage: false
-				},
-				mounted: function() {
-					var _this = this;
-					//监听上拉刷新
-					setPullRefresh("#search .search-list", function(){
-						if(!_this.isLoading&&!_this.isLastPage){
-							_this.getSearchList();
-						}
-					});
-				},
-				methods: {
-					// 查看题目详情
-					goQuesDetail: function(id) {
-						var _this = this;
-						var quesDetail = plus.webview.getWebviewById("bl-question-detail");
-						if(quesDetail) {
-							
-						}else{
-							mui.openWindow({
-								url: "quesDetail.html",
-								id: "bl-question-detail",
-								waiting: {autoShow: false},
-								extras: {
-									nodeId: id,
-									title: _this.title.node.name
-								}
-							});
-						}
-					},
-					// 搜索
-					search: function() {
-						this.keyWord = document.querySelector("#search input[type='search']").value;
-						this.listPage = 1;
-						this.getSearchList();
-					},
-					// 更改知识点
-					selectMenu: function() {
-						var _this = this;
-						var menu = plus.webview.getWebviewById("bl-menu");
-						if(menu){
-							menu.evalJS("setMenuData("+_this.title.per.percode+","+_this.title.sub.subcode+","+_this.title.node.id+");");
-						}else{
-							mui.openWindow({
-								url: "selectMenu.html",
-								id: "bl-menu",
-								extras: {
-									percode: _this.title.per.percode,
-									subcode: _this.title.sub.subcode,
-									nodeId: _this.title.node.id
-								}
-							});
-						}
-					},
-					//获取搜索列表
-					getSearchList: function() {
-						var _this = this;
-						if(_this.listPage==1) {
-							_this.searchList = [];
-						}
-						var _data = {
-							bookCatalogId: _this.title.node.id,
-							keyword: _this.keyWord,
-							pageNumber: _this.listPage,
-							pageSize: 10
-						};
-						console.log("获取搜索列表参数："+JSON.stringify(_data));
-						_this.isLoading = true;
-						plus.nativeUI.showWaiting();
-						commonAjax("/Ycyx/FindQuestion", {
-							data: _data,
-							success: function(res){
-								console.log(JSON.stringify(res));
-								var pg = res.data.page;
-								_this.searchList = _this.searchList.concat(pg.list);
-								_this.isLastPage = pg.lastPage;
-								if(!pg.lastPage){
-									_this.listPage = pg.pageNumber+1;
-								}
-								plus.nativeUI.closeWaiting();
-								_this.isLoading = false;
-							},
-							fail: function() {
-								plus.nativeUI.closeWaiting();
-								_this.isLoading = false;
-							},
-							error: function() {
-								plus.nativeUI.closeWaiting();
-								_this.isLoading = false;
-							}
-						});
-					}
-				}
-			});
+// 			var search = new Vue({
+// 				el: "#search",
+// 				data: {
+// 					title: {
+// 						per: { percode: 0, pername: ""},
+// 						sub: { subcode: 0, subname: "" },
+// 						node: { id: 0, name: "" }
+// 					},
+// 					keyWord: "",
+// 					searchList: [],
+// 					listPage: 1,
+// 					isLoading: false,
+// 					isLastPage: false
+// 				},
+// 				mounted: function() {
+// 					var _this = this;
+// 					//监听上拉刷新
+// 					setPullRefresh("#search .search-list", function(){
+// 						if(!_this.isLoading&&!_this.isLastPage){
+// 							_this.getSearchList();
+// 						}
+// 					});
+// 				},
+// 				methods: {
+// 					// 查看题目详情
+// 					goQuesDetail: function(id) {
+// 						var _this = this;
+// 						var quesDetail = plus.webview.getWebviewById("bl-question-detail");
+// 						if(quesDetail) {
+// 							
+// 						}else{
+// 							mui.openWindow({
+// 								url: "quesDetail.html",
+// 								id: "bl-question-detail",
+// 								waiting: {autoShow: false},
+// 								extras: {
+// 									nodeId: id,
+// 									title: _this.title.node.name
+// 								}
+// 							});
+// 						}
+// 					},
+// 					// 搜索
+// 					search: function() {
+// 						this.keyWord = document.querySelector("#search input[type='search']").value;
+// 						this.listPage = 1;
+// 						this.getSearchList();
+// 					},
+// 					// 更改知识点
+// 					selectMenu: function() {
+// 						var _this = this;
+// 						var menu = plus.webview.getWebviewById("bl-menu");
+// 						if(menu){
+// 							menu.evalJS("setMenuData("+_this.title.per.percode+","+_this.title.sub.subcode+","+_this.title.node.id+");");
+// 						}else{
+// 							mui.openWindow({
+// 								url: "selectMenu.html",
+// 								id: "bl-menu",
+// 								extras: {
+// 									percode: _this.title.per.percode,
+// 									subcode: _this.title.sub.subcode,
+// 									nodeId: _this.title.node.id
+// 								}
+// 							});
+// 						}
+// 					},
+// 					//获取搜索列表
+// 					getSearchList: function() {
+// 						var _this = this;
+// 						if(_this.listPage==1) {
+// 							_this.searchList = [];
+// 						}
+// 						var _data = {
+// 							bookCatalogId: _this.title.node.id,
+// 							keyword: _this.keyWord,
+// 							pageNumber: _this.listPage,
+// 							pageSize: 10
+// 						};
+// 						console.log("获取搜索列表参数："+JSON.stringify(_data));
+// 						_this.isLoading = true;
+// 						plus.nativeUI.showWaiting();
+// 						commonAjax("/Ycyx/FindQuestion", {
+// 							data: _data,
+// 							success: function(res){
+// 								console.log(JSON.stringify(res));
+// 								var pg = res.data.page;
+// 								_this.searchList = _this.searchList.concat(pg.list);
+// 								_this.isLastPage = pg.lastPage;
+// 								if(!pg.lastPage){
+// 									_this.listPage = pg.pageNumber+1;
+// 								}
+// 								plus.nativeUI.closeWaiting();
+// 								_this.isLoading = false;
+// 							},
+// 							fail: function() {
+// 								plus.nativeUI.closeWaiting();
+// 								_this.isLoading = false;
+// 							},
+// 							error: function() {
+// 								plus.nativeUI.closeWaiting();
+// 								_this.isLoading = false;
+// 							}
+// 						});
+// 					}
+// 				}
+// 			});
 
 			
 //			analysis.alsList = [{"subname":"语文","count":52,"subcode":"01","remark":"-1","avg_score":14},{"subname":"语文","count":52,"subcode":"01","remark":"0","avg_score":14}];
