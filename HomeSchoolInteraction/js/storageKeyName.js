@@ -1,4 +1,4 @@
-﻿﻿//此js用于保存本地存储时，用到的key值
+//此js用于保存本地存储时，用到的key值
 
 var storageKeyName = (function(mod) {
 
@@ -91,6 +91,7 @@ var storageKeyName = (function(mod) {
 			
 			//益测益学服务端地址
 			mod.YCYXHOST = "http://139.129.252.49:8080/yiceyixue";
+			// mod.YCYXHOST = "http://192.168.0.125:8080/yiceyixue";
 			
 			//学生管理
 			mod.INTERFACESIGNINKONG = 'https://zyja.zhuxue101.net/SchoolAttendanceService/'; //孔工接口IMG

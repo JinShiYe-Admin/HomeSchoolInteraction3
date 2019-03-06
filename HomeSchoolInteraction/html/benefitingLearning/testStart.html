@@ -53,7 +53,7 @@
 				<div class="lv-bar">
 					<div class="lv-item" v-for="(v,i) in difficulty" :class="{'active': v<=current_id}">
 						<div class="lv-icon-box"><span class="lv-icon">LV.{{v}}</span></div>
-						<div class="lv-msg">{{lv}}<span v-if="v==current_id">(当前)</span></div>
+						<div class="lv-msg">{{getLevel(v)}}<span v-if="v==current_id">(当前)</span></div>
 					</div>
 				</div>
 			</div>
@@ -90,18 +90,17 @@
 					difficulty: [],
 					current_id: 0
 				},
-				computed: {
-					lv: function() {
-						if(this.current_id==3) {
+				methods: {
+					getLevel: function(id){
+						if(id==3) {
 							return "提升";
-						}else if(this.current_id==2) {
+						}else if(id==2) {
 							return "巩固";
 						}else {
 							return "基础";
 						}
 					}
-				},
-				methods: { }
+				}
 			});
 			
 			mui.plusReady(function(){
@@ -114,6 +113,7 @@
 				
 				//传来 开始数据
 				window.addEventListener("getData", function(e){
+					console.log(JSON.stringify(e.detail));
 					headerTitle.innerHTML = e.detail.title;
 					level.difficulty = e.detail.difficulty.levels;
 					level.current_id = e.detail.difficulty.schedule.difficulty_level_id;

@@ -170,27 +170,18 @@
 		<script type="text/javascript">
 			var self, index, tested;
 			
-			mui.init({
-				beforeback: function() {
-					//关闭提交页
-					var bl_submit = plus.webview.getWebviewById('bl-test-submit');
-					bl_submit && bl_submit.close('none');
-					//关闭开始页
-					var test_start = plus.webview.getWebviewById('bl-test-start');
-					test_start && test_start.hide("none");
-					//关闭测试页 
-					var bl_testing = plus.webview.getWebviewById('bl-testing');
-					bl_testing && bl_testing.close('none');
-					//echarts 重新绘图
-					var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
-					als_detail && mui.fire(als_detail, "rePain");
-				}
-			});
+			mui.init();
 			
 			mui.plusReady(function(){
 				self = plus.webview.currentWebview();
 				//首次进入报告页
 				setResult(self.report, self.detailInfo, self.nodeTitle, self.levels);
+				
+				self.addEventListener("show", function(e){
+					//关闭提交页
+					var bl_submit = plus.webview.getWebviewById('bl-test-submit');
+					bl_submit && bl_submit.close('none');
+				});
 			});
 			
 			//再次进入报告页

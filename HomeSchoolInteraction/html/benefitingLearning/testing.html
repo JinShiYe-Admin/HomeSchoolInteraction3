@@ -199,14 +199,32 @@
 					testing.time = self.used_time;
 				}else{ 
 					//新测试
-//					if(self.opener().id=="bl-test-start") {
-//						self.opener().hide();
-//					}
 					testing.paperName = self.data.paperName;
 					testing.questions = self.data.questions;
 					testing.diskey = self.data.diskey;
 					//计时
 					testing.timer();
+					// 题目异常
+					console.log("试题："+JSON.stringify(testing.questions))
+					var isWrongOpt=false;
+					for(var i=0;i<testing.questions.length;i++) {
+						var ques = testing.questions[i];
+						try{
+							var ques_ops = JSON.parse(ques.option);
+							ques_ops.forEach(function(v){
+								if(!/^[A-Z]/.test(v)){
+									isWrongOpt = true;
+								}
+							});
+						}catch(e){
+							isWrongOpt = true;
+						}
+						if(isWrongOpt) break;
+					}
+					if(isWrongOpt){
+						self.close();
+						plus.nativeUI.toast("题目异常，请重新做题或换个知识点");
+					}
 				}
 				
 			});

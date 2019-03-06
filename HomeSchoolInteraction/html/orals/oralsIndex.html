@@ -995,24 +995,12 @@
 				},
 				mounted: function() {
 					var _this = this;
-					var startX1, startY1;
-					pullrefreshBox = document.getElementById("pullrefreshBox");
-					pullrefreshBox.addEventListener('touchstart',function (ev) {
-			            startX1 = ev.touches[0].pageX;
-			            startY1 = ev.touches[0].pageY;
-			        }, false);
-			        pullrefreshBox.addEventListener("touchend", function(ev){
-			        	var endX1, endY1;
-			            endX1 = ev.changedTouches[0].pageX;
-			            endY1 = ev.changedTouches[0].pageY;
-			            var direction = GetSlideDirection(startX1, startY1, endX1, endY1);
-			            if(direction==1&&!_this.isLoading&&!_this.lastPage) {
-			            	if(this.scrollHeight<=this.scrollTop+this.clientHeight){
-								getErrList();
-							}
-			            }
-			        }, false);
-					
+					//监听上拉刷新
+					setPullRefresh("#pullrefreshBox", function(){
+						if(!_this.isLoading&&!_this.lastPage){
+							getErrList();
+						}
+					});
 				},
 				methods: {
 					setScore: setWordsScore,
