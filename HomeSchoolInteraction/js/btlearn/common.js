@@ -164,8 +164,8 @@ function filterArray(arr, key, val) {
 function readTree(tree, callback) {
     for (var i = 0; i < tree.length; i++) {
         callback(tree[i]);
-        if(tree[i].children) {
-            readTree(tree[i].children, callback);
+        if(tree[i].childList) {
+            readTree(tree[i].childList, callback);
         }
     }
 }

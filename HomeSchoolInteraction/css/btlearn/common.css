@@ -378,7 +378,8 @@ ul li.navigate-right:before {
 }
 .beforeLeaveDialog .layui-layer-btn .layui-layer-btn0 {
 	order: 2;
-	background-color: #007AFF;
+	background-color: #00CFBD;
+	border-color: #00CFBD;
 }
 
 /*文本渲染*/
