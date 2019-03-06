@@ -84,9 +84,11 @@
 				swipeBack: false
 			});
 			
-			var	homeworkDetail = utils.getDataFromUrl(window.location.href);
+			var	homeworkDetail;
 			
 			mui.plusReady(function() {
+				homeworkDetail = utils.getDataFromUrl(window.location.href);
+				console.log('homeworkDetail:'+JSON.stringify(homeworkDetail));
 				getEvaluteCount();
 			});
 			var detail = new Vue({

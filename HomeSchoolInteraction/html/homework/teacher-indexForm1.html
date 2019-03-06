@@ -258,7 +258,7 @@
 										</div>
 									</div>
 									<ul class="mui-table-view">
-										<li class="mui-table-view-cell" v-for="(homeworkModel,index) in homeworkArrayStu" @tap="clickHomeworkModel(homeworkModel,index)">
+										<li class="mui-table-view-cell" v-for="(homeworkModel,index) in homeworkArrayStu" @tap="clickHomeworkModel(homeworkModel,0)">
 											<p style="color: black;font-size: 14px;margin-left: 10px;margin-right: 0px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{homeworkModel.subCode}}：{{homeworkModel.content}}</p>
 											<div class="homeworkFlag">
 												<p class="homeworkCountP1">{{homeworkModel.submitStatusTxt}}</p>
@@ -306,7 +306,7 @@
 											<p class="homeworkCountP2">{{statisJsonCls.unCorrectCount}}次</p>
 										</div>
 									</div>
-									<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArrayCls">
+									<div class="mui-card" @tap="clickHomeworkModel(homeworkModel,1)" v-for="homeworkModel in homeworkArrayCls">
 										<div class="mui-card-header">
 											{{homeworkModel.createUsername}}&nbsp;[{{homeworkModel.subCode}}]
 											<p class="mui-card-link">{{homeworkModel.createTime}}</p>
@@ -506,13 +506,19 @@
 					totalPageCountCls: 0 //班级作业总页数
 				},
 				methods: {
-					clickHomeworkModel: function(ev, item) { //作业卡片点击事件
-						var _event = ev.target;
-						if($(_event).attr('class') != undefined && $(_event).attr('class').indexOf('mui-btn') != -1) { //点击li下的button
-							this.$options.methods.clickBtn(item);
-						} else { //点击li标签
-							console.log('clickHomeworkModel:' + JSON.stringify(item));
+					clickHomeworkModel: function(model,flag) { //作业卡片点击事件
+						if (flag == 0) {
+							utils.mOpenWithData("../../html/homework/teacher-homework-evaluate-count.html", model);
+						} else{
+							utils.mOpenWithData("../../html/homework/teacher-homework-submit-count.html", model);
 						}
+						
+//						var _event = ev.target;
+//						if($(_event).attr('class') != undefined && $(_event).attr('class').indexOf('mui-btn') != -1) { //点击li下的button
+//							this.$options.methods.clickBtn(item);
+//						} else { //点击li标签
+//							console.log('clickHomeworkModel:' + JSON.stringify(item));
+//						}
 					},
 					clickBtn: function(item) { //撤销按钮点击事件
 						console.log('clickBtn:' + JSON.stringify(item));
