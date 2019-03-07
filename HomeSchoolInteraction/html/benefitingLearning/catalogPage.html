@@ -1,0 +1,485 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>切换目录</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../js/swiper/swiper.min.css">
+		<link href="http://www.jq22.com/jquery/bootstrap-3.3.4.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.catalogs{
+				margin-top: 6px;
+			}
+			
+			.names{ 
+				padding-left: 15px;
+				width: 70px;
+				position: relative;
+				background: white;
+				z-index: 2;
+				top: 14px;
+			}
+			.names:first-child{
+				top: 19px;
+			}
+			/*滑动菜单行高*/
+			.swiper-slide{
+				height:30px;
+			}
+			
+			.swiper-container{
+				margin-left: 70px !important;
+			}
+			.fontcolor{
+				color: #00CFBD;
+			}
+			
+			/*可能是多级菜单的样式*/
+			.mui-bar-nav {
+				z-index: 999;
+			}
+			#header:after {
+				content: "";
+				position: absolute;
+				z-index: -1;
+				left: 0;
+			    right: 0;
+			    top: 0;
+			    bottom: 0;
+			}
+			.mui-bar-tab {
+				height: 1rem;
+				background-color: #F9F9F4;
+			}
+			.mui-bar-tab .mui-tab-item {
+				height: 1rem;
+			}
+			.mui-bar-tab .mui-tab-item .mui-icon {
+				font-size: 0.44rem;
+				top: 0;
+    			margin-bottom: 0.04rem;
+			}
+			.mui-bar-tab .mui-tab-item .mui-icon~.mui-tab-label {
+				font-size: 0.24rem;
+			}
+			.kn-menu .label-wrapper {
+				padding: 0.3rem 1rem 0.3rem 0.2rem;
+				border-bottom: 1px solid #ECECEC;
+				position: relative;
+			}
+			.kn-menu .label-icon {
+				margin-right: -0.3rem;
+				vertical-align: middle;
+			}
+			.kn-menu .label-name {
+				vertical-align: middle;
+			}
+			.kn-menu .label-icon + .label-name {
+				padding-left: 0.4rem;
+			}
+			.label-wrapper .done-box {
+				display: inline-block;
+				width: 0.32rem;
+				height: 0.32rem;
+				border: 1px solid #4AC058;
+				border-radius: 2px;
+				text-align: center;
+				line-height: 0.22rem;
+				position: absolute;
+				right: 0.6rem;
+				top: 50%;
+				margin-top: -0.16rem;
+			}
+			.options-pannel {
+				position: absolute;
+				left: 0;
+				top: 100%;
+				min-width: 100%;
+				background-color: #FFFFFF;
+				margin-right: -0.26rem;
+				padding: 0.5rem 0.2rem 0.4rem;
+				color: #222222;
+				z-index: -1;
+			}
+			.options-pannel label input[type="radio"] {
+				display: none;
+			}
+			.options-pannel .radio-wrap {
+				display: block;
+				float: left;
+				width: 1.58rem;
+				height: 0.63rem;
+				line-height: 0.63rem;
+				margin-right: 0.26rem;
+				margin-bottom: 0.2rem;
+				text-align: center;
+			}
+			.options-pannel label {
+				display: block;
+				border: 1px solid #D0D0D0;
+				border-radius: 0.05rem;
+				background-color: #F5F5F5;
+				font-size: 0.24rem;
+			}
+			.options-pannel label.selected {
+				background-color: #3C9DFB;
+				color: #FFFFFF;
+				border-color: #3C9DFB;
+			}
+			.als-title {
+				padding: 0.4rem 0.2rem 0;
+				font-size: 0.3rem;
+				color: #222222;
+			}
+			.als-title:after {
+				display: block;
+				content: "";
+				border-bottom: 1px solid #DDDDDD;
+				padding-bottom: 0.4rem;
+			}
+			.als-list:before {
+				display: none;
+			}
+			.als-list li {
+				display: flex;
+				justify-content: space-between;
+				padding: 0.3rem 0.6rem 0.3rem 0.2rem;
+				line-height: 0.64rem;
+			}
+			.als-list li:first-child {
+				padding-bottom: 0.15rem;
+			}
+			ul.als-list li .sub {
+				padding-left: 1.1rem;
+				vertical-align: middle;
+			}
+			ul.als-list li .sub .label {
+				display: inline-block;
+				text-align: center;
+				border: 1px solid #25AE38;
+				color: #25AE38;
+				border-radius: 4px;
+				vertical-align: middle;
+				margin-top: -3px;
+				width: 1.2rem;
+				height: .64rem;
+				line-height: .64rem;
+				font-size: 150%;
+				margin-left: -1.6rem;
+				margin-right: 0.4rem;
+				transform: scale(0.5);
+				transform-origin: 150% 50%;
+			}
+			ul.als-list li .sub .label.bad {
+				color: #DB4848;
+				border-color: #DB4848;
+			}
+			ul.als-list li .score {
+				width: 30%;
+				text-align: center;
+			}
+			.als-list li .sub {
+				width: 35%;
+			}
+			.als-list li .times {
+				width: 28%;
+				text-align: center;
+			}
+			#subRadar {
+				min-height: 205px;
+				max-height: 440px;
+				margin-bottom: .6rem;
+			}
+			#analysis {
+				max-height: 100%;
+				overflow-y: auto;
+			}
+			
+			.swiper-slide {
+				width: 20.6%;  
+			} 
+		</style>
+	</head>
+
+	<body style="background: white;">
+		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;height: 44px;">
+			<a  class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white"></a>
+			<h1 class="mui-title" style="color: white;">切换目录</h1>
+			<!--<a @click="sure" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;">确定</a>-->
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div id="catalog">
+				<!--顶部滑动菜单-->
+				<div class="names" v-cloak>{{xueduanStr}}</div>
+				<div class="swiper-container catalogs" v-cloak id="xueduan">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" :class="xd.ischeck==1?'fontcolor':''" v-for="(xd,index) in xueduan" @tap="catalogItemClick(xueduan,xd,'xd')">{{xd.pername}}</div>
+					</div>
+				</div>
+				<div class="names" v-cloak>{{kemuStr}}</div>
+				<div class="swiper-container" style="margin-top: 1px;" v-cloak id="kemu">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" :class="km.ischeck==1?'fontcolor':''" v-for="(km,index) in kemu"  @tap="catalogItemClick(kemu,km,'km')">{{km.subname}}</div>
+					</div>
+				</div>
+				<div class="names" v-cloak>{{jiaobanStr}}</div>
+				<div class="swiper-container" style="margin-top: 1px;" v-cloak id="jiaoban">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" :class="jb.ischeck==1?'fontcolor':''" v-for="(jb,index) in jiaoban"  @tap="catalogItemClick(jiaoban,jb,'jb')">{{jb.matername}}</div>
+					</div>
+				</div> 
+				<div class="names" v-cloak>{{fenceStr}}</div>
+				<div class="swiper-container" style="margin-top: 1px;" v-cloak id="fence">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" :class="fc.ischeck==1?'fontcolor':''" v-for="(fc,index) in fence"  @tap="catalogItemClick(fence,fc,'fc')">{{fc.fascname}}</div>
+					</div>
+				</div>
+				<!--底部目录列表-->
+				<div id="test-menu" class="mui-control-content mui-active">
+					<div id="testMenu" class="mui-content vue-tree">
+						<div class="kn-menu" v-cloak>
+							<tree-menu v-for="(model, i) in menu" :model="model" :key="i" :depth="0" @node-click="selectNode"></tree-menu>
+							<p v-if="!menu.length&&isLoaded"  style="padding: 0.3rem;">暂无目录</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.js"></script>
+		<script src="../../js/demoCssJs/jquery-2.1.4.js"></script>
+		<script type="text/javascript" src="../../js/swiper/swiper.js"></script>
+		<script type="text/javascript" src="../../js/btlearn/common.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/mui/mui.picker.js"></script>
+		<script src="../../js/mui/mui.poppicker.js"></script>
+		<script src="../../js/publicProtocol-ziyuan.js"></script>
+		
+		<script type="text/javascript">
+			
+			mui.init();
+			//获取个人信息
+			var personal = store.get(window.storageKeyName.PERSONALINFO);
+			console.log('personal:' + JSON.stringify(personal));
+			//获取共用参数
+			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+			var catalogObj = store.get(window.storageKeyName.CATALOGOBJ);//滑动菜单选择值对象
+			if(catalogObj==null){
+				catalogObj={
+					percode: '',//学段代码 
+					subcode: '',//科目代码 
+					matercode: '',//教材代码 
+					fasccode: ''//分册代码
+				}
+			}
+			var selectDatas;//请求参数
+			mui.plusReady(function() {
+				var wv = plus.webview.currentWebview(); 
+				// 关闭侧滑返回功能
+				wv.setStyle({
+					'popGesture': 'none'
+				});
+				getZiYuanTextbookFunc();
+			});
+			var catalog=new Vue({
+				el:'#catalog',
+				data:{
+					xueduanStr:'',
+					kemuStr:'',
+					jiaobanStr:'',
+					fenceStr:'',
+					xueduan:[],//学段
+					kemu:[],//科目
+					jiaoban:[],//教版
+					fence:[],//分册
+					menu: [],//多级菜单
+					isLoaded: false,
+					category:[],//资源类型
+					book:''//教材
+				},
+				methods:{
+					catalogItemClick:function(parent,item,lx){
+						if(item.ischeck==0){
+							for(var i=0;i<parent.length;i++){
+								var child=parent[i];
+								child.ischeck=0;
+							}
+							item.ischeck=1;
+							console.log("选择的是这个:"+JSON.stringify(item));
+							//重新查询目录
+							if(lx=='xd'){
+								catalogObj.percode=item.percode;
+							}else if(lx=='km'){
+								catalogObj.subcode=item.subcode;
+							}else if(lx=='jb'){
+								catalogObj.matercode=item.matercode;
+							}else if(lx=='fc'){
+								catalogObj.fasccode=item.fasccode;
+							}
+							store.set(window.storageKeyName.CATALOGOBJ,catalogObj);
+							getZiYuanTextbookFunc();
+						}
+					},
+					selectNode: function(model) {
+						console.log(JSON.stringify(model));
+						var btnArray = ['否', '是'];
+						mui.confirm('确定切换到当前章节？', '提醒', btnArray, function(e) {
+							if (e.index == 1) {
+								var newObj=[];
+								newObj.push(model);
+								newObj.push(catalog.category);
+								newObj.push(catalog.book);
+								//通知上一页，把参数传过去
+								mui.fire(plus.webview.currentWebview().opener(), 'selectCatalog', newObj);
+								mui.back();
+							}  
+						})
+					}
+				},
+				mounted: function () {
+					//初始化滑动菜单
+					var swiper = new Swiper('.swiper-container', {
+					  	slidesPerView: 5,//菜单可见个数
+					  	spaceBetween: 10,//间隔
+					  	freeMode: true,//自由滑动模式
+					  	noSwiping : true,//禁止滑动
+					});
+		        },   
+		        computed: {
+			      getKm: function() {
+			        return this.kemu;
+			      }
+			    },
+			    watch: {
+			      getKm: function(val) {
+			      	//初始化滑动菜单，防止数据请求慢，导致的初始化失败问题
+			      	setTimeout(function(){
+			      		var swiper = new Swiper('.swiper-container', {
+						  	slidesPerView: 5,//菜单可见个数
+						  	spaceBetween: 10,//间隔
+						  	freeMode: true,//自由滑动模式
+						  	noSwiping : true,//禁止滑动
+						});
+			      	},500);
+			      }
+			    }
+			});
+			
+			
+			//获取教材
+			function getZiYuanTextbookFunc(){
+				var comData = catalogObj;
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				getZiYuanTextbook(comData, function(data) {
+					wd.close();
+					console.log('获取教材:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						if(data.RspData){
+							//学段列表
+							var xueduan= data.RspData.per.list;
+							var xdselected= data.RspData.per.selected;
+							for(var i = 0; i < xueduan.length; i++) {
+                                var temp =  xueduan[i];
+                                if (temp.percode==xdselected) {
+                                    temp.ischeck = 1;
+                                }else{
+                                    temp.ischeck = 0;
+                                }
+                            }
+//							console.log(JSON.stringify(xueduan))
+							//科目列表
+							var kemu= data.RspData.sub.list;
+							var kmselected= data.RspData.sub.selected;
+							for(var i = 0; i < kemu.length; i++) {
+                                var temp =  kemu[i];
+                                if (temp.subcode==kmselected) {
+                                    temp.ischeck = 1;
+                                }else{
+                                    temp.ischeck = 0;
+                                }
+                            }
+//							console.log(JSON.stringify(kemu))
+							//教材列表
+							var jiaoban= data.RspData.mater.list;
+							var jbselected= data.RspData.mater.selected;
+							for(var i = 0; i < jiaoban.length; i++) {
+                                var temp =  jiaoban[i];
+                                if (temp.matercode==jbselected) {
+                                    temp.ischeck = 1;
+                                }else{
+                                    temp.ischeck = 0;
+                                }
+                            }
+//							console.log(JSON.stringify(jiaoban))
+							//分册列表
+							var fence= data.RspData.fasc.list;
+							var fcselected= data.RspData.fasc.selected;
+							for(var i = 0; i < fence.length; i++) {
+                                var temp =  fence[i];
+                                if (temp.fasccode==fcselected) {
+                                    temp.ischeck = 1;
+                                }else{
+                                    temp.ischeck = 0;
+                                }
+                            }
+//							console.log(JSON.stringify(fence))
+							catalog.xueduan=xueduan;
+							catalog.kemu=kemu;
+							catalog.jiaoban=jiaoban;
+							catalog.fence=fence;
+							
+							//多级菜单,变量名替换
+							var catalogObj=data.RspData.catalog;
+							var catalogStr=JSON.stringify(catalogObj);
+							var str =catalogStr.replace(/childList/g,"children");
+							var rdata = JSON.parse(str);
+							catalog.menu = rdata||[];
+							catalog.isLoaded = true;
+							
+							//记录类别
+							var cate=data.RspData.category;
+							var newCategory=[];
+							newCategory.push({name:'全部',id:'',ischeck:1});
+							for(var i = 0; i < cate.length; i++){
+								var temp =  cate[i];
+								temp.ischeck=0;
+								newCategory.push(temp);
+							}
+							catalog.category=newCategory;
+							//教材
+							catalog.book=data.RspData.book;
+							//滑动菜单名称赋值,加这一段是为了让名称在一进页面vue还没渲染完成时隐藏掉,不加的话,v-clock不起作用
+							catalog.xueduanStr='学段：';
+							catalog.kemuStr='科目：';
+							catalog.jiaobanStr='教版：';
+							catalog.fenceStr='分册：';
+						}
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>
