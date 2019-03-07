@@ -119,12 +119,14 @@
 				margin-bottom: 5px;
 				border-radius: 6px;
 			}
-			.selectCellBG0{
-				font-size:15px ;
+			
+			.selectCellBG0 {
+				font-size: 15px;
 				background: #EAEAEA;
 			}
-			.selectCellBG1{
-				font-size:15px ;
+			
+			.selectCellBG1 {
+				font-size: 15px;
 				background: #def9f7;
 				color: #009387;
 			}
@@ -207,6 +209,11 @@
 									</div>
 								</li>
 							</ul>
+							<div v-if='formFlag == 0' class="" style="padding-top: 10px;padding-left: 15px;">
+								<p class="" style="font-size: 17px;color: black;">学生姓名</p>
+								<input v-model='stuName' style="width: 200px;" type="text" placeholder="请输入学生姓名">
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -233,7 +240,7 @@
 						<div id="homeworkListArray" class="" style="margin-top: 10px;">
 							<div v-if='formFlag == 0'>
 								<div v-if='homeworkArrayStu.length>0' class="">
-									<p class="homeworkTitle">一年级106班王龙作业统计表【语文】</p>
+									<p class="homeworkTitle">{{selectDataStu.grdname}}{{selectDataStu.clsname}}{{selectDataStu.stuName}}作业统计表【{{selectDataStu.subname}}】</p>
 									<p class="homeworkTime">统计周期 ：2018-6-23至2018-6-27</p>
 									<div class="" style="height: 60px;">
 										<div class="homeworkCount">
@@ -282,7 +289,7 @@
 							</div>
 							<div v-else=''>
 								<div v-if='homeworkArrayCls.length>0' class="">
-									<p class="homeworkTitle">一年级106班王龙作业统计表【语文】</p>
+									<p class="homeworkTitle">{{selectDataStu.grdname}}{{selectDataStu.clsname}}作业统计表【{{selectDataStu.subname}}】</p>
 									<p class="homeworkTime">统计周期 ：2018-6-23至2018-6-27</p>
 									<div class="" style="height: 60px;">
 										<div class="homeworkCount">
@@ -372,14 +379,22 @@
 			var flagRef = 0; //是刷新0，还是加载更多1
 			document.getElementById('stuItem').addEventListener('tap', function() {
 				homeworkListArray.formFlag = 0;
+				selectDetailData.formFlag = 0;
 			});
 			document.getElementById('clsItem').addEventListener('tap', function() {
 				homeworkListArray.formFlag = 1;
-				//				if(homeworkListArray.homeworkArrayCls.length == 0) {
-				//					//查询作业列表
-				//					getTeacheromeworkList(homeworkListArray.pageIndexStu)
-				//				}
+				selectDetailData.formFlag = 1;
+				if(homeworkListArray.homeworkArrayCls.length == 0) {
+					//查询作业列表
+					getTeacheromeworkList(homeworkListArray.pageIndexCls);
+				}
 			});
+			//点击界面其他区域，隐藏键盘
+			$('body').on('touchend', function(el) {
+				if(el.target.tagName != 'INPUT') {
+					$('input').blur()
+				}
+			})
 			//下拉、上滑加载更多
 			mui(".mui-scroll-wrapper .mui-scroll.main").pullToRefresh({
 				down: {
@@ -443,9 +458,11 @@
 			var selectDetailData = new Vue({
 				el: "#gradList",
 				data: {
+					formFlag: 0, //学生作业0，班级作业1
 					grdsList: [], //年级数组
 					classList: [], //班级数组
-					kmList: [] //科目数组
+					kmList: [], //科目数组
+					stuName: '' //学生姓名
 				},
 				methods: {
 					modifySelectCell: function(sumModel, currentModel, lx) {
@@ -474,12 +491,19 @@
 						offCanvasWrapper.offCanvas('close');
 					},
 					confirm: function() { //确定按钮点击事，相当于下拉刷新
-						offCanvasWrapper.offCanvas('close');
-						homeworkListArray.pageIndexStu = 1;
-						flagRef = 0;
 						if(homeworkListArray.formFlag == 0) { //学生作业
+							if(selectDetailData.stuName.length == 0) {
+								mui.toast('请输入学生姓名');
+								return;
+							}
+							offCanvasWrapper.offCanvas('close');
+							flagRef = 0;
+							homeworkListArray.pageIndexStu = 1;
 							getTeacheromeworkList(homeworkListArray.pageIndexStu);
 						} else { //班级作业
+							offCanvasWrapper.offCanvas('close');
+							flagRef = 0;
+							homeworkListArray.pageIndexCls = 1;
 							getTeacheromeworkList(homeworkListArray.pageIndexCls);
 						}
 					}
@@ -497,28 +521,28 @@
 					selectDataStu: {}, //学生作业的筛选参数
 					homeworkArrayStu: [], //学生作业列表
 					statisJsonStu: '', //学生作业统计
-					pageIndexStu: 0, //获取学生作业的页码
+					pageIndexStu: 1, //获取学生作业的页码
 					totalPageCountStu: 0, //学生作业总页数
 					selectDataCls: {}, //班级作业的筛选参数
 					homeworkArrayCls: [], //班级作业列表
 					statisJsonCls: '', //班级作业统计
-					pageIndexCls: 0, //获取班级作业的页码
+					pageIndexCls: 1, //获取班级作业的页码
 					totalPageCountCls: 0 //班级作业总页数
 				},
 				methods: {
-					clickHomeworkModel: function(model,flag) { //作业卡片点击事件
-						if (flag == 0) {
+					clickHomeworkModel: function(model, flag) { //作业卡片点击事件
+						if(flag == 0) {
 							utils.mOpenWithData("../../html/homework/teacher-homework-evaluate-count.html", model);
-						} else{
+						} else {
 							utils.mOpenWithData("../../html/homework/teacher-homework-submit-count.html", model);
 						}
-						
-//						var _event = ev.target;
-//						if($(_event).attr('class') != undefined && $(_event).attr('class').indexOf('mui-btn') != -1) { //点击li下的button
-//							this.$options.methods.clickBtn(item);
-//						} else { //点击li标签
-//							console.log('clickHomeworkModel:' + JSON.stringify(item));
-//						}
+
+						//						var _event = ev.target;
+						//						if($(_event).attr('class') != undefined && $(_event).attr('class').indexOf('mui-btn') != -1) { //点击li下的button
+						//							this.$options.methods.clickBtn(item);
+						//						} else { //点击li标签
+						//							console.log('clickHomeworkModel:' + JSON.stringify(item));
+						//						}
 					},
 					clickBtn: function(item) { //撤销按钮点击事件
 						console.log('clickBtn:' + JSON.stringify(item));
@@ -762,13 +786,12 @@
 				var comData0 = getSelectData();
 				console.log('comData0==' + JSON.stringify(comData0));
 				var comData = {
-					gradeId: '24',
-					classId: '47',
-					studentName: '001学生',
-					subCode: '',
+					gradeId: comData0.gradeId,
+					classId: comData0.classId,
+					studentName: comData0.stuName,
+					subCode: comData0.subCode,
 					fromDate: '',
 					toDate: '',
-					pageNumber: 1,
 					pageSize: 10
 				}
 				console.log('comData==' + JSON.stringify(comData));
@@ -777,6 +800,7 @@
 					wd = events.showWaiting();
 				}
 				if(homeworkListArray.formFlag == 0) {
+					comData.pageNumber = homeworkListArray.pageIndexStu;
 					hwTeachertatisticsStudentHomework(comData, function(data) {
 						console.log('作业列表:' + JSON.stringify(data));
 						if(flagRef == 0) {
@@ -812,6 +836,7 @@
 						}
 					});
 				} else {
+					comData.pageNumber = homeworkListArray.pageIndexCls;
 					hwTeachertatisticsClassHomework(comData, function(data) {
 						console.log('作业列表:' + JSON.stringify(data));
 						if(flagRef == 0) {
@@ -862,20 +887,25 @@
 					var item = selectDetailData.grdsList[i];
 					if(item.childFlag == 1) {
 						comData.gradeId = item.grdid;
+						comData.grdname = item.grdname;
 					}
 				}
 				for(var i = 0; i < selectDetailData.classList.length; i++) {
 					var item = selectDetailData.classList[i];
 					if(item.childFlag == 1) {
 						comData.classId = item.clsid;
+						comData.clsname = item.clsname;
 					}
 				}
 				for(var i = 0; i < selectDetailData.kmList.length; i++) {
 					var item = selectDetailData.kmList[i];
 					if(item.childFlag == 1) {
 						comData.subCode = item.subcode;
+						comData.subname = item.subname;
 					}
 				}
+				comData.stuName = selectDetailData.stuName;
+				homeworkListArray.selectDataStu = comData;
 				return comData;
 			}
 
