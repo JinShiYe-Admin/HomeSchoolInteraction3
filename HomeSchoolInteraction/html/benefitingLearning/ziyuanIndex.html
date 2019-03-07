@@ -74,9 +74,6 @@
 
 	<body style="background: white;">
 		<header class="mui-bar mui-bar-nav" v-cloak style="background-color:#00CFBD;" id="tempHead">
-			<a @click="clickLeftImg" v-cloak class="mui-icon mui-pull-left">
-				<img :src=headImg style="width: 26px;height: 26px;border-radius: 50%;" />
-			</a>
 			<h1 @click="clickTitle()" class="mui-title" v-cloak style="color: white;">
 				<a class="mui-icon" style="font-size: 16px;">{{titleName}}<span class="mui-icon-arrowdown"></span></a>
 			</h1>
@@ -161,7 +158,6 @@
 			mui.init({
 				statusBarBackground: '#00CFBD',
 				swipeBack: false,
-				beforeback: back,
 				pullRefresh: {
 					container: '#contentData',
 					down: {
@@ -212,64 +208,7 @@
 				getZiYuanList();
 			}
 
-			function back() {
-				if(showMenu) {
-					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
-					closeMenu();
-					return false;
-				} else {
-					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
-					menu.close('none');
-					return true;
-				}
-			}
-
-			var main;
-			var menu;
-			var mask = mui.createMask(_closeMenu);
-			var showMenu = false,
-				mode = 'all-move';
-			//首先改变移动标志
-			slideTogether = true;
-			//变换menu界面初始化位置，整体移动时，Menu界面left需要在-70%的地方；
-			//						menu.setStyle({
-			//							left: '-70%'
-			//						});
 			mui.plusReady(function() {
-				var backButtonPress = 0;
-				//重写返回键
-				mui.back = function(event) {
-					backButtonPress++;
-					if(backButtonPress > 1) {
-						plus.runtime.quit();
-					} else {
-						plus.nativeUI.toast('再按一次退出应用');
-					}
-					setTimeout(function() {
-						backButtonPress = 0;
-					}, 1000);
-					return false;
-				};
-
-				main = plus.webview.currentWebview();
-				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
-				setTimeout(function() {
-					//侧滑菜单默认隐藏，这样可以节省内存；
-					menu = mui.preload({
-						id: '../../html/ziyuan/mine.html',
-						url: '../../html/ziyuan/mine.html',
-						styles: {
-							left: 0,
-							width: '70%',
-							zindex: 9997
-						}
-					});
-				}, 1000);
-
-				window.addEventListener('home_setHeadImg', function(data) {
-					tempHead.headImg = data.detail.imgurl;
-				});
-
 				//获取教材
 				getTextBook();
 			});
@@ -293,7 +232,7 @@
 					}
 				}
 			});
-
+ 
 			//获取教材
 			var getTextBook = function() {
 				var comData = {
@@ -350,162 +289,6 @@
 				});
 			}
 
-			//关闭侧滑
-			window.addEventListener('closeMinePage', function(data) {
-				console.log('closeMinePage,菜单已关闭')
-				closeMenu();
-			});
-
-			window.addEventListener('hideMenu', function(data) {
-				console.log('hideMenu,菜单已关闭')
-				mask.close();
-				menu.hide();
-				showMenu = false;
-			});
-			/**
-			 * 显示菜单菜单
-			 */
-			function openMenu() {
-//				if(!showMenu) {
-					var wvs = plus.webview.getDisplayWebview();
-					for(var i = 0; i < wvs.length; i++) {
-						var url = wvs[i].getURL();
-						if(url.indexOf('/ziyuan/mine') == -1) {
-							if(plus.os.name == 'Android') {
-								wvs[i].setStyle({
-									mask: "rgba(0,0,0,0.1)"
-								});
-							} else {
-								wvs[i].setStyle({
-									mask: "rgba(0,0,0,0.3)"
-								});
-							}
-							wvs[i].addEventListener("maskClick", function() {
-								closeMenu();
-							}, false);
-						}
-					}
-					//							mui.fire(plus.webview.currentWebview().opener(), 'closeClick', {});
-					//侧滑菜单处于隐藏状态，则立即显示出来；
-					//显示完毕后，根据不同动画效果移动窗体；
-					menu.show('none', 0, function() {
-						switch(mode) {
-							case 'main-move':
-								//主窗体开始侧滑；
-								main.setStyle({
-									left: '70%',
-									transition: {
-										duration: 150
-									}
-								});
-								break;
-							case 'menu-move':
-								menu.setStyle({
-									left: '0%',
-									transition: {
-										duration: 10
-									}
-								});
-								break;
-							case 'all-move':
-//								main.setStyle({
-//									left: '70%',
-//									transition: {
-//										duration: 150
-//									}
-//								});
-								menu.setStyle({
-									left: '0%',
-									transition: {
-										duration: 10
-									}
-								});
-								break;
-						}
-					});
-					//显示遮罩
-					mask.show();
-					showMenu = true;
-					//通知index页隐藏tab栏
-//				}
-			}
-			/**
-			 * 关闭侧滑菜单
-			 */
-			function closeMenu() {
-				_closeMenu();
-				//关闭遮罩
-				mask.close();
-			}
-
-			/**
-			 * 关闭侧滑菜单（业务部分）
-			 */
-			function _closeMenu() {
-//				if(showMenu) {
-					//						mui.fire(plus.webview.currentWebview().opener(), 'openClick', {});
-					var wvs = plus.webview.getDisplayWebview();
-					for(var i = 0; i < wvs.length; i++) {
-						wvs[i].setStyle({
-							mask: "none"
-						});
-					}
-					//关闭遮罩；
-					switch(mode) {
-						case 'main-move':
-							//主窗体开始侧滑；
-							main.setStyle({
-								left: '0',
-								transition: {
-									duration: 150
-								}
-							});
-							break;
-						case 'menu-move':
-							//主窗体开始侧滑；
-							menu.setStyle({
-								left: '-70%',
-								transition: {
-									duration: 150
-								}
-							});
-							break;
-						case 'all-move':
-							//主窗体开始侧滑；
-//							main.setStyle({
-//								left: '0',
-//								transition: {
-//									duration: 150
-//								}
-//							});
-							//menu页面同时移动
-							menu.setStyle({
-								left: '-70%',
-								transition: {
-									duration: 150
-								}
-							});
-
-							break;
-					}
-
-					//等窗体动画结束后，隐藏菜单webview，节省资源；
-					setTimeout(function() {
-						menu.hide();
-					}, 200);
-					//改变标志位
-					showMenu = false;
-					//通知index页显示tab栏
-//				}
-			}
-			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
-			mui.menu = function() {
-				if(showMenu) {
-					closeMenu();
-				} else {
-					openMenu();
-				}
-			}
 			//vue数据
 			var contentData = new Vue({
 				el: "#contentData",

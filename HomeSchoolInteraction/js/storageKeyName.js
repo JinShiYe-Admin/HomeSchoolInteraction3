@@ -99,6 +99,9 @@ var storageKeyName = (function(mod) {
 			
 			//作业管理
 			mod.HOMEWORK = 'http://139.129.252.49:8080/hm/app/'; //作业管理
+			
+			//资源
+			mod.ZIYUANURL = "https://gxkf.jiaobaowang.net:9443/zxzyapi/api/";
 			break;
 		default:
 			break;
