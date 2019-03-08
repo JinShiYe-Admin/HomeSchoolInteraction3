@@ -414,6 +414,13 @@
 			});
 			//初始化图片预览
 			mui.previewImage();
+			
+			//关闭侧滑
+			window.addEventListener('refreshHomeworkList', function(data) {
+				console.log('liushuai');
+				getHomeworkDetail();
+			});
+			
 			//作业详情
 			var detail = new Vue({
 				el: "#detail",  

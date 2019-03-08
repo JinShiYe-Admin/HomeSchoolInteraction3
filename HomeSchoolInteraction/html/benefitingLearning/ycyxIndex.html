@@ -198,7 +198,7 @@
 					<div class="mui-scroll-wrapper" style="background: white;top: 90px;" id="refreshList">
 						<div class="mui-scroll">
 							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-media" v-for="(resourceModel,index) in resourceArray" @click="clickResourceModel(resourceModel,index)">
+								<li class="mui-table-view-cell mui-media" v-for="(resourceModel,index) in resourceArray" @tap="clickResourceModel(resourceModel,index)">
 									<a href="javascript:;">
 										<div v-if="resourceModel.is_pack">
 											<img class="mui-media-object mui-pull-left" src="../../img/ziyuan/ziyuanPack.png" />

@@ -71,11 +71,11 @@
 			
 			.mui-radio input[type=radio]:before{
 				content: '\e441';
-			    font-size:22px ;
+			    font-size:20px ;
 			}
 			.mui-radio input[type=radio]:checked:before {
 			    content: '\e441';
-			    font-size:22px ;
+			    font-size:20px ;
 			    color: #00CFBD ;
 			}
 			
@@ -93,6 +93,7 @@
 				font-size: 14px;
 			}
 			.check-label{
+				
 				padding-left:30px !important;
 				padding-right: 0px !important;
 			}
@@ -108,14 +109,22 @@
 			.mui-input-group .mui-input-row:after {
 			    height: 0;
 			}
-		</style>
+			.zt-text{
+				font-size:15px ;
+				margin-top: 7px;
+				
+			}
+			.mui-col-xs-4{
+				margin-top: 0px;
+			}
+			</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
 			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">批量登记</h1>
-			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submit()">提交</a>
+			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submitZT()">提交</a>
 		</header>
 		<div class="mui-content" style="background: white;">
 			<div id="detail">
@@ -124,19 +133,18 @@
 				</div>
 				<div class="mui-row">
 					<form class="mui-input-group">
-						<div class="mui-input-row mui-radio mui-left">
-							<div class="mui-col mui-col-xs-4" style="float: left;">
-								<label>已交</label>
-								<input name="radio1" type="radio" checked>
-							</div>
-							<div class="mui-col mui-col-xs-4" style="float: left;">
-								<label>未交</label>
-								<input name="radio1" type="radio" >
-							</div>
-							<div class="mui-col mui-col-xs-4" style="float: left;">
-								<label>补交</label>
-								<input name="radio1" type="radio" >
-							</div>
+						<div class="mui-row mui-radio mui-left" style="text-align: left;">
+							<template v-if="submitArray.length >0">
+								<div class="mui-col-xs-4" v-for="item in submitArray" @tap="submitZT(item)">
+									<label class="zt-text">{{item.text}}</label>
+									<input name='submitZt' :value=item.value type="radio">
+								</div>
+							</template>
+							<template v-else>
+								<div class="mui-col-xs-4">
+									<span class="title-last" style="background: #fff;">暂无选择项</span> 
+								</div>
+							</template>
 						</div>
 					</form>
 				</div>
@@ -144,70 +152,41 @@
 					请选择学生	
 				</div>
 				<div class="mui-row">
-					<div class="mui-input-row mui-checkbox mui-left">
-					    	<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox0" class="check-label">全选</label>
-					   			<input name="checkbox0" value="Item 1" type="checkbox" style="left: 0px;">
+					<template v-if="shArray.length>0">
+						<template v-if="shArray.length>3"><!--选择项多于3个的时候，使用密集排列的样式-->
+							<div class="mui-input-row mui-checkbox mui-left">
+						    	<div class="mui-col mui-col-xs-3" style="float: left;" @tap="shZT(1)">
+									<label for="全选" class="check-label">全选</label>
+						   			<input name="全选" value="" type="checkbox" style="left: 0px;" :checked="allCheck">
+								</div>
 							</div>
-					</div>
-					<div class="mui-input-row mui-checkbox mui-left">
-					    	<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张一</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
+							<div class="mui-input-row mui-checkbox mui-left">
+						    	<div class="mui-col mui-col-xs-3" style="float: left;" v-for="item in shArray" @tap="shZT(2,item)">
+									<label :for="item.studentName" class="check-label">{{item.studentName}}</label>
+						   			<input :name="item.studentName" :value=item.id type="checkbox" style="left: 0px;" :checked="item.isCheck==1">
+								</div>
 							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张二</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
+						</template>
+						<template v-else><!--选择项小于于4个的时候，使用正常样式，仅仅是为了布局-->
+							<div class="mui-input-row mui-checkbox mui-left" style="margin-left: 20px;">
+						    	<div class="mui-col mui-col-xs-3" style="float: left;" @tap="shZT(1)">
+									<label for="全选" class="check-label">全选</label>
+						   			<input name="全选" value="" type="checkbox" style="left: 0px;" :checked="allCheck">
+								</div>
 							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张三</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
+							<div class="mui-input-row mui-checkbox mui-left" style="margin-left: 20px;">
+						    	<div class="mui-col mui-col-xs-3" style="float: left;" v-for="item in shArray" @tap="shZT(2,item)">
+									<label :for="item.studentName" class="check-label">{{item.studentName}}</label>
+						   			<input :name="item.studentName" :value=item.id type="checkbox" style="left: 0px;" :checked="item.isCheck==1">
+								</div>
 							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">张四</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
+						</template>
+					</template>
+					<template v-else>
+							<div class="mui-col-xs-4">
+								<span class="title-last" style="background: #fff;">暂无选择项</span> 
 							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王一</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王二</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">王三</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">隔壁老王</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">降央卓玛</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">馹圈哦</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">魑魅魍魉</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">囊囊囊</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">哈哈哈</label>
-					   			<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;">
-							</div>
-							<div class="mui-col mui-col-xs-3" style="float: left;">
-								<label for="checkbox1" class="check-label">测试</label>
-					    		<input name="checkbox1" value="Item 1" type="checkbox" style="left: 0px;" >
-							</div>
-					</div>
+					</template>
 				</div>
 				<div class="title-last">
 					*只有未登记的学生才可以只用“批量登记”
@@ -230,33 +209,128 @@
 			mui.init({
 				swipeBack: false
 			});
+			
+			var	homeworkDetail = utils.getDataFromUrl(window.location.href);
 			mui.plusReady(function() {
+				getBatchCheckIn();
 			});
 			var detail = new Vue({
 				el: "#detail",  
 				data: {
-					more:true,
-					btnText:'more'
+					submitArray:[],//递交状态数组
+					shArray:[],//学生数组
+					allCheck:false//是否全选
 				},
 				methods: {
-					previous:function(){
-						console.log("123")
+					submitZT:function(item){//修改状态
+						for(var i=0;i<this.submitArray.length;i++){
+							this.submitArray[i].isCheck=0;
+						}
+						item.isCheck=1;
+//						console.log(JSON.stringify(this.submitArray))
 					},
-					next:function(){
-						console.log("456")
+					shZT:function(lx,item){//选择学生
+						if(lx==1){//全选
+							if(this.allCheck){
+								this.allCheck=false;
+								for(var i=0;i<this.shArray.length;i++){
+									this.shArray[i].isCheck=0;
+								}
+							}else{
+								this.allCheck=true;
+								for(var i=0;i<this.shArray.length;i++){
+									this.shArray[i].isCheck=1;
+								}
+							}
+						}else if(lx==2){//选择单个学生
+							if(item.isCheck==1){
+								item.isCheck=0;
+							}else{
+								item.isCheck=1;
+							}
+							var shArrayStr=JSON.stringify(this.shArray);
+							if(shArrayStr.indexOf('"isCheck":0')==-1){//如果单个点击学生 全部选择了，那么全选按钮也要选择上
+								this.allCheck=true;
+							}else{
+								this.allCheck=false;
+							}
+						}
+//						console.log(JSON.stringify(this.shArray))
 					}
 				}
 			});
-		//只保留小数点后一位
-		function clearNoNum(obj){ 
-		    obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符  
-		    obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的  
-		    obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$","."); 
-		    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d).*$/,'$1$2.$3');//只能输入两个小数  
-		    if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
-		        obj.value= parseFloat(obj.value); 
-		    } 
-		} 
+			
+			function submitZT(){//修改状态提交
+				var status=-1;
+				var students=[];
+				for(var i=0;i<detail.submitArray.length;i++){
+					var item =detail.submitArray[i];
+					if(item.isCheck==1){
+						status=item.value;
+					}
+				}
+				
+				for(var i=0;i<detail.shArray.length;i++){
+					var item =detail.shArray[i];
+					if(item.isCheck==1){
+						students.push(item.id);
+					}
+				}
+				if(status==-1){
+					mui.toast('请选择递交状态');
+					return 0;
+				}
+				if(students.length==0){
+					mui.toast('请选择学生');
+					return 0;
+				}
+				var comData ={
+					homeworkId:homeworkDetail.id,//作业id
+					ids:students.join(","),//学生ID
+					submitStatus:status//提交状态
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeacheratchCheckIn(comData, function(data) {
+					wd.close();
+					if(data.RspCode == 0) {
+						mui.toast(data.msg);
+						//通知上一页(批改详情)刷新列表
+						mui.fire(plus.webview.currentWebview().opener(), 'refreshHomeworkList', {});
+						mui.back();
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
+			//获取批量登记学生信息
+			function getBatchCheckIn(){
+				var comData ={
+					classId:homeworkDetail.classId,//班级ID
+					id:homeworkDetail.id//作业ID
+				};
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				hwTeacheroBatchCheckIn(comData, function(data) {
+					wd.close();
+					if(data.RspCode == 0) {
+						for(var i=0;i<data.RspData.submitArray.length;i++){
+							data.RspData.submitArray[i].isCheck=0;
+						}
+						for(var i=0;i<data.RspData.shArray.length;i++){
+							data.RspData.shArray[i].isCheck=0;
+						}
+						detail.submitArray=data.RspData.submitArray;
+						detail.shArray=data.RspData.shArray;
+						console.log('批量登记学生信息，递交状态:' + JSON.stringify(detail.submitArray));
+						console.log('批量登记学生信息，选择学生:' + JSON.stringify(detail.shArray));
+					} else {
+						mui.toast(data.msg);
+					}
+				});
+			}
+			
 		</script>
 	</body>
 
