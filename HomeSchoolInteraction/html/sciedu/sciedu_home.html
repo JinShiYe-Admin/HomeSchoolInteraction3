@@ -116,6 +116,7 @@
 			}); 
 
 			mui.plusReady(function() {
+				toChildPage("子页科教活动");
 				events.preload("../../html/sciedu/sciedu_show_main.html", 500);
 				console.log('当前版本:' + plus.runtime.version);
 //				setTimeout(appUpdate.updateApp(personal.schid), 5000);
@@ -613,6 +614,10 @@
 				} else {
 					ipr.refresh.endPullUpToRefresh();
 				}
+			}
+			//父——>子页传值方法
+			function toChildPage(text){
+				console.log("ceshiChild:"+text)
 			}
 		</script>
 

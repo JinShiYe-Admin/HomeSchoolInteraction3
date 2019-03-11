@@ -140,6 +140,7 @@
 			mui.init();
 			
 			mui.plusReady(function() {
+				toChildPage("子页智学课堂");
 				var _self = plus.webview.currentWebview();
 				var group = new webviewGroup(_self.id, {
 					items: [{//课堂资源
@@ -173,6 +174,10 @@
 				});
 
 			});
+			//父——>子页传值方法
+			function toChildPage(text){
+				console.log("ceshiChild:"+text)
+			}
 		</script>
 	</body>
 

@@ -99,10 +99,6 @@
 				mui('.mui-bar-tab').on('tap', 'a', function(e) {
 					var targetTab = this.getAttribute('href');
 					if(targetTab == activeTab) { 
-						if(targetTab=='../../html/orals/oralsIndex.html'){
-							var h=plus.webview.getWebviewById(targetTab);
-							h.evalJS('aaa(666)')
-						}
 						return;
 					} else {
 						var viewIsExists = plus.webview.getWebviewById(targetTab);
@@ -112,6 +108,24 @@
 							self.append(newSub);
 						}
 					}
+					//父——>子页传值
+					if(targetTab=='../../html/homeSchool/homeSchoolIndex.html'){
+						var homeSchoolIndex=plus.webview.getWebviewById(targetTab);
+						homeSchoolIndex.evalJS('toChildPage("家校互动")')
+					}
+					if(targetTab=='../../html/orals/oralsIndex.html'){
+						var oralsIndex=plus.webview.getWebviewById(targetTab);
+						oralsIndex.evalJS('toChildPage("英语听测")')
+					}
+					if(targetTab=='../../html/benefitingLearning/zxktIndex.html'){
+						var zxktIndex=plus.webview.getWebviewById(targetTab);
+						zxktIndex.evalJS('toChildPage("智学课堂")')
+					}
+					if(targetTab=='../../html/sciedu/sciedu_home.html'){
+						var sciedu_home=plus.webview.getWebviewById(targetTab);
+						sciedu_home.evalJS('toChildPage("科教活动")')
+					}
+					
 					//更换标题
 					//title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
 					plus.webview.show(targetTab, "fade-in", 00);

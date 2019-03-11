@@ -253,7 +253,7 @@
 				//							left: '-70%'
 				//						});
 				mui.plusReady(function() {
-
+					toChildPage("子页家校互动");
 					//推送绑定
 					var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 					var info = plus.push.getClientInfo();
@@ -862,6 +862,10 @@
 						});
 					}
 				}
+			//父——>子页传值方法
+			function toChildPage(text){
+				console.log("ceshiChild:"+text)
+			}
 			</script>
 	</body>
 
