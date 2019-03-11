@@ -463,12 +463,14 @@
 				el:'#slider',
 				data:{
 					wp:[],//未批作业数组
-					yp:[]//已批作业数组
+					yp:[],//已批作业数组
+					allList:[],//所有的作业数组，用于作业点评页面 上一个下一个操作选项
+					submitArray:[]//上交登记数组
 				},
 				methods:{
 					toCritique:function(index,item){
 						console.log("点击第"+index+"个标签，内容为："+JSON.stringify(item))
-						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", item);
+						utils.mOpenWithData("../../html/homework/teacher-homework-critique.html", [slider.allList,item,slider.submitArray]);
 					},
 					getSubTime:function(submitTime){
 						return submitTime.substring(0,10)
@@ -486,7 +488,7 @@
 				var wd = events.showWaiting();
 				hwTeacherHomeworketail(comData, function(data) {
 					if(data.RspCode == 0) {
-//						console.log('作业列表:' + JSON.stringify(data));
+						console.log('作业列表:' + JSON.stringify(data));
 						getStudentsInfo(wd,data);
 					} else {
 						mui.toast(data.msg);
@@ -518,6 +520,8 @@
 									var tempStu = data.RspData.clssstus[a];
 									if(tempHomework.studentId==tempStu.stuid){
 										wpList[i].studentImg=utils.updateHeadImage(tempStu.imgurl,0);
+										wpList[i].grdname=tempStu.grdname;
+										wpList[i].clsname=tempStu.clsname;
 									}
 								}
 							}
@@ -528,12 +532,16 @@
 									var tempStu = data.RspData.clssstus[a];
 									if(tempHomework.studentId==tempStu.stuid){
 										ypList[i].studentImg=utils.updateHeadImage(tempStu.imgurl,0);
+										ypList[i].grdname=tempStu.grdname;
+										ypList[i].clsname=tempStu.clsname;
 									}
 								}
 							}
 						} 
 						slider.yp=ypList;
 						slider.wp=wpList;
+						slider.allList = ypList.concat(wpList);
+						slider.submitArray=ypwpData.RspData.submitArray;
 						console.log('已批作业列表:' + JSON.stringify(slider.yp));
 						console.log('未批作业列表:' + JSON.stringify(slider.wp));
 					} else {

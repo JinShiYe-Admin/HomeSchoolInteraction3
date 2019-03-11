@@ -7,7 +7,6 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
-		<link rel="stylesheet" type="text/css" href="../../fonts/ziyuan-icon.css"/>
 		<style type="text/css">
 			.mui-bar-nav {
 				z-index: 999;
@@ -120,22 +119,6 @@
 				overflow-y: auto;
 			}
 			
-			.ziyuan-title{
-				background: #fff;
-				padding-left: 20px;
-				z-index: 2019;
-				margin: -40px 0 0 0;
-			}
-			
-			.ziyuan-catalog{
-				text-align: center;
-				margin-top:45px;
-				padding-left: 5px;
-				font-size: 16px;
-			}
-			.mui-pull-top-pocket.mui-block.mui-visibility{
-				margin-top: -40px !important;
-			}
 		</style>
 	</head>
 
@@ -147,9 +130,6 @@
 		<div class="mui-content">
 			<!--校讯通菜单-->
 			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-				<a class="mui-control-item mui-active" data-target="bl-ziyuan" href="#ziyuan-menu">
-			        <span>课堂资源</span>
-			    </a>
 				<!-- <a class="mui-control-item" data-target="bl-search" href="#search">
 			        <span>找题</span>
 			    </a> -->
@@ -175,72 +155,6 @@
 						</div>
 					</div>
 				</transition>
-			</div>
-			<!--课堂资源-->
-			<div id="ziyuan-menu" class="mui-control-content mui-active" style="margin-top:-10px ;"> 
-				<div id="contentData">
-					<div class="mui-title ziyuan-title">
-						<a class="mui-icon" style="font-size: 18px;" @click="clickTitle()">{{titleName}}<span class="ziyuan-icon icon-jiaohuan"></span></a>
-					</div>
-					<div class="tab-header"  @tap="clickCatalog">
-						<div class="header-box ziyuan-catalog">
-							<a class="mui-icon" ><span class="mui-icon-back"></span>{{catalogName}}<span class="mui-icon-forward"></span></a>
-						</div>
-						<transition name="slide-down">	
-							<div class="options-pannel mui-clearfix" v-show="ziyuanShow">
-								<div v-for="(v, i) in categoryArray" class="radio-wrap"  @tap="catalogItemClick(categoryArray,v)">
-									<label :class="{'selected':v.ischeck==1}">{{v.name}}</label>
-								</div>
-							</div>
-						</transition> 
-					</div>
-					<!--上/下拉刷新-->
-					<div class="mui-scroll-wrapper" style="background: white;top: 90px;" id="refreshList">
-						<div class="mui-scroll">
-							<ul class="mui-table-view">
-								<li class="mui-table-view-cell mui-media" v-for="(resourceModel,index) in resourceArray" @tap="clickResourceModel(resourceModel,index)">
-									<a href="javascript:;">
-										<div v-if="resourceModel.is_pack">
-											<img class="mui-media-object mui-pull-left" src="../../img/ziyuan/ziyuanPack.png" />
-										</div>
-										<div v-else="">
-											<img v-if="resourceModel.file_ext == 'mp4'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp4.png">
-											<img v-else-if="resourceModel.file_ext == 'doc'" class="mui-media-object mui-pull-left" src="../../img/swiper/doc.png" />
-											<img v-else-if="resourceModel.file_ext == 'docx'" class="mui-media-object mui-pull-left" src="../../img/swiper/docx.png" />
-											<img v-else-if="resourceModel.file_ext == 'mp3'" class="mui-media-object mui-pull-left" src="../../img/swiper/mp3.png">
-											<img v-else-if="resourceModel.file_ext == 'asf'" class="mui-media-object mui-pull-left" src="../../img/swiper/asf.png">
-											<img v-else-if="resourceModel.file_ext == 'avi'" class="mui-media-object mui-pull-left" src="../../img/swiper/avi.png">
-											<img v-else-if="resourceModel.file_ext == 'flv'" class="mui-media-object mui-pull-left" src="../../img/swiper/flv.png">
-											<img v-else-if="resourceModel.file_ext == 'gif'" class="mui-media-object mui-pull-left" src="../../img/swiper/gif.png">
-											<img v-else-if="resourceModel.file_ext == 'ppt'" class="mui-media-object mui-pull-left" src="../../img/swiper/ppt.png">
-											<img v-else-if="resourceModel.file_ext == 'pptx'" class="mui-media-object mui-pull-left" src="../../img/swiper/pptx.png">
-											<img v-else-if="resourceModel.file_ext == 'xls'" class="mui-media-object mui-pull-left" src="../../img/swiper/xls.png">
-											<img v-else-if="resourceModel.file_ext == 'xlsx'" class="mui-media-object mui-pull-left" src="../../img/swiper/xlsx.png">
-											<img v-else-if="resourceModel.file_ext == 'mpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/mpg.png">
-											<img v-else-if="resourceModel.file_ext == 'swf'" class="mui-media-object mui-pull-left" src="../../img/swiper/swf.png">
-											<img v-else-if="resourceModel.file_ext == 'ts'" class="mui-media-object mui-pull-left" src="../../img/swiper/ts.png">
-											<img v-else-if="resourceModel.file_ext == 'wav'" class="mui-media-object mui-pull-left" src="../../img/swiper/wav.png">
-											<img v-else-if="resourceModel.file_ext == 'wma'" class="mui-media-object mui-pull-left" src="../../img/swiper/wma.png">
-											<img v-else-if="resourceModel.file_ext == 'wmv'" class="mui-media-object mui-pull-left" src="../../img/swiper/wmv.png">
-											<img v-else-if="resourceModel.file_ext == 'pdf'" class="mui-media-object mui-pull-left" src="../../img/swiper/pdf.png">
-											<img v-else-if="resourceModel.file_ext == 'exe'" class="mui-media-object mui-pull-left" src="../../img/swiper/exe.png">
-											<img v-else-if="resourceModel.file_ext == 'jpg'" class="mui-media-object mui-pull-left" src="../../img/swiper/jpg.png">
-											<img v-else-if="resourceModel.file_ext == 'png'" class="mui-media-object mui-pull-left" src="../../img/swiper/png.png">
-											<img v-else-if="resourceModel.file_ext == 'rar'" class="mui-media-object mui-pull-left" src="../../img/swiper/rar.png">
-											<img v-else-if="resourceModel.file_ext == 'zip'" class="mui-media-object mui-pull-left" src="../../img/swiper/zip.png">
-											<img v-else-if="resourceModel.file_ext == 'txt'" class="mui-media-object mui-pull-left" src="../../img/swiper/txt.png">
-											<img v-else="" class="mui-media-object mui-pull-left" src="../../img/swiper/other.png">
-										</div>
-										<div class="mui-media-body" style="font-size: 14px;color: #333;">
-											{{resourceModel.name}}
-											<p class="mui-ellipsis" style="font-size: 12px;color: #999;margin-top: 15px;">{{resourceModel.create_time}} | {{resourceModel.owner_name}}</p>
-										</div>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
 			</div>
 			<!--找题-->
 			<!-- <div id="search" class="mui-control-content">
@@ -370,8 +284,6 @@
 		<script src='../../js/utils/utils.js'></script>
 		<script type="text/javascript" src="../../js/mui.pullToRefresh.js"></script>
 		<script type="text/javascript" src="../../js/mui.pullToRefresh.material.js"></script>
-		<script src="../../js/publicProtocol-ziyuan.js"></script>
-		<script src="../../js/utils/openFiles.js"></script>
 		<script type="text/javascript">
 			var self, bookMenuView, center, test_start;
 			var autoMenu = null;
@@ -388,272 +300,6 @@
 				statusBarBackground: '#00CFBD',
 				swipeBack: false
 			});
-			/**************课堂资源***************/
-			mui.init({
-				pullRefresh: {
-					container: '#refreshList',
-					down: {
-						callback: pulldownRefresh
-					},
-					up: {
-						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
-						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
-						callback: pullupRefresh
-					}
-				}
-			});
-			var deceleration = mui.os.ios?0.003:0.0009;//滑动系数
-			
-			//加载更多
-			function pullupRefresh() {
-				console.log('shanghua')
-				contentData.flag = 1;
-				//4.获取学校通知列表
-				getZiYuanList();
-			}
-			
-			/**
-			 * 下拉刷新具体业务实现
-			 */
-			function pulldownRefresh() {
-				console.log('aaaaaaaaaaa')
-				contentData.flag = 0;
-				contentData.pageIndex = 1;
-				//4.获取学校通知列表
-				getZiYuanList();
-			}
-			
-			//选择章节目录监听
-			window.addEventListener('selectCatalog', function(data) {
-				console.log(JSON.stringify(data.detail));
-				contentData.titleName = data.detail[0].name; //给标题赋值
-				//当前章节
-				contentData.catalogModel = data.detail[0];
-				//资源类型
-				contentData.categoryArray = data.detail[1];
-				//教材
-				contentData.bookModel = data.detail[2]; //教材
-				//刷新数据
-				pulldownRefresh();
-			});
-			
-			var contentData = new Vue({
-				el: "#contentData",
-				data: {
-					showFlag: 0, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
-					personal: userInfo,
-					showNoDataFlag: 9, //是否显示无数据图片
-					textBookDetail: {}, //获取到的教材
-					flag: 0, //0刷新，1加载更多
-					resourceArray: [], //资源列表数组
-					pageIndex: 1, //第几页
-					categoryArray: [], //资源类型数组
-					bookModel: '', //教材model
-					catalogModel: '', //章节
-					titleName:'',//章节标题
-					ziyuanShow:false,//资源类型选择是否展示
-					catalogName:'全部'//资源类型名称
-				},
-				methods: {
-					clickTitle: function() {
-						utils.mOpenWithData("catalogPage.html", {});
-					},
-					clickCatalog:function(){
-						if(this.ziyuanShow) {
-							var _this=this
-							setTimeout(function(){
-								_this.ziyuanShow = false;
-							},300);//延时功能为了防止点击完目录后，误触列表的点击事件
-						}else{
-							this.ziyuanShow = true;
-						}
-					},
-					clickResourceModel: function(model) {
-						console.log('点击li：' + JSON.stringify(model));
-						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
-							mui.toast('网络异常，请检查网络设置！');
-							return;
-						}
-						if(model.is_pack) { //资源包
-							utils.mOpenWithData("inside_page.html", model);
-						} else if(model.file_ext == 'mp4' || model.file_ext == 'mp3' || model.file_ext == 'wmv' || model.file_ext == 'wma' || model.file_ext == 'mpg' || model.file_ext == 'avi' || model.file_ext == 'flv' || model.file_ext == 'mkv' || model.file_ext == 'asf') { //视频、音频
-							if(model.file_ext == 'mp4' || model.file_ext == 'mp3') {
-								utils.mOpenWithData("playVideo.html", model);
-							} else {
-								plus.runtime.openWeb(model.openFileUrl);
-							}
-						} else if(model.file_ext == 'jpg' || model.file_ext == 'png' || model.file_ext == 'gif') { //照片
-							if(plus.os.name == 'Android') {
-								plus.nativeUI.previewImage([model.openFileUrl]);
-							} else {
-								plus.nativeUI.previewImage(model.openFileUrl, {
-									current: 0,
-									loop: false,
-									indicator: 'number'
-								});
-							}
-						} else if(model.file_ext == 'ppt' || model.file_ext == 'pptx' || model.file_ext == 'doc' || model.file_ext == 'docx' || model.file_ext == 'pdf' || model.file_ext == 'xlsx' || model.file_ext == 'xls') { //文档
-							if(plus.os.name == 'Android') {
-								plus.openFiles.openFileFromURL(JSON.stringify(model), function(result) {
-									console.log("result>>>>>>" + result[0]);
-								}, function(result) {
-									console.log('未知错误：' + result);
-								});
-							} else {
-								plus.runtime.openWeb(model.openFileUrl);
-							}
-						} else {
-							mui.toast('不支持查看此类型文件');
-						}
-					},
-					catalogItemClick: function(parent, item) {
-						console.log("选择的是这个:" + JSON.stringify(item) + ",教材：" + JSON.stringify(contentData.bookModel));
-						var _this=this;
-						if(item.ischeck == 0) {
-							for(var i = 0; i < parent.length; i++) {
-								var child = parent[i];
-								child.ischeck = 0;
-							}
-							item.ischeck = 1;
-							_this.catalogName=item.name;
-							pulldownRefresh();
-						}
-						console.log('parent:'+JSON.stringify(parent));
-					}
-				},
-				mounted: function() {
-					mui('.mui-scroll-wrapper').scroll({
-						bounce: false,
-						indicators: true, //是否显示滚动条
-						deceleration:deceleration
-					});
-				},
-				computed: {
-					getKm: function() {
-						return this.categoryArray;
-					}
-				},
-				watch: {
-					getKm: function(val) {
-						mui('.mui-scroll-wrapper').scroll({
-							bounce: false,
-							indicators: true, //是否显示滚动条
-							deceleration:deceleration
-						});
-					}
-				}
-			});
-			
-			//获取教材
-			var getTextBook = function() {
-				var comData = {
-					percode: '', //学段代码 可选
-					subcode: '', //科目代码 可选
-					matercode: '', //教材代码 可选
-					fasccode: '' //分册代码 可选
-				}
-				var wd = events.showWaiting();
-				getZiYuanTextbook(comData, function(data) {
-					wd.close();
-					console.log('获取教材:' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-						contentData.textBookDetail = data.RspData;
-						if(data.RspData.catalog.length > 0) {
-							var tempModel = data.RspData.catalog[0];
-							if(tempModel.childList.length > 0) {
-								var tempModel2 = tempModel.childList[0];
-								//给标题赋值
-								contentData.titleName = tempModel2.name;
-								//当前章节
-								contentData.catalogModel = tempModel2;
-								//根据选择的章节model对应的类别，给滑动菜单赋值
-								var cate = data.RspData.category;
-								var newCategory = [];
-								newCategory.push({
-									name: '全部',
-									id: '',
-									ischeck: 1
-								});
-								for(var i = 0; i < cate.length; i++) {
-									var temp = cate[i];
-									temp.ischeck = 0;
-									newCategory.push(temp);
-								}
-								//资源类型
-								contentData.categoryArray = newCategory;
-								//教材
-								contentData.bookModel = data.RspData.book;
-								var catalogObj = {
-									percode: data.RspData.per.selected, //学段代码 
-									subcode: data.RspData.sub.selected, //科目代码 
-									matercode: data.RspData.mater.selected, //教材代码 
-									fasccode: data.RspData.fasc.selected //分册代码
-								}
-								store.set(window.storageKeyName.CATALOGOBJ, catalogObj);
-							}
-						}
-						//获取资源(分页) 
-						getZiYuanList();
-					} else {
-						mui.toast(data.RspTxt);
-					}
-				});
-			}
-			
-			//获取资源(分页) 
-			var getZiYuanList = function() {
-				//资源类型
-				var tempCategoryid = '';
-				for(var i = 0; i < contentData.categoryArray.length; i++) {
-					var tempModel = contentData.categoryArray[i];
-					if(tempModel.ischeck == 1) {
-						tempCategoryid = tempModel.id;
-					}
-				}
-				var tempData = {
-					categoryid: tempCategoryid, //资源类型id 可选
-					bookid: contentData.bookModel.id, //教材id 必须
-					catalogid: contentData.catalogModel.id, //目录id 可选
-					p: contentData.pageIndex, //当前页码 默认1
-					s: '10' //每页记录数量 默认10
-				} 
-				//				events.showWaiting();
-				getZiYuanRes(tempData, function function_name(data) {
-					//					events.closeWaiting();
-					mui('#refreshList').pullRefresh().endPulldownToRefresh();
-					mui('#refreshList').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
-					console.log('获取资源(分页) :' + JSON.stringify(data));
-					if(data.RspCode == 0) {
-						contentData.pageIndex++;
-						for(var i = 0; i < data.RspData.list.length; i++) {
-							var model = data.RspData.list[i];
-							model.create_time = modifyTimeFormat(model.create_time);
-							if(model.convert_file_url == null || model.convert_file_url.length == 0) {
-								model.openFileUrl = model.original_file_url;
-							} else {
-								model.openFileUrl = model.convert_file_url;
-							}
-						}
-						if(contentData.flag == 0) { //刷新
-							contentData.resourceArray = [].concat(data.RspData.list);
-							if(data.RspData.list.length == 0) {
-								//									mui.toast('数据为空');
-							}
-						} else { //加载更多
-							contentData.resourceArray = contentData.resourceArray.concat(data.RspData.list);
-							if(data.RspData.list.length == 0) {
-								mui.toast('已加载全部');
-							}
-						}
-						contentData.showNoDataFlag = data.RspData.TotalCnt;
-						contentData.showFlag = 0;
-						$("#contentData").show();
-					} else {
-						mui.toast(data.RspTxt);
-					}
-				});
-			}
-			/**************课堂资源end***************/
 			
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
@@ -701,8 +347,6 @@
 				//有个人中心时
 				
 				
-				//获取课堂资源列表
-				getTextBook();
 			});
 			
 			
@@ -726,9 +370,6 @@
 						if(!analysis.isShowed){
 							getAnalysisData();
 						}
-						break;
-					case "bl-ziyuan":
-						title = "课堂资源";
 						break;
 					case "bl-test-menu":
 						title = "";
