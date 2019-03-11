@@ -90,15 +90,19 @@
 				var self = plus.webview.currentWebview();
 				var sub = plus.webview.create(defaultUrl, defaultUrl, subpage_style);
 				self.append(sub);
-
+ 
 				//当前激活选项
 				activeTab = defaultUrl;
 				var title = document.getElementById("title");
-
+					
 				//选项卡点击事件
 				mui('.mui-bar-tab').on('tap', 'a', function(e) {
 					var targetTab = this.getAttribute('href');
-					if(targetTab == activeTab) {
+					if(targetTab == activeTab) { 
+						if(targetTab=='../../html/orals/oralsIndex.html'){
+							var h=plus.webview.getWebviewById(targetTab);
+							h.evalJS('aaa(666)')
+						}
 						return;
 					} else {
 						var viewIsExists = plus.webview.getWebviewById(targetTab);
