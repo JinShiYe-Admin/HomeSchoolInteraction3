@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+	<!--益测益学首页-->
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<style type="text/css">
+			.mui-bar-nav {
+				z-index: 999;
+			}
+			#header:after {
+				content: "";
+				position: absolute;
+				z-index: -1;
+				left: 0;
+			    right: 0;
+			    top: 0;
+			    bottom: 0;
+			}
+			.mui-bar-tab {
+				height: 1rem;
+				/*background-color: #F9F9F4;*/
+			}
+			.mui-bar-tab .mui-tab-item {
+				height: 1rem;
+			}
+			.mui-bar-tab .mui-tab-item .mui-icon {
+				font-size: 0.44rem;
+				top: 0;
+    			margin-bottom: 0.04rem;
+			}
+			.mui-bar-tab .mui-tab-item .mui-icon~.mui-tab-label {
+				font-size: 0.24rem;
+			}
+			.label-wrapper .done-box {
+				display: inline-block;
+				width: 0.32rem;
+				height: 0.32rem;
+				border: 1px solid #4AC058;
+				border-radius: 2px;
+				text-align: center;
+				line-height: 0.22rem;
+				position: absolute;
+				right: 0.6rem;
+				top: 50%;
+				margin-top: -0.16rem;
+			}
+			.als-title {
+				padding: 0.4rem 0.2rem 0;
+				font-size: 0.3rem;
+				color: #222222;
+			}
+			.als-title:after {
+				display: block;
+				content: "";
+				border-bottom: 1px solid #DDDDDD;
+				padding-bottom: 0.4rem;
+			}
+			.als-list:before {
+				display: none;
+			}
+			.als-list li {
+				display: flex;
+				justify-content: space-between;
+				padding: 0.3rem 0.6rem 0.3rem 0.2rem;
+				line-height: 0.64rem;
+			}
+			.als-list li:first-child {
+				padding-bottom: 0.15rem;
+			}
+			ul.als-list li .sub {
+				padding-left: 1.1rem;
+				vertical-align: middle;
+			}
+			ul.als-list li .sub .label {
+				display: inline-block;
+				text-align: center;
+				border: 1px solid #25AE38;
+				color: #25AE38;
+				border-radius: 4px;
+				vertical-align: middle;
+				margin-top: -3px;
+				width: 1.2rem;
+				height: .64rem;
+				line-height: .64rem;
+				font-size: 150%;
+				margin-left: -1.6rem;
+				margin-right: 0.4rem;
+				transform: scale(0.5);
+				-webkit-transform: scale(0.5);
+				transform-origin: 150% 50%;
+				-webkit-transform-origin: 150% 50%;
+			}
+			ul.als-list li .sub .label.bad {
+				color: #DB4848;
+				border-color: #DB4848;
+			}
+			ul.als-list li .score {
+				width: 30%;
+				text-align: center;
+			}
+			.als-list li .sub {
+				width: 35%;
+			}
+			.als-list li .times {
+				width: 28%;
+				text-align: center;
+			}
+			#subRadar {
+				min-height: 205px;
+				max-height: 440px;
+				margin-bottom: .6rem;
+			}
+			#analysis {
+				max-height: 100%;
+				overflow-y: auto;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<!--学情分析-->
+			<div id="analysisTab">
+				<div class="als-title mui-text-center mui-ellipsis">{{user_name}}学情分析报告</div>
+				<div style="padding: .2rem .22rem .15rem;">学科均衡:</div>
+				<div id="subRadar"></div>
+				<ul class="mui-table-view als-list same-line-list" v-if="alsList.length">
+				    <li class="mui-table-view-cell" style="background-color: transparent;">
+				        <div class="sub">科目</div>
+				        <div class="times">学习次数</div>
+				        <div class="score">平均分/满分</div>
+				    </li>
+				    <li class="mui-table-view-cell navigate-right" v-for="(item, i) in alsList" @tap="goDetail(item)" :key="i">
+				    	<div class="sub">
+				    		<span class="label" v-if="item.remark==1">优势</span>
+				    		<span class="label bad" v-if="item.remark==-1">劣势</span>
+				    		{{item.subname}}
+				    	</div>
+				        <div class="times">{{item.count}}</div>
+				        <div class="score">{{item.avg_score}}分/100分</div>
+				    </li>
+				</ul>
+				<p v-else class="mui-text-center" v-show="isShowed">您还未提交过试题</p>
+			</div>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>
+		<script type="text/javascript" src="../../js/libs/echarts.min.js" ></script>
+		<script src='../../js/libs/jquery.js'></script>
+		
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		
+		<script type="text/javascript" src="../../js/btlearn/common.js"></script>
+		<script src='../../js/utils/utils.js'></script>
+		<script type="text/javascript" src="../../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript" src="../../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript">
+			var self, bookMenuView, center, test_start;
+			var autoMenu = null;
+
+			//认证信息
+			var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+			var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
+			
+			mui.init({
+				statusBarBackground: '#00CFBD',
+				swipeBack: false
+			});
+			
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				if(mui.os.ios) {
+					self.setStyle({
+					    softinputMode: "adjustResize"
+					});
+				}
+				//禁止横屏
+				plus.screen.lockOrientation("portrait-primary");
+				//状态栏白色
+				// plus.navigator.setStatusBarStyle('light');
+				getAnalysisData();
+			});
+			
+			
+			
+			//学情分析
+			var subRadar;
+			var analysis = new Vue({
+				el: "#analysisTab",
+				data: {
+					user_name: "",
+					alsList: [],
+					isShowed: false
+				},
+				mounted: function() {
+					subRadar = echarts.init(document.getElementById("subRadar"));
+				},
+				methods: {
+					goDetail: function(item) {
+						mui.openWindow({
+							url:"analysisDetail.html",
+							id: "bl-analysis-detail",
+							extras: {
+								subcode: item.subcode,
+								subname: item.subname
+							}
+						})
+					}
+				}
+			});
+			
+			//获取分析数据
+			function getAnalysisData() {
+				plus.nativeUI.showWaiting();
+				commonAjax("/Ycyx/Analysis/index", {
+					success: function(res){
+						console.log("分析："+res.data);
+						var res_data = JSON.parse(res.data);
+						analysis.alsList = res_data.analysis;
+						getSubRadar();
+						if(!analysis.isShowed) analysis.isShowed = true;
+						plus.nativeUI.closeWaiting();
+					},
+					fail: function() {
+						plus.nativeUI.closeWaiting();
+					},
+					error: function() {
+						plus.nativeUI.closeWaiting();
+					}
+				});
+			}
+			
+			//生成雷达图
+			function getSubRadar() {
+				subRadar.resize();
+				var indicator = [], radar_value = [];
+				analysis.alsList.forEach(function(v){
+					indicator.push({name: v.subname, color: v.remark<0?"#DB4848":(v.remark>0?"#25AE38":"#222"), max: 100 });
+					radar_value.push(v.avg_score);
+				});
+				if(!indicator.length||!radar_value.length) {
+					indicator = [{name:"科目", max: 100}];
+					radar_value = [0];
+				}
+				subRadar.setOption({
+					radar:[
+						{
+							indicator: indicator,
+							name: {
+								color: "#222"
+							},
+							nameGap: 10,
+							center: ['50%', '50%'],
+							shape: "circle",
+							splitNumber: 4,
+							axisLine: {
+					            lineStyle: {
+					                color: '#A7A7A7'
+					            }
+					        },
+					        splitLine: {
+					            lineStyle: {
+					                color: '#A7A7A7'
+					            }
+					        },
+					        splitArea: {
+					            areaStyle: {
+					                color: ['none']
+					            }
+					        },
+						}
+					],
+					series: [
+						{
+				            type: 'radar',
+				            symbol: "circle",
+				            symbolSize: 4,
+				            data: [
+				                {value: radar_value}
+				            ],
+				            areaStyle: {
+		                        normal: {
+		                            opacity: 0.5,
+		                            color: "#4ACFC7"
+		                        }
+		                   	},
+				            lineStyle: {
+				            	width: 0
+				            },
+				            itemStyle: {
+				            	color: "#10A3A0"
+				            }
+				        }
+					]
+				});
+			}
+			
+		</script>
+	</body>
+
+</html>

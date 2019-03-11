@@ -120,13 +120,13 @@
 			<div id="slider" class="mui-slider mui-fullscreen">
 				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" >
 					<div class="mui-scroll" style="width: 100%;background: white;">
-						<a class="mui-control-item mui-col-xs-4 mui-active" href="#item1mobile" data-wid="ziyuanIndex.html">
+						<a class="mui-control-item mui-col-xs-4 mui-active" href="#item1mobile" data-wid="ziyuan-child.html">
 							课堂资源 
 						</a>
-						<a class="mui-control-item mui-col-xs-4" href="#item2mobile" data-wid="指向不同的子页面">
+						<a class="mui-control-item mui-col-xs-4" href="#item2mobile" data-wid="zujuanceshi-child.html">
 							组卷测试
 						</a>
-						<a class="mui-control-item mui-col-xs-4" href="#item3mobile" data-wid="指向不同的子页面">
+						<a class="mui-control-item mui-col-xs-4" href="#item3mobile" data-wid="xueqingfenxi-child.html">
 							学情分析
 						</a>
 					</div>
@@ -143,16 +143,16 @@
 				var _self = plus.webview.currentWebview();
 				var group = new webviewGroup(_self.id, {
 					items: [{//课堂资源
-						id: "ziyuanIndex.html",
-						url: "ziyuanIndex.html",
+						id: "ziyuan-child.html",
+						url: "ziyuan-child.html",
 						extras: {}
 					}, {
-						id: "指向不同的子页面",
-						url: "指向不同的子页面",
+						id: "zujuanceshi-child.html",
+						url: "zujuanceshi-child.html",
 						extras: {}
 					}, {
-						id: "指向不同的子页面",
-						url: "指向不同的子页面",
+						id: "xueqingfenxi-child.html",
+						url: "xueqingfenxi-child.html",
 						extras: {}
 					}],
 					onChange: function(obj) {
