@@ -328,7 +328,15 @@
 							if(model.file_ext == 'mp4' || model.file_ext == 'mp3') {
 								utils.mOpenWithData("playVideo.html", model);
 							} else {
-								plus.runtime.openWeb(model.openFileUrl);
+								if(plus.os.name == 'Android') {
+									plus.openFiles.openFileFromURL(JSON.stringify(model), function(result) {
+										console.log("result>>>>>>" + result[0]);
+									}, function(result) {
+										console.log('未知错误：' + result);
+									});
+								} else {
+									plus.runtime.openWeb(model.openFileUrl);
+								}
 							}
 						} else if(model.file_ext == 'jpg' || model.file_ext == 'png' || model.file_ext == 'gif') { //照片
 							console.log('000000003');
