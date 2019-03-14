@@ -93,6 +93,38 @@ var events = (function(mod) {
 			
 		});
 	}
+	
+	//4.15 短信群发(订购用户)
+	mod.SendSmsTForClsStu = function(gradeid,classid,stustrs,genstrs,msgtype,grouptype,content) {
+		var personal = store.get(window.storageKeyName.PERSONALINFO);
+		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+		content = content + '[' +personal.utname+']';
+		var enData0 = {};
+		//不需要加密的数据
+		var comData0 = {
+			uuid: publicParameter.uuid, //用户设备号
+			utoken: personal.utoken, //用户令牌
+			schid: personal.schid, //学校ID，发送对象的学校ID
+			gradeid: gradeid*1, //年级ID，发送对象的年级ID,学校群发或者选择对象填写0,班级和年级群发必填
+			classid: classid*1, //班级ID，发送对象的班级ID,学校群发,年级群发或者选择对象填写0,班级和年级群发必填
+			stustrs: stustrs, //发送对象姓名串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
+			genstrs: genstrs, //发送对象的订购ID串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
+			msgtype: msgtype, //信息类型，学校通知,年级通知,班级通知,作业,在校表现,OA通知等
+			msglv: 1, //信息级别，1-9的数字,数字越小,紧急度越高,排队越靠前
+			senduser: personal.utid, //信息发送者，发送人的账号
+			sendschid: personal.schid, //信息发送者学校ID，发送人所在的SCHID
+			frmsys: '校讯通APP', //来自平台，填写来自平台,如校讯通PC,校讯通APP,智慧校园APP
+			isdelay: 0, //是否为延时短信，0为正常短信,1为延时短信
+			delaytime: '', //延时时间，Isdelay为0时,可不填写,1时填写延时发送的时间
+			grouptype: grouptype, //群发类型，0:选择人员发送,1:整个学校群发,2:年级群发,3:班级群发
+			content: content, //发送的内容，不超过300汉字
+			appid: publicParameter.appid //系统所分配的应用ID
+		}
+		//发送网络请求，data为网络返回值
+		postDataEncry('SendSmsT', enData0, comData0, 0, function(data) {
+			
+		});
+	}
 
 	/**
 	 * 打开新界面

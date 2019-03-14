@@ -203,13 +203,26 @@
 					console.log('SysBus:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
+						var tempArray = []; //确定是智学课堂的套餐
 						//主动添加是否订购字段
 						for(var i = 0; i < data1.RspData.sysbus.length; i++) {
 							var tempModel = data1.RspData.sysbus[i];
-							tempModel.orderFlag = 0;
-							tempModel.busimg = setImg(tempModel.busimg,1);
+							var tempFlag = 0;
+							if(tempModel.funcs) {
+								for(var a = 0; a < tempModel.funcs.length; a++) {
+									var tempM = tempModel.funcs[a];
+									if(tempM.ftype == 'jxht') {
+										tempFlag++;
+									}
+								}
+								if(tempFlag > 0) {
+									tempModel.orderFlag = 0;
+									tempModel.busimg = setImg(tempModel.busimg, 1);
+									tempArray.push(tempModel);
+								}
+							}
 						}
-						orders.orderList = [].concat(data1.RspData.sysbus);
+						orders.orderList = [].concat(tempArray);
 						//用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
 					} else {

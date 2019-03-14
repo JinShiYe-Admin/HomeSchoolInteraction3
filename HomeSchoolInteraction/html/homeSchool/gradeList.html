@@ -241,6 +241,7 @@
 						var tempClassIDs = ''; //选择的班级id
 						var tempClassIDsArray = []; //选择的班级id数组
 						var tempGradeIDsArray = []; //全选择的年级id数组
+						var tempGrdClsArray = [];//记录短信群发时，(年级|班级)id串
 						//循环所有数据
 						for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
 							var gradeModel = gradeListData.gradeListArray[i];
@@ -263,6 +264,7 @@
 									gradeFlag++;
 									tempClassIDs = tempClassIDs + ',' + classModel.clsid;
 									tempClassIDsArray.push(classModel.clsid);
+									tempGrdClsArray.push(gradeModel.grdid+'|'+classModel.clsid);
 								}
 								if(gradeModel.flag == 0 && classModel.flag == 1) {
 									tempClass = tempClass + ';' + classModel.clsname;
@@ -295,7 +297,8 @@
 							classShow: tempClass,
 							classIDs: tempClassIDs,
 							classIDsArray: tempClassIDsArray,
-							gradeIDsArray: tempGradeIDsArray
+							gradeIDsArray: tempGradeIDsArray,
+							grdClsArray:tempGrdClsArray
 						});
 						mui.back();
 					}
