@@ -299,6 +299,76 @@ var jQAjaxPost = function(url, data, callback) {
 		}
 	});
 }
+
+			//根据已订购套餐，得到学段、年级、科目
+			var getCatalog = function(userbus) {
+				try{
+					var busext=[];
+					for(var i = 0; i < userbus.length; i++) {
+						var tempM = userbus[i];
+						if(JSON.stringify(tempM).indexOf('zxkt')!=-1){//已订购助学课堂套餐
+							for(var z=0;z<tempM.busext.length;z++){//去掉订购ID（forid）、功能代码（ fcode） ，方便数组去重
+								var item=tempM.busext[z];
+								var newBusextItem={};
+								newBusextItem.itemcode=item.itemcode;
+								newBusextItem.itemsons=item.itemsons;
+								var busextStr=JSON.stringify(busext);
+								var newBusextItemStr=JSON.stringify(newBusextItem);
+								if(busextStr.indexOf(newBusextItemStr)==-1){//对拥有相同年级、学段、科目的对象进行去重
+									busext.push(newBusextItem);
+								}
+							}
+						}
+					} 
+					//循环去重后的busext数组，继续对不同对象中，重复的年级、学段、科目进行去重
+					//去重学段
+					var prdList=[];
+					for(var i = 0; i < busext.length; i++){
+						var item=busext[i];//全部学段
+						if(item.itemcode=='prd'){
+							var sons=item.itemsons.split(',');
+							for(var z = 0; z < sons.length; z++){
+								var sonsItme=sons[z];//单个学段
+								var obj={};
+								obj.percode=sonsItme.split('|')[0];//单个学段ID
+								obj.pername=sonsItme.split('|')[1];//单个学段名称
+								var prdListStr=JSON.stringify(prdList);
+								var objStr=JSON.stringify(obj);
+								if(prdListStr.indexOf(objStr)==-1){
+									prdList.push(obj);
+								}
+							}
+						}
+					}
+					
+					var catalogObj={};
+					catalogObj.prdList=prdList.sort(compare("percode"));
+					for(var i = 0; i < catalogObj.prdList.length; i++){
+						if(i==0){
+							catalogObj.prdList[i].ischeck=1;
+						}else{
+							catalogObj.prdList[i].ischeck=0;
+						}
+					}
+					
+					return catalogObj;
+				}catch(e){
+					console.error('对userbus字段进行学段去重时发生异常,'+e);
+					console.error('====================')
+					console.error(e.stack); 
+					console.error('====================')
+					return {};
+				}
+			}
+			//按指定字段，对对象数组进行快速排序
+			 function compare(property){
+		         return function(obj1,obj2){
+		             var value1 = obj1[property];
+		             var value2 = obj2[property];
+		             return value1 - value2;     // 升序
+		         }
+		    }
+
 var tempPro = function(url, data0, callback) {
 	if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 		callback({
