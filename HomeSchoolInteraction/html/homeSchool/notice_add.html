@@ -214,6 +214,7 @@
 						addNoticeContent.classIDs = addNoticeContent.classIDs + ',' + classModel.clsid;
 						addNoticeContent.classStr = addNoticeContent.classStr + ',' + classModel.clsname;
 						addNoticeContent.parentsStr = addNoticeContent.parentsStr + ';' + classModel.clsname + '全部家长';
+						addNoticeContent.grdClsArray.push(classModel.grdid+'|'+classModel.clsid);
 					}
 				}
 				//去重
@@ -280,7 +281,10 @@
 					classIDs: '', //选择的班级ids
 					classIDsArray: [], //选择的班级id数组
 					gradeIDsArray: [], //全选择班级的年级id数组
-					parentArray: [] //家长列表
+					parentArray: [], //家长列表
+					grdClsArray:[],//群发短信时，班级群发，记录(年级|班级)id
+					stuNamesArray:[],//群发短信时，选择人员发送，人员的姓名串
+					forIdArray:[]//群发短信时，选择人员发送，发送对象的订购ID串
 				},
 				methods: {
 					clickSelect: function(flag) {
@@ -317,13 +321,17 @@
 			});
 
 			window.addEventListener('selectGradeClass', function(data) {
-				//				console.log("data" + JSON.stringify(data.detail));
+								console.log("selectGradeClass：" + JSON.stringify(data.detail));
+								
 				var tempData = data.detail;
 				addNoticeContent.gradeStr = tempData.gradeShow;
 				addNoticeContent.classStr = tempData.classShow;
 				addNoticeContent.classIDsArray = [].concat(tempData.classIDsArray);
 				addNoticeContent.gradeIDsArray = [].concat(tempData.gradeIDsArray);
 				addNoticeContent.classIDs = tempData.classIDs;
+				addNoticeContent.grdClsArray = [].concat(tempData.grdClsArray);
+				addNoticeContent.stuNamesArray = [];
+				addNoticeContent.forIdArray = [];
 				if(tempData.classIDs.length > 0) {
 					//6.学校班级学生,获取选择班级中对应的人
 					getClassParents(tempData.classIDs, 1);
@@ -356,10 +364,13 @@
 			});
 
 			window.addEventListener('selectStudents', function(data) {
-				//				console.log("data" + JSON.stringify(data.detail));
+								console.log("selectStudents：" + JSON.stringify(data.detail));
 				var tempData = data.detail;
 				addNoticeContent.parentsStr = tempData.parentsShow;
 				addNoticeContent.parentArray = [].concat(tempData.parentsArray);
+				addNoticeContent.grdClsArray = [].concat(tempData.grdClsArray);
+				addNoticeContent.stuNamesArray = [].concat(tempData.stuNameArray);
+				addNoticeContent.forIdArray = [].concat(tempData.foridArray);
 			});
 
 			//4.15.学校班级订购学生,获取选择班级中对应的人,flag =0默认数据，flag=1，选择班级后
@@ -650,8 +661,16 @@
 						console.log('temp1:'+JSON.stringify(temp1));
 						if(temp1.length > 0&&addNoticeContent.msgFlag == 1) {
 							console.log('111111111');
-							var tempMobiles = temp1.join(',').toString();
-							events.SendSmsForMobiles(tempMobiles, addNoticeContent.content);
+							//有班级群发
+							for (var i = 0; i < addNoticeContent.grdClsArray.length; i++) {
+								var tempStr = addNoticeContent.grdClsArray[i];
+								var tempID = tempStr.split('|');
+//								gradeid,classid,stustrs,genstrs,msgtype,grouptype,content
+								events.SendSmsTForClsStu(tempID[0], tempID[1],'','','班级通知',3,addNoticeContent.content);
+							}
+							if (addNoticeContent.stuNamesArray.length>0) {
+								events.SendSmsTForClsStu(0, 0,addNoticeContent.stuNamesArray.join(','),addNoticeContent.forIdArray.join(','),'班级通知',0,addNoticeContent.content);
+							}
 						}
 						mui.toast('成功');
 						setTimeout(function() {

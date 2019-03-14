@@ -218,6 +218,9 @@
 						var tempStu = ''; //显示用的家长
 						var tempStuArray = []; //选择的家长数组
 						var tempGradeArray = []; //判断年级是否全部选择用
+						var tempGrdClsArray = []; //班级内学生全部选择的年级、班级id
+						var tempForidArray = []; //班级不是全选，选择学生对于的订购id
+						var tempStuNameArray = []; //班级不是全选，选择学生对于的姓名
 						//循环所有数据
 						for(var i = 0; i < classListData.classListArray.length; i++) {
 							var classModel = classListData.classListArray[i];
@@ -230,6 +233,7 @@
 									sumGrade++;
 									if(classModel1.flag == 1) {
 										selectGrade++;
+										tempGrdClsArray.push(classModel1.grdid + '|' + classModel1.clsid);
 									}
 								}
 							}
@@ -258,6 +262,10 @@
 										tempStu = tempStu + ';' + classModel.clsname + '：';
 									}
 									tempStuArray.push(stuModel);
+									if(classModel.flag == 0) {
+										tempForidArray.push(stuModel.forid);
+										tempStuNameArray.push(stuModel.stuname);
+									}
 								}
 								if(classModel.flag == 0 && stuModel.flag == 1) {
 									if(tempNNN == 0) {
@@ -275,10 +283,12 @@
 							mui.toast('请选择家长');
 							return;
 						}
-
 						mui.fire(plus.webview.currentWebview().opener(), 'selectStudents', {
 							parentsShow: tempStu,
-							parentsArray: tempStuArray
+							parentsArray: tempStuArray,
+							grdClsArray: tempGrdClsArray,
+							foridArray: tempForidArray,
+							stuNameArray: tempStuNameArray
 						});
 						mui.back();
 					}
@@ -338,7 +348,7 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					functypes:'jxht',//功能类型(见附表2),多个之间用英文逗号隔开,全部留空
+					functypes: 'jxht', //功能类型(见附表2),多个之间用英文逗号隔开,全部留空
 					uuid: publicParameter.uuid, //用户设备号
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid, //系统所分配的应用ID
