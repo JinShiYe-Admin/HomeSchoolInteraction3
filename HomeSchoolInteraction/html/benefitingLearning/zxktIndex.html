@@ -138,20 +138,19 @@
 		<script src="../../js/webviewGroup.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			mui.init();
-			
+			var group;
 			mui.plusReady(function() {
-				toChildPage("子页智学课堂");
 				var _self = plus.webview.currentWebview();
-				var group = new webviewGroup(_self.id, {
+				group = new webviewGroup(_self.id, {
 					items: [{//课堂资源
 						id: "ziyuan-child.html",
 						url: "ziyuan-child.html",
 						extras: {}
-					}, {
+					}, {//组卷测试
 						id: "zujuanceshi-child.html",
 						url: "zujuanceshi-child.html",
 						extras: {}
-					}, {
+					}, {//学情分析
 						id: "xueqingfenxi-child.html",
 						url: "xueqingfenxi-child.html",
 						extras: {}
@@ -166,17 +165,37 @@
 						if(target.scrollIntoView) {
 							target.scrollIntoView();
 						}
+						
+						//滑动切换模块时，回调子页方法，如不需要，可以屏蔽
+						var href=''+target.toString().split('#')[1];
+						if(href=='item1mobile'){//课堂资源 
+							sendData('ziyuan-child.html','课堂资源')
+						}else if(href=='item2mobile'){//组卷测试
+							sendData('zujuanceshi-child.html','组卷测试')
+						}else if(href=='item3mobile'){//学情分析
+							sendData('xueqingfenxi-child.html','学情分析')
+						}
 					}
 				});
 				mui(".mui-scroll").on("tap", ".mui-control-item", function(e) {
 					var wid = this.getAttribute("data-wid");
 					group.switchTab(wid);
 				});
-
+				toChildPage("子页智学课堂");
 			});
+			
+			//向子页传值
+			function sendData(id,value){
+				var child=plus.webview.getWebviewById(id);
+				if(child!=''||child!=null||child!=undefined){
+					child.evalJS('toChildPage("'+value+'")')
+				}
+			}
+			
 			//父——>子页传值方法
 			function toChildPage(text){
 				console.log("ceshiChild:"+text)
+				sendData('ziyuan-child.html','课堂资源666')
 			}
 		</script>
 	</body>
