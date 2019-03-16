@@ -306,7 +306,7 @@ var jQAjaxPost = function(url, data, callback) {
 					var busext=[];
 					for(var i = 0; i < userbus.length; i++) {
 						var tempM = userbus[i];
-						if(JSON.stringify(tempM).indexOf('zxkt')!=-1){//已订购助学课堂套餐
+						if(JSON.stringify(tempM).indexOf('zxkt')!=-1 &&tempM.serstat == 1){//已订购并且没停用的套餐
 							for(var z=0;z<tempM.busext.length;z++){//去掉订购ID（forid）、功能代码（ fcode） ，方便数组去重
 								var item=tempM.busext[z];
 								var newBusextItem={};
