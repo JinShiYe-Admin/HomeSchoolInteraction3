@@ -80,8 +80,7 @@
 		</style>
 	</head>
 	<body>
-		
-		<header class="mui-bar mui-bar-nav orals-header">
+		<header id="oralsHeader" class="mui-bar mui-bar-nav orals-header">
 			<div class="mui-clearfix">
 				<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
 				<!--<a class="mui-icon mui-pull-left" style="padding: 6px 10px;">
@@ -119,186 +118,192 @@
 		    </a>
 		</nav>-->
 		
-		<div class="mui-content">
-			
-			<!--校讯通菜单-->
-			<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-				<a class="mui-control-item mui-active" data-type="word" href="#orals-test">
-			        <span>单词测评</span>
-			    </a>
-			    <a class="mui-control-item" data-type="sentence" href="#orals-test">
-			        <span>句子测评</span>
-			    </a>
-			    <a class="mui-control-item" data-type="errs" href="#orals-errs">
-			        <span>错题本</span>
-			    </a>
-			</div>
-			
-			<!--副标题-->
-			<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
-		    	<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
-		    		<div id="bookItems">{{bookItems}}</div>
-		    		<a>
-		    			<svg class="icon" aria-hidden="true">
-						  <use xlink:href="#icon-icon-change"></use>
-						</svg>
-		    		</a>
-		    	</div>
-		    	<div class="content-title" v-show="isContentTitle" v-cloak>
-		    		<a class="mui-icon" @click.stop="changeMenu(-1)">
-		    			<svg class="icon" aria-hidden="true">
-						  <use xlink:href="#icon-icon-left"></use>
-						</svg>
-		    		</a>
-		    		<div id="contentTitle" @tap.stop="showMenu" v-html="contentTitle"></div>
-		    		<a class="mui-icon" @click.stop="changeMenu(1)">
-		    			<svg class="icon" aria-hidden="true">
-						  <use xlink:href="#icon-icon-right"></use>
-						</svg>
-		    		</a>
-		    	</div>
-		   </div>
-		    
-			<!--测试页-->
-			<div id="orals-test" class="mui-control-content mui-active">
+		<div  class="mui-content">
+			<div id="oralsBody">
+				<!--校讯通菜单-->
+				<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item mui-active" data-type="word" href="#orals-test">
+				        <span>单词测评</span>
+				    </a>
+				    <a class="mui-control-item" data-type="sentence" href="#orals-test">
+				        <span>句子测评</span>
+				    </a>
+				    <a class="mui-control-item" data-type="errs" href="#orals-errs">
+				        <span>错题本</span>
+				    </a>
+				</div>
 				
-				<div id="testView" v-cloak>
-
-					<div class="progress-box">
-						<span>{{(index+1)+"/"+list.length}}</span>
-					</div>
+				<!--副标题-->
+				<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
+			    	<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
+			    		<div id="bookItems">{{bookItems}}</div>
+			    		<a>
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-change"></use>
+							</svg>
+			    		</a>
+			    	</div>
+			    	<div class="content-title" v-show="isContentTitle" v-cloak>
+			    		<a class="mui-icon" @click.stop="changeMenu(-1)">
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-left"></use>
+							</svg>
+			    		</a>
+			    		<div id="contentTitle" @tap.stop="showMenu" v-html="contentTitle"></div>
+			    		<a class="mui-icon" @click.stop="changeMenu(1)">
+			    			<svg class="icon" aria-hidden="true">
+							  <use xlink:href="#icon-icon-right"></use>
+							</svg>
+			    		</a>
+			    	</div>
+			   </div>
+			    
+				<!--测试页-->
+				<div id="orals-test" class="mui-control-content mui-active">
 					
-					<div v-if="list.length" class="test-pannel" :class="{sentence: !isWord}">
-						{{list[index].words}}
-						<p class="read" v-if="isWord" v-show="isTested&&list[index].symbol">[{{list[index].symbol}}]</p>
-						<p class="translation" v-else v-show="isTested&&list[index].translations">{{list[index].translations}}</p>
-					</div>
-					<div v-else-if="state>2" class="test-pannel" style="font-size: 12px;color: #999999;">暂无内容</div>
-					<div v-else class="test-pannel"></div>
-					
-					<div class="action-box">
-						<div class="overflow-cover"></div>
-						<div class="score-box">
-							<span class="score" v-if="isTested">{{setScore(list[index].total_score)}}</span>
-						</div>
-						<div class="btns-box">
-							<a class="btn-voice" :class="{active: playingAudio}" @tap="playAudio(list[index]?list[index].audio_url:'', 'audio')">
-								<!--<img class="icon" v-if="playingAudio" src="../../css/orals/icon-voice.gif"/>-->
-								<svg class="icon" aria-hidden="true">
-								  <use xlink:href="#icon-icon-voice"></use>
-								</svg>
-								<!--<svg class="icon active" aria-hidden="true">
-								  <use xlink:href="#icon-icon-voice-active"></use>
-								</svg>-->
-								<span class="icon active img-icon"></span>
-								<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
-							</a>
-							<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record($event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord">
-								<svg class="icon" aria-hidden="true">
-								  <use xlink:href="#icon-icon-record"></use>
-								</svg>
-								<div class="btn-record-bg">
-									<div class="btn-record-bg-active"></div>
-								</div>
-								<!--<svg class="icon active" aria-hidden="true">
-								  <use xlink:href="#icon-icon-record-active"></use>
-								</svg>-->
-								<!--<span class="icon active img-icon"></span>-->
-								<!--<img class="icon active" src="../../css/orals/icon-record.gif"/>-->
-							</a>
-							<a class="btn-play" :class="{active: playingRecord}" @tap="playAudio(list[index]?list[index].record_url:'', 'record')">
-								<svg class="icon" aria-hidden="true">
-								  <use xlink:href="#icon-icon-play"></use>
-								</svg>
-								<svg class="icon active" aria-hidden="true">
-								  <use xlink:href="#icon-icon-pause"></use>
-								</svg>
-							</a>
+					<div id="testView" v-cloak>
+	
+						<div class="progress-box">
+							<span>{{(index+1)+"/"+list.length}}</span>
 						</div>
 						
-						<div class="skip-box">
-							<a :class="{disabled: index==0}" @tap="changeIndex(-1)">上一个</a>
-							<a v-show="index<list.length-1" @tap="changeIndex(1)">下一个</a>
-							<a v-show="index==list.length-1" class="btn-submit" @tap="submit">提交</a>
+						<div v-if="list.length" class="test-pannel" :class="{sentence: !isWord}">
+							{{list[index].words}}
+							<p class="read" v-if="isWord" v-show="isTested&&list[index].symbol">[{{list[index].symbol}}]</p>
+							<p class="translation" v-else v-show="isTested&&list[index].translations">{{list[index].translations}}</p>
 						</div>
-					</div>
-					
-				</div>
-			</div>
-			<!--错题本-->
-			<div id="orals-errs" class="mui-control-content">
-				
-				<div id="errList">
-					<div id="pullrefreshBox">
-						<div id="pullrefresh">
-							<div v-cloak v-if="total">
-								<template v-for="(item,index) in model" :key="index" v-if="item.list.length">
-								    <div class="result-title mui-ellipsis" v-show="item.title">
-								    	{{item.sub_title}}
-								    	<div class="sec-title">{{item.title}}</div>
-								    </div>
-								    <ul class="result-list mui-table-view">
-								    	<li class="mui-table-view-cell" v-for="(v, i) in item.list" 
-								    		:class="{'word-cell': v.category=='read_word'}"
-								    		@tap.stop="toggleOpen(index,i)">
-								    		<div :class="{'word-box': v.category=='read_word', 'sentence-box': v.category=='read_sentence'}">
-								    			<h4 v-if="v.category=='read_word'">{{v.words}}
-								    				<span class="symbol" v-if="v.symbol">[{{v.symbol}}]</span>
-								    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
-								    			</h4>
-								    			<h4 v-else>{{v.words}}
-								    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
-								    			</h4>
-								    			<div class="btns" v-if="openLi.index==index&&openLi.i==i">
-								    				<a class="btn-voice" @touchstart.stop="playAudio(v.audio_url, $event)">
-														<svg class="icon" aria-hidden="true">
-														  <use xlink:href="#icon-icon-voice"></use>
-														</svg>
-														<span class="icon active img-icon"></span>
-													</a>
-													<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
-														<svg class="icon" aria-hidden="true">
-														  <use xlink:href="#icon-icon-record"></use>
-														</svg>
-														<div class="btn-record-bg">
-															<div class="btn-record-bg-active"></div>
-														</div>
-													</a>
-													<a class="btn-play" @touchstart.stop="playAudio(v.record_url, $event)">
-														<svg class="icon" aria-hidden="true">
-														  <use xlink:href="#icon-icon-play"></use>
-														</svg>
-														<svg class="icon active" aria-hidden="true">
-														  <use xlink:href="#icon-icon-pause"></use>
-														</svg>
-													</a>
-								    			</div>
-								    		</div>
-								    		<div class="result-bar" v-if="v.category=='read_sentence'&&v.total_score!=null">
-								    			<div class="score-item">
-								    				准确度：{{v.accuracy_score}}
-								    			</div>
-								    			<div class="score-item">
-								    				完整度：{{v.integrity_score}}
-								    			</div>
-								    			<div class="score-item">
-								    				流利度：{{v.fluency_score}}
-								    			</div>
-								    		</div>
-								    	</li>
-								    </ul>
-							  	</template>
-							   	<div class="list-end" v-show="!isLoading&&!lastPage">上拉加载更多</div>
-							   	<div class="list-end" v-show="lastPage">没有更多了~</div>
-							   	<div class="list-end" v-show="isLoading&&!lastPage">正在加载...</div>
-						   	</div>
-						   	<div class="list-end" v-else v-show="!isLoading">还没有错题</div>
+						<div v-else-if="state>2" class="test-pannel" style="font-size: 12px;color: #999999;">暂无内容</div>
+						<div v-else class="test-pannel"></div>
+						
+						<div class="action-box">
+							<div class="overflow-cover"></div>
+							<div class="score-box">
+								<span class="score" v-if="isTested">{{setScore(list[index].total_score)}}</span>
+							</div>
+							<div class="btns-box">
+								<a class="btn-voice" :class="{active: playingAudio}" @tap="playAudio(list[index]?list[index].audio_url:'', 'audio')">
+									<!--<img class="icon" v-if="playingAudio" src="../../css/orals/icon-voice.gif"/>-->
+									<svg class="icon" aria-hidden="true">
+									  <use xlink:href="#icon-icon-voice"></use>
+									</svg>
+									<!--<svg class="icon active" aria-hidden="true">
+									  <use xlink:href="#icon-icon-voice-active"></use>
+									</svg>-->
+									<span class="icon active img-icon"></span>
+									<!--<img class="icon active" src="../../css/orals/icon-voice.gif"/>-->
+								</a>
+								<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record($event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord">
+									<svg class="icon" aria-hidden="true">
+									  <use xlink:href="#icon-icon-record"></use>
+									</svg>
+									<div class="btn-record-bg">
+										<div class="btn-record-bg-active"></div>
+									</div>
+									<!--<svg class="icon active" aria-hidden="true">
+									  <use xlink:href="#icon-icon-record-active"></use>
+									</svg>-->
+									<!--<span class="icon active img-icon"></span>-->
+									<!--<img class="icon active" src="../../css/orals/icon-record.gif"/>-->
+								</a>
+								<a class="btn-play" :class="{active: playingRecord}" @tap="playAudio(list[index]?list[index].record_url:'', 'record')">
+									<svg class="icon" aria-hidden="true">
+									  <use xlink:href="#icon-icon-play"></use>
+									</svg>
+									<svg class="icon active" aria-hidden="true">
+									  <use xlink:href="#icon-icon-pause"></use>
+									</svg>
+								</a>
+							</div>
+							
+							<div class="skip-box">
+								<a :class="{disabled: index==0}" @tap="changeIndex(-1)">上一个</a>
+								<a v-show="index<list.length-1" @tap="changeIndex(1)">下一个</a>
+								<a v-show="index==list.length-1" class="btn-submit" @tap="submit">提交</a>
+							</div>
 						</div>
 						
 					</div>
 				</div>
+				<!--错题本-->
+				<div id="orals-errs" class="mui-control-content">
+					
+					<div id="errList">
+						<div id="pullrefreshBox">
+							<div id="pullrefresh">
+								<div v-cloak v-if="total">
+									<template v-for="(item,index) in model" :key="index" v-if="item.list.length">
+									    <div class="result-title mui-ellipsis" v-show="item.title">
+									    	{{item.sub_title}}
+									    	<div class="sec-title">{{item.title}}</div>
+									    </div>
+									    <ul class="result-list mui-table-view">
+									    	<li class="mui-table-view-cell" v-for="(v, i) in item.list" 
+									    		:class="{'word-cell': v.category=='read_word'}"
+									    		@tap.stop="toggleOpen(index,i)">
+									    		<div :class="{'word-box': v.category=='read_word', 'sentence-box': v.category=='read_sentence'}">
+									    			<h4 v-if="v.category=='read_word'">{{v.words}}
+									    				<span class="symbol" v-if="v.symbol">[{{v.symbol}}]</span>
+									    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
+									    			</h4>
+									    			<h4 v-else>{{v.words}}
+									    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
+									    			</h4>
+									    			<div class="btns" v-if="openLi.index==index&&openLi.i==i">
+									    				<a class="btn-voice" @touchstart.stop="playAudio(v.audio_url, $event)">
+															<svg class="icon" aria-hidden="true">
+															  <use xlink:href="#icon-icon-voice"></use>
+															</svg>
+															<span class="icon active img-icon"></span>
+														</a>
+														<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
+															<svg class="icon" aria-hidden="true">
+															  <use xlink:href="#icon-icon-record"></use>
+															</svg>
+															<div class="btn-record-bg">
+																<div class="btn-record-bg-active"></div>
+															</div>
+														</a>
+														<a class="btn-play" @touchstart.stop="playAudio(v.record_url, $event)">
+															<svg class="icon" aria-hidden="true">
+															  <use xlink:href="#icon-icon-play"></use>
+															</svg>
+															<svg class="icon active" aria-hidden="true">
+															  <use xlink:href="#icon-icon-pause"></use>
+															</svg>
+														</a>
+									    			</div>
+									    		</div>
+									    		<div class="result-bar" v-if="v.category=='read_sentence'&&v.total_score!=null">
+									    			<div class="score-item">
+									    				准确度：{{v.accuracy_score}}
+									    			</div>
+									    			<div class="score-item">
+									    				完整度：{{v.integrity_score}}
+									    			</div>
+									    			<div class="score-item">
+									    				流利度：{{v.fluency_score}}
+									    			</div>
+									    		</div>
+									    	</li>
+									    </ul>
+								  	</template>
+								   	<div class="list-end" v-show="!isLoading&&!lastPage">上拉加载更多</div>
+								   	<div class="list-end" v-show="lastPage">没有更多了~</div>
+								   	<div class="list-end" v-show="isLoading&&!lastPage">正在加载...</div>
+							   	</div>
+							   	<div class="list-end" v-else v-show="!isLoading">还没有错题</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
 			</div>
-			
+			<div id='oralsBodyNoBuy' style="display: none;">
+					<p style="text-align: center;margin-top: 50px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<div style="text-align: center;margin:10% auto;">
+						<img src="../../img/noData.png" style="width: 250px;" />
+					</div>
+			</div>
 		</div>
 		
 		<audio id="audio" class="mui-hidden"></audio>
@@ -332,7 +337,6 @@
 				</div>
 			</transition>
 		</div>
-		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
 		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
@@ -1208,7 +1212,64 @@
 //			testVue.index = 0;
 			//父——>子页传值方法
 			function toChildPage(text){
-				console.log("ceshiChild:"+text)
+				var testtt=new Vue({
+					el:'#testtt',
+					data:{
+						showFlag:0//如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示英语听测，0显示，1显示家长的订购提醒
+					}
+				});
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				var utp = personal.utp;
+				if(utp==0){//如果是教师身份，显示英语听测
+					console.log('教师身份')
+				}else if(utp==1 || utp==2){//如果是家长1、学生2身份，根据是否订购套餐和绑定学生显示英语听测
+					console.log('家长或者学生身份'+utp);
+					
+					var goRecord = document.getElementById("goRecord");//标题右侧-测评记录div
+					var oralsBody = document.getElementById("oralsBody");//header以下主体的内容
+					var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy");//没购买套餐时显示的内容
+					
+					//通过协议判断是否订购套餐绑定学生
+					var enData1 = {};
+					//不需要加密的数据
+					var comData1 = {
+						uuid: publicParameter.uuid, //用户设备号
+						uid: personal.uid, //用户账号
+						utoken: personal.utoken, //用户令牌
+						appid: publicParameter.appid //系统所分配的应用ID
+					}
+//					plus.nativeUI.showWaiting();
+					//发送网络请求，data为网络返回值
+					postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+						console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
+//						plus.nativeUI.closeWaiting();
+						if(data1.RspCode == 0) {
+							if(data1.RspData) {
+								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
+								personal.userbus = data1.RspData.userbus; // 绑定的套餐
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								if(personal.packageCount > 0 && personal.isBdCount > 0) {
+								} else {
+									//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+									goRecord.style.display = "none";
+									oralsBody.style.display = "none";
+									oralsBodyNoBuy.style.display = "block";
+								}
+							} else {
+								personal.packageCount = 0; //套餐是否绑定学生
+								personal.userbus = []; // 绑定的套餐
+								store.set(window.storageKeyName.PERSONALINFO, personal);
+								//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+								goRecord.style.display = "none";
+								oralsBody.style.display = "none";
+								oralsBodyNoBuy.style.display = "block";
+							}
+						} else {
+							mui.toast(data1.RspTxt);
+						}
+					});
+				}
 			}
 		</script>
 	</body>
