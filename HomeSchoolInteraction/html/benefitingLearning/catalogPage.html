@@ -225,6 +225,12 @@
 						<div class="swiper-slide" :class="km.ischeck==1?'fontcolor':''" v-for="(km,index) in kemu"  @tap="catalogItemClick(kemu,km,'km')">{{km.subname}}</div>
 					</div>
 				</div>
+				<div class="names" v-cloak>{{jiaobanStr}}</div>
+                <div class="swiper-container" style="margin-top: 1px;" v-cloak id="jiaoban">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" :class="jb.ischeck==1?'fontcolor':''" v-for="(jb,index) in jiaoban"  @tap="catalogItemClick(jiaoban,jb,'jb')">{{jb.matername}}</div>
+                    </div>
+                </div> 
 				<div class="names" v-cloak>{{fenceStr}}</div>
 				<div class="swiper-container" style="margin-top: 1px;" v-cloak id="fence">
 					<div class="swiper-wrapper">
@@ -281,16 +287,15 @@
 			console.log('catalogPage:'+JSON.stringify(catalogPage));
 			console.log('catalogObj:'+JSON.stringify(catalogObj));
 			if(catalogObj==null){
-				catalogObj={
-					percode: '',//学段代码 
-					subcode: '',//科目代码 
-					fasccode: ''//分册代码
-				}
+				catalogObj={}
 				if(catalogPage&&catalogPage.prdList.length>0){
 					catalogObj.percode=catalogPage.prdList[0].percode;
 				}
 				if(catalogPage&&catalogPage.grdList.length>0){
 					catalogObj.fasccode=catalogPage.grdList[0].fasccode;
+				}
+				if(catalogPage&&catalogPage.materList.length>0){
+					catalogObj.matercode=catalogPage.materList[0].matercode;
 				}
 				if(catalogPage&&catalogPage.subList.length>0){
 					catalogObj.subcode=catalogPage.subList[0].subcode;
@@ -310,6 +315,7 @@
 				data:{
 					xueduanStr:'',
 					kemuStr:'',
+					jiaobanStr:'',
 					fenceStr:'',
 					xueduan:[],//学段
 					kemu:[],//科目
@@ -334,10 +340,13 @@
 								catalogObj.percode=item.percode;
 							}else if(lx=='km'){
 								catalogObj.subcode=item.subcode;
+							}else if(lx=='jb'){
+                                catalogObj.matercode=item.matercode;
 							}else if(lx=='fc'){
 								catalogObj.fasccode=item.fasccode;
 							}
 							console.log(JSON.stringify(catalogObj));
+							catalogPage = store.get(window.storageKeyName.CATALOG);
 							store.set(window.storageKeyName.CATALOGOBJ,catalogObj);
 							getZiYuanTextbookFunc();
 						}
@@ -417,6 +426,17 @@
                                     temp.ischeck = 0;
                                 } 
                             }
+							//教材列表
+                            var jiaoban= data.RspData.mater.list;
+                            var jbselected= data.RspData.mater.selected;
+                            for(var i = 0; i < jiaoban.length; i++) {
+                                var temp =  jiaoban[i];
+                                if (temp.matercode==jbselected) {
+                                    temp.ischeck = 1;
+                                }else{
+                                    temp.ischeck = 0;
+                                }
+                            }
 							//科目列表
 							var kmselected= data.RspData.sub.selected;
 							for(var i = 0; i < data.RspData.sub.list.length; i++) {
@@ -428,21 +448,31 @@
                                 }
                             }
 							
-							
 							if(catalogPage.prdList.length>0){
 								catalog.xueduan=catalogPage.prdList;
 							}else{
-								catalog.xueduan=[1];
+								var newPrd=[{percode:'-1',pername:'暂无',isselect:0}];
+								catalog.xueduan=newPrd;
 							}
-							if(data.RspData.sub.list.length>0){
+							if(catalogPage.subList.length>0){
+								catalog.kemu=catalogPage.subList;
+							}else if(data.RspData.sub.list.length>0){
 								catalog.kemu=data.RspData.sub.list;
 							}else{
-								catalog.kemu=[1];
+								var newKemu=[{subcode:'-1',subname:'暂无',isselect:0}];
+								catalog.kemu=newKemu;
 							}
-							if(data.RspData.fasc.list.length>0){
-								catalog.fence=data.RspData.fasc.list;
+							if(jiaoban.length>0){
+								catalog.jiaoban=jiaoban;
 							}else{
-								catalog.fence=[1];
+								var newJiaoban=[{matercode:'-1',matername:'暂无',isselect:0}];
+								catalog.jiaoban=newJiaoban;
+							}
+							if(fence.length>0){
+								catalog.fence=fence;
+							}else{
+								var newFence=[{fasccode:'-1',fascname:'暂无',isselect:0}];
+								catalog.fence=newFence;
 							}
 							
 							
@@ -469,6 +499,7 @@
 							//滑动菜单名称赋值,加这一段是为了让名称在一进页面vue还没渲染完成时隐藏掉,不加的话,v-clock不起作用
 							catalog.xueduanStr='学段：';
 							catalog.kemuStr='科目：';
+							catalog.jiaobanStr='教版：';
 							catalog.fenceStr='分册：';
 						}
 					} else {

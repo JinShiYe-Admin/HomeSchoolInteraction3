@@ -249,6 +249,7 @@
 			mui.plusReady(function() {
 				//4.1.用户已订购套餐及功能扩展栏目
 				getUserBusFunc();
+				toChildPage("子页资源");
 			});
 
 			//4.1.用户已订购套餐及功能扩展栏目
@@ -273,7 +274,7 @@
 								var tempM = data1.RspData.userbus[i];
 								for(var a = 0; a < tempM.funcs.length; a++) {
 									var tempFuncs = tempM.funcs[a];
-									if(tempFuncs.ftype == 'zxkt') {
+									if(tempFuncs.ftype == 'zxkt' &&tempM.serstat == 1) {
 										tempFlag++;
 									}
 								}
@@ -326,16 +327,27 @@
 	                            }
 								catalogObj.grdList=fence;
 								//科目列表
-								var sub= data.RspData.sub.list;
+								var sub= catalogObj.subList;
 								var kmselected= data.RspData.sub.selected;
 								for(var i = 0; i < sub.length; i++) {
-	                                if (sub[i].fasccode==kmselected) {
+	                                if (sub[i].subcode==kmselected) {
 	                                    sub[i].ischeck = 1;
 	                                }else{
 	                                    sub[i].ischeck = 0;
 	                                }
 	                            }
 								catalogObj.subList=sub;
+								//教版
+								var mater = data.RspData.mater.list;
+								var materSelected = data.RspData.mater.selected;
+								for(var i = 0; i < fence.length; i++) {
+									if(mater[i].matercode == materSelected) {
+										mater[i].ischeck = 1;
+									} else {
+										mater[i].ischeck = 0;
+									}
+								}
+								catalogObj.materList = mater; 
 								console.log('catalogObj:'+JSON.stringify(catalogObj)); 
 								store.set(window.storageKeyName.CATALOG, catalogObj);
 								if(fence.length==0 || sub.length==0){
@@ -364,7 +376,15 @@
 				var comData = {}
 				comData.percode=catalogObj.prdList[0].percode;//学段代码 可选
 				comData.fasccode=catalogObj.grdList[0].fasccode;//分册（年级）代码 可选
-				comData.subcode=catalogObj.subList[0].subcode;//科目代码
+				if(catalogObj.subList.length > 0 && catalogObj.materList.length > 0 ) {//如果科目和学段都不为空的话，取默认第一个
+					comData.subcode = catalogObj.subList[0].subcode; //科目代码
+					comData.matercode = catalogObj.materList[0].matercode; //科目代码
+				} else {
+					contentData.showFlag = 0;
+					tempHead.titleName = '请切换目录';
+					contentData.noData = '该目录下暂无资源，请切换目录';
+					return 0
+				}
 				var wd = events.showWaiting();
 				getZiYuanTextbook(comData, function(data) {
 					wd.close();
@@ -577,6 +597,9 @@
 				}
 			});
 
+			function toChildPage(text){
+				console.log("ziyuan-child:"+text)
+			}
 		</script>
 	</body>
 

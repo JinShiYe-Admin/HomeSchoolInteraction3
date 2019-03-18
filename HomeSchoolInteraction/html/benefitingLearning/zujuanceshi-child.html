@@ -230,6 +230,8 @@
 						header.setMenu({percode: header.grade.selected, subcode: header.subject.selected});
 					}
 				});
+				
+				toChildPage("子页组卷测试");
 			});
 			
 			
@@ -387,6 +389,9 @@
 				}
 			});
 			
+			function toChildPage(text){
+				console.log("zujuanceshi-child:"+text)
+			}
 		</script>
 	</body>
 
