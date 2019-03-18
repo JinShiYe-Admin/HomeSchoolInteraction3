@@ -306,7 +306,7 @@ var jQAjaxPost = function(url, data, callback) {
 					var busext=[];
 					for(var i = 0; i < userbus.length; i++) {
 						var tempM = userbus[i];
-						if(JSON.stringify(tempM).indexOf('zxkt')!=-1 &&tempM.serstat == 1){//已订购并且没停用的套餐
+						if(JSON.stringify(tempM).indexOf('jxht')!=-1 &&tempM.serstat == 1){//已订购并且没停用的套餐
 							for(var z=0;z<tempM.busext.length;z++){//去掉订购ID（forid）、功能代码（ fcode） ，方便数组去重
 								var item=tempM.busext[z];
 								var newBusextItem={};
@@ -341,6 +341,46 @@ var jQAjaxPost = function(url, data, callback) {
 						}
 					}
 					
+					//去重年级
+//					var grdList=[];
+//					for(var i = 0; i < busext.length; i++){
+//						var item=busext[i];//全部年级
+//						if(item.itemcode=='grd'){
+//							var grds=item.itemsons.split(',');
+//							for(var z = 0; z < grds.length; z++){
+//								var grdsItme=grds[z];//单个年级
+//								var obj={};
+//								obj.percode=grdsItme.split('|')[0].substring(0,1);//单个学段ID
+//								obj.fasccode=grdsItme.split('|')[0];//单个年级ID
+//								obj.fascname=grdsItme.split('|')[1];//单个年级名称
+//								var grdListStr=JSON.stringify(grdList);
+//								var objStr=JSON.stringify(obj);
+//								if(grdListStr.indexOf(objStr)==-1){
+//									grdList.push(obj);
+//								}
+//							}
+//						}
+//					}
+					//去重科目
+//					var subList=[];
+//					for(var i = 0; i < busext.length; i++){
+//						var item=busext[i];//全部年级
+//						if(item.itemcode=='sub'){
+//							var subs=item.itemsons.split(',');
+//							for(var z = 0; z < subs.length; z++){
+//								var subsItme=subs[z];//单个年级
+//								var obj={};
+//								obj.subcode=subsItme.split('|')[0];//单个年级ID
+//								obj.subname=subsItme.split('|')[1];//单个年级名称
+//								var subListStr=JSON.stringify(subList);
+//								var objStr=JSON.stringify(obj);
+//								if(subListStr.indexOf(objStr)==-1){
+//									subList.push(obj);
+//								}
+//							}
+//						}
+//					}
+					
 					var catalogObj={};
 					catalogObj.prdList=prdList.sort(compare("percode"));
 					for(var i = 0; i < catalogObj.prdList.length; i++){
@@ -351,6 +391,21 @@ var jQAjaxPost = function(url, data, callback) {
 						}
 					}
 					
+//					for(var i = 0; i < catalogObj.grdList.length; i++){
+//						if(i==0){
+//							catalogObj.grdList[i].ischeck=1;
+//						}else{
+//							catalogObj.grdList[i].ischeck=0;
+//						} 
+//					}
+
+//					for(var i = 0; i < catalogObj.subList.length; i++){
+//						if(i==0){
+//							catalogObj.subList[i].ischeck=1;
+//						}else{
+//							catalogObj.subList[i].ischeck=0;
+//						}
+//					}
 					return catalogObj;
 				}catch(e){
 					console.error('对userbus字段进行学段去重时发生异常,'+e);

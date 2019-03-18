@@ -327,30 +327,16 @@
 	                            }
 								catalogObj.grdList=fence;
 								//科目列表
-								if(catalogObj.subList.length == 0){//如果订购套餐里无法获取到科目,那么从广西接口拿科目列表
-									var sub= data.RspData.sub.list;
-									var kmselected= data.RspData.sub.selected;
-									for(var i = 0; i < sub.length; i++) {
-		                                if (sub[i].subcode==kmselected) {
-		                                    sub[i].ischeck = 1;
-		                                }else{
-		                                    sub[i].ischeck = 0;
-		                                }
-		                            }
-									console.log('liushuai:'+JSON.stringify(catalogObj.subList))
-									catalogObj.subList=sub;
-								}else{
-									var sub= catalogObj.subList;
-									var kmselected= data.RspData.sub.selected;
-									for(var i = 0; i < sub.length; i++) {
-		                                if (sub[i].subcode==kmselected) {
-		                                    sub[i].ischeck = 1;
-		                                }else{
-		                                    sub[i].ischeck = 0;
-		                                }
-		                            }
-									catalogObj.subList=sub;
-								}
+								var sub= catalogObj.subList;
+								var kmselected= data.RspData.sub.selected;
+								for(var i = 0; i < sub.length; i++) {
+	                                if (sub[i].subcode==kmselected) {
+	                                    sub[i].ischeck = 1;
+	                                }else{
+	                                    sub[i].ischeck = 0;
+	                                }
+	                            }
+								catalogObj.subList=sub;
 								//教版
 								var mater = data.RspData.mater.list;
 								var materSelected = data.RspData.mater.selected;
