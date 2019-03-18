@@ -128,7 +128,7 @@
 			var curPageData;
 			mui.plusReady(function() {
 				orders.orderDetail = utils.getDataFromUrl(window.location.href);
-				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl,1);
+				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl, 1);
 			});
 
 			var orders = new Vue({
@@ -140,7 +140,19 @@
 
 			//套餐订购
 			function placeOrder() {
-				utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);
+				if(orders.orderDetail.serverids.length == 0) { //没有订购
+					if(orders.orderDetail.orderFlag == 0) {
+						utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);
+					} else {
+						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
+					}
+				} else { //有订购
+					if(orders.orderDetail.orderFlag == 0) {
+						mui.toast('只允许订购一个套餐');
+					} else {
+						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
+					}
+				}
 			}
 		</script>
 	</body>

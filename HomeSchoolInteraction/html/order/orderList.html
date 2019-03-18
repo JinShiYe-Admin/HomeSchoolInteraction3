@@ -117,7 +117,6 @@
 		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/events.js"></script>
 		<script>
-			
 			mui.init({
 				pullRefresh: {
 					container: '#scroll',
@@ -132,19 +131,19 @@
 					}
 				}
 			});
-			document.getElementById('returnBtn').addEventListener('tap',function () {
+			document.getElementById('returnBtn').addEventListener('tap', function() {
 				mui.fire(plus.webview.currentWebview().opener(), 'refush_count', {});
 				console.log('11111');
-			    mui.back();
+				mui.back();
 			});
-			
+
 			//下拉刷新
 			function pulldownRefresh() {
 				getOrderList();
 			}
 			window.addEventListener('refreshList', function(data) {
 				getOrderList();
-			});		
+			});
 			var personal;
 			var publicParameter;
 			mui.plusReady(function() {
@@ -160,6 +159,7 @@
 				el: '#orders',
 				data: {
 					orderList: [],
+					serverids:'',//订购的套餐id集合
 					flag: 0, //0刷新，1加载更多
 					pageIndex: 1, //当前页数
 					canTap: true //下拉刷新时，上拉加载能否使用 true
@@ -170,6 +170,7 @@
 						if($(_event).attr('class') == 'ul-btn') { //点击li下的button
 							this.$options.methods.btnClick(item);
 						} else { //点击li标签
+							item.serverids = orders.serverids;
 							if(item.orderFlag == 0)
 								utils.mOpenWithData("../../html/order/packageDetails_order.html", item);
 							else
@@ -177,14 +178,23 @@
 						}
 					},
 					btnClick: function(item) {
-						if(item.orderFlag == 0)
-							utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
-						else
-							utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
+						console.log('item:'+JSON.stringify(item));
+						if (orders.serverids.length==0) {//没有订购
+							if(item.orderFlag == 0) {
+								utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
+							} else {
+								utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
+							}
+						} else{//有订购
+							if(item.orderFlag == 0) {
+								mui.toast('只允许订购一个套餐');
+							} else {
+								utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
+							}
+						}
 					}
 				}
 			});
-
 
 			//3.12.获取套餐表
 			function getOrderList() {
@@ -215,7 +225,9 @@
 										tempFlag++;
 									}
 								}
+								//如果大于0，则为校讯通的套餐
 								if(tempFlag > 0) {
+									//默认为没有订购，根据订购套餐协议，重新整理数据
 									tempModel.orderFlag = 0;
 									tempModel.busimg = setImg(tempModel.busimg, 1);
 									tempArray.push(tempModel);
@@ -248,15 +260,26 @@
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
+							var tempArray = []; //判断是否有智学课堂套餐
+							for(var i = 0; i < data1.RspData.userbus.length; i++) {
+								var tempM = data1.RspData.userbus[i];
+								for(var a = 0; a < tempM.funcs.length; a++) {
+									var tempFuncs = tempM.funcs[a];
+									if(tempFuncs.ftype == 'jxht'&&tempM.serstat == 1) {
+										tempArray.push(tempM.servid);
+									}
+								}
+							}
+							orders.serverids = tempArray.join('|'); // 绑定的套餐
 							//循环找到对应的套餐代码数据，合并
 							for(var i = 0; i < orders.orderList.length; i++) {
 								var orderModel = orders.orderList[i];
-//								console.log('orderModel.serviceid:' + orderModel.serviceid);
+								//								console.log('orderModel.serviceid:' + orderModel.serviceid);
 								for(var a = 0; a < data1.RspData.userbus.length; a++) {
 									var userBusModel = data1.RspData.userbus[a];
-//									console.log('userBusModel.servid:' + userBusModel.servid);
+									//									console.log('userBusModel.servid:' + userBusModel.servid);
 									if(orderModel.serviceid == userBusModel.servid) {
-//										console.log('hebing');
+										//										console.log('hebing');
 										orderModel = $.extend(orderModel, userBusModel);
 										orderModel.orderFlag = 1;
 									}
@@ -270,7 +293,6 @@
 					mui('#scroll').pullRefresh().endPulldownToRefresh(); //参数为true代表没有更多数据了。
 				});
 			}
-			
 		</script>
 	</body>
 
