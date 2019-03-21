@@ -306,7 +306,7 @@ var jQAjaxPost = function(url, data, callback) {
 					var busext=[];
 					for(var i = 0; i < userbus.length; i++) {
 						var tempM = userbus[i];
-						if(tempM.busext && JSON.stringify(tempM).indexOf('jxht')!=-1 &&tempM.serstat == 1){//已订购并且没停用的套餐
+						if(tempM.busext!=null && JSON.stringify(tempM).indexOf('jxht')!=-1 &&tempM.serstat == 1){//已订购并且没停用的套餐
 							for(var z=0;z<tempM.busext.length;z++){//去掉订购ID（forid）、功能代码（ fcode） ，方便数组去重
 								var item=tempM.busext[z];
 								var newBusextItem={};

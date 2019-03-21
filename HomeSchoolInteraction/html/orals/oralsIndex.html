@@ -1221,9 +1221,9 @@
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
 				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				var utp = personal.utp;
-				if(utp==0){//如果是教师身份，显示英语听测
+				if(utp==0 || utp==2){//如果是教师身份，显示英语听测
 					console.log('教师身份')
-				}else if(utp==1 || utp==2){//如果是家长1、学生2身份，根据是否订购套餐和绑定学生显示英语听测
+				}else if(utp==1){//如果是家长1、学生2身份，根据是否订购套餐和绑定学生显示英语听测
 					console.log('家长或者学生身份'+utp);
 					
 					var goRecord = document.getElementById("goRecord");//标题右侧-测评记录div
