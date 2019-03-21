@@ -222,6 +222,7 @@
 			<script src="../../js/libs/jquery.js"></script>
 			<script src="../../js/utils/pushPermission.js"></script>
 			<script src="../../js/utils/clearIcon.js"></script>
+			<script src="../../js/publicProtocol-ziyuan.js"></script>
 			<script type="text/javascript">
 				mui.init({
 					statusBarBackground: '#00CFBD',
@@ -459,15 +460,28 @@
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
 							if(data1.RspData) {
-								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
-								personal.userbus = data1.RspData.userbus; // 绑定的套餐
+								var tempArray = []; //判断是否有智学课堂套餐
+								for(var i = 0; i < data1.RspData.userbus.length; i++) {
+									var tempM = data1.RspData.userbus[i];
+									for(var a = 0; a < tempM.funcs.length; a++) {
+										var tempFuncs = tempM.funcs[a];
+										if(tempM.busext != null && tempFuncs.ftype == 'zxkt' && tempM.serstat == 1) {
+											tempArray.push(tempM.servid);
+										}
+									}
+								}
+								personal.userbus = tempArray.join('|'); // 绑定的套餐
+								console.log(JSON.stringify(tempArray));
 								store.set(window.storageKeyName.PERSONALINFO, personal);
-								if(personal.packageCount > 0 && personal.isBdCount > 0) {
+								if(tempArray.length > 0&& personal.isBdCount > 0) {
+									//根据已订购套餐，得到学段、科目
+									var catalogObj = getCatalog(data1.RspData.userbus);
+									store.set(window.storageKeyName.PRDLIST, catalogObj);
 									console.log('showFlag=0');
 									contentData.showFlag = 0;
 								} else {
-									console.log('showFlag=01');
-									contentData.showFlag = 1;
+									contentData.showFlag = -1;
+//									contentData.noData = '您还没有订购套餐，请去个人中心设置';
 								}
 							} else {
 								personal.packageCount = 0; //套餐是否绑定学生
@@ -787,21 +801,21 @@
 								utils.mOpenWithData("../../html/studentManage/student-attendance.html", {});
 							} else if(index == 8) { //谈话记录
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0){
+								if(studentQuanxian() == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-talkRecord.html", {});
 							} else if(index == 9) { //量化考评
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0){
+								if(studentQuanxian() == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-review.html", {});
 							} else if(index == 10) { //评语
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0){
+								if(studentQuanxian() == 0) {
 									mui.toast('无权限');
 									return;
 								}
@@ -862,10 +876,10 @@
 						});
 					}
 				}
-			//父——>子页传值方法
-			function toChildPage(text){
-				console.log("ceshiChild:"+text)
-			}
+				//父——>子页传值方法
+				function toChildPage(text) {
+					console.log("ceshiChild:" + text)
+				}
 			</script>
 	</body>
 

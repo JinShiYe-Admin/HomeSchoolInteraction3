@@ -96,6 +96,7 @@
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/app-update.js"></script>
+		<script src="../../js/publicProtocol-ziyuan.js"></script>
 		<script type="text/javascript">
 			var cities = []; //存储当前定制的城市
 			var show = true; //是否显示科教的内容
@@ -113,25 +114,79 @@
 				gestureConfig: {
 					doubletap: true,
 				}
-			}); 
+			});
 
 			mui.plusReady(function() {
+				store.set(window.storageKeyName.PRDLIST, null);
 				toChildPage("子页科教活动");
 				events.preload("../../html/sciedu/sciedu_show_main.html", 500);
 				console.log('当前版本:' + plus.runtime.version);
-//				setTimeout(appUpdate.updateApp(personal.schid), 5000);
+				//				setTimeout(appUpdate.updateApp(personal.schid), 5000);
 				appUpdate.updateApp(personal.schid);
 				initListener();
 				initData();
+				if(personal.utp == 1) { //0老师，2学生，1家长
+					//4.1.用户已订购套餐及功能扩展栏目
+					getUserBusFunc();
+				}
 			});
+
+			//4.1.用户已订购套餐及功能扩展栏目
+			function getUserBusFunc() {
+				personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				var enData1 = {};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: publicParameter.uuid, //用户设备号
+					uid: personal.uid, //用户账号
+					utoken: personal.utoken, //用户令牌
+					appid: publicParameter.appid //系统所分配的应用ID
+				}
+				events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+					console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
+					events.closeWaiting();
+					if(data1.RspCode == 0) {
+						if(data1.RspData) {
+							var tempArray = []; //判断是否有智学课堂套餐
+							for(var i = 0; i < data1.RspData.userbus.length; i++) {
+								var tempM = data1.RspData.userbus[i];
+								for(var a = 0; a < tempM.funcs.length; a++) {
+									var tempFuncs = tempM.funcs[a];
+									if(tempM.busext != null && tempFuncs.ftype == 'zxkt' && tempM.serstat == 1) {
+										tempArray.push(tempM.servid);
+									}
+								}
+							}
+							personal.userbus = tempArray.join('|'); // 绑定的套餐
+							console.log(JSON.stringify(tempArray));
+							store.set(window.storageKeyName.PERSONALINFO, personal);
+							if(tempArray.length > 0&& personal.isBdCount > 0) {
+								//根据已订购套餐，得到学段
+								if(personal.utp == 1) { //家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
+									var catalogObj = getCatalog(data1.RspData.userbus);
+									store.set(window.storageKeyName.PRDLIST, catalogObj);
+								}
+							}
+						} else {
+							personal.userbus = 0; // 绑定的套餐
+							store.set(window.storageKeyName.PERSONALINFO, personal);
+						}
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			}
 
 			/**
 			 * 初始化数据
 			 */
 			function initData() {
 				var main = plus.webview.currentWebview(); //获取当前窗体对象
-					initBody();
-					changeIndexHeader();
+				initBody();
+				changeIndexHeader();
 			}
 
 			/** 
@@ -152,7 +207,7 @@
 
 				//退出订制城市界面返回的数据
 				window.addEventListener('customizeCity', function(e) {
-//					var data = e.detail.data;
+					//					var data = e.detail.data;
 					var data = e.detail;
 					console.log('获取的修改后的城市信息:' + JSON.stringify(data));
 					cities = []; //存储当前定制的城市
@@ -478,15 +533,15 @@
 					getPersonCitysByUserPro(tempData, function function_name(data) {
 						//					events.closeWaiting();
 						console.log('10data:' + JSON.stringify(data));
-						if(data.RspCode == 0) { 
+						if(data.RspCode == 0) {
 							if(data.RspData.Data.length == 0) {
 								//从来就没有订制过城市的就强制添加一个账号所在地
-//								var uarea = store.get(window.storageKeyName.PERSONALINFO).uarea;
+								//								var uarea = store.get(window.storageKeyName.PERSONALINFO).uarea;
 								//console.log('个人账号地区的城市 ' + JSON.stringify(uarea));
-//								eduArray.push({
-//									acode: uarea.acode,
-//									aname: uarea.aname
-//								});
+								//								eduArray.push({
+								//									acode: uarea.acode,
+								//									aname: uarea.aname
+								//								});
 							} else {
 								for(var i = 0; i < data.RspData.Data.length; i++) {
 									var tempCityModel = data.RspData.Data[i];
@@ -616,8 +671,8 @@
 				}
 			}
 			//父——>子页传值方法
-			function toChildPage(text){
-				console.log("ceshiChild:"+text)
+			function toChildPage(text) {
+				console.log("ceshiChild:" + text)
 			}
 		</script>
 
