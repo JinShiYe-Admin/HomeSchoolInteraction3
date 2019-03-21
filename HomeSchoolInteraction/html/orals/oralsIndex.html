@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<script src="../../js/orals/layout.js"></script>
-		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css" />
 		<style type="text/css">
 			.mui-bar-tab a {
 				touch-action: none;
 			}
+			
 			.btns-box .btn-record {
 				position: relative;
 			}
+			
 			.btns-box .btn-record:after {
 				display: inline-block;
 				content: "按住录音，松开提交";
 				position: absolute;
 				font-size: 10px;
 				left: -30px;
-			    right: -30px;
-			    top: -15px;
-			    color: #7290A1;
+				right: -30px;
+				top: -15px;
+				color: #7290A1;
 			}
+			
 			.mui-content {
 				height: 100%;
 			}
+			
 			#contentTitle {
 				font-size: 16px;
 				color: #333333;
@@ -35,26 +40,32 @@
 				width: 80%;
 				padding: 0 8px;
 				overflow: hidden;
-			  text-overflow: ellipsis;
-			  white-space: nowrap;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
+			
 			.second-title {
 				height: 84px;
 			}
+			
 			.second-title.no-second {
 				border-bottom-width: 1px;
 				height: 53px;
 			}
 			/*内容高度*/
-			.second-title.no-second ~ .mui-control-content {
+			
+			.second-title.no-second~.mui-control-content {
 				height: calc(100% - 53px);
 			}
-			.second-title ~ .mui-control-content {
+			
+			.second-title~.mui-control-content {
 				height: calc(100% - 84px);
 			}
+			
 			.test-pannel {
 				height: calc(40% - 35px);
 			}
+			
 			#testView {
 				background-color: #FFFFFF;
 				height: 100%;
@@ -64,21 +75,26 @@
 				justify-content: space-between;
 				flex-direction: column;
 			}
+			
 			#testView .action-box {
 				display: flex;
-			    flex-direction: column;
-			    justify-content: space-between;
+				flex-direction: column;
+				justify-content: space-between;
 				min-height: calc(60% - 10px);
 				padding-bottom: 18px;
 			}
-			#pullrefreshBox, #errList {
+			
+			#pullrefreshBox,
+			#errList {
 				height: 100%;
 			}
+			
 			.mui-active #errList #pullrefreshBox {
 				overflow-y: auto;
 			}
 		</style>
 	</head>
+
 	<body>
 		<header id="oralsHeader" class="mui-bar mui-bar-nav orals-header">
 			<div class="mui-clearfix">
@@ -88,9 +104,9 @@
 				</a>-->
 				<a id="goRecord" class="mui-btn-link mui-pull-right">测评记录</a>
 			</div>
-		    <h1 class="mui-title">英语听测</h1>
+			<h1 class="mui-title">英语听测</h1>
 		</header>
-		
+
 		<!--<nav class="mui-bar mui-bar-tab">
 		    <a class="mui-tab-item mui-active" data-type="word" href="#orals-test">
 		        <span class="mui-icon">
@@ -117,56 +133,56 @@
 		        <span class="mui-tab-label">错题本</span>
 		    </a>
 		</nav>-->
-		
-		<div  class="mui-content">
+
+		<div class="mui-content">
 			<div id="oralsBody">
 				<!--校讯通菜单-->
 				<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 					<a class="mui-control-item mui-active" data-type="word" href="#orals-test">
-				        <span>单词测评</span>
-				    </a>
-				    <a class="mui-control-item" data-type="sentence" href="#orals-test">
-				        <span>句子测评</span>
-				    </a>
-				    <a class="mui-control-item" data-type="errs" href="#orals-errs">
-				        <span>错题本</span>
-				    </a>
+						<span>单词测评</span>
+					</a>
+					<a class="mui-control-item" data-type="sentence" href="#orals-test">
+						<span>句子测评</span>
+					</a>
+					<a class="mui-control-item" data-type="errs" href="#orals-errs">
+						<span>错题本</span>
+					</a>
 				</div>
-				
+
 				<!--副标题-->
 				<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
-			    	<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
-			    		<div id="bookItems">{{bookItems}}</div>
-			    		<a>
-			    			<svg class="icon" aria-hidden="true">
-							  <use xlink:href="#icon-icon-change"></use>
+					<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
+						<div id="bookItems">{{bookItems}}</div>
+						<a>
+							<svg class="icon" aria-hidden="true">
+								<use xlink:href="#icon-icon-change"></use>
 							</svg>
-			    		</a>
-			    	</div>
-			    	<div class="content-title" v-show="isContentTitle" v-cloak>
-			    		<a class="mui-icon" @click.stop="changeMenu(-1)">
-			    			<svg class="icon" aria-hidden="true">
-							  <use xlink:href="#icon-icon-left"></use>
+						</a>
+					</div>
+					<div class="content-title" v-show="isContentTitle" v-cloak>
+						<a class="mui-icon" @click.stop="changeMenu(-1)">
+							<svg class="icon" aria-hidden="true">
+								<use xlink:href="#icon-icon-left"></use>
 							</svg>
-			    		</a>
-			    		<div id="contentTitle" @tap.stop="showMenu" v-html="contentTitle"></div>
-			    		<a class="mui-icon" @click.stop="changeMenu(1)">
-			    			<svg class="icon" aria-hidden="true">
-							  <use xlink:href="#icon-icon-right"></use>
+						</a>
+						<div id="contentTitle" @tap.stop="showMenu" v-html="contentTitle"></div>
+						<a class="mui-icon" @click.stop="changeMenu(1)">
+							<svg class="icon" aria-hidden="true">
+								<use xlink:href="#icon-icon-right"></use>
 							</svg>
-			    		</a>
-			    	</div>
-			   </div>
-			    
+						</a>
+					</div>
+				</div>
+
 				<!--测试页-->
 				<div id="orals-test" class="mui-control-content mui-active">
-					
+
 					<div id="testView" v-cloak>
-	
+
 						<div class="progress-box">
 							<span>{{(index+1)+"/"+list.length}}</span>
 						</div>
-						
+
 						<div v-if="list.length" class="test-pannel" :class="{sentence: !isWord}">
 							{{list[index].words}}
 							<p class="read" v-if="isWord" v-show="isTested&&list[index].symbol">[{{list[index].symbol}}]</p>
@@ -174,7 +190,7 @@
 						</div>
 						<div v-else-if="state>2" class="test-pannel" style="font-size: 12px;color: #999999;">暂无内容</div>
 						<div v-else class="test-pannel"></div>
-						
+
 						<div class="action-box">
 							<div class="overflow-cover"></div>
 							<div class="score-box">
@@ -184,7 +200,7 @@
 								<a class="btn-voice" :class="{active: playingAudio}" @tap="playAudio(list[index]?list[index].audio_url:'', 'audio')">
 									<!--<img class="icon" v-if="playingAudio" src="../../css/orals/icon-voice.gif"/>-->
 									<svg class="icon" aria-hidden="true">
-									  <use xlink:href="#icon-icon-voice"></use>
+										<use xlink:href="#icon-icon-voice"></use>
 									</svg>
 									<!--<svg class="icon active" aria-hidden="true">
 									  <use xlink:href="#icon-icon-voice-active"></use>
@@ -194,7 +210,7 @@
 								</a>
 								<a class="btn-record" :class="{active: isRecording}" @touchstart.stop="record($event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord">
 									<svg class="icon" aria-hidden="true">
-									  <use xlink:href="#icon-icon-record"></use>
+										<use xlink:href="#icon-icon-record"></use>
 									</svg>
 									<div class="btn-record-bg">
 										<div class="btn-record-bg-active"></div>
@@ -207,57 +223,55 @@
 								</a>
 								<a class="btn-play" :class="{active: playingRecord}" @tap="playAudio(list[index]?list[index].record_url:'', 'record')">
 									<svg class="icon" aria-hidden="true">
-									  <use xlink:href="#icon-icon-play"></use>
+										<use xlink:href="#icon-icon-play"></use>
 									</svg>
 									<svg class="icon active" aria-hidden="true">
-									  <use xlink:href="#icon-icon-pause"></use>
+										<use xlink:href="#icon-icon-pause"></use>
 									</svg>
 								</a>
 							</div>
-							
+
 							<div class="skip-box">
 								<a :class="{disabled: index==0}" @tap="changeIndex(-1)">上一个</a>
 								<a v-show="index<list.length-1" @tap="changeIndex(1)">下一个</a>
 								<a v-show="index==list.length-1" class="btn-submit" @tap="submit">提交</a>
 							</div>
 						</div>
-						
+
 					</div>
 				</div>
 				<!--错题本-->
 				<div id="orals-errs" class="mui-control-content">
-					
+
 					<div id="errList">
 						<div id="pullrefreshBox">
 							<div id="pullrefresh">
 								<div v-cloak v-if="total">
 									<template v-for="(item,index) in model" :key="index" v-if="item.list.length">
-									    <div class="result-title mui-ellipsis" v-show="item.title">
-									    	{{item.sub_title}}
-									    	<div class="sec-title">{{item.title}}</div>
-									    </div>
-									    <ul class="result-list mui-table-view">
-									    	<li class="mui-table-view-cell" v-for="(v, i) in item.list" 
-									    		:class="{'word-cell': v.category=='read_word'}"
-									    		@tap.stop="toggleOpen(index,i)">
-									    		<div :class="{'word-box': v.category=='read_word', 'sentence-box': v.category=='read_sentence'}">
-									    			<h4 v-if="v.category=='read_word'">{{v.words}}
+										<div class="result-title mui-ellipsis" v-show="item.title">
+											{{item.sub_title}}
+											<div class="sec-title">{{item.title}}</div>
+										</div>
+										<ul class="result-list mui-table-view">
+											<li class="mui-table-view-cell" v-for="(v, i) in item.list" :class="{'word-cell': v.category=='read_word'}" @tap.stop="toggleOpen(index,i)">
+												<div :class="{'word-box': v.category=='read_word', 'sentence-box': v.category=='read_sentence'}">
+													<h4 v-if="v.category=='read_word'">{{v.words}}
 									    				<span class="symbol" v-if="v.symbol">[{{v.symbol}}]</span>
 									    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
 									    			</h4>
-									    			<h4 v-else>{{v.words}}
+													<h4 v-else>{{v.words}}
 									    				<span class="score" v-if="v.total_score!=null">{{setScore(v.total_score)}}</span>
 									    			</h4>
-									    			<div class="btns" v-if="openLi.index==index&&openLi.i==i">
-									    				<a class="btn-voice" @touchstart.stop="playAudio(v.audio_url, $event)">
+													<div class="btns" v-if="openLi.index==index&&openLi.i==i">
+														<a class="btn-voice" @touchstart.stop="playAudio(v.audio_url, $event)">
 															<svg class="icon" aria-hidden="true">
-															  <use xlink:href="#icon-icon-voice"></use>
+																<use xlink:href="#icon-icon-voice"></use>
 															</svg>
 															<span class="icon active img-icon"></span>
 														</a>
 														<a class="btn-record" @touchstart.stop="record(v, $event)" @touchmove.stop="touchMove($event)" @touchend.stop="stopRecord($event)">
 															<svg class="icon" aria-hidden="true">
-															  <use xlink:href="#icon-icon-record"></use>
+																<use xlink:href="#icon-icon-record"></use>
 															</svg>
 															<div class="btn-record-bg">
 																<div class="btn-record-bg-active"></div>
@@ -265,49 +279,49 @@
 														</a>
 														<a class="btn-play" @touchstart.stop="playAudio(v.record_url, $event)">
 															<svg class="icon" aria-hidden="true">
-															  <use xlink:href="#icon-icon-play"></use>
+																<use xlink:href="#icon-icon-play"></use>
 															</svg>
 															<svg class="icon active" aria-hidden="true">
-															  <use xlink:href="#icon-icon-pause"></use>
+																<use xlink:href="#icon-icon-pause"></use>
 															</svg>
 														</a>
-									    			</div>
-									    		</div>
-									    		<div class="result-bar" v-if="v.category=='read_sentence'&&v.total_score!=null">
-									    			<div class="score-item">
-									    				准确度：{{v.accuracy_score}}
-									    			</div>
-									    			<div class="score-item">
-									    				完整度：{{v.integrity_score}}
-									    			</div>
-									    			<div class="score-item">
-									    				流利度：{{v.fluency_score}}
-									    			</div>
-									    		</div>
-									    	</li>
-									    </ul>
-								  	</template>
-								   	<div class="list-end" v-show="!isLoading&&!lastPage">上拉加载更多</div>
-								   	<div class="list-end" v-show="lastPage">没有更多了~</div>
-								   	<div class="list-end" v-show="isLoading&&!lastPage">正在加载...</div>
-							   	</div>
-							   	<div class="list-end" v-else v-show="!isLoading">还没有错题</div>
+													</div>
+												</div>
+												<div class="result-bar" v-if="v.category=='read_sentence'&&v.total_score!=null">
+													<div class="score-item">
+														准确度：{{v.accuracy_score}}
+													</div>
+													<div class="score-item">
+														完整度：{{v.integrity_score}}
+													</div>
+													<div class="score-item">
+														流利度：{{v.fluency_score}}
+													</div>
+												</div>
+											</li>
+										</ul>
+									</template>
+									<div class="list-end" v-show="!isLoading&&!lastPage">上拉加载更多</div>
+									<div class="list-end" v-show="lastPage">没有更多了~</div>
+									<div class="list-end" v-show="isLoading&&!lastPage">正在加载...</div>
+								</div>
+								<div class="list-end" v-else v-show="!isLoading">还没有错题</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 			</div>
 			<div id='oralsBodyNoBuy' style="display: none;">
-					<p style="text-align: center;margin-top: 50px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
-					<div style="text-align: center;margin:10% auto;">
-						<img src="../../img/noData.png" style="width: 250px;" />
-					</div>
+				<p style="text-align: center;margin-top: 50px;">您还没有订购套餐或者关联学生，请去个人中心设置</p>
+				<div style="text-align: center;margin:10% auto;">
+					<img src="../../img/noData.png" style="width: 250px;" />
+				</div>
 			</div>
 		</div>
-		
+
 		<audio id="audio" class="mui-hidden"></audio>
-		
+
 		<div id="beforeLeaveDialog" class="cfm-dialog">
 			<div class="icon-title">
 				<svg class="icon" aria-hidden="true" style="color: #FF8800;">
@@ -316,7 +330,7 @@
 			</div>
 			<p class="dialog-content">您还没有提交，离开将不保存成绩！</p>
 		</div>
-		
+
 		<!--目录-->
 		<div id="menuList" v-show="isShowMenu">
 			<transition name="slide-up">
@@ -327,9 +341,8 @@
 					<div class="menu-list-box">
 						<ul class="mui-table-view menu-list" v-for="(v,i) in menu_list" :key="i">
 							<li class="list-name mui-table-view-cell">{{v.name}}</li>
-							<li v-for="(item, k) in v.list" class="mui-table-view-cell" 
-								:key="k" :class="{selected: item.id==catalogId}" @click="selectMenu(item.id)">
-							 	{{item.name}}	
+							<li v-for="(item, k) in v.list" class="mui-table-view-cell" :key="k" :class="{selected: item.id==catalogId}" @click="selectMenu(item.id)">
+								{{item.name}}
 							</li>
 						</ul>
 					</div>
@@ -342,7 +355,7 @@
 		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
-		
+
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
@@ -354,115 +367,119 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		<!--<script src="../../js/utils/events.js"></script>-->
-		
+
 		<script src="../../js/orals/common.js"></script>
 		<script type="text/javascript">
-			setRem(document, window);//设置rem
+			setRem(document, window); //设置rem
 			var muiTitle = document.querySelector('.mui-bar .mui-title');
 			var go_record = document.getElementById("goRecord");
-			
-			var recorder, files = [], gentry, recorderTimer;
-			
+			var serverids = ''; //此页面的套餐ids
+			var recorder, files = [],
+				gentry, recorderTimer;
+
 			var activeTab = 'word';
-			var mask = mui.createMask(function(){
+			var mask = mui.createMask(function() {
 				menuList.isShowMenu = false;
 			});
 
 			mui.plusReady(function() {
 				toChildPage("子页英语听测");
 				mui.init();
-				
+
 				var self = plus.webview.currentWebview();
 				//禁止横屏
 				plus.screen.lockOrientation("portrait-primary");
-				
+
 				//判断登录者是否有上一次记录
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var auth = getAuth();
 				var isGetLast = false;
 				if(store.get('orals_auth')) {
-					isGetLast = auth.utid==store.get('orals_auth').utid;
+					isGetLast = auth.utid == store.get('orals_auth').utid;
 				}
 				store.set("orals_auth", auth);
 
 				// 获取音频目录对象
-				plus.navigator.checkPermission("RECORD");//判断录音权限
-				plus.io.resolveLocalFileSystemURL('_doc/', function(entry){
-					entry.getDirectory('audio', {create:true}, function(dir){
+				plus.navigator.checkPermission("RECORD"); //判断录音权限
+				plus.io.resolveLocalFileSystemURL('_doc/', function(entry) {
+					entry.getDirectory('audio', {
+						create: true
+					}, function(dir) {
 						//清除缓存
 						gentry = function() {
-							dir.removeRecursively(function(){
+							dir.removeRecursively(function() {
 								console.log('已清除缓存！');
-							}, function(e){
-								console.log('操作失败：'+e.message);
+							}, function(e) {
+								console.log('操作失败：' + e.message);
 							});
 						}
-					}, function(e){
-						console.log('Get directory "audio" failed: '+e.message);
+					}, function(e) {
+						console.log('Get directory "audio" failed: ' + e.message);
 					});
-				}, function(e){
-					console.log('Resolve "_doc/" failed: '+e.message);
-				} );
-				
+				}, function(e) {
+					console.log('Resolve "_doc/" failed: ' + e.message);
+				});
+
 				//教材改变
-				window.addEventListener("changeBook", function(e){
+				window.addEventListener("changeBook", function(e) {
 					var catalog_id = store.get("orals_catalog_id");
-					if(catalog_id!=testVue.catalogId){
+					if(catalog_id != testVue.catalogId) {
 						setBaseData();
 						//错题本数据重置
 						resultVue.page = 1;
-						if(activeTab=="errs"){
+						if(activeTab == "errs") {
 							getErrList();
-						}else{
+						} else {
 							resultVue.isReload = true;
 						}
 					}
 				});
-				
+
 				//获取数据
 				getInitData();
-				
+
 				function getInitData() {
 					var book_items = store.get('book_items');
 					var book_code = {};
 					//保存了上一次记录时
-					if(isGetLast&&book_items&&book_items.per.list.length){
-						book_code.percode = book_items.per.selected||book_items.per.list[0].percode;
+					if(isGetLast && book_items && book_items.per.list.length) {
+						book_code.percode = book_items.per.selected || book_items.per.list[0].percode;
 						book_code.subcode = book_items.sub.selected;
 						book_code.matercode = book_items.mater.selected;
 						book_code.fasccode = book_items.fasc.selected;
 					}
-					getBook(book_code, book_items&&book_items.ser?book_items.ser.selected:0);	
+					getBook(book_code, book_items && book_items.ser ? book_items.ser.selected : 0);
 				}
-				
+
 				// 获取教材信息
 				var persubmatTime = 0;
+
 				function getBook(data, ser) {
-					oralsAjax('/persubmat', data, function(res){
+					oralsAjax('/persubmat', data, function(res) {
 						//教材
-						var auto_book = res.data||{};
-						console.log("教材:"+JSON.stringify(auto_book));
+						var auto_book = res.data || {};
+						console.log("教材:" + JSON.stringify(auto_book));
 						//获取目录
-						if(ser){
+						if(ser) {
 							getCatalog(auto_book, ser);
-						}else{
+						} else {
 							getCatalog(auto_book);
 						}
-					}, function(res){
+					}, function(res) {
 						persubmatTime++;
-						if(persubmatTime<5) {
+						if(persubmatTime < 5) {
 							getBook(data, ser);
 							return "noToast";
-						}else{
+						} else {
 							plus.nativeUI.closeWaiting();
 							netErrorTip();
 						}
-					}, function(){
+					}, function() {
 						plus.nativeUI.closeWaiting();
 						netErrorTip();
 					});
 				}
-				
+
 				//获取目录
 				function getCatalog(auto_book, ser) {
 					var data = {
@@ -471,125 +488,133 @@
 						matercode: auto_book.mater.selected,
 						fasccode: auto_book.fasc.selected
 					};
-					oralsAjax('/catalog', data, function(res){
+					oralsAjax('/catalog', data, function(res) {
 						persubmatTime = 0;
 						//保存教材
-						var book_ser = {list:[], selected: ser||0}
-		               	res.data.forEach(function(v, i){
-		               		book_ser.list.push({sercode: i, sername: v.name});
-		               	});
-		               	auto_book.ser = book_ser;
-		               	//保存教材信息
-		               	store.set("book_items", auto_book);
-						
+						var book_ser = {
+							list: [],
+							selected: ser || 0
+						}
+						res.data.forEach(function(v, i) {
+							book_ser.list.push({
+								sercode: i,
+								sername: v.name
+							});
+						});
+						auto_book.ser = book_ser;
+						//保存教材信息
+						store.set("book_items", auto_book);
+
 						//保存目录
 						store.set("orals_menu", res.data);
 						var catalog = getFinalCatalog(res.data[book_ser.selected].childList);
-		               	//保存分册目录
-		               	store.set("orals_catalog", catalog); 
+						//保存分册目录
+						store.set("orals_catalog", catalog);
 
-		               	setBaseData();//设置数据
-		               	
-					}, function(res){
+						setBaseData(); //设置数据
+
+					}, function(res) {
 						//获取不到 目录和教材 时
 						console.log(JSON.stringify(res));
-						auto_book.ser = {list:[], selected: null};
+						auto_book.ser = {
+							list: [],
+							selected: null
+						};
 						store.set("book_items", auto_book);
 						store.set("orals_menu", []);
 						store.set("orals_catalog", []);
 						plus.nativeUI.closeWaiting();
-					}, function(){
+					}, function() {
 						plus.nativeUI.closeWaiting();
 						netErrorTip();
 					});
 				}
-				
+
 				//获取默认节点
-				function getAutoNode(){
+				function getAutoNode() {
 					var auto_node = testVue.menu[0];
-                    if(auto_node) {
+					if(auto_node) {
 						testVue.catalogId = auto_node.id;
-                    }
-	            }
-				
+					}
+				}
+
 				//设置基础数据
-				function setBaseData(){
+				function setBaseData() {
 					//教材名
 					secondTitle.bookItems = getBookNames();
 					//设置目录列表
-					testVue.menu = store.get("orals_catalog")||[];
+					testVue.menu = store.get("orals_catalog") || [];
 					//设置节点
 					var catalogId = store.get('orals_catalog_id');
-					var isCatalogId = testVue.menu.some(function(v,i){
-						return v.id==catalogId;
+					var isCatalogId = testVue.menu.some(function(v, i) {
+						return v.id == catalogId;
 					});
-					if(catalogId&&isCatalogId){
+					if(catalogId && isCatalogId) {
 						testVue.catalogId = catalogId;
-					}else{
+					} else {
 						getAutoNode();
 					}
 				}
-				
+
 				//底部选项卡切换
 				var canTap = true;
-//				mui('.mui-bar-tab').on('tap', 'a', function(e) { //独立版
+				//				mui('.mui-bar-tab').on('tap', 'a', function(e) { //独立版
 				mui('.top-tab').on('tap', 'a', function(e) { //校讯通
 					var targetTab = this.getAttribute('data-type');
-				    if (targetTab == activeTab) {
-				        return;
-				    }
-				    if((activeTab=="word"||activeTab=="sentence")&&testVue.state==4&&canTap) {
-				    	var _this = this;
-				    	var msg = "您还没有提交，确定要离开吗？", btn = ["确定", "取消"];
-				    	if(targetTab=="word"||targetTab=="sentence") {
-				    		msg = "您还没有提交，离开将不保存成绩！";
-				    		btn = ["残忍离开", "我再想想"];
-				    	}
-				    	layerBeforeLeave(msg, btn, function(){
+					if(targetTab == activeTab) {
+						return;
+					}
+					if((activeTab == "word" || activeTab == "sentence") && testVue.state == 4 && canTap) {
+						var _this = this;
+						var msg = "您还没有提交，确定要离开吗？",
+							btn = ["确定", "取消"];
+						if(targetTab == "word" || targetTab == "sentence") {
+							msg = "您还没有提交，离开将不保存成绩！";
+							btn = ["残忍离开", "我再想想"];
+						}
+						layerBeforeLeave(msg, btn, function() {
 							canTap = false;
-							mui.trigger(_this,'touchstart');
-							mui.trigger(_this,'tap');
+							mui.trigger(_this, 'touchstart');
+							mui.trigger(_this, 'tap');
 						});
-				    	return false;
-				    }
-				    canTap = true;
-				    switch(targetTab)
-					{
-					    case "word":
-//					    	muiTitle.innerHTML = "单词测评";
-					    	go_record.style.display = "block";
-					    	testVue.category = "word";
-					    	secondTitle.isContentTitle = true;
-					        break;
-					    case "sentence":
-//					    	muiTitle.innerHTML = "句子测评";
-					    	go_record.style.display = "block";
-					    	testVue.category = "sentence";
-					    	secondTitle.isContentTitle = true;
-					        break;
-					    case "errs":
-//					    	muiTitle.innerHTML = "错题本";
-					    	go_record.style.display = "none";
-					    	secondTitle.isContentTitle = false;
-					    	if(resultVue.isReload){
-					    		getErrList();
-					    		resultVue.isReload = false;
-					    	}
-					        break;
+						return false;
+					}
+					canTap = true;
+					switch(targetTab) {
+						case "word":
+							//					    	muiTitle.innerHTML = "单词测评";
+							go_record.style.display = "block";
+							testVue.category = "word";
+							secondTitle.isContentTitle = true;
+							break;
+						case "sentence":
+							//					    	muiTitle.innerHTML = "句子测评";
+							go_record.style.display = "block";
+							testVue.category = "sentence";
+							secondTitle.isContentTitle = true;
+							break;
+						case "errs":
+							//					    	muiTitle.innerHTML = "错题本";
+							go_record.style.display = "none";
+							secondTitle.isContentTitle = false;
+							if(resultVue.isReload) {
+								getErrList();
+								resultVue.isReload = false;
+							}
+							break;
 					}
 					activeTab = targetTab;
 				});
-				
-				
+
 				//有头像时
 				var headImg = document.getElementById('headImg');
-				if(headImg){
+				if(headImg) {
 					headImg.setAttribute('src', setImg(userInfo.imgurl));
 					//修改头像
-					window.addEventListener("home_setHeadImg", function(e){
+					window.addEventListener("home_setHeadImg", function(e) {
 						headImg.setAttribute('src', e.detail.imgurl);
 					});
-					
+
 					//个人中心
 					center = mui.preload({
 						url: '../center/mine.html',
@@ -599,10 +624,10 @@
 							width: '70%'
 						}
 					});
-					self.addEventListener("maskClick", function(){
+					self.addEventListener("maskClick", function() {
 						center.evalJS("mui.back();");
 					});
-					
+
 					//打开个人中心
 					headImg.onclick = function() {
 						if(!center) return;
@@ -610,20 +635,19 @@
 						//主窗体开始侧滑；
 						self.setStyle({
 							left: '70%',
-							mask:"rgba(0,0,0,0.35)",
+							mask: "rgba(0,0,0,0.35)",
 							transition: {
 								duration: 150
 							}
 						});
-					}	
-					
+					}
+
 					//关闭登录页
 					self.opener().close("none");
 				}
-				
+
 			});
-			
-			
+
 			//副标题
 			var secondTitle = new Vue({
 				el: "#second-title",
@@ -637,9 +661,9 @@
 					bookSelect: function() {
 						resultVue.audioStop();
 						!audioEle.ended && audioEle.pause();
-						if(testVue.state==4&&(activeTab=="word"||activeTab=="sentence")){
+						if(testVue.state == 4 && (activeTab == "word" || activeTab == "sentence")) {
 							layerBeforeLeave("您还没有提交，确定要离开吗？", ["确定", "取消"], goBook);
-						}else{
+						} else {
 							goBook();
 						}
 					},
@@ -647,41 +671,48 @@
 					showMenu: function() {
 						menuList.isShowMenu = true;
 						var menu_list = [];
-						testVue.menu.forEach(function(v){
+						testVue.menu.forEach(function(v) {
 							var cur_list = filterArray(menu_list, "id", v.pid)[0];
-							if(cur_list){
+							if(cur_list) {
 								cur_list.list.push(v);
-							}else{
-								menu_list.push({id: v.pid, name: v.pname, list: [v]});
+							} else {
+								menu_list.push({
+									id: v.pid,
+									name: v.pname,
+									list: [v]
+								});
 							}
 						});
 						menuList.menu_list = menu_list;
 						menuList.catalogId = testVue.catalogId;
 					},
 					//切换目录
-					changeMenu: function(d) { 
+					changeMenu: function(d) {
 						if(isNetAbort) {
-							mui.toast("网络异常，请检查网络设置！", {duration:'short', type:'div'});
+							mui.toast("网络异常，请检查网络设置！", {
+								duration: 'short',
+								type: 'div'
+							});
 							return false;
 						}
 						var catalog = testVue.menu;
 						var c_index;
-						catalog.forEach(function(v, i){
-							if(v.id==testVue.catalogId) c_index=i;
+						catalog.forEach(function(v, i) {
+							if(v.id == testVue.catalogId) c_index = i;
 						});
-						if(c_index+d>=0&&c_index+d<=catalog.length){
-							if(testVue.state==4){
-								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
-									testVue.catalogId = catalog[c_index+d].id;
+						if(c_index + d >= 0 && c_index + d <= catalog.length) {
+							if(testVue.state == 4) {
+								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function() {
+									testVue.catalogId = catalog[c_index + d].id;
 								});
-							}else{
-								testVue.catalogId = catalog[c_index+d].id;
+							} else {
+								testVue.catalogId = catalog[c_index + d].id;
 							}
 						}
 					},
 				}
 			});
-			
+
 			//菜单
 			var menuListBox;
 			var menuList = new Vue({
@@ -693,14 +724,14 @@
 				},
 				watch: {
 					isShowMenu: function(v) {
-						if(v){
+						if(v) {
 							this.$nextTick(function() {
-								if(document.querySelector('.menu-list-box .selected')){
+								if(document.querySelector('.menu-list-box .selected')) {
 									menuListBox.scrollTop = document.querySelector('.menu-list-box .selected').parentNode.offsetTop;
 								}
 							});
 							mask.show();
-						}else{
+						} else {
 							mask.close();
 						}
 					}
@@ -714,13 +745,13 @@
 					},
 					selectMenu: function(id) {
 						var _this = this;
-						if(testVue.state==4){
-							layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
+						if(testVue.state == 4) {
+							layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function() {
 								_this.isShowMenu = false;
 								_this.catalogId = id;
 								testVue.catalogId = id;
 							});
-						}else{
+						} else {
 							_this.isShowMenu = false;
 							_this.catalogId = id;
 							testVue.catalogId = id;
@@ -728,7 +759,7 @@
 					}
 				}
 			});
-			
+
 			//audio对象
 			var audioEle = document.getElementById('audio');
 			audioEle.onpause = function() {
@@ -742,36 +773,42 @@
 				resultVue.audioStop && resultVue.audioStop();
 			}
 			audioEle.onerror = function() {
-				if(testVue.playingAudio||testVue.playingRecord) {
-					mui.toast("获取音频失败", {type: 'div'});
+				if(testVue.playingAudio || testVue.playingRecord) {
+					mui.toast("获取音频失败", {
+						type: 'div'
+					});
 					testVue.playingAudio = false;
 					testVue.playingRecord = false;
 					resultVue.audioStop && resultVue.audioStop();
 				}
 			}
 			audioEle.onstalled = function() {
-				if(testVue.playingAudio||testVue.playingRecord) {
-					mui.toast("获取音频失败", {type: 'div'});
+				if(testVue.playingAudio || testVue.playingRecord) {
+					mui.toast("获取音频失败", {
+						type: 'div'
+					});
 					testVue.playingAudio = false;
 					testVue.playingRecord = false;
 					resultVue.audioStop && resultVue.audioStop();
 				}
 			}
-			
+
 			//按住录音按钮时的滑动距离
-			var startX = startY = endX =endY =0;
+			var startX = startY = endX = endY = 0;
+
 			function touchStart(touch) {
 				startX = touch.pageX;
 				startY = touch.pageY;
 			}
+
 			function touchEnd(touch, callback) {
 				endX = touch.pageX;
-        		endY = touch.pageY;
-        		if(Math.abs(endX-startX)>30 || Math.abs(endY-startY)>30) {
+				endY = touch.pageY;
+				if(Math.abs(endX - startX) > 30 || Math.abs(endY - startY) > 30) {
 					callback();
 				}
 			}
-			
+
 			//测评对象
 			testVue = new Vue({
 				el: "#testView",
@@ -790,10 +827,10 @@
 				computed: {
 					isTested: function() {
 						var cur = this.list[this.index];
-						return cur&&cur.total_score!=null&&cur.total_score>=0;
+						return cur && cur.total_score != null && cur.total_score >= 0;
 					},
 					isWord: function() {
-						return this.list[this.index].category=='read_word';
+						return this.list[this.index].category == 'read_word';
 					}
 				},
 				watch: {
@@ -807,13 +844,14 @@
 				},
 				mounted: function() {
 					//左滑右滑切换
-					var _this=this, cont=this.$el;
-					cont.addEventListener("swipeleft",function(){
-		            	_this.changeIndex(1);
-		            });
-		            cont.addEventListener("swiperight",function(){
-		            	_this.changeIndex(-1);
-		            });
+					var _this = this,
+						cont = this.$el;
+					cont.addEventListener("swipeleft", function() {
+						_this.changeIndex(1);
+					});
+					cont.addEventListener("swiperight", function() {
+						_this.changeIndex(-1);
+					});
 				},
 				methods: {
 					setScore: setWordsScore,
@@ -826,31 +864,31 @@
 							plus.nativeUI.closeWaiting();
 							return false;
 						}
-						if(change_data!="category") {
+						if(change_data != "category") {
 							secondTitle.contentTitle = getCatalogName(_this.catalogId);
 						}
 						var data = {
-							category: _this.category=="word"?"read_word":"read_sentence",
-                    		bookCatalogId: _this.catalogId
+							category: _this.category == "word" ? "read_word" : "read_sentence",
+							bookCatalogId: _this.catalogId
 						}
 						_this.state = 2;
-						oralsAjax('/orals', data, function(res){
-//								console.log(res);
+						oralsAjax('/orals', data, function(res) {
+							//								console.log(res);
 							//添加单词句子列表
-							res.data.list.forEach(function(v){
+							res.data.list.forEach(function(v) {
 								//成绩清零
-								v.total_score = null; 
+								v.total_score = null;
 								v.record_url = null;
 								v.key = res.data.key;
 							});
-							_this.list=res.data.list;
-							_this.index=0;
+							_this.list = res.data.list;
+							_this.index = 0;
 							_this.state = 3;
 							plus.nativeUI.closeWaiting();
-						}, function(res){
+						}, function(res) {
 							_this.state = 3;
 							plus.nativeUI.closeWaiting();
-						}, function(){
+						}, function() {
 							_this.state = 3;
 							plus.nativeUI.closeWaiting();
 						});
@@ -861,21 +899,27 @@
 							return false;
 						}
 						var f_index = this.index + d;
-						if(f_index>=0&&f_index<this.list.length){
+						if(f_index >= 0 && f_index < this.list.length) {
 							this.index = f_index;
 						}
 					},
 					//播放音频
 					playAudio: function(url, type) {
 						if(isNetAbort) {
-							mui.toast("网络异常，请检查网络设置！", {duration:'short', type:'div'});
+							mui.toast("网络异常，请检查网络设置！", {
+								duration: 'short',
+								type: 'div'
+							});
 							return false;
 						}
-						if(!url){
-							mui.toast(type=="record"?"您还没录音":"没有音频",{ duration:'short', type:'div' });
-							return ;
+						if(!url) {
+							mui.toast(type == "record" ? "您还没录音" : "没有音频", {
+								duration: 'short',
+								type: 'div'
+							});
+							return;
 						}
-						if(this.playingAudio||this.playingRecord) {
+						if(this.playingAudio || this.playingRecord) {
 							this.playingAudio = false;
 							this.playingRecord = false;
 							!audioEle.ended && audioEle.pause();
@@ -883,25 +927,28 @@
 						audioEle.src = url;
 						audioEle.play();
 
-						if(type=="audio"){
+						if(type == "audio") {
 							this.playingAudio = true;
-						}else if(type=="record") {
+						} else if(type == "record") {
 							this.playingRecord = true;
 						}
 					},
 					//点击录音
 					record: function(event) {
 						if(!this.list[this.index]) {
-							mui.toast("没有测评内容", { duration:'short', type:'div' });
+							mui.toast("没有测评内容", {
+								duration: 'short',
+								type: 'div'
+							});
 							return;
 						}
 						if(!this.isRecording) {
 							this.isRecording = true;
 							this.startRecord();
 							var _this = this;
-							recorderTimer = setTimeout(function(){
+							recorderTimer = setTimeout(function() {
 								_this.isRecording && _this.stopRecord();
-							}, _this.list[_this.index].time_len*1000||5000);
+							}, _this.list[_this.index].time_len * 1000 || 5000);
 							touchStart(event.targetTouches[0]);
 						}
 					},
@@ -909,15 +956,18 @@
 					startRecord: function() {
 						var _this = this;
 						var record = this.list[this.index];
-						gentry&&gentry();
-						recorder = setRecorder(_this.valid_touch, function(p){
-							files.push({name:"uploadkey",path:p});
+						gentry && gentry();
+						recorder = setRecorder(_this.valid_touch, function(p) {
+							files.push({
+								name: "uploadkey",
+								path: p
+							});
 							_this.uploadRecord(record);
 						});
 					},
 					touchMove: function(event) {
 						var _this = this;
-						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+						_this.isRecording && touchEnd(event.targetTouches[0], function() {
 							_this.stopRecord();
 						});
 					},
@@ -931,16 +981,16 @@
 					},
 					//上传录音
 					uploadRecord: function(record) {
-						if(files.length<=0){
+						if(files.length <= 0) {
 							return;
 						}
 						var _this = this;
-						uploadRecordFile(record, files, function(res){
+						uploadRecordFile(record, files, function(res) {
 							_this.state = 4;
 							var cur_li = _this.list[_this.index];
 							cur_li.total_score = res.data.totalScore;
 							cur_li.record_url = res.data.recordUrl;
-							if(cur_li.category=="read_sentence") {
+							if(cur_li.category == "read_sentence") {
 								cur_li.accuracy_score = res.data.accuracyScore;
 								cur_li.fluency_score = res.data.fluencyScore;
 								cur_li.integrity_score = res.data.integrityScore;
@@ -951,7 +1001,9 @@
 					submit: function() {
 						var _this = this;
 						plus.nativeUI.showWaiting("正在提交");
-						oralsAjax("/orals/save", {data: JSON.stringify(_this.list)}, function(res){
+						oralsAjax("/orals/save", {
+							data: JSON.stringify(_this.list)
+						}, function(res) {
 							_this.state = 5;
 							//打开结果页
 							goResult({
@@ -962,15 +1014,15 @@
 							resultVue.page = 1;
 							resultVue.isReload = true;
 							plus.nativeUI.closeWaiting();
-						}, function(res){
+						}, function(res) {
 							plus.nativeUI.closeWaiting();
-						}, function(){
+						}, function() {
 							plus.nativeUI.closeWaiting();
 						});
 					}
 				}
 			});
-			
+
 			//错题本
 			var pullrefreshBox;
 			var resultVue = new Vue({
@@ -982,7 +1034,10 @@
 					isPlaying: false,
 					key: "",
 					valid_touch: false, //是否可touch
-					openLi: {index: -1, i: -1}, //打开的li
+					openLi: {
+						index: -1,
+						i: -1
+					}, //打开的li
 					isLoading: false,
 					isReload: true,
 					page: 1,
@@ -991,7 +1046,7 @@
 				computed: {
 					total: function() {
 						var t = 0;
-						this.model.forEach(function(v){
+						this.model.forEach(function(v) {
 							t = t + v.list.length;
 						});
 						return t;
@@ -1000,8 +1055,8 @@
 				mounted: function() {
 					var _this = this;
 					//监听上拉刷新
-					setPullRefresh("#pullrefreshBox", function(){
-						if(!_this.isLoading&&!_this.lastPage){
+					setPullRefresh("#pullrefreshBox", function() {
+						if(!_this.isLoading && !_this.lastPage) {
 							getErrList();
 						}
 					});
@@ -1009,10 +1064,10 @@
 				methods: {
 					setScore: setWordsScore,
 					toggleOpen: function(index, i) {
-						if(this.openLi.index==index&&this.openLi.i==i){
+						if(this.openLi.index == index && this.openLi.i == i) {
 							this.openLi.index = -1;
 							this.openLi.i = -1;
-						}else{
+						} else {
 							this.openLi.index = index;
 							this.openLi.i = i;
 						}
@@ -1021,7 +1076,10 @@
 					playAudio: function(url, e) {
 						if(!plus) return false;
 						if(!url) {
-							mui.toast('没有录音', { duration:'short', type:'div' });
+							mui.toast('没有录音', {
+								duration: 'short',
+								type: 'div'
+							});
 							return false;
 						}
 						this.audioStop();
@@ -1035,7 +1093,7 @@
 					audioStop: function() {
 						this.isPlaying = false;
 						!audioEle.ended && audioEle.pause();
-						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v){
+						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v) {
 							if(v.classList.contains('active')) {
 								v.classList.remove('active');
 							}
@@ -1049,35 +1107,38 @@
 							ele.classList.add('active');
 							this.isRecording = true;
 							this.startRecord(cur);
-							recorderTimer = setTimeout(function(){
+							recorderTimer = setTimeout(function() {
 								_this.isRecording && _this.stopRecord();
-							}, cur.time_len*1000||5000);
+							}, cur.time_len * 1000 || 5000);
 							touchStart(e.targetTouches[0]);
 						}
 					},
 					//开始录音
 					startRecord: function(cur) {
 						var _this = this;
-						gentry&&gentry();
-						recorder = setRecorder(_this.valid_touch, function(p){
-							files.push({name:"uploadkey",path:p});
+						gentry && gentry();
+						recorder = setRecorder(_this.valid_touch, function(p) {
+							files.push({
+								name: "uploadkey",
+								path: p
+							});
 							cur['key'] = _this.key;
 							_this.uploadRecord(cur);
 						});
 					},
 					touchMove: function(event) {
 						var _this = this;
-						_this.isRecording && touchEnd(event.targetTouches[0], function(){
+						_this.isRecording && touchEnd(event.targetTouches[0], function() {
 							_this.stopRecord();
 						});
 					},
 					//停止录音
 					stopRecord: function(e) {
 						if(this.isRecording) {
-							var ele = e?e.currentTarget:false;
-							if(ele){
+							var ele = e ? e.currentTarget : false;
+							if(ele) {
 								ele.classList.remove('active');
-							}else{
+							} else {
 								document.querySelector("a.btn-record.active").classList.remove('active');
 							}
 							recorder && recorder.stop();
@@ -1087,16 +1148,16 @@
 					},
 					//上传录音
 					uploadRecord: function(record) {
-						if(files.length<=0){
+						if(files.length <= 0) {
 							return;
 						}
 						var _this = this;
-						uploadRecordFile(record, files, function(res){
+						uploadRecordFile(record, files, function(res) {
 							var cur_li = record;
 							cur_li.key = res.data.key;
 							cur_li.total_score = res.data.totalScore;
 							cur_li.record_url = res.data.recordUrl;
-							if(cur_li.category=="read_sentence") {
+							if(cur_li.category == "read_sentence") {
 								cur_li.accuracy_score = res.data.accuracyScore;
 								cur_li.fluency_score = res.data.fluencyScore;
 								cur_li.integrity_score = res.data.integrityScore;
@@ -1107,25 +1168,27 @@
 					//提交
 					submit: function(cur) {
 						var _this = this;
-						oralsAjax("/orals/save", {data: JSON.stringify([cur])}, function(res){
-//							console.log(res);
+						oralsAjax("/orals/save", {
+							data: JSON.stringify([cur])
+						}, function(res) {
+							//							console.log(res);
 						});
 					}
-					
+
 				}
 			});
-			
+
 			//打开记录
-			mui(".mui-bar-nav").on("tap", "#goRecord", function(e){
-				if(testVue.state==4){
-					layerBeforeLeave("您还没有提交，确定要离开吗？", ["确定", "取消"], function(){
+			mui(".mui-bar-nav").on("tap", "#goRecord", function(e) {
+				if(testVue.state == 4) {
+					layerBeforeLeave("您还没有提交，确定要离开吗？", ["确定", "取消"], function() {
 						goRecord(activeTab);
 					});
-				}else{
+				} else {
 					goRecord(activeTab);
 				}
 			});
-			
+
 			//离开对话框
 			function layerBeforeLeave(msg, btn, callback) {
 				layer.closeAll();
@@ -1136,8 +1199,8 @@
 					closeBtn: 0,
 					resize: false,
 					skin: "beforeLeaveDialog",
-					area: REM*2.87+"px",
-					btn: btn||["确定", "取消"],
+					area: REM * 2.87 + "px",
+					btn: btn || ["确定", "取消"],
 					btnAlign: 'c',
 					shadeClose: true,
 					isOutAnim: false,
@@ -1151,12 +1214,13 @@
 					}
 				});
 			}
-			
+
 			//错题本列表
 			var catalog_ids;
+
 			function getErrList(callback) {
 				resultVue.isLoading = true;
-				if(resultVue.page==1) {
+				if(resultVue.page == 1) {
 					plus.nativeUI.showWaiting();
 					resultVue.bookName = getBookNames();
 					resultVue.model = [];
@@ -1166,7 +1230,7 @@
 					if(!catalog) {
 						return;
 					}
-					catalog.forEach(function(v){
+					catalog.forEach(function(v) {
 						catalog_ids.push(v.id);
 						resultVue.model.push({
 							id: v.id,
@@ -1175,102 +1239,124 @@
 							list: []
 						});
 					});
-					resultVue.model.sort(function(a, b){
-						return a.id-b.id;
+					resultVue.model.sort(function(a, b) {
+						return a.id - b.id;
 					});
 				}
-               	//获取节点内容
-               	oralsAjax('/orals', {bookCatalogId: catalog_ids.join(), showAll: false, totalScoreLimit: "4.0", page: true, p:resultVue.page, s:10},
-               	function(res){
-               		resultVue.key = res.data.key;
-               		res.data.page.list.forEach(function(val,index){
-               			for(var i=0; i<resultVue.model.length; i++) {
-               				if(resultVue.model[i].id==val.book_catalog_id){
-               					resultVue.model[i].list.push(val);
-               				}
-               			}
-               		});
-               		if(resultVue.page==1) {
-						plus.nativeUI.closeWaiting();
-					}
-					resultVue.lastPage = res.data.page.lastPage;
-					resultVue.page = res.data.page.pageNumber+1;
-					resultVue.isLoading = false;
-					
-					callback && callback(res);
-               	}, function(){
-               		resultVue.isLoading = false;
-               		resultVue.page==1 && plus.nativeUI.closeWaiting();
-               	}, function(){
-               		resultVue.isLoading = false;
-               		resultVue.page==1 && plus.nativeUI.closeWaiting();
-               	});
+				//获取节点内容
+				oralsAjax('/orals', {
+						bookCatalogId: catalog_ids.join(),
+						showAll: false,
+						totalScoreLimit: "4.0",
+						page: true,
+						p: resultVue.page,
+						s: 10
+					},
+					function(res) {
+						resultVue.key = res.data.key;
+						res.data.page.list.forEach(function(val, index) {
+							for(var i = 0; i < resultVue.model.length; i++) {
+								if(resultVue.model[i].id == val.book_catalog_id) {
+									resultVue.model[i].list.push(val);
+								}
+							}
+						});
+						if(resultVue.page == 1) {
+							plus.nativeUI.closeWaiting();
+						}
+						resultVue.lastPage = res.data.page.lastPage;
+						resultVue.page = res.data.page.pageNumber + 1;
+						resultVue.isLoading = false;
+
+						callback && callback(res);
+					},
+					function() {
+						resultVue.isLoading = false;
+						resultVue.page == 1 && plus.nativeUI.closeWaiting();
+					},
+					function() {
+						resultVue.isLoading = false;
+						resultVue.page == 1 && plus.nativeUI.closeWaiting();
+					});
 			}
-			
-//			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];
-//			testVue.list = [{"symbol":"ɪ'reɪzə","relative_id":0,"orals_id":15608,"integrity_score":0,"create_time":"2018-12-17 11:14:38","words":"eraser","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"橡皮","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/b179be8e19444d82a5bdbb6ab4a50494.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:fdxqDXdo09BDj8aV9B_hEdujB1g=","total_score":null,"id":15608,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'pensl","relative_id":0,"orals_id":15607,"integrity_score":0,"create_time":"2018-12-07 16:49:49","words":"pencil","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"铅笔","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/a02121e9e6234feea5341954295336bf.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:9dByQHYkSj4O-aSUaxujSjJIw80=","total_score":null,"id":15607,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'ruːlə","relative_id":0,"orals_id":15606,"integrity_score":0,"create_time":"2018-12-07 16:31:50","words":"ruler","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"尺子","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/617d511b40244892939ff102964b014a.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:-3iWp2PImbcH1rFTTuhmyu_ZWVI=","total_score":null,"id":15606,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"ˈkreɪən","relative_id":null,"orals_id":null,"integrity_score":null,"create_time":null,"words":"crayon","relative_type":null,"content":null,"time_len":3,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"蜡笔","accuracy_score":null,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/e335bec0ab064f0da1d035167c17ebb3.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:0cDN7YfyaLaJYOQWOn1shPIYbdo=","total_score":null,"id":15609,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"}];
-//			testVue.index = 0;
+
+			//			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];
+			//			testVue.list = [{"symbol":"ɪ'reɪzə","relative_id":0,"orals_id":15608,"integrity_score":0,"create_time":"2018-12-17 11:14:38","words":"eraser","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"橡皮","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/b179be8e19444d82a5bdbb6ab4a50494.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:fdxqDXdo09BDj8aV9B_hEdujB1g=","total_score":null,"id":15608,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'pensl","relative_id":0,"orals_id":15607,"integrity_score":0,"create_time":"2018-12-07 16:49:49","words":"pencil","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"铅笔","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/a02121e9e6234feea5341954295336bf.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:9dByQHYkSj4O-aSUaxujSjJIw80=","total_score":null,"id":15607,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'ruːlə","relative_id":0,"orals_id":15606,"integrity_score":0,"create_time":"2018-12-07 16:31:50","words":"ruler","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"尺子","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/617d511b40244892939ff102964b014a.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:-3iWp2PImbcH1rFTTuhmyu_ZWVI=","total_score":null,"id":15606,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"ˈkreɪən","relative_id":null,"orals_id":null,"integrity_score":null,"create_time":null,"words":"crayon","relative_type":null,"content":null,"time_len":3,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"蜡笔","accuracy_score":null,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/e335bec0ab064f0da1d035167c17ebb3.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:0cDN7YfyaLaJYOQWOn1shPIYbdo=","total_score":null,"id":15609,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"}];
+			//			testVue.index = 0;
 			//父——>子页传值方法
-			function toChildPage(text){
-				var testtt=new Vue({
-					el:'#testtt',
-					data:{
-						showFlag:0//如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示英语听测，0显示，1显示家长的订购提醒
+			function toChildPage(text) {
+				var testtt = new Vue({
+					el: '#testtt',
+					data: {
+						showFlag: 0 //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示英语听测，0显示，1显示家长的订购提醒
 					}
 				});
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
 				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				var utp = personal.utp;
-				if(utp==0 || utp==2){//如果是教师身份，显示英语听测
-					console.log('教师身份')
-				}else if(utp==1){//如果是家长1、学生2身份，根据是否订购套餐和绑定学生显示英语听测
-					console.log('家长或者学生身份'+utp);
+				if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
+					console.log('教师学生身份')
+				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
+					console.log('家长身份' + utp);
 					
-					var goRecord = document.getElementById("goRecord");//标题右侧-测评记录div
-					var oralsBody = document.getElementById("oralsBody");//header以下主体的内容
-					var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy");//没购买套餐时显示的内容
-					
-					//通过协议判断是否订购套餐绑定学生
-					var enData1 = {};
-					//不需要加密的数据
-					var comData1 = {
-						uuid: publicParameter.uuid, //用户设备号
-						uid: personal.uid, //用户账号
-						utoken: personal.utoken, //用户令牌
-						appid: publicParameter.appid //系统所分配的应用ID
-					}
-//					plus.nativeUI.showWaiting();
-					//发送网络请求，data为网络返回值
-					postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
-						console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
-//						plus.nativeUI.closeWaiting();
-						if(data1.RspCode == 0) {
-							if(data1.RspData) {
-								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
-								personal.userbus = data1.RspData.userbus; // 绑定的套餐
-								store.set(window.storageKeyName.PERSONALINFO, personal);
-								if(personal.packageCount > 0 && personal.isBdCount > 0) {
-								} else {
-									//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
-									goRecord.style.display = "none";
-									oralsBody.style.display = "none";
-									oralsBodyNoBuy.style.display = "block";
-								}
-							} else {
-								personal.packageCount = 0; //套餐是否绑定学生
-								personal.userbus = []; // 绑定的套餐
-								store.set(window.storageKeyName.PERSONALINFO, personal);
-								//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
-								goRecord.style.display = "none";
-								oralsBody.style.display = "none";
-								oralsBodyNoBuy.style.display = "block";
-							}
+					var goRecord = document.getElementById("goRecord"); //标题右侧-测评记录div
+					var oralsBody = document.getElementById("oralsBody"); //header以下主体的内容
+					var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy"); //没购买套餐时显示的内容
+
+					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+						//正常显示界面
+						
+						if(personal.userbus == serverids) {
+
 						} else {
-							mui.toast(data1.RspTxt);
+							//重新请求界面数据
+							
+							serverids = personal.userbus;
 						}
-					});
+					}else{//提示绑定或未关联学生
+						
+					}
+					//通过协议判断是否订购套餐绑定学生
+//					var enData1 = {};
+					//不需要加密的数据
+//					var comData1 = {
+//						uuid: publicParameter.uuid, //用户设备号
+//						uid: personal.uid, //用户账号
+//						utoken: personal.utoken, //用户令牌
+//						appid: publicParameter.appid //系统所分配的应用ID
+//					}
+					//					plus.nativeUI.showWaiting();
+					//发送网络请求，data为网络返回值
+//					postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+//						console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
+//						//						plus.nativeUI.closeWaiting();
+//						if(data1.RspCode == 0) {
+//							if(data1.RspData) {
+//								personal.packageCount = data1.RspData.userbus.length; //套餐是否绑定学生
+//								personal.userbus = data1.RspData.userbus; // 绑定的套餐
+//								store.set(window.storageKeyName.PERSONALINFO, personal);
+//								if(personal.packageCount > 0 && personal.isBdCount > 0) {} else {
+//									//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+//									goRecord.style.display = "none";
+//									oralsBody.style.display = "none";
+//									oralsBodyNoBuy.style.display = "block";
+//								}
+//							} else {
+//								personal.packageCount = 0; //套餐是否绑定学生
+//								personal.userbus = []; // 绑定的套餐
+//								store.set(window.storageKeyName.PERSONALINFO, personal);
+//								//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+//								goRecord.style.display = "none";
+//								oralsBody.style.display = "none";
+//								oralsBodyNoBuy.style.display = "block";
+//							}
+//						} else {
+//							mui.toast(data1.RspTxt);
+//						}
+//					});
 				}
 			}
 		</script>
 	</body>
+
 </html>
