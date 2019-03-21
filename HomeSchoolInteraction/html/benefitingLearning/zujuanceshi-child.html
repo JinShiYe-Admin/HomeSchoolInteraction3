@@ -1,40 +1,47 @@
 <!doctype html>
 <html>
 	<!--益测益学首页-->
+
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css"/>
+		<!--<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css" />-->
 		<style type="text/css">
 			.mui-bar-nav {
 				z-index: 999;
 			}
+			
 			#header:after {
 				content: "";
 				position: absolute;
 				z-index: -1;
 				left: 0;
-			    right: 0;
-			    top: 0;
-			    bottom: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
 			}
+			
 			.mui-bar-tab {
 				height: 1rem;
 				/*background-color: #F9F9F4;*/
 			}
+			
 			.mui-bar-tab .mui-tab-item {
 				height: 1rem;
 			}
+			
 			.mui-bar-tab .mui-tab-item .mui-icon {
 				font-size: 0.44rem;
 				top: 0;
-    			margin-bottom: 0.04rem;
+				margin-bottom: 0.04rem;
 			}
+			
 			.mui-bar-tab .mui-tab-item .mui-icon~.mui-tab-label {
 				font-size: 0.24rem;
 			}
+			
 			.label-wrapper .done-box {
 				display: inline-block;
 				width: 0.32rem;
@@ -48,33 +55,40 @@
 				top: 50%;
 				margin-top: -0.16rem;
 			}
+			
 			.als-title {
 				padding: 0.4rem 0.2rem 0;
 				font-size: 0.3rem;
 				color: #222222;
 			}
+			
 			.als-title:after {
 				display: block;
 				content: "";
 				border-bottom: 1px solid #DDDDDD;
 				padding-bottom: 0.4rem;
 			}
+			
 			.als-list:before {
 				display: none;
 			}
+			
 			.als-list li {
 				display: flex;
 				justify-content: space-between;
 				padding: 0.3rem 0.6rem 0.3rem 0.2rem;
 				line-height: 0.64rem;
 			}
+			
 			.als-list li:first-child {
 				padding-bottom: 0.15rem;
 			}
+			
 			ul.als-list li .sub {
 				padding-left: 1.1rem;
 				vertical-align: middle;
 			}
+			
 			ul.als-list li .sub .label {
 				display: inline-block;
 				text-align: center;
@@ -94,66 +108,80 @@
 				transform-origin: 150% 50%;
 				-webkit-transform-origin: 150% 50%;
 			}
+			
 			ul.als-list li .sub .label.bad {
 				color: #DB4848;
 				border-color: #DB4848;
 			}
+			
 			ul.als-list li .score {
 				width: 30%;
 				text-align: center;
 			}
+			
 			.als-list li .sub {
 				width: 35%;
 			}
+			
 			.als-list li .times {
 				width: 28%;
 				text-align: center;
 			}
+			
 			#subRadar {
 				min-height: 205px;
 				max-height: 440px;
 				margin-bottom: .6rem;
 			}
+			
 			#analysis {
 				max-height: 100%;
 				overflow-y: auto;
 			}
-			
 		</style>
 	</head>
 
 	<body>
 		<div class="mui-content">
-			<div id="header" class="tab-header"  v-cloak>
-				<div class="header-box">
-					<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
-					<a class="mui-icon" @tap.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
-				</div>
-				<transition name="slide-down">	
-					<div class="options-pannel mui-clearfix" v-show="showItem">
-						<div v-for="(v, i) in item.list" class="radio-wrap">
-							<label :class="{selected:v.percode==item.selected||v.subcode==item.selected}" @click="selectItem">
+			<div id="header" class="tab-header" v-cloak>
+				<div v-if="showFlag>0">
+					<div class="header-box">
+						<a class="mui-icon" @tap.stop="showTopPannel(1)">{{gradeItem?gradeItem.pername:"学段"}}<span class="mui-icon-arrowdown"></span></a>
+						<a class="mui-icon" @tap.stop="showTopPannel(2)">{{subjectItem?(subjectItem.subname||"科目"):"科目"}}<span class="mui-icon-arrowdown"></span></a>
+					</div>
+					<transition name="slide-down">
+						<div class="options-pannel mui-clearfix" v-show="showItem">
+							<div v-for="(v, i) in item.list" class="radio-wrap">
+								<label :class="{selected:v.percode==item.selected||v.subcode==item.selected}" @click="selectItem">
 								<input type="radio" v-model="item.selected" name="item"  :value="v.percode||v.subcode" />{{v.pername||v.subname||"未命名"}}
 							</label>
+							</div>
 						</div>
+					</transition>
+				</div>
+				<div v-else-if="showFlag==0" style="">
+					<p style="text-align: center;margin-top: 5px;" v-cloak>您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<div v-cloak style="text-align: center;margin:10% auto;">
+						<img src="../../img/noData.png" style="width: 250px;" />
 					</div>
-				</transition>
+				</div>
 			</div>
 			<!--组卷测试-->
-			<div id="testMenu" class="mui-content vue-tree">
+			<div id="testMenu" class="vue-tree">
+			<!--<div id="testMenu" class="mui-content vue-tree">-->
 				<div class="kn-menu" v-cloak>
 					<tree-menu v-for="(model, i) in menu" :model="model" :key="i" :depth="0" @node-click="selectNode"></tree-menu>
-					<p v-if="!menu.length&&isLoaded"  style="padding: 0.3rem;">暂无目录</p>
+					<p v-if="!menu.length&&isLoaded" style="padding: 0.3rem;">暂无目录</p>
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="../../js/mui.min.js"></script>
-		<script type="text/javascript" src="../../js/utils/vue.min.js" ></script>
-		<script type="text/javascript" src="../../js/utils/vconsole.min.js" ></script>
-		<script type="text/javascript" src="../../js/libs/echarts.min.js" ></script>
+		<script type="text/javascript" src="../../js/utils/vue.min.js"></script>
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script type="text/javascript" src="../../js/libs/echarts.min.js"></script>
 		<script src='../../js/libs/jquery.js'></script>
-		
+
 		<!--加密-->
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
@@ -166,7 +194,7 @@
 		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/utils/events.js"></script>
-		
+
 		<script type="text/javascript" src="../../js/btlearn/common.js"></script>
 		<script src='../../js/utils/utils.js'></script>
 		<script type="text/javascript" src="../../js/mui.pullToRefresh.js"></script>
@@ -178,102 +206,116 @@
 			//认证信息
 			var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 			var deviceParam = store.get(window.storageKeyName.PUBLICPARAMETER);
-			
-			var mask = mui.createMask(function(){
+
+			var mask = mui.createMask(function() {
 				header.showItem = false;
 			});
-			
+
 			mui.init({
 				statusBarBackground: '#00CFBD',
 				swipeBack: false
 			});
-			
+
 			mui.plusReady(function() {
 				self = plus.webview.currentWebview();
 				if(mui.os.ios) {
 					self.setStyle({
-					    softinputMode: "adjustResize"
+						softinputMode: "adjustResize"
 					});
 				}
 				//禁止横屏
 				plus.screen.lockOrientation("portrait-primary");
 				//状态栏白色
 				// plus.navigator.setStatusBarStyle('light');
-				
+
 				//最初数据， 获取目录
-				header.setMenu();
-				
+				if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
+					header.setMenu();
+				}
 				//开始测试页
 				test_start = mui.preload({
 					url: 'testStart.html',
 					id: 'bl-test-start'
 				});
-				
+
 				// 刷新数据
-				window.addEventListener("refresh", function(e){
-					if(activeTab=="bl-analysis"){
+				window.addEventListener("refresh", function(e) {
+					if(activeTab == "bl-analysis") {
 						getAnalysisData();
-					}else{
+					} else {
 						analysis.isShowed = false;
 					}
 					var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
 					als_detail && mui.fire(als_detail, "refresh");
 					// 检测目录是否完成
 					console.log(e.detail);
-					if(e.detail.hasOwnProperty("isFinish")){
-						e.detail.isFinish && readTree(testMenu.menu, function(node){
-							if(node.id==e.detail.nodeId){
-								node.is_finish=1;
+					if(e.detail.hasOwnProperty("isFinish")) {
+						e.detail.isFinish && readTree(testMenu.menu, function(node) {
+							if(node.id == e.detail.nodeId) {
+								node.is_finish = 1;
 							}
 						});
-					}else{
-						header.setMenu({percode: header.grade.selected, subcode: header.subject.selected});
+					} else {
+						header.setMenu({
+							percode: header.grade.selected,
+							subcode: header.subject.selected
+						});
 					}
 				});
-				
+
 				toChildPage("子页组卷测试");
 			});
-			
-			
+
 			//头部
 			var header = new Vue({
 				el: "#header",
 				data: {
-					grade: {selected: 0, list: []},
-					subject: {selected: 0, list: []},
+					showFlag: 0, //判断有没有订购套餐，进行显示九宫格，1正常显示，0显示的订购提醒
+					serverids: '', //此页面的套餐ids
+					grade: {
+						selected: 0,
+						list: []
+					},
+					subject: {
+						selected: 0,
+						list: []
+					},
 					topPannel: 0, //1-grade，2-subject
-					headImg: setImg(userInfo?userInfo.imgurl:""),
+					headImg: setImg(userInfo ? userInfo.imgurl : ""),
 					showItem: false
 				},
 				computed: {
 					item: function() {
-						if(this.topPannel==1){
+						if(this.topPannel == 1) {
 							return this.grade;
-						}else if(this.topPannel==2) {
+						} else if(this.topPannel == 2) {
 							return this.subject;
-						}else{
-							return {selected: 0, list: []};
+						} else {
+							return {
+								selected: 0,
+								list: []
+							};
 						}
 					},
 					gradeItem: function() {
-						var selected = this.grade.list?filterArray(this.grade.list, "percode", this.grade.selected)[0]:null;
+						var selected = this.grade.list ? filterArray(this.grade.list, "percode", this.grade.selected)[0] : null;
 						return selected;
 					},
 					subjectItem: function() {
-						var selected = this.subject.list?filterArray(this.subject.list, "subcode", this.subject.selected)[0]:null;
+						var selected = this.subject.list ? filterArray(this.subject.list, "subcode", this.subject.selected)[0] : null;
 						return selected;
 					}
 				},
 				methods: {
 					//显示头部选项
 					showTopPannel: function(type) {
-						if(this.topPannel==type&&this.showItem) {
+						if(this.topPannel == type && this.showItem) {
 							this.showItem = false;
-//							mask.close();
-						}else{
+							//							mask.close();
+						} else {
 							this.showItem = true;
 							this.topPannel = type;
-//							mask.show();
+							//							mask.show();
 						}
 					},
 					// 设置目录
@@ -284,36 +326,36 @@
 						var _this = this;
 						//获取目录
 						commonAjax("/Ycyx/Practice/index", {
-							data: data||{},
+							data: data || {},
 							timeout: 5000,
 							type: 'post',
-							success: function(res){
+							success: function(res) {
 								console.log(res.data);
 								var rdata = JSON.parse(res.data);
 								//科目
 								_this.subject = {
 									selected: rdata.subcode,
-									list: rdata.subs||[]
+									list: rdata.subs || []
 								};
 								//学段
 								_this.grade = {
 									selected: rdata.percode,
-									list: rdata.pers||[]
+									list: rdata.pers || []
 								}
 								//设置test-menu目录
-								testMenu.menu = rdata.catalogs||[];
+								testMenu.menu = rdata.catalogs || [];
 								testMenu.isLoaded = true;
 								// 目录默认知识点
 								if(!autoMenu && testMenu.menu[0]) {
 									var autoNode = null;
-									readTree(rdata.catalogs[0].children||rdata.catalogs, function(node){
-									    if(!node.children||!node.children.length) {
-											if(!autoNode){
+									readTree(rdata.catalogs[0].children || rdata.catalogs, function(node) {
+										if(!node.children || !node.children.length) {
+											if(!autoNode) {
 												autoNode = node;
-											}else{
+											} else {
 												return false;
 											}
-									    }
+										}
 									});
 									autoMenu = {
 										sub: $.extend({}, _this.subjectItem),
@@ -321,34 +363,39 @@
 										node: autoNode
 									}
 								}
-								_this.$nextTick(function(){
+								_this.$nextTick(function() {
 									plus.nativeUI.closeWaiting();
 								});
 							},
-							fail: function(res){
+							fail: function(res) {
 								plus.nativeUI.closeWaiting();
 							},
-							error: function(){
+							error: function() {
 								plus.nativeUI.closeWaiting();
 								pageError();
 							}
 						});
 					},
 					//选择选项
-					selectItem: function(){
+					selectItem: function() {
 						this.showItem = false;
 						mask.close();
-						this.$nextTick(function () {
-							if(this.topPannel==1){
-								this.setMenu({percode: this.grade.selected});
-							}else if(this.topPannel==2){
-								this.setMenu({percode: this.grade.selected, subcode: this.subject.selected});
+						this.$nextTick(function() {
+							if(this.topPannel == 1) {
+								this.setMenu({
+									percode: this.grade.selected
+								});
+							} else if(this.topPannel == 2) {
+								this.setMenu({
+									percode: this.grade.selected,
+									subcode: this.subject.selected
+								});
 							}
 						});
 					}
 				}
 			});
-			
+
 			//知识点目录
 			var testMenu = new Vue({
 				el: "#testMenu",
@@ -368,10 +415,10 @@
 							type: 'get',
 							timeout: 5000,
 							success: function(res) {
-//								console.log(res);
+								//								console.log(res);
 								var res_data = res.data;
 								mui.fire(test_start, "getData", {
-									title: model.name, 
+									title: model.name,
 									catalogId: model.id,
 									difficulty: res_data
 								});
@@ -388,9 +435,21 @@
 					}
 				}
 			});
-			
-			function toChildPage(text){
-				console.log("zujuanceshi-child:"+text)
+
+			function toChildPage(text) {
+				console.log("zujuanceshi-child:" + text)
+				var personalT = store.get(window.storageKeyName.PERSONALINFO);
+				if(personalT.userbus.length > 0) {
+					header.showFlag = 1;
+					if(personalT.userbus == header.serverids) {
+
+					} else {
+						header.setMenu();
+						header.serverids = personalT.userbus;
+					}
+				} else {
+					header.showFlag = 0;
+				}
 			}
 		</script>
 	</body>
