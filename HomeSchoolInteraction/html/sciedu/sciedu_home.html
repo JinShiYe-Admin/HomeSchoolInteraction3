@@ -96,7 +96,7 @@
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/app-update.js"></script>
-		<script src="../../js/publicProtocol-ziyuan.js"></script>
+		<script src="../../js/catalog_util.js"></script>
 		<script type="text/javascript">
 			var cities = []; //存储当前定制的城市
 			var show = true; //是否显示科教的内容
@@ -155,7 +155,7 @@
 								var tempM = data1.RspData.userbus[i];
 								for(var a = 0; a < tempM.funcs.length; a++) {
 									var tempFuncs = tempM.funcs[a];
-									if(tempM.busext != null && tempFuncs.ftype == 'zxkt' && tempM.serstat == 1) {
+									if(tempM.busext != null && tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
 										tempArray.push(tempM.servid);
 									}
 								}
@@ -171,7 +171,7 @@
 								}
 							}
 						} else {
-							personal.userbus = 0; // 绑定的套餐
+							personal.userbus = ''; // 绑定的套餐
 							store.set(window.storageKeyName.PERSONALINFO, personal);
 						}
 					} else {

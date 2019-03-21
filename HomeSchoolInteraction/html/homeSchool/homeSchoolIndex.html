@@ -222,7 +222,7 @@
 			<script src="../../js/libs/jquery.js"></script>
 			<script src="../../js/utils/pushPermission.js"></script>
 			<script src="../../js/utils/clearIcon.js"></script>
-			<script src="../../js/publicProtocol-ziyuan.js"></script>
+			<script src="../../js/catalog_util.js"></script>
 			<script type="text/javascript">
 				mui.init({
 					statusBarBackground: '#00CFBD',
@@ -275,7 +275,14 @@
 					});
 					if(personal.utp == 1) { //0老师，2学生，1家长
 						//4.1.用户已订购套餐及功能扩展栏目
-						getUserBusFunc();
+						//						getUserBusFunc();
+						if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+							console.log('showFlag=0');
+							contentData.showFlag = 0;
+						} else {
+							contentData.showFlag = -1;
+							//									contentData.noData = '您还没有订购套餐，请去个人中心设置';
+						}
 					}
 					if(mui.os.android) {
 						var info = plus.push.getClientInfo();
@@ -465,7 +472,7 @@
 									var tempM = data1.RspData.userbus[i];
 									for(var a = 0; a < tempM.funcs.length; a++) {
 										var tempFuncs = tempM.funcs[a];
-										if(tempM.busext != null && tempFuncs.ftype == 'zxkt' && tempM.serstat == 1) {
+										if(tempM.busext != null && tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
 											tempArray.push(tempM.servid);
 										}
 									}
@@ -473,7 +480,7 @@
 								personal.userbus = tempArray.join('|'); // 绑定的套餐
 								console.log(JSON.stringify(tempArray));
 								store.set(window.storageKeyName.PERSONALINFO, personal);
-								if(tempArray.length > 0&& personal.isBdCount > 0) {
+								if(tempArray.length > 0 && personal.isBdCount > 0) {
 									//根据已订购套餐，得到学段、科目
 									var catalogObj = getCatalog(data1.RspData.userbus);
 									store.set(window.storageKeyName.PRDLIST, catalogObj);
@@ -481,7 +488,7 @@
 									contentData.showFlag = 0;
 								} else {
 									contentData.showFlag = -1;
-//									contentData.noData = '您还没有订购套餐，请去个人中心设置';
+									//									contentData.noData = '您还没有订购套餐，请去个人中心设置';
 								}
 							} else {
 								personal.packageCount = 0; //套餐是否绑定学生
