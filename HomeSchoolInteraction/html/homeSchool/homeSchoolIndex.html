@@ -472,7 +472,7 @@
 									var tempM = data1.RspData.userbus[i];
 									for(var a = 0; a < tempM.funcs.length; a++) {
 										var tempFuncs = tempM.funcs[a];
-										if(tempM.busext != null && tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+										if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
 											tempArray.push(tempM.servid);
 										}
 									}
@@ -481,9 +481,6 @@
 								console.log(JSON.stringify(tempArray));
 								store.set(window.storageKeyName.PERSONALINFO, personal);
 								if(tempArray.length > 0 && personal.isBdCount > 0) {
-									//根据已订购套餐，得到学段、科目
-									var catalogObj = getCatalog(data1.RspData.userbus);
-									store.set(window.storageKeyName.PRDLIST, catalogObj);
 									console.log('showFlag=0');
 									contentData.showFlag = 0;
 								} else {

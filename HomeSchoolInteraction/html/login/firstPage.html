@@ -219,6 +219,23 @@
 										events.closeWaiting();
 										if(data2.RspCode == 0) {
 											if(data2.RspData) {
+												var tempArray = [];
+												for (var i = 0; i < data2.RspData.stus.length; i++) {
+													var tempM = data2.RspData.stus[i];
+													var tempM1 = {
+														percode:tempM.grdpercode,
+														pername:tempM.grdpername,
+														ischeck:0
+													}
+													tempArray.push(tempM1);
+												}
+												
+												if (tempArr.length>0) {
+													tempArray=tempArray.sort(compare("percode"));
+													tempArray[0].ischeck = 1;
+												}
+												store.set(window.storageKeyName.PRDLIST, tempArr);
+												
 												var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 												personal1.isBdCount = data2.RspData.stus.length; //套餐是否绑定学生
 												store.set(window.storageKeyName.PERSONALINFO, personal1);
@@ -262,6 +279,15 @@
 			});
 
 		}
+		
+		//按指定字段，对对象数组进行快速排序
+			 function compare(property){
+		         return function(obj1,obj2){
+		             var value1 = obj1[property];
+		             var value2 = obj2[property];
+		             return value1 - value2;     // 升序
+		         }
+		    }
 
 		//从ios原生得到信息
 		var setUUID = function() {

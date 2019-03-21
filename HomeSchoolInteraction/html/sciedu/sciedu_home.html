@@ -117,7 +117,6 @@
 			});
 
 			mui.plusReady(function() {
-				store.set(window.storageKeyName.PRDLIST, null);
 				toChildPage("子页科教活动");
 				events.preload("../../html/sciedu/sciedu_show_main.html", 500);
 				console.log('当前版本:' + plus.runtime.version);
@@ -155,7 +154,7 @@
 								var tempM = data1.RspData.userbus[i];
 								for(var a = 0; a < tempM.funcs.length; a++) {
 									var tempFuncs = tempM.funcs[a];
-									if(tempM.busext != null && tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+									if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
 										tempArray.push(tempM.servid);
 									}
 								}
@@ -163,13 +162,6 @@
 							personal.userbus = tempArray.join('|'); // 绑定的套餐
 							console.log(JSON.stringify(tempArray));
 							store.set(window.storageKeyName.PERSONALINFO, personal);
-							if(tempArray.length > 0&& personal.isBdCount > 0) {
-								//根据已订购套餐，得到学段
-								if(personal.utp == 1) { //家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
-									var catalogObj = getCatalog(data1.RspData.userbus);
-									store.set(window.storageKeyName.PRDLIST, catalogObj);
-								}
-							}
 						} else {
 							personal.userbus = ''; // 绑定的套餐
 							store.set(window.storageKeyName.PERSONALINFO, personal);

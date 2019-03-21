@@ -145,7 +145,8 @@
 				font-size: 14px;
 				color: #999999;
 			}
-			.orderLose{
+			
+			.orderLose {
 				color: #f96161;
 				padding-left: 10px;
 				margin-top: 10px;
@@ -388,11 +389,11 @@
 								var tempModel = data1.RspData.userbus[i];
 								if(JSON.stringify(tempModel).indexOf('jxht') != -1 && tempModel.serstat == 1) { //已订购并且没停用的套餐
 									tempModel.stuModel = {};
-								tempModel.stuList = [];
-								userBusData.orderList.push(tempModel);
+									tempModel.stuList = [];
+									userBusData.orderList.push(tempModel);
 								}
 							}
-//							userBusData.orderList = [].concat(data1.RspData.userbus);
+							//							userBusData.orderList = [].concat(data1.RspData.userbus);
 						}
 						//4.5.获取用户关联的学生列表
 						getUserUstu();
