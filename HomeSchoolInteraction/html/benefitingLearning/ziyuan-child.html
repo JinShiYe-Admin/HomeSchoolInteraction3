@@ -101,7 +101,7 @@
 					<div class="header-box ziyuan-catalog">
 						<a class="mui-icon" ><span class="mui-icon-back"></span>{{catalogName}}<span class="mui-icon-forward"></span></a>
 					</div>
-					<transition name="slide-down">	
+					<transition name="slide-down">
 						<div class="options-pannel mui-clearfix" v-show="ziyuanShow">
 							<div v-for="(v, i) in categoryArray" class="radio-wrap"  @tap="catalogItemClick(categoryArray,v)">
 								<label :class="{'selected':v.ischeck==1}">{{v.name}}</label>
@@ -153,7 +153,7 @@
 					</ul>
 				</div>
 			</div>
-			<div v-show="showFlag==0 || showFlag==-1">
+			<div v-show="showFlag==0 || showFlag==-1"><!--0 暂无目录  -1 没订购套餐-->
 					<p style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
 					<div v-cloak style="text-align: center;margin:10% auto;">
 						<img src="../../img/noData.png" style="width: 250px;" />
@@ -232,6 +232,7 @@
 				contentData.categoryArray = data.detail[1];
 				//教材
 				contentData.bookModel = data.detail[2]; //教材
+				mui('#refreshList').pullRefresh().setStopped(false);//开启禁止滚动  
 				//刷新数据
 				pulldownRefresh();
 			});
@@ -247,148 +248,107 @@
 			}
 
 			mui.plusReady(function() {
-				//4.1.用户已订购套餐及功能扩展栏目
-				getUserBusFunc();
 				toChildPage("子页资源");
 			});
 
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
-				var enData1 = {};
-				//不需要加密的数据
-				var comData1 = {
-					uuid: publicParameter.uuid, //用户设备号
-					uid: personal.uid, //用户账号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid //系统所分配的应用ID
-				}
-				events.showWaiting();
-				//发送网络请求，data为网络返回值
-				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
-					console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
-					events.closeWaiting();
-					if(data1.RspCode == 0) {
-						if(data1.RspData) {
-							var tempFlag = 0; //判断是否有智学课堂套餐
-							for(var i = 0; i < data1.RspData.userbus.length; i++) {
-								var tempM = data1.RspData.userbus[i];
-								for(var a = 0; a < tempM.funcs.length; a++) {
-									var tempFuncs = tempM.funcs[a];
-									if(tempM.busext!=null &&tempFuncs.ftype == 'jxht' &&tempM.serstat == 1) {
-										tempFlag++;
-									}
-								}
-							}
-							personal.userbus = tempFlag; // 绑定的套餐
-							store.set(window.storageKeyName.PERSONALINFO, personal);
-							if(tempFlag > 0) {
-								contentData.showFlag = 1;
-								//根据已订购套餐，得到学段
-								if(personal.utp==1){//家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
-									var catalogObj=getCatalog(data1.RspData.userbus);
-									getGrdList(catalogObj);
-								}else{//老师0身份 学段、年级、教版、科目都从广西接口取
-									getGrdList();
-								}
-								
-							} else {
-								contentData.showFlag = -1;
-								contentData.titleName = '请先订购套餐';
-								contentData.noData = '您还没有订购套餐，请去个人中心设置';
-							}
-						} else {
-							personal.userbus = 0; // 绑定的套餐
-							store.set(window.storageKeyName.PERSONALINFO, personal);
-							contentData.showFlag = 0;
-						}
-					} else {
-						mui.toast(data1.RspTxt);
+				var catalogObj = store.get(window.storageKeyName.PRDLIST);
+				if(personal.utp==1){//家长身份
+					if(catalogObj.prdList !=undefined && catalogObj.prdList.length>0){
+						var pid=catalogObj.prdList[0].percode;
+						getGrdList(pid);
+					}else{
+						contentData.showFlag = 0;
+						contentData.titleName = '请切换目录';
+						contentData.noData = '该目录下暂无资源，请切换目录';
+						mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+						return 0
 					}
-				});
+				}else{
+					getGrdList('');
+				}
 			}
 
 			//获取分册（年级），科目
-			function getGrdList(catalogObj){
-				if(catalogObj.prdList.length>0){
-					var comData = {};
-					if(personal.utp==1){//家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
-						comData.percode=catalogObj.prdList[0].percode;//学段代码
-					}
-					console.log('comData=='+JSON.stringify(comData));
-					var wd = events.showWaiting();
-					getZiYuanTextbook(comData, function(data) {
-						wd.close();
-						console.log('获取分册（年级）:' + JSON.stringify(data));
-						if(data.RspCode == 0) {
-							if(data.RspData){
-								//学段列表
-								if(personal.utp==0 || personal.utp==2){//家长 1，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
-									var per= data.RspData.per.list;
-									var perSelected= data.RspData.per.selected;
-									for(var i = 0; i < per.length; i++) {
-		                                if (per[i].percode==perSelected) {
-		                                    per[i].ischeck = 1;
-		                                }else{
-		                                    per[i].ischeck = 0;
-		                                }
-		                            }
-									catalogObj.prdList=per;
-								}
-								//分册列表
-								var fasc= data.RspData.fasc.list;
-								var fascSelected= data.RspData.fasc.selected;
-								for(var i = 0; i < fasc.length; i++) {
-	                                if (fasc[i].fasccode==fascSelected) {
-	                                    fasc[i].ischeck = 1;
+			function getGrdList(pid){
+				var comData = {
+					percode: '', //学段代码 
+					subcode: '', //科目代码 
+					matercode:'',//教版代码
+					fasccode: '' //分册代码
+				};
+				comData.percode=pid;//学段代码
+				console.log('comData=='+JSON.stringify(comData));
+				var wd = events.showWaiting();
+				var catalogObj={};
+				getZiYuanTextbook(comData, function(data) {
+					wd.close();
+					console.log('获取分册（年级）:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						if(data.RspData){
+							//学段列表
+							if(personal.utp==0 || personal.utp==2){//家长 1，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
+								var per= data.RspData.per.list;
+								var perSelected= data.RspData.per.selected;
+								for(var i = 0; i < per.length; i++) {
+	                                if (per[i].percode==perSelected) {
+	                                    per[i].ischeck = 1;
 	                                }else{
-	                                    fasc[i].ischeck = 0;
+	                                    per[i].ischeck = 0;
 	                                }
 	                            }
-								catalogObj.grdList=fasc;
-								//科目列表
-								var sub= data.RspData.sub.list;
-								var subSelected= data.RspData.sub.selected;
-								for(var i = 0; i < sub.length; i++) {
-	                                if (sub[i].subcode==subSelected) {
-	                                    sub[i].ischeck = 1;
-	                                }else{
-	                                    sub[i].ischeck = 0;
-	                                }
-	                            }
-								catalogObj.subList=sub;
-								//教版
-								var mater = data.RspData.mater.list;
-								var materSelected = data.RspData.mater.selected;
-								for(var i = 0; i < mater.length; i++) {
-									if(mater[i].matercode == materSelected) {
-										mater[i].ischeck = 1;
-									} else {
-										mater[i].ischeck = 0;
-									}
-								}
-								catalogObj.materList = mater; 
-								console.log('catalogObj:'+JSON.stringify(catalogObj)); 
-								store.set(window.storageKeyName.CATALOG, catalogObj);
-								//得到学段、年级、科目、教版后，分别取第一个默认值，得到教材编号
-								getTextBook(catalogObj);
+								catalogObj.prdList=per;
 							}
-						} else { 
-							mui.toast(data.RspTxt);
+							//分册列表
+							var fasc= data.RspData.fasc.list;
+							var fascSelected= data.RspData.fasc.selected;
+							for(var i = 0; i < fasc.length; i++) {
+                                if (fasc[i].fasccode==fascSelected) {
+                                    fasc[i].ischeck = 1;
+                                }else{
+                                    fasc[i].ischeck = 0;
+                                }
+                            }
+							catalogObj.grdList=fasc;
+							//科目列表
+							var sub= data.RspData.sub.list;
+							var subSelected= data.RspData.sub.selected;
+							for(var i = 0; i < sub.length; i++) {
+                                if (sub[i].subcode==subSelected) {
+                                    sub[i].ischeck = 1;
+                                }else{
+                                    sub[i].ischeck = 0;
+                                }
+                            }
+							catalogObj.subList=sub;
+							//教版
+							var mater = data.RspData.mater.list;
+							var materSelected = data.RspData.mater.selected;
+							for(var i = 0; i < mater.length; i++) {
+								if(mater[i].matercode == materSelected) {
+									mater[i].ischeck = 1;
+								} else {
+									mater[i].ischeck = 0;
+								}
+							}
+							catalogObj.materList = mater; 
+							console.log('catalogObj:'+JSON.stringify(catalogObj)); 
+							store.set(window.storageKeyName.CATALOG, catalogObj);
+							//得到学段、年级、科目、教版后，分别取第一个默认值，得到教材编号
+							getTextBook(catalogObj);
 						}
-					}); 
-				}else{
-					contentData.showFlag = 0;
-					contentData.titleName = '请切换目录';
-					contentData.noData = '该目录下暂无资源，请切换目录';
-					return 0
-				} 
+					} else { 
+						mui.toast(data.RspTxt);
+					}
+				}); 
 			}
 			
 			//根据得到的得到学段、年级、科目 获取教材和资源列表
 			var getTextBook = function(catalogObj) {
 				var comData = {}
-				comData.percode=catalogObj.prdList[0].percode;//学段代码 可选
-				if(catalogObj.grdList.length > 0 && catalogObj.subList.length > 0 && catalogObj.materList.length > 0 ) {//取默认第一个
+				if(catalogObj.prdList.length>0 && catalogObj.grdList.length > 0 && catalogObj.subList.length > 0 && catalogObj.materList.length > 0 ) {//取默认第一个
+					comData.percode=catalogObj.prdList[0].percode;//学段代码 可选
 					comData.fasccode=catalogObj.grdList[0].fasccode;//分册（年级）代码 可选
 					comData.subcode = catalogObj.subList[0].subcode; //科目代码
 					comData.matercode = catalogObj.materList[0].matercode; //教版代码
@@ -396,6 +356,7 @@
 					contentData.showFlag = 0;
 					contentData.titleName = '请切换目录';
 					contentData.noData = '该目录下暂无资源，请切换目录';
+					mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
 					return 0
 				}
 				var wd = events.showWaiting();
@@ -437,10 +398,11 @@
 								store.set(window.storageKeyName.CATALOGOBJ, catalogObj);
 							}
 						}
-						if(data.RspData.book==null||data.RspData.book==undefined){//如果没有教材
+						if(data.RspData.book==null||data.RspData.book==undefined||data.RspData.book==''){//如果没有教材
 							contentData.showFlag = 0;
 							contentData.titleName = '请切换目录';
 							contentData.noData = '该目录下暂无资源，请切换目录';
+							mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
 							return 0;
 						}
 						//根据教材获取资源(分页) 
@@ -468,9 +430,7 @@
 					p: contentData.pageIndex, //当前页码 默认1
 					s: '10' //每页记录数量 默认10
 				}
-				//				events.showWaiting();
 				getZiYuanRes(tempData, function function_name(data) {
-					//					events.closeWaiting();
 					mui('#refreshList').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
 					mui('#refreshList').pullRefresh().endPulldownToRefresh();
 					console.log('获取资源(分页) :' + JSON.stringify(data));
@@ -524,7 +484,8 @@
 					titleName:'',//章节标题
 					ziyuanShow:false,//资源类型选择是否展示
 					catalogName:'全部',//资源类型名称
-					noData:''//暂无数据
+					noData:'',//暂无数据
+					serverids:''//此页面的套餐ids
 				},
 				methods: {
 					clickTitle: function() {
@@ -611,7 +572,21 @@
 			});
 
 			function toChildPage(text){
-				console.log("ziyuan-child:"+text)
+				personal = store.get(window.storageKeyName.PERSONALINFO);
+				console.log("ziyuan-child:"+JSON.stringify(personal))
+				if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+					contentData.showFlag = 1;
+					if (personal.userbus == contentData.serverids) {} else{
+						contentData.serverids = personal.userbus;
+						//4.1.用户已订购套餐及功能扩展栏目
+						getUserBusFunc();
+					}
+				} else {
+					contentData.showFlag = -1;
+					contentData.titleName = '请先订购套餐';
+					contentData.noData = '您还没有订购套餐或者关联学生，请去个人中心设置';
+//					mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+				}
 			}
 		</script>
 	</body>

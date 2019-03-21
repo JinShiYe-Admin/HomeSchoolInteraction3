@@ -287,7 +287,12 @@
 			console.log('catalogPage:'+JSON.stringify(catalogPage));
 			console.log('catalogObj:'+JSON.stringify(catalogObj));
 			if(catalogObj==null){
-				catalogObj={}
+				catalogObj={
+					percode: '', //学段代码 
+					subcode: '', //科目代码 
+					matercode:'',//教版代码
+					fasccode: '' //分册代码
+				}
 				if(catalogPage&&catalogPage.prdList.length>0){
 					catalogObj.percode=catalogPage.prdList[0].percode;
 				}
@@ -346,7 +351,6 @@
 								catalogObj.fasccode=item.fasccode;
 							}
 							console.log(JSON.stringify(catalogObj));
-							catalogPage = store.get(window.storageKeyName.CATALOG);
 							store.set(window.storageKeyName.CATALOGOBJ,catalogObj);
 							getZiYuanTextbookFunc();
 						}
@@ -407,19 +411,36 @@
 					if(data.RspCode == 0) {
 						if(data.RspData){
 							//学段列表
-							var xdselected= data.RspData.per.selected;
-							for(var i = 0; i < catalogPage.prdList.length; i++) {
-                                var temp =  catalogPage.prdList[i];
-                                if (temp.percode==xdselected) {
-                                    temp.ischeck = 1;
-                                }else{
-                                    temp.ischeck = 0;
-                                }
-                            }
+							var xueduan=[];
+							if(personal.utp==0 || personal.utp==2){//家长 1，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
+								xueduan= data.RspData.per.list;
+								var perSelected= data.RspData.per.selected;
+								for(var i = 0; i < xueduan.length; i++) {
+									  var temp =  xueduan[i];
+	                                if (temp.percode==perSelected) {
+	                                    temp.ischeck = 1;
+	                                }else{
+	                                    temp.ischeck = 0;
+	                                }
+	                            }
+							}else{
+								xueduan=catalogPage.prdList;
+								var xdselected= data.RspData.per.selected;
+								for(var i = 0; i < xueduan.length; i++) {
+	                                var temp =  xueduan[i];
+	                                if (temp.percode==xdselected) {
+	                                    temp.ischeck = 1;
+	                                }else{
+	                                    temp.ischeck = 0;
+	                                }
+	                            }
+							}
+							
 							//分册列表
+							var fence=data.RspData.fasc.list;
 							var fcselected= data.RspData.fasc.selected;
-							for(var i = 0; i < data.RspData.fasc.list.length; i++) {
-                                var temp =  data.RspData.fasc.list[i];
+							for(var i = 0; i < fence.length; i++) {
+                                var temp =  fence[i];
                                 if (temp.fasccode==fcselected) {
                                     temp.ischeck = 1;
                                 }else{
@@ -438,9 +459,10 @@
                                 }
                             }
 							//科目列表
+							var kemu = data.RspData.sub.list;
 							var kmselected= data.RspData.sub.selected;
-							for(var i = 0; i < data.RspData.sub.list.length; i++) {
-                                var temp =  data.RspData.sub.list[i];
+							for(var i = 0; i < kemu.length; i++) {
+                                var temp =  kemu[i];
                                 if (temp.subcode==kmselected) {
                                     temp.ischeck = 1;
                                 }else{
@@ -449,15 +471,13 @@
                             }
 							
 							if(catalogPage.prdList.length>0){
-								catalog.xueduan=catalogPage.prdList;
+								catalog.xueduan=xueduan;
 							}else{
 								var newPrd=[{percode:'-1',pername:'暂无',isselect:0}];
 								catalog.xueduan=newPrd;
 							}
-							if(catalogPage.subList.length>0){
-								catalog.kemu=catalogPage.subList;
-							}else if(data.RspData.sub.list.length>0){
-								catalog.kemu=data.RspData.sub.list;
+							if(kemu.length>0){
+								catalog.kemu=kemu;
 							}else{
 								var newKemu=[{subcode:'-1',subname:'暂无',isselect:0}];
 								catalog.kemu=newKemu;
