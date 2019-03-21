@@ -274,7 +274,7 @@
 								var tempM = data1.RspData.userbus[i];
 								for(var a = 0; a < tempM.funcs.length; a++) {
 									var tempFuncs = tempM.funcs[a];
-									if(tempFuncs.ftype == 'zxkt' &&tempM.serstat == 1) {
+									if(tempM.busext!=null &&tempFuncs.ftype == 'jxht' &&tempM.serstat == 1) {
 										tempFlag++;
 									}
 								}
@@ -284,7 +284,7 @@
 							if(tempFlag > 0) {
 								contentData.showFlag = 1;
 								//根据已订购套餐，得到学段
-								if(personal.utp==1 || personal.utp==2){//家长1和学生2身份，学段从已订购套餐取，年级、教版、科目从广西接口取
+								if(personal.utp==1){//家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
 									var catalogObj=getCatalog(data1.RspData.userbus);
 									getGrdList(catalogObj);
 								}else{//老师0身份 学段、年级、教版、科目都从广西接口取
@@ -311,7 +311,7 @@
 			function getGrdList(catalogObj){
 				if(catalogObj.prdList.length>0){
 					var comData = {};
-					if(personal.utp==1 || personal.utp==2){//家长1和学生2身份，学段从已订购套餐取，年级、教版、科目从广西接口取
+					if(personal.utp==1){//家长1，学段从已订购套餐取，年级、教版、科目从广西接口取
 						comData.percode=catalogObj.prdList[0].percode;//学段代码
 					}
 					console.log('comData=='+JSON.stringify(comData));
@@ -322,7 +322,7 @@
 						if(data.RspCode == 0) {
 							if(data.RspData){
 								//学段列表
-								if(personal.utp==0){//家长 1和学生 2身份，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0学段从接口获取
+								if(personal.utp==0 || personal.utp==2){//家长 1，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
 									var per= data.RspData.per.list;
 									var perSelected= data.RspData.per.selected;
 									for(var i = 0; i < per.length; i++) {
