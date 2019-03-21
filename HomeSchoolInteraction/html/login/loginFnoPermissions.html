@@ -269,11 +269,11 @@
 													tempArray.push(tempM1);
 												}
 
-												if(tempArr.length > 0) {
+												if(tempArray.length > 0) {
 													tempArray = tempArray.sort(compare("percode"));
 													tempArray[0].ischeck = 1;
 												}
-												store.set(window.storageKeyName.PRDLIST, tempArr);
+												store.set(window.storageKeyName.PRDLIST, tempArray);
 
 												var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 												personal1.isBdCount = data2.RspData.stus.length; //套餐是否绑定学生
