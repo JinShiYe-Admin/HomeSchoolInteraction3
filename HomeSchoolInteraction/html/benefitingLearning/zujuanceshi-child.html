@@ -292,6 +292,7 @@
 					}
 				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
 					if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
+						console.log('00000000000');
 						header.showFlag = 1;
 						if(userInfo.orderPerCode == header.serverids) {
 
@@ -300,6 +301,7 @@
 							header.serverids = userInfo.orderPerCode;
 						}
 					} else {
+						console.log('00000000001');
 						header.showFlag = 0;
 					}
 				}

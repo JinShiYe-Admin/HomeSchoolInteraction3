@@ -268,10 +268,10 @@
 															var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 															personal1.isBdCount = tempArray.length; //套餐是否绑定学生
 															personal1.orderPerCode = 0; //绑定套餐的对应的学段id
-															if (tempArray.length>0) {
+															if(tempArray.length > 0) {
 																personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
 															}
-															
+
 															//															
 															personal1.userbus = tempArray0.join('|'); // 绑定的套餐
 															console.log('personal1:' + JSON.stringify(personal1));
@@ -334,31 +334,31 @@
 				return value1 - value2; // 升序
 			}
 		}
-		
+
 		//给数组去重
-Array.prototype.unique = function(key) {
-	var arr = this;
-	var n = [arr[0]];
-	for(var i = 1; i < arr.length; i++) {
-		if(key === undefined) {
-			if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
-		} else {
-			inner: {
-				var has = false;
-				for(var j = 0; j < n.length; j++) {
-					if(arr[i][key] == n[j][key]) {
-						has = true;
-						break inner;
+		Array.prototype.unique = function(key) {
+			var arr = this;
+			var n = [arr[0]];
+			for(var i = 1; i < arr.length; i++) {
+				if(key === undefined) {
+					if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
+				} else {
+					inner: {
+						var has = false;
+						for(var j = 0; j < n.length; j++) {
+							if(arr[i][key] == n[j][key]) {
+								has = true;
+								break inner;
+							}
+						}
+					}
+					if(!has) {
+						n.push(arr[i]);
 					}
 				}
 			}
-			if(!has) {
-				n.push(arr[i]);
-			}
+			return n;
 		}
-	}
-	return n;
-}
 
 		//从ios原生得到信息
 		var setUUID = function() {
