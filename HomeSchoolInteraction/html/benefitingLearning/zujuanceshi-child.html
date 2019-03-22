@@ -143,6 +143,13 @@
 			.mui-content {
 				background: white;
 			}
+			
+			.tab-header:before {
+				height: 0 !important;
+			}
+			.tab-header {
+			    box-shadow:0 0 !important;
+			}
 		</style>
 	</head>
 
@@ -164,10 +171,12 @@
 						</div>
 					</transition>
 				</div>
-				<div v-else-if="showFlag==0" style="">
-					<p style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
-					<div v-cloak style="text-align: center;margin:10% auto;">
-						<img src="../../img/noData.png" style="width: 250px;" />
+				<div v-else-if="showFlag==0">
+					<div style="background: #fff;">
+						<p style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
+						<div v-cloak style="text-align: center;margin:10% auto;">
+							<img src="../../img/noData.png" style="width: 250px;" />
+						</div>
 					</div>
 				</div>
 			</div>
