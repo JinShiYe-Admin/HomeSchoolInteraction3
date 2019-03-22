@@ -396,7 +396,7 @@
 							//							userBusData.orderList = [].concat(data1.RspData.userbus);
 						}
 						//4.5.获取用户关联的学生列表
-						getUserUstu();
+						getUserUstu(0);
 					} else {
 						mui.toast(data1.RspTxt);
 					}
@@ -441,6 +441,8 @@
 
 			//4.7.关联用户与学生--绑定套餐和学生
 			function getUnUserStu(model, stuModel) {
+				console.log('model:' + JSON.stringify(model));
+				console.log('stuModel:' + JSON.stringify(stuModel));
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
@@ -460,17 +462,11 @@
 					if(data1.RspCode == 0) {
 						if(stuModel.stuid == 0) {
 							model.stuModel = {};
-							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
-							personal1.isBdCount = 0; //套餐是否绑定学生
-							personal1.orderPerCode = 0; //当前学段id
-							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						} else {
 							model.stuModel = stuModel;
-							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
-							personal1.isBdCount = 1; //套餐是否绑定学生
-							personal1.orderPerCode = model.grdpercode; //当前学段id
-							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						}
+						//4.5.获取用户关联的学生列表
+						getUserUstu(1);
 					} else {
 						mui.toast(data1.RspTxt);
 					}
@@ -478,7 +474,7 @@
 			}
 
 			//4.5.获取用户关联的学生列表--获取套餐已经绑定的学生
-			function getUserUstu() {
+			function getUserUstu(falg) {
 				var enData1 = {};
 				//不需要加密的数据
 				var comData1 = {
@@ -492,11 +488,9 @@
 				postDataEncry('UserUstu', enData1, comData1, 0, function(data1) {
 					console.log('4.5.UserUstu:' + JSON.stringify(data1));
 					events.closeWaiting();
+					var tempArray = [];
 					if(data1.RspCode == 0) {
 						if(data1.RspData) {
-							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
-//							personal1.isBdCount = data1.RspData.stus.length; //套餐是否绑定学生
-							store.set(window.storageKeyName.PERSONALINFO, personal1);
 							for(var i = 0; i < userBusData.orderList.length; i++) {
 								var tempModel = userBusData.orderList[i];
 								console.log('tempModel.forid:' + tempModel.forid);
@@ -510,16 +504,43 @@
 									console.log('tempStuModel.forid:' + tempStuModel.forid);
 									if(tempModel.forid == tempStuModel.forid) {
 										tempModel.stuModel = tempStuModel;
+										var tempM1 = {
+											percode: tempM2.grdpercode,
+											pername: tempM2.grdpername,
+											ischeck: 0
+										}
+										tempArray.push(tempM1);
 									}
 								}
 							}
 						}
-						//4.6.获取用户手机关联的学生列表
-						getUserMstu();
+						if(flag == 0) {
+							//4.6.获取用户手机关联的学生列表
+							getUserMstu();
+						}
 						console.log('userBusData.orderList:' + JSON.stringify(userBusData.orderList));
 					} else {
 						mui.toast(data1.RspTxt);
 					}
+
+					if(tempArray.length > 0) {
+						tempArray = tempArray.unique('percode');
+						tempArray = tempArray.sort(compare("percode"));
+						tempArray[0].ischeck = 1;
+						store.set(window.storageKeyName.PRDLIST, tempArray);
+					}else{
+						store.set(window.storageKeyName.PRDLIST, null);
+					}
+					
+					console.log('tempArray:' + JSON.stringify(tempArray));
+					personal = store.get(window.storageKeyName.PERSONALINFO);
+					personal.isBdCount = tempArray.length; //套餐是否绑定学生
+					personal.orderPerCode = 0; //绑定套餐的对应的学段id
+					if(tempArray.length > 0) {
+						personal.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
+					}
+					console.log('personal:' + JSON.stringify(personal));
+					store.set(window.storageKeyName.PERSONALINFO, personal);
 				});
 			}
 		</script>

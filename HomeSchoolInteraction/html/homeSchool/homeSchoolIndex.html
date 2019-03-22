@@ -736,29 +736,35 @@
 					methods: {
 						clickFunction: function(index) {
 							console.log('index:', index);
+							if (personal.utp == 2) {
+								mui.toast('无权限');
+								return;
+							}
 							if(index == 0) { //学校通知
 								//判断权限,学生、家长
-								if(personal.utp == 1 || personal.utp == 2) {
-									var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+								if(personal.utp == 1) {
+//									var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+//									console.log('personal0.userbus:'+JSON.stringify(personal0.userbus));
 									//判断是否订购家校互通功能，并且状态开启
-									var tempArr = 0;
-									for(var i = 0; i < personal0.userbus.length; i++) {
-										var tempModel = personal0.userbus[i];
-										for(var a = 0; a < tempModel.funcs.length; a++) {
-											var tempM = tempModel.funcs[a];
-											if(tempM.ftype == 'jxht') {
-												//												if(tempM.ftype == 'jxht' && tempModel.serstat == 1) {
-												tempArr++;
-											}
-										}
-									}
-									if(tempArr > 0) {
+//									var tempArr = 0;
+//									for(var i = 0; i < personal0.userbus.length; i++) {
+//										var tempModel = personal0.userbus[i];
+//										if(tempModel.busext != null && tempModel.serstat == 1) {
+//											for(var a = 0; a < tempModel.funcs.length; a++) {
+//												var tempM = tempModel.funcs[a];
+//												if(tempM.ftype == 'jxht') {
+//													tempArr++;
+//												}
+//											}
+//										}
+//									}
+//									if(tempArr > 0) {
 										utils.mOpenWithData("noticeList.html", {
 											index: 1
 										});
-									} else {
-										mui.toast('请关联家校互通套餐');
-									}
+//									} else {
+//										mui.toast('请关联家校互通套餐');
+//									}
 								} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
 									if(personal.grds.length > 0) { //年级领导
 										utils.mOpenWithData("noticeList.html", {
