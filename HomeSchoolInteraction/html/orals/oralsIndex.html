@@ -390,15 +390,6 @@
 				//禁止横屏
 				plus.screen.lockOrientation("portrait-primary");
 
-				//判断登录者是否有上一次记录
-				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
-				var auth = getAuth();
-				var isGetLast = false;
-				if(store.get('orals_auth')) {
-					isGetLast = auth.utid == store.get('orals_auth').utid;
-				}
-				store.set("orals_auth", auth);
-
 				// 获取音频目录对象
 				plus.navigator.checkPermission("RECORD"); //判断录音权限
 				plus.io.resolveLocalFileSystemURL('_doc/', function(entry) {
@@ -420,6 +411,9 @@
 					console.log('Resolve "_doc/" failed: ' + e.message);
 				});
 
+				toChildPage("子页英语听测");
+
+			});
 				//教材改变
 				window.addEventListener("changeBook", function(e) {
 					var catalog_id = store.get("orals_catalog_id");
@@ -434,6 +428,15 @@
 						}
 					}
 				});
+
+				//判断登录者是否有上一次记录
+				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+				var auth = getAuth();
+				var isGetLast = false;
+				if(store.get('orals_auth')) {
+					isGetLast = auth.utid == store.get('orals_auth').utid;
+				}
+				store.set("orals_auth", auth);
 
 				function getInitData() {
 					var book_items = store.get('book_items');
@@ -643,55 +646,53 @@
 					self.opener().close("none");
 				}
 
-				toChildPage("子页英语听测");
 
-				//父——>子页传值方法
-				function toChildPage(text) {
-					var testtt = new Vue({
-						el: '#testtt',
-						data: {
-							showFlag: 0 //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示英语听测，0显示，1显示家长的订购提醒
-						}
-					});
-					var goRecord = document.getElementById("goRecord"); //标题右侧-测评记录div
-					var oralsBody = document.getElementById("oralsBody"); //header以下主体的内容
-					var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy"); //没购买套餐时显示的内容
-					var personal = store.get(window.storageKeyName.PERSONALINFO);
-					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-					var utp = personal.utp;
-					if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
-						console.log('教师学生身份')
+			//父——>子页传值方法
+			function toChildPage(text) {
+				var testtt = new Vue({
+					el: '#testtt',
+					data: {
+						showFlag: 0 //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示英语听测，0显示，1显示家长的订购提醒
+					}
+				});
+				var goRecord = document.getElementById("goRecord"); //标题右侧-测评记录div
+				var oralsBody = document.getElementById("oralsBody"); //header以下主体的内容
+				var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy"); //没购买套餐时显示的内容
+				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+				var utp = personal.utp;
+				if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
+					console.log('教师学生身份')
+					//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+					goRecord.style.display = "block";
+					oralsBody.style.display = "block";
+					oralsBodyNoBuy.style.display = "none";
+					//获取数据
+					getInitData();
+				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
+					console.log('家长身份' + utp);
+					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+						//正常显示界面
 						//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
 						goRecord.style.display = "block";
 						oralsBody.style.display = "block";
 						oralsBodyNoBuy.style.display = "none";
-						//获取数据
-						getInitData();
-					} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
-						console.log('家长身份' + utp);
-						if(personal.userbus.length > 0 && personal.isBdCount > 0) {
-							//正常显示界面
-							//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
-							goRecord.style.display = "block";
-							oralsBody.style.display = "block";
-							oralsBodyNoBuy.style.display = "none";
-							if(personal.orderPerCode == serverids) {
+						if(personal.orderPerCode == serverids) {
 
-							} else {
-								//重新请求界面数据
-								//获取数据
-								getInitData();
-								serverids = personal.orderPerCode;
-							}
-						} else { //提示绑定或未关联学生
-							//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
-							goRecord.style.display = "none";
-							oralsBody.style.display = "none";
-							oralsBodyNoBuy.style.display = "block";
+						} else {
+							//重新请求界面数据
+							//获取数据
+							getInitData();
+							serverids = personal.orderPerCode;
 						}
+					} else { //提示绑定或未关联学生
+						//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
+						goRecord.style.display = "none";
+						oralsBody.style.display = "none";
+						oralsBodyNoBuy.style.display = "block";
 					}
 				}
-			});
+			}
 
 			//副标题
 			var secondTitle = new Vue({

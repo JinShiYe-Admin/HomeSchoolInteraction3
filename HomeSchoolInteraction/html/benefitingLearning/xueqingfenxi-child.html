@@ -224,7 +224,10 @@
 				// plus.navigator.setStatusBarStyle('light');
 				toChildPage("子页学情分析");
 
-				function toChildPage(text) {
+				
+			});
+
+			function toChildPage(text) {
 					console.log("xueqingfenxi-child:" + text)
 					var personalT = store.get(window.storageKeyName.PERSONALINFO);
 					var utp = personalT.utp;
@@ -246,10 +249,9 @@
 						}
 					}
 				}
-			});
 
 			//学情分析
-			var subRadar;
+			var subRadar = echarts.init(document.getElementById("subRadar"));
 			var analysis = new Vue({
 				el: "#analysisTab",
 				data: {
@@ -260,9 +262,9 @@
 					alsList: [],
 					isShowed: false
 				},
-				mounted: function() {
-					subRadar = echarts.init(document.getElementById("subRadar"));
-				},
+//				mounted: function() {
+//					subRadar = echarts.init(document.getElementById("subRadar"));
+//				},
 				methods: {
 					goDetail: function(item) {
 						mui.openWindow({
