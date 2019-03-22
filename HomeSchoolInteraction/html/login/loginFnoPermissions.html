@@ -297,6 +297,7 @@
 																}
 															}
 															if(tempArray.length > 0) {
+																tempArray = tempArray.unique('percode');
 																tempArray = tempArray.sort(compare("percode"));
 																tempArray[0].ischeck = 1;
 															}
@@ -373,6 +374,31 @@
 	             return value1 - value2;     // 升序
 	         }
 	    }
+		
+		//给数组去重
+Array.prototype.unique = function(key) {
+	var arr = this;
+	var n = [arr[0]];
+	for(var i = 1; i < arr.length; i++) {
+		if(key === undefined) {
+			if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
+		} else {
+			inner: {
+				var has = false;
+				for(var j = 0; j < n.length; j++) {
+					if(arr[i][key] == n[j][key]) {
+						has = true;
+						break inner;
+					}
+				}
+			}
+			if(!has) {
+				n.push(arr[i]);
+			}
+		}
+	}
+	return n;
+}
 		
 		var gotoIndex = function() {
 			plus.webview.open('../../html/login/index.html');
