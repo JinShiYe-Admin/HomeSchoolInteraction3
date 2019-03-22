@@ -304,7 +304,10 @@
 															console.log('tempArray:'+JSON.stringify(tempArray));
 															var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 															personal1.isBdCount = tempArray.length; //套餐是否绑定学生
-															personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
+															personal1.orderPerCode = 0; //绑定套餐的对应的学段id
+															if (tempArray.length>0) {
+																personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
+															}
 //															
 															personal1.userbus = tempArray0.join('|'); // 绑定的套餐
 															console.log('personal1:'+JSON.stringify(personal1));

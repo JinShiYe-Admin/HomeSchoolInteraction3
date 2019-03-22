@@ -462,11 +462,13 @@
 							model.stuModel = {};
 							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 							personal1.isBdCount--; //套餐是否绑定学生
+							personal1.orderPerCode = 0; //当前学段id
 							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						} else {
 							model.stuModel = stuModel;
 							var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 							personal1.isBdCount++; //套餐是否绑定学生
+							personal1.orderPerCode = model.grdpercode; //当前学段id
 							store.set(window.storageKeyName.PERSONALINFO, personal1);
 						}
 					} else {
