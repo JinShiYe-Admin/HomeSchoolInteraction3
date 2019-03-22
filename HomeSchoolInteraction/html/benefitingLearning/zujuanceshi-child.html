@@ -361,9 +361,13 @@
 					// 设置目录
 					setMenu: function(data) {
 						var pList=store.get(window.storageKeyName.PRDLIST);
+						
 						if(userInfo.utp==1 && pList!=null  && pList.length>0){
 							var obj={};
 							obj.percode=pList[0].percode;
+							if(data!=undefined){
+								obj.subcode=data.subcode
+							}
 							data=obj;
 						}
 						console.log("设置目录："+JSON.stringify(data));
