@@ -274,29 +274,31 @@
 
 				toChildPage("子页组卷测试");
 
-				function toChildPage(text) {
-					console.log("zujuanceshi-child:" + text)
-					var personalT = store.get(window.storageKeyName.PERSONALINFO);
-					var utp = personalT.utp;
-					if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
-						console.log('教师学生身份')
-						header.showFlag = 1;
-						header.setMenu();
-					} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
-						if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
-							header.showFlag = 1;
-							if(personalT.orderPerCode == header.serverids) {
+			});
 
-							} else {
-								header.setMenu();
-								header.serverids = personalT.orderPerCode;
-							}
+
+			function toChildPage(text) {
+				console.log("zujuanceshi-child:" + text)
+				var personalT = store.get(window.storageKeyName.PERSONALINFO);
+				var utp = personalT.utp;
+				if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
+					console.log('教师学生身份')
+					header.showFlag = 1;
+					header.setMenu();
+				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
+					if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
+						header.showFlag = 1;
+						if(personalT.orderPerCode == header.serverids) {
+
 						} else {
-							header.showFlag = 0;
+							header.setMenu();
+							header.serverids = personalT.orderPerCode;
 						}
+					} else {
+						header.showFlag = 0;
 					}
 				}
-			});
+			}
 
 			//头部
 			var header = new Vue({
