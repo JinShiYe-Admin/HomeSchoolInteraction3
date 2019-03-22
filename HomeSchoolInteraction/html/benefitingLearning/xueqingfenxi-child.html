@@ -350,13 +350,13 @@
 			function toChildPage(text) {
 				console.log("xueqingfenxi-child:" + text)
 				var personalT = store.get(window.storageKeyName.PERSONALINFO);
-				if(personalT.userbus.length > 0) {
+				if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
 					analysis.showFlag = 1;
-					if(personalT.userbus == analysis.serverids) {
+					if(personalT.orderPerCode == analysis.serverids) {
 
 					} else {
 						getAnalysisData();
-						analysis.serverids = personalT.userbus;
+						analysis.serverids = personalT.orderPerCode;
 					}
 				} else {
 					analysis.showFlag = 0;

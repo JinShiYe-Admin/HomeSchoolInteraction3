@@ -444,13 +444,13 @@
 			function toChildPage(text) {
 				console.log("zujuanceshi-child:" + text)
 				var personalT = store.get(window.storageKeyName.PERSONALINFO);
-				if(personalT.userbus.length > 0) {
+				if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
 					header.showFlag = 1;
-					if(personalT.userbus == header.serverids) {
+					if(personalT.orderPerCode == header.serverids) {
 
 					} else {
 						header.setMenu();
-						header.serverids = personalT.userbus;
+						header.serverids = personalT.orderPerCode;
 					}
 				} else {
 					header.showFlag = 0;
