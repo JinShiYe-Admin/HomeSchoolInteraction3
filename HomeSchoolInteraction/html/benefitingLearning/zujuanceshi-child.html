@@ -360,7 +360,13 @@
 					},
 					// 设置目录
 					setMenu: function(data) {
-						console.log("设置目录");
+						var pList=store.get(window.storageKeyName.PRDLIST);
+						if(userInfo.utp==1 && pList!=null  && pList.length>0){
+							var obj={};
+							obj.percode=pList[0].percode;
+							data=obj;
+						}
+						console.log("设置目录："+JSON.stringify(data));
 						testMenu.isLoaded = false;
 						plus.nativeUI.showWaiting();
 						var _this = this;
@@ -372,16 +378,31 @@
 							success: function(res) {
 								console.log(res.data);
 								var rdata = JSON.parse(res.data);
+								
+								
+								var perList=[];
+								var selected='';
+								//学段
+								if(userInfo.utp==0 || userInfo.utp==2){//家长 1，学段从关联学生所在的学段取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
+									perList = rdata.pers;
+									selected = rdata.percode;
+								}else{
+									perList = pList;
+									if(perList!=null  && perList.length>0){
+										selected=perList[0].percode;
+									}
+								}
+								 _this.grade = {
+									selected: selected,
+									list: perList || []
+								}
+								
 								//科目
 								_this.subject = {
 									selected: rdata.subcode,
 									list: rdata.subs || []
 								};
-								//学段
-								_this.grade = {
-									selected: rdata.percode,
-									list: rdata.pers || []
-								}
+								
 								//设置test-menu目录
 								testMenu.menu = rdata.catalogs || [];
 								testMenu.isLoaded = true;
