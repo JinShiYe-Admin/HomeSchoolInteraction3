@@ -146,7 +146,7 @@
 						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
 					};
 					//登录
-//					try{
+					//					try{
 					postDataEncry('Login', enData1, comData1, 0, function(data1) {
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
@@ -219,27 +219,68 @@
 										events.closeWaiting();
 										if(data2.RspCode == 0) {
 											if(data2.RspData) {
+
 												var tempArray = [];
-												for (var i = 0; i < data2.RspData.stus.length; i++) {
-													var tempM = data2.RspData.stus[i];
-													var tempM1 = {
-														percode:tempM.grdpercode,
-														pername:tempM.grdpername,
-														ischeck:0
+												//获取已经订购的套餐，订购的套餐和绑定人员对应
+												//不需要加密的数据
+												var comData3 = {
+													uuid: publicParameter.uuid, //用户设备号
+													uid: personal.uid, //用户账号
+													utoken: personal.utoken, //用户令牌
+													appid: publicParameter.appid //系统所分配的应用ID
+												};
+												events.showWaiting();
+												//发送网络请求，data为网络返回值
+												postDataEncry('GetUserBusFunc', {}, comData3, 0, function(data3) {
+													console.log('4.1.GetUserBusFunc:' + JSON.stringify(data3));
+													events.closeWaiting();
+													if(data3.RspCode == 0) {
+														if(data3.RspData) {
+															var tempArray0 = []; //判断是否有智学课堂套餐
+															for(var i = 0; i < data3.RspData.userbus.length; i++) {
+																var tempM = data3.RspData.userbus[i];
+																for(var a = 0; a < tempM.funcs.length; a++) {
+																	var tempFuncs = tempM.funcs[a];
+																	if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+																		tempArray0.push(tempM.servid);
+																		//再循环绑定的学生，对应forid，同一个套餐
+																		for(var m = 0; m < data2.RspData.stus.length; m++) {
+																			var tempM2 = data2.RspData.stus[m];
+																			if(tempM2.forid == tempM.forid) {
+																				var tempM1 = {
+																					percode: tempM2.grdpercode,
+																					pername: tempM2.grdpername,
+																					ischeck: 0
+																				}
+																				tempArray.push(tempM1);
+																			}
+																		}
+																	}
+																}
+															}
+															if(tempArray.length > 0) {
+																tempArray = tempArray.sort(compare("percode"));
+																tempArray[0].ischeck = 1;
+															}
+															store.set(window.storageKeyName.PRDLIST, tempArray);
+															console.log('tempArray:' + JSON.stringify(tempArray));
+															var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+															personal1.isBdCount = tempArray.length; //套餐是否绑定学生
+															personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
+															//															
+															personal1.userbus = tempArray0.join('|'); // 绑定的套餐
+															console.log('personal1:' + JSON.stringify(personal1));
+															store.set(window.storageKeyName.PERSONALINFO, personal1);
+														} else {
+															personal.packageCount = 0; //套餐是否绑定学生
+															personal.userbus = []; // 绑定的套餐
+															store.set(window.storageKeyName.PERSONALINFO, personal);
+														}
+													} else {
+														mui.toast(data3.RspTxt);
 													}
-													tempArray.push(tempM1);
-												}
-												
-												if (tempArray.length>0) {
-													tempArray=tempArray.sort(compare("percode"));
-													tempArray[0].ischeck = 1;
-												}
-												store.set(window.storageKeyName.PRDLIST, tempArray);
-												
-												var personal1 = store.get(window.storageKeyName.PERSONALINFO);
-												personal1.isBdCount = data2.RspData.stus.length; //套餐是否绑定学生
-												store.set(window.storageKeyName.PERSONALINFO, personal1);
-												utils.hrefSessionStorage('../../html/login/index.html', {});
+													utils.hrefSessionStorage('../../html/login/index.html', {});
+												});
 											} else {
 												var tempModel = {
 													returnFlag: 1,
@@ -263,11 +304,11 @@
 							mui.toast(data1.RspTxt);
 						}
 					});
-//					}catch(e){
-//						utils.hrefSessionStorage('../../html/login/index2.html', {});
-//						plus.nativeUI.closeWaiting();
-//					}
-					
+					//					}catch(e){
+					//						utils.hrefSessionStorage('../../html/login/index2.html', {});
+					//						plus.nativeUI.closeWaiting();
+					//					}
+
 				} else {
 					if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 						mui.toast('网络异常，请检查网络设置！');
@@ -279,15 +320,15 @@
 			});
 
 		}
-		
+
 		//按指定字段，对对象数组进行快速排序
-		 function compare(property){
-	         return function(obj1,obj2){
-	             var value1 = obj1[property];
-	             var value2 = obj2[property];
-	             return value1 - value2;     // 升序
-	         }
-	    }
+		function compare(property) {
+			return function(obj1, obj2) {
+				var value1 = obj1[property];
+				var value2 = obj2[property];
+				return value1 - value2; // 升序
+			}
+		}
 
 		//从ios原生得到信息
 		var setUUID = function() {
