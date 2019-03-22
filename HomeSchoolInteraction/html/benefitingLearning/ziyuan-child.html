@@ -96,7 +96,7 @@
 			<div class="mui-title ziyuan-title">
 				<a v-show="showFlag!=-1" class="mui-icon" style="font-size: 18px;" @click="clickTitle()">{{titleName}}<span class="ziyuan-icon icon-jiaohuan"></span></a>
 			</div>
-			<div v-show="showFlag==1">
+			<div v-cloak v-show="showFlag==1">
 				<div class="tab-header"  @tap="clickCatalog">
 					<div class="header-box ziyuan-catalog">
 						<a class="mui-icon" ><span class="mui-icon-back"></span>{{catalogName}}<span class="mui-icon-forward"></span></a>
@@ -153,7 +153,7 @@
 					</ul>
 				</div>
 			</div>
-			<div v-show="showFlag==0 || showFlag==-1"><!--0 暂无目录  -1 没订购套餐-->
+			<div v-cloak v-show="showFlag==0 || showFlag==-1"><!--0 暂无目录  -1 没订购套餐-->
 					<p  style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
 					<div v-cloak style="text-align: center;margin:10% auto;">
 						<img src="../../img/noData.png" style="width: 250px;" />
@@ -581,17 +581,17 @@
 				var utp = personal.utp;
 				if(utp == 0 || utp == 2) { //如果是教师、学生2身份， 
 					console.log('教师学生身份')
-					//4.1.用户已订购套餐及功能扩展栏目
-					getUserBusFunc();
+					if (personal.orderPerCode == contentData.serverids) {
+					} else{
+						contentData.serverids = personal.orderPerCode;
+						getUserBusFunc();
+					}
 				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生 
 					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
-						contentData.showFlag = 1;
 						if (personal.orderPerCode == contentData.serverids) {
-							console.log('套餐未发生变化');
 						} else{
-							console.log('套餐发生变化');
 							contentData.serverids = personal.orderPerCode;
-							//4.1.用户已订购套餐及功能扩展栏目
+							contentData.pageIndex=1;
 							getUserBusFunc();
 						}
 					} else {

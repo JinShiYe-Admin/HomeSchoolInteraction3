@@ -658,32 +658,38 @@
 				var goRecord = document.getElementById("goRecord"); //标题右侧-测评记录div
 				var oralsBody = document.getElementById("oralsBody"); //header以下主体的内容
 				var oralsBodyNoBuy = document.getElementById("oralsBodyNoBuy"); //没购买套餐时显示的内容
-				var personal = store.get(window.storageKeyName.PERSONALINFO);
+				userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-				var utp = personal.utp;
+				var utp = userInfo.utp;
 				if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
 					console.log('教师学生身份')
 					//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
 					goRecord.style.display = "block";
 					oralsBody.style.display = "block";
 					oralsBodyNoBuy.style.display = "none";
-					//获取数据
-					getInitData();
+					if(userInfo.orderPerCode == serverids) {
+
+					} else {
+						//重新请求界面数据
+						//获取数据
+						getInitData();
+						serverids = userInfo.orderPerCode;
+					}
 				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
 					console.log('家长身份' + utp);
-					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+					if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
 						//正常显示界面
 						//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div
 						goRecord.style.display = "block";
 						oralsBody.style.display = "block";
 						oralsBodyNoBuy.style.display = "none";
-						if(personal.orderPerCode == serverids) {
+						if(userInfo.orderPerCode == serverids) {
 
 						} else {
 							//重新请求界面数据
 							//获取数据
 							getInitData();
-							serverids = personal.orderPerCode;
+							serverids = userInfo.orderPerCode;
 						}
 					} else { //提示绑定或未关联学生
 						//如果没购买套餐或者绑定学生，隐藏以下两个div，显示未订购的div

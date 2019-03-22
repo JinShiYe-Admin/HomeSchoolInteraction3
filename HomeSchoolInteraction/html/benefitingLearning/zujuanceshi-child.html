@@ -279,20 +279,25 @@
 
 			function toChildPage(text) {
 				console.log("zujuanceshi-child:" + text)
-				var personalT = store.get(window.storageKeyName.PERSONALINFO);
-				var utp = personalT.utp;
+				userInfo = store.get(window.storageKeyName.PERSONALINFO);
+				var utp = userInfo.utp;
 				if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
-					console.log('教师学生身份')
-					header.showFlag = 1;
-					header.setMenu();
-				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
-					if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
+					if(userInfo.orderPerCode == header.serverids) {
+
+					} else {
+						console.log('教师学生身份')
 						header.showFlag = 1;
-						if(personalT.orderPerCode == header.serverids) {
+						header.setMenu();
+						header.serverids = userInfo.orderPerCode;
+					}
+				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
+					if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
+						header.showFlag = 1;
+						if(userInfo.orderPerCode == header.serverids) {
 
 						} else {
 							header.setMenu();
-							header.serverids = personalT.orderPerCode;
+							header.serverids = userInfo.orderPerCode;
 						}
 					} else {
 						header.showFlag = 0;
