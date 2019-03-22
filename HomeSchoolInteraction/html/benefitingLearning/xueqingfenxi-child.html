@@ -222,10 +222,30 @@
 				plus.screen.lockOrientation("portrait-primary");
 				//状态栏白色
 				// plus.navigator.setStatusBarStyle('light');
-				if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
-					getAnalysisData();
-				}
 				toChildPage("子页学情分析");
+
+				function toChildPage(text) {
+					console.log("xueqingfenxi-child:" + text)
+					var personalT = store.get(window.storageKeyName.PERSONALINFO);
+					var utp = personalT.utp;
+					if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
+						console.log('教师学生身份')
+						analysis.showFlag = 1;
+						getAnalysisData();
+					} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
+						if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
+							analysis.showFlag = 1;
+							if(personalT.orderPerCode == analysis.serverids) {
+
+							} else {
+								getAnalysisData();
+								analysis.serverids = personalT.orderPerCode;
+							}
+						} else {
+							analysis.showFlag = 0;
+						}
+					}
+				}
 			});
 
 			//学情分析
@@ -234,7 +254,7 @@
 				el: "#analysisTab",
 				data: {
 					showFlag: 0, //判断有没有订购套餐，进行显示九宫格，1正常显示，0显示的订购提醒
-					noData:'您还没有订购套餐或者关联学生，请去个人中心设置',
+					noData: '您还没有订购套餐或者关联学生，请去个人中心设置',
 					serverids: '', //此页面的套餐ids
 					user_name: "",
 					alsList: [],
@@ -345,22 +365,6 @@
 						}
 					}]
 				});
-			}
-
-			function toChildPage(text) {
-				console.log("xueqingfenxi-child:" + text)
-				var personalT = store.get(window.storageKeyName.PERSONALINFO);
-				if(personalT.userbus.length > 0 && personalT.isBdCount > 0) {
-					analysis.showFlag = 1;
-					if(personalT.orderPerCode == analysis.serverids) {
-
-					} else {
-						getAnalysisData();
-						analysis.serverids = personalT.orderPerCode;
-					}
-				} else {
-					analysis.showFlag = 0;
-				}
 			}
 		</script>
 	</body>
