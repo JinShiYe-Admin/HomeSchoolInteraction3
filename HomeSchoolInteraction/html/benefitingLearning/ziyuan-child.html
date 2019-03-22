@@ -578,23 +578,30 @@
 			function toChildPage(text){
 				personal = store.get(window.storageKeyName.PERSONALINFO);
 				console.log("ziyuan-child:"+JSON.stringify(personal))
-				if(personal.userbus.length > 0 && personal.isBdCount > 0) {
-					contentData.showFlag = 1;
-					if (personal.orderPerCode == contentData.serverids) {
-						console.log('套餐未发生变化');
-					} else{
-						console.log('套餐发生变化');
-						contentData.serverids = personal.orderPerCode;
-						//4.1.用户已订购套餐及功能扩展栏目
-						getUserBusFunc();
+				var utp = personal.utp;
+				if(utp == 0 || utp == 2) { //如果是教师、学生2身份， 
+					console.log('教师学生身份')
+					//4.1.用户已订购套餐及功能扩展栏目
+					getUserBusFunc();
+				} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生 
+					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
+						contentData.showFlag = 1;
+						if (personal.orderPerCode == contentData.serverids) {
+							console.log('套餐未发生变化');
+						} else{
+							console.log('套餐发生变化');
+							contentData.serverids = personal.orderPerCode;
+							//4.1.用户已订购套餐及功能扩展栏目
+							getUserBusFunc();
+						}
+					} else {
+						contentData.showFlag = -1;
+						contentData.titleName = '请先订购套餐';
+						contentData.noData = '您还没有订购套餐或者关联学生，请去个人中心设置';
+						setTimeout(function(){
+							mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+						},1000);
 					}
-				} else {
-					contentData.showFlag = -1;
-					contentData.titleName = '请先订购套餐';
-					contentData.noData = '您还没有订购套餐或者关联学生，请去个人中心设置';
-					setTimeout(function(){
-						mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
-					},1000);
 				}
 			}
 		</script>
