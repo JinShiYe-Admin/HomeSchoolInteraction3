@@ -254,7 +254,6 @@
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
 				var prdList = store.get(window.storageKeyName.PRDLIST);
-				console.log('liushuai:'+JSON.stringify(prdList))
 				if(personal.utp==1){//家长身份
 					if(prdList!=null  && prdList.length>0){
 						var pid=prdList[0].percode;
@@ -581,11 +580,11 @@
 				console.log("ziyuan-child:"+JSON.stringify(personal))
 				if(personal.userbus.length > 0 && personal.isBdCount > 0) {
 					contentData.showFlag = 1;
-					if (personal.userbus == contentData.serverids) {
+					if (personal.orderPerCode == contentData.serverids) {
 						console.log('套餐未发生变化');
 					} else{
 						console.log('套餐发生变化');
-						contentData.serverids = personal.userbus;
+						contentData.serverids = personal.orderPerCode;
 						//4.1.用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
 					}

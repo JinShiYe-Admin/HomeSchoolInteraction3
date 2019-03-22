@@ -1306,12 +1306,11 @@
 					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
 						//正常显示界面
 						
-						if(personal.userbus == serverids) {
+						if(personal.orderPerCode == serverids) {
 
 						} else {
 							//重新请求界面数据
-							
-							serverids = personal.userbus;
+							serverids = personal.orderPerCode;
 						}
 					}else{//提示绑定或未关联学生
 						
