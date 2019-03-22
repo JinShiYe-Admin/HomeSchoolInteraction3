@@ -7,7 +7,7 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
-		<!--<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css" />-->
+		<link rel="stylesheet" type="text/css" href="../../css/btlearn/common.css" />
 		<style type="text/css">
 			.mui-bar-nav {
 				z-index: 999;
@@ -138,6 +138,10 @@
 				max-height: 100%;
 				overflow-y: auto;
 			}
+			
+			body,.mui-content{
+				background: white;
+			}
 		</style>
 	</head>
 
@@ -160,7 +164,7 @@
 					</transition>
 				</div>
 				<div v-else-if="showFlag==0" style="">
-					<p style="text-align: center;margin-top: 5px;" v-cloak>您还没有订购套餐或者关联学生，请去个人中心设置</p>
+					<p style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
 					<div v-cloak style="text-align: center;margin:10% auto;">
 						<img src="../../img/noData.png" style="width: 250px;" />
 					</div>
@@ -271,6 +275,7 @@
 				el: "#header",
 				data: {
 					showFlag: 0, //判断有没有订购套餐，进行显示九宫格，1正常显示，0显示的订购提醒
+					noData:'您还没有订购套餐或者关联学生，请去个人中心设置',
 					serverids: '', //此页面的套餐ids
 					grade: {
 						selected: 0,

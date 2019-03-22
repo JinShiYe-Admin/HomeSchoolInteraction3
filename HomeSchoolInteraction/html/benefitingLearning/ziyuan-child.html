@@ -94,9 +94,9 @@
 	<body style="background: white;">
 		<div class="mui-content mui-scroll-wrapper mui-fullscreen" v-cloak style="background: white;" id="contentData">
 			<div class="mui-title ziyuan-title">
-				<a class="mui-icon" style="font-size: 18px;" @click="clickTitle()">{{titleName}}<span class="ziyuan-icon icon-jiaohuan"></span></a>
+				<a v-show="showFlag!=-1" class="mui-icon" style="font-size: 18px;" @click="clickTitle()">{{titleName}}<span class="ziyuan-icon icon-jiaohuan"></span></a>
 			</div>
-			<div v-show="showFlag>0">
+			<div v-show="showFlag==1">
 				<div class="tab-header"  @tap="clickCatalog">
 					<div class="header-box ziyuan-catalog">
 						<a class="mui-icon" ><span class="mui-icon-back"></span>{{catalogName}}<span class="mui-icon-forward"></span></a>
@@ -154,7 +154,7 @@
 				</div>
 			</div>
 			<div v-show="showFlag==0 || showFlag==-1"><!--0 暂无目录  -1 没订购套餐-->
-					<p style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
+					<p  style="text-align: center;margin-top: 50px;" v-cloak>{{noData}}</p>
 					<div v-cloak style="text-align: center;margin:10% auto;">
 						<img src="../../img/noData.png" style="width: 250px;" />
 					</div>
@@ -253,16 +253,19 @@
 
 			//4.1.用户已订购套餐及功能扩展栏目
 			function getUserBusFunc() {
-				var catalogObj = store.get(window.storageKeyName.PRDLIST);
+				var prdList = store.get(window.storageKeyName.PRDLIST);
+				console.log('liushuai:'+JSON.stringify(prdList))
 				if(personal.utp==1){//家长身份
-					if(catalogObj.prdList !=undefined && catalogObj.prdList.length>0){
-						var pid=catalogObj.prdList[0].percode;
-						getGrdList(pid);
+					if(prdList!=null  && prdList.length>0){
+						var pid=prdList[0].percode;
+						getGrdList(pid,prdList);
 					}else{
 						contentData.showFlag = 0;
 						contentData.titleName = '请切换目录';
 						contentData.noData = '该目录下暂无资源，请切换目录';
-						mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+						setTimeout(function(){
+							mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+						},1000);
 						return 0
 					}
 				}else{
@@ -271,7 +274,7 @@
 			}
 
 			//获取分册（年级），科目
-			function getGrdList(pid){
+			function getGrdList(pid,prdList){
 				var comData = {
 					percode: '', //学段代码 
 					subcode: '', //科目代码 
@@ -288,7 +291,7 @@
 					if(data.RspCode == 0) {
 						if(data.RspData){
 							//学段列表
-							if(personal.utp==0 || personal.utp==2){//家长 1，学段从已订购套餐取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
+							if(personal.utp==0 || personal.utp==2){//家长 1，学段从关联学生所在的学段取，年级、教版、科目从广西接口取，教师身份 0、 学生 2身份学段从接口获取
 								var per= data.RspData.per.list;
 								var perSelected= data.RspData.per.selected;
 								for(var i = 0; i < per.length; i++) {
@@ -299,6 +302,8 @@
 	                                }
 	                            }
 								catalogObj.prdList=per;
+							}else{
+								catalogObj.prdList=prdList;
 							}
 							//分册列表
 							var fasc= data.RspData.fasc.list;
@@ -576,7 +581,10 @@
 				console.log("ziyuan-child:"+JSON.stringify(personal))
 				if(personal.userbus.length > 0 && personal.isBdCount > 0) {
 					contentData.showFlag = 1;
-					if (personal.userbus == contentData.serverids) {} else{
+					if (personal.userbus == contentData.serverids) {
+						console.log('套餐未发生变化');
+					} else{
+						console.log('套餐发生变化');
 						contentData.serverids = personal.userbus;
 						//4.1.用户已订购套餐及功能扩展栏目
 						getUserBusFunc();
@@ -585,7 +593,9 @@
 					contentData.showFlag = -1;
 					contentData.titleName = '请先订购套餐';
 					contentData.noData = '您还没有订购套餐或者关联学生，请去个人中心设置';
-//					mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+					setTimeout(function(){
+						mui('#refreshList').pullRefresh().setStopped(true);//暂时禁止滚动  
+					},1000);
 				}
 			}
 		</script>

@@ -328,6 +328,16 @@
 			});
 
 		}
+		
+		//对象数组按指定字段进行排序
+		function compare(property){
+	         return function(obj1,obj2){
+	             var value1 = obj1[property];
+	             var value2 = obj2[property];
+	             return value1 - value2;     // 升序
+	         }
+	    }
+		
 		var gotoIndex = function() {
 			plus.webview.open('../../html/login/index.html');
 			var wvs = plus.webview.all();
