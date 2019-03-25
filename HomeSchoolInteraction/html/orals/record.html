@@ -147,7 +147,7 @@
 			})
 			
 			mui.plusReady(function() {
-				bookItems.innerHTML = getBookNames();
+				bookItems.innerHTML = getBookNames()||"暂无教材";
 				self = plus.webview.currentWebview();
 				
 				getHistoryList();
@@ -160,7 +160,7 @@
 				
 				window.addEventListener("changeBook", function(e) {
 //					ischangeBook = true;
-					bookItems.innerHTML = getBookNames();
+					bookItems.innerHTML = getBookNames()||"暂无教材";
 					historyLlist.p = 1;
 					getHistoryList();
 					mui.fire(self.opener(), "changeBook");
