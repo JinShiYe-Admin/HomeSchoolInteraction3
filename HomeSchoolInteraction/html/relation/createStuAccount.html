@@ -303,8 +303,10 @@
 					methods:{
 						inputFunc:function(ev,stuIndex){//input输入框事件
 							var value=$(ev.target).val();
+							console.log(value);
 							if(value==''){
 								var obj=this.stuList[stuIndex];
+									obj.lgname='';
 									obj.accountIsExists=false;//账号重复是否显示
 									this.$set(this.stuList, stuIndex, obj);
 							}else{
@@ -410,6 +412,8 @@
 							$(ev.target).parent().parent().find('input').each(function(){
 								$(this).val('')
 							});
+							var obj=info.stuList[stuIndex];
+							obj.lgname='';
 							if(info.stuList[stuIndex].lgname==''){}else{
 								var obj=info.stuList[stuIndex];
 								obj.createFormShow=false;

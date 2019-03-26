@@ -229,6 +229,10 @@
 						mui.toast('请输入正确的验证码');
 					} else if(params.userName == '') {
 						mui.toast('请输入昵称');
+					} else if(escape(params.userName).indexOf("%u") !=-1 && params.userName.length>8){
+						mui.toast('中文长度不能超过8位');
+					}else if(params.userName.length>18){
+						mui.toast('字符长度不能超过18位');
 					} else if(params.password == '') {
 						mui.toast('请输入密码');
 					} else if(params.confirmPassword == '') {

@@ -210,7 +210,7 @@
 			<div id='orderData'>
 				<form id="orderForm">
 					<div class="mui-row" style="margin-top: 5px;" v-for="(sysfuncModel,index1) in sysfuncList">
-						<h5 class="mui-content-padded">功能{{index1+1}}附加信息</h5>
+						<h5 class="mui-content-padded">{{sysfuncModel.fname}}</h5>
 						<div class="mui-input-row line" v-for="(fextModel,index2) in sysfuncModel.fext">
 							<a v-if="fextModel.itemcode=='prd'">
 								<label :id="sysfuncModel.fid+fextModel.itemcode+index2+'label'">{{fextModel.itemname}}</label>
