@@ -851,30 +851,30 @@
 					for(var i = 0; i < personal.clss.length; i++) {
 						var tempModel = personal.clss[i];
 						if(flag == 0) {
-							if(tempModel.isms == 1 && tempModel.isms == 0) {
+							if(tempModel.isms == 1 && tempModel.isfinish == 0) {
 								tempFlag++;
 							}
 						} else {
-							if(tempModel.isms == 0) {
-							tempFlag++;
+							if(tempModel.isfinish == 0) {
+								tempFlag++;
+							}
 						}
-					}
 
-				}
-				if(personal.grds.length > 0) {
-					tempFlag++;
-				}
-				//判断个人信息的urolestr参数，第16位，学生管理授权用户
-				var tempStr = personal.urolestr.substr(16, 1);
-				if(tempStr == 1) {
-					return 1;
-				} else {
-					if(tempFlag > 0) {
+					}
+					if(personal.grds.length > 0) {
+						tempFlag++;
+					}
+					//判断个人信息的urolestr参数，第16位，学生管理授权用户
+					var tempStr = personal.urolestr.substr(16, 1);
+					if(tempStr == 1) {
 						return 1;
 					} else {
-						return 0;
+						if(tempFlag > 0) {
+							return 1;
+						} else {
+							return 0;
+						}
 					}
-				}
 				}
 
 				var slider = mui("#slider");
