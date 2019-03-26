@@ -124,35 +124,43 @@
 			console.log('personal********:' + JSON.stringify(personal));
 
 			mui.init();
-			var orders;
 			var curPageData;
-			mui.plusReady(function() {
-				orders.orderDetail = utils.getDataFromUrl(window.location.href);
-				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl, 1);
-			});
-
 			var orders = new Vue({
 				el: '#orders',
 				data: {
-					orderDetail: {}
+					orderDetail: {},
+					orderFlag:''//套餐订购状态,如果存在已订购未停用的套餐，该字段将存储该套餐的serviceid值
 				}
+			});
+			
+			mui.plusReady(function() {
+				orders.orderDetail = utils.getDataFromUrl(window.location.href)[0];
+				orders.orderFlag = utils.getDataFromUrl(window.location.href)[1];
+				orders.orderDetail.imgUrl = setImg(orders.orderDetail.imgUrl, 1);
 			});
 
 			//套餐订购
 			function placeOrder() {
-				if(orders.orderDetail.serverids.length == 0) { //没有订购
-					if(orders.orderDetail.orderFlag == 0) {
-						utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);
-					} else {
-						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
-					}
-				} else { //有订购
-					if(orders.orderDetail.orderFlag == 0) {
-						mui.toast('只允许订购一个套餐');
-					} else {
-						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
-					}
+				
+				if(orders.orderFlag!='' && orders.orderFlag!=orders.orderDetail.serviceid) {//套餐已订购，点击了其他套餐的订购或续订
+					mui.toast('只允许订购一个套餐');
+				}else{//订购
+					utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);
 				}
+				
+//				if(orders.orderDetail.serverids.length == 0) { //没有订购
+//					if(orders.orderDetail.orderFlag == 0) {
+//						utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", orders.orderDetail);
+//					} else {
+//						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
+//					}
+//				} else { //有订购
+//					if(orders.orderDetail.orderFlag == 0) {
+//						mui.toast('只允许订购一个套餐');
+//					} else {
+//						utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", orders.orderDetail);
+//					}
+//				}
 			}
 		</script>
 	</body>

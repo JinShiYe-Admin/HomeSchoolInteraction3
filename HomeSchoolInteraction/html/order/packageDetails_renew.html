@@ -205,9 +205,10 @@
 			});		
 			
 			var  renew;
-			var curPageData;
+			var curPageData,orderFlag;
 			mui.plusReady(function() {
-					curPageData = utils.getDataFromUrl(window.location.href);
+					curPageData = utils.getDataFromUrl(window.location.href)[0];
+					orderFlag = utils.getDataFromUrl(window.location.href)[1];
 					console.log('curPage********:' + JSON.stringify(curPageData));
 					renew =new Vue({
 						el:'#renews'
@@ -217,6 +218,7 @@
 							,canTap:true //下拉刷新时，上拉加载能否使用 true
 							,orderRecordList:[]
 							,curPageData:curPageData
+							,orderFlag:orderFlag//套餐订购状态,如果存在已订购未停用的套餐，该字段将存储该套餐的serviceid值
 						}
 					});
 					getRenewList();
@@ -224,8 +226,12 @@
 			
 			//套餐续订
 			function packageRenew(){
-				
-				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+				if(renew.orderFlag!='' && renew.orderFlag!=renew.curPageData.serviceid) {//套餐已订购，点击了其他套餐的订购或续订
+					mui.toast('只允许订购一个套餐');
+				}else{//订购
+					utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
+				}
+//				utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", curPageData);
 			}
 			
 			 
