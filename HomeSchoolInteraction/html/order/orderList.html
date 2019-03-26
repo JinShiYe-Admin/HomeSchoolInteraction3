@@ -201,7 +201,11 @@
 						} else if(orders.orderFlag!='' && orders.orderFlag!=item.serviceid) {//套餐已订购，点击了其他套餐的订购或续订
 							mui.toast('只允许订购一个套餐');
 						}else if(orders.orderFlag==''){//订购
-							utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
+							if(item.orderFlag == 0) {
+								utils.mOpenWithData("../../html/order/packageOrder_paymentPage_new.html", item);
+							} else {
+								utils.mOpenWithData("../../html/order/packageRenew_paymentPage.html", item);
+							}
 						}
 //						if (orders.serverids.length==0) {//没有订购
 //							if(item.orderFlag == 0) {
