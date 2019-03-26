@@ -111,7 +111,7 @@ var events = (function(mod) {
 			genstrs: genstrs, //发送对象的订购ID串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
 			msgtype: msgtype, //信息类型，学校通知,年级通知,班级通知,作业,在校表现,OA通知等
 			msglv: 1, //信息级别，1-9的数字,数字越小,紧急度越高,排队越靠前
-			senduser: personal.utid, //信息发送者，发送人的账号
+			senduser: personal.uid, //信息发送者，发送人的账号
 			sendschid: personal.schid, //信息发送者学校ID，发送人所在的SCHID
 			frmsys: '校讯通APP', //来自平台，填写来自平台,如校讯通PC,校讯通APP,智慧校园APP
 			isdelay: 0, //是否为延时短信，0为正常短信,1为延时短信

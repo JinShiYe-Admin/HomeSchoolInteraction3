@@ -736,35 +736,35 @@
 					methods: {
 						clickFunction: function(index) {
 							console.log('index:', index);
-							if (personal.utp == 2) {
+							if(personal.utp == 2) {
 								mui.toast('无权限');
 								return;
 							}
 							if(index == 0) { //学校通知
 								//判断权限,学生、家长
 								if(personal.utp == 1) {
-//									var personal0 = store.get(window.storageKeyName.PERSONALINFO);
-//									console.log('personal0.userbus:'+JSON.stringify(personal0.userbus));
+									//									var personal0 = store.get(window.storageKeyName.PERSONALINFO);
+									//									console.log('personal0.userbus:'+JSON.stringify(personal0.userbus));
 									//判断是否订购家校互通功能，并且状态开启
-//									var tempArr = 0;
-//									for(var i = 0; i < personal0.userbus.length; i++) {
-//										var tempModel = personal0.userbus[i];
-//										if(tempModel.busext != null && tempModel.serstat == 1) {
-//											for(var a = 0; a < tempModel.funcs.length; a++) {
-//												var tempM = tempModel.funcs[a];
-//												if(tempM.ftype == 'jxht') {
-//													tempArr++;
-//												}
-//											}
-//										}
-//									}
-//									if(tempArr > 0) {
-										utils.mOpenWithData("noticeList.html", {
-											index: 1
-										});
-//									} else {
-//										mui.toast('请关联家校互通套餐');
-//									}
+									//									var tempArr = 0;
+									//									for(var i = 0; i < personal0.userbus.length; i++) {
+									//										var tempModel = personal0.userbus[i];
+									//										if(tempModel.busext != null && tempModel.serstat == 1) {
+									//											for(var a = 0; a < tempModel.funcs.length; a++) {
+									//												var tempM = tempModel.funcs[a];
+									//												if(tempM.ftype == 'jxht') {
+									//													tempArr++;
+									//												}
+									//											}
+									//										}
+									//									}
+									//									if(tempArr > 0) {
+									utils.mOpenWithData("noticeList.html", {
+										index: 1
+									});
+									//									} else {
+									//										mui.toast('请关联家校互通套餐');
+									//									}
 								} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
 									if(personal.grds.length > 0) { //年级领导
 										utils.mOpenWithData("noticeList.html", {
@@ -805,27 +805,35 @@
 								}
 							} else if(index == 6) { //学生行为
 								console.log('personal.utp====' + personal.utp)
+								if(studentQuanxian(1) == 0) {
+									mui.toast('无权限');
+									return;
+								}
 								utils.mOpenWithData("../../html/studentManage/student-action.html", {});
 							} else if(index == 7) { //学生考勤
 								console.log('personal.utp====' + personal.utp)
+								if(studentQuanxian(1) == 0) {
+									mui.toast('无权限');
+									return;
+								}
 								utils.mOpenWithData("../../html/studentManage/student-attendance.html", {});
 							} else if(index == 8) { //谈话记录
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0) {
+								if(studentQuanxian(0) == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-talkRecord.html", {});
 							} else if(index == 9) { //量化考评
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0) {
+								if(studentQuanxian(0) == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-review.html", {});
 							} else if(index == 10) { //评语
 								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian() == 0) {
+								if(studentQuanxian(0) == 0) {
 									mui.toast('无权限');
 									return;
 								}
@@ -837,29 +845,36 @@
 					}
 				});
 
-				var studentQuanxian = function() {
+				var studentQuanxian = function(flag) {
 					var personal = store.get(window.storageKeyName.PERSONALINFO);
 					var tempFlag = 0;
 					for(var i = 0; i < personal.clss.length; i++) {
 						var tempModel = personal.clss[i];
-						if(tempModel.isms == 1) {
+						if(flag == 0) {
+							if(tempModel.isms == 1 && tempModel.isms == 0) {
+								tempFlag++;
+							}
+						} else {
+							if(tempModel.isms == 0) {
 							tempFlag++;
 						}
 					}
-					if(personal.grds.length > 0) {
-						tempFlag++;
-					}
-					//判断个人信息的urolestr参数，第16位，学生管理授权用户
-					var tempStr = personal.urolestr.substr(16, 1);
-					if(tempStr == 1) {
+
+				}
+				if(personal.grds.length > 0) {
+					tempFlag++;
+				}
+				//判断个人信息的urolestr参数，第16位，学生管理授权用户
+				var tempStr = personal.urolestr.substr(16, 1);
+				if(tempStr == 1) {
+					return 1;
+				} else {
+					if(tempFlag > 0) {
 						return 1;
 					} else {
-						if(tempFlag > 0) {
-							return 1;
-						} else {
-							return 0;
-						}
+						return 0;
 					}
+				}
 				}
 
 				var slider = mui("#slider");
