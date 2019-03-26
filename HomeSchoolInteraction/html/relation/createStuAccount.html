@@ -211,7 +211,7 @@
 												</template>
 												<template v-else>
 													<button class="mui-btn mui-btn-dgr" type="button" @click="submitStuAccount($event,stuIndex)">确认</button>
-													<button class="mui-btn mui-btn-primary jccf-btn" type="button"  @click="cancel($event,stuIndex)">取消</button>
+													<button class="mui-btn mui-btn-primary jccf-btn" type="button"  @click="cancel($event,stuIndex,'cancel')">取消</button>
 												</template>
 											</div>
 										</form>
@@ -303,7 +303,6 @@
 					methods:{
 						inputFunc:function(ev,stuIndex){//input输入框事件
 							var value=$(ev.target).val();
-							console.log(value);
 							if(value==''){
 								var obj=this.stuList[stuIndex];
 									obj.lgname='';
@@ -328,7 +327,7 @@
 								}
 								var obj=this.stuList[stuIndex];
 								obj.lgname=endStr;
-								this.$set(this.stuList, stuIndex, obj);
+//								this.$set(this.stuList, stuIndex, obj);
 							}
 						},
 						modifyStu:function(ev,stuIndex){//修改关联
@@ -353,7 +352,7 @@
 								}else if(formobj.password.length > 18 || formobj.password.length < 6){//密码长度验证
 									mui.toast('密码长度需为6到18个字符');
 								}else if(!checkPass(formobj.password)){//密码正则验证
-									mui.toast('只能输入数字和字母');
+									mui.toast('只能输入数字和字母的组合');
 								}else if(!(formobj.password==formobj.repassword)){//两次密码验证
 									mui.toast('两次输入的密码不一致');
 								}else{
@@ -361,8 +360,8 @@
 									UpStuInfo(stuObj.stuid,formobj.password,'upw',function(){
 										mui.toast('密码修改成功');
 										stuObj.upw=formobj.password;
-										parent.$set(parent.stuList, stuIndex, stuObj);
-										parent.$options.methods.cancel(ev,stuIndex);
+//										parent.$set(parent.stuList, stuIndex, stuObj);
+										parent.$options.methods.cancel(ev,stuIndex,'modifySuccess');
 										console.log(JSON.stringify(parent.stuList))
 									},function(){
 										mui.toast('密码修改失败');
@@ -394,7 +393,7 @@
 											stuObj.lgname=formobj.account;
 											stuObj.upw=formobj.password;
 											parent.$set(parent.stuList, stuIndex, stuObj);
-											parent.$options.methods.cancel(ev,stuIndex);
+											parent.$options.methods.cancel(ev,stuIndex,'createSuccess');
 											console.log(JSON.stringify(parent.stuList))
 											stuObj.accountIsExists=false;
 										},function(){
@@ -408,13 +407,16 @@
 								}
 							}
 						},
-						cancel:function(ev,stuIndex){//点击取消按钮
+						cancel:function(ev,stuIndex,lx){//点击取消按钮
 							$(ev.target).parent().parent().find('input').each(function(){
 								$(this).val('')
 							});
 							var obj=info.stuList[stuIndex];
-							obj.lgname='';
-							if(info.stuList[stuIndex].lgname==''){}else{
+							if(obj.isNewStu){
+								obj.lgname=null;
+							}
+							if(info.stuList[stuIndex].lgname=='' || info.stuList[stuIndex].lgname==null){
+							}else{
 								var obj=info.stuList[stuIndex];
 								obj.createFormShow=false;
 								Vue.set(info.stuList, stuIndex, obj);
@@ -493,9 +495,11 @@
 									if(stu.lgname==''||stu.lgname==null){
 										stu['createFormShow']=true;//创建学生账号表单是否显示
 										stu['disabled']=false;//学生账号input是否可编辑
+										stu.isNewStu=true;//是否是新学生，需要创建账号
 									}else{
 										stu['createFormShow']=false;
 										stu['disabled']=true;
+										stu.isNewStu=false;
 									}
 								    stuList.push(stu);
 							　　}
