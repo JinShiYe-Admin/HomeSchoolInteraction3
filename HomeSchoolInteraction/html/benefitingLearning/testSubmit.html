@@ -109,13 +109,9 @@
 								//刷新其他页面数据
 								var allWv = plus.webview.all();
 								for(var i=0;i<allWv.length;i++) {
-									// 刷新测试首页
-									if(allWv[i].getURL().indexOf("ycyxIndex.html")!=-1){
-										// mui.fire(allWv[i], "checkFinish", {catalogId: sbData.catalogId});
-										mui.fire(allWv[i], "refresh", {
-											nodeId: res_data.report.book_catalog_id,
-											isFinish: res_data.report.is_finish
-										});
+									// 刷新学情分析页
+									if(allWv[i].getURL().indexOf("xueqingfenxi-child.html")!=-1){
+										allWv[i].evalJS('analysis.serverids="";toChildPage("刷新学情分析页");');
 									}
 								}
 								
@@ -127,7 +123,7 @@
 								bl_testing && bl_testing.close('none');
 								//echarts 重新绘图
 								var als_detail = plus.webview.getWebviewById('bl-analysis-detail');
-								als_detail && mui.fire(als_detail, "rePain");
+								als_detail && mui.fire(als_detail, "refresh");
 								
 								//结果页
 								var bl_result = plus.webview.getWebviewById('bl-test-result');

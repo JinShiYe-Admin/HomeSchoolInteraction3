@@ -92,6 +92,11 @@
 			.mui-active #errList #pullrefreshBox {
 				overflow-y: auto;
 			}
+			
+			.action-box .overflow-cover {
+				    height: 0.15rem !important;
+				    top: -0.8rem !important;;
+				}
 		</style>
 	</head>
 
@@ -135,7 +140,7 @@
 		</nav>-->
 
 		<div class="mui-content">
-			<div id="oralsBody">
+			<div id="oralsBody" style="height: 100%;">
 				<!--校讯通菜单-->
 				<div class="top-tab mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 					<a class="mui-control-item mui-active" data-type="word" href="#orals-test">
@@ -152,7 +157,7 @@
 				<!--副标题-->
 				<div id="second-title" class="second-title mui-text-center" :class="{'no-second': !isContentTitle}">
 					<div class="book-items-box" @tap.stop="bookSelect()" @touchend.prevent v-cloak>
-						<div id="bookItems">{{bookItems}}</div>
+						<div id="bookItems">{{bookItems||"暂无教材"}}</div>
 						<a>
 							<svg class="icon" aria-hidden="true">
 								<use xlink:href="#icon-icon-change"></use>
@@ -352,7 +357,7 @@
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
 
@@ -432,6 +437,7 @@
 				//判断登录者是否有上一次记录
 				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var auth = getAuth();
+				// var auth = {};
 				var isGetLast = false;
 				if(store.get('orals_auth')) {
 					isGetLast = auth.utid == store.get('orals_auth').utid;
@@ -459,6 +465,34 @@
 						//教材
 						var auto_book = res.data || {};
 						console.log("教材:" + JSON.stringify(auto_book));
+						// 学段限权
+						var prdLimit = store.get(window.storageKeyName.PRDLIST)||[];
+						console.log("学段限权: "+JSON.stringify(prdLimit));
+						auto_book.per.list = prdLimit;
+						var per_selected;
+// 						auto_book.per.list = auto_book.per.list.filter(function(v){
+// 							return prdLimit.indexOf(v.percode)!=-1;
+// 						});
+						auto_book.per.list.forEach(function(v){
+							if(v.percode==auto_book.per.selected) per_selected=v.percode;
+						});
+						if(!per_selected) {
+							auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
+							if(auto_book.per.selected) {
+								getBook({
+									percode: auto_book.per.selected,
+									subcode: auto_book.sub.selected,
+									matercode: auto_book.mater.selected,
+									fasccode: auto_book.fasc.selected
+								}, ser);
+							}else{
+								auto_book.sub = {list: [], selected: null};
+								auto_book.mater = {list: [], selected: null};
+								auto_book.fasc = {list: [], selected: null};
+							}
+						}
+						console.log("限权后的教材："+JSON.stringify(auto_book));
+						
 						//获取目录
 						if(ser) {
 							getCatalog(auto_book, ser);
@@ -515,15 +549,22 @@
 
 					}, function(res) {
 						//获取不到 目录和教材 时
-						console.log(JSON.stringify(res));
-						auto_book.ser = {
-							list: [],
-							selected: null
-						};
-						store.set("book_items", auto_book);
-						store.set("orals_menu", []);
-						store.set("orals_catalog", []);
-						plus.nativeUI.closeWaiting();
+						var book_items = store.get('book_items');
+						var per_index=0;
+						for(var i=0; i<book_items.per.list.length; i++) {
+							if(book_items.per.list[i].percode==book_items.per.selected) per_index = i;
+						}
+						per_index++;
+						if(per_index<book_items.per.list.length-1){
+							book_items.per.selected = book_items.per.list[per_index].percode;
+							store.set('book_items', book_items);
+							getInitData();
+						}else{
+							store.set("book_items", auto_book);
+							store.set("orals_menu", []);
+							store.set("orals_catalog", []);
+							plus.nativeUI.closeWaiting();
+						}
 					}, function() {
 						plus.nativeUI.closeWaiting();
 						netErrorTip();
@@ -1149,11 +1190,12 @@
 					audioStop: function() {
 						this.isPlaying = false;
 						!audioEle.ended && audioEle.pause();
-						document.querySelectorAll('.btns .btn-voice, .btns .btn-play').forEach(function(v) {
-							if(v.classList.contains('active')) {
-								v.classList.remove('active');
+						var playBtns = document.querySelectorAll('.btns .btn-voice, .btns .btn-play');
+						for(var i=0;i<playBtns.length;i++){
+							if(playBtns[i].classList.contains('active')) {
+								playBtns[i].classList.remove('active');
 							}
-						});
+						}
 					},
 					//点击录音
 					record: function(cur, e) {
@@ -1336,9 +1378,9 @@
 					});
 			}
 
-			//			resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];
-			//			testVue.list = [{"symbol":"ɪ'reɪzə","relative_id":0,"orals_id":15608,"integrity_score":0,"create_time":"2018-12-17 11:14:38","words":"eraser","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"橡皮","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/b179be8e19444d82a5bdbb6ab4a50494.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:fdxqDXdo09BDj8aV9B_hEdujB1g=","total_score":null,"id":15608,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'pensl","relative_id":0,"orals_id":15607,"integrity_score":0,"create_time":"2018-12-07 16:49:49","words":"pencil","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"铅笔","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/a02121e9e6234feea5341954295336bf.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:9dByQHYkSj4O-aSUaxujSjJIw80=","total_score":null,"id":15607,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'ruːlə","relative_id":0,"orals_id":15606,"integrity_score":0,"create_time":"2018-12-07 16:31:50","words":"ruler","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"尺子","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/617d511b40244892939ff102964b014a.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:-3iWp2PImbcH1rFTTuhmyu_ZWVI=","total_score":null,"id":15606,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"ˈkreɪən","relative_id":null,"orals_id":null,"integrity_score":null,"create_time":null,"words":"crayon","relative_type":null,"content":null,"time_len":3,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"蜡笔","accuracy_score":null,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/e335bec0ab064f0da1d035167c17ebb3.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:0cDN7YfyaLaJYOQWOn1shPIYbdo=","total_score":null,"id":15609,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"}];
-			//			testVue.index = 0;
+// 						resultVue.model = [{title:"abcd", list: [{words: "chicken",total_score: 3.3,category: "read_word"},{words: "chicken",total_score: 3.3,category: "read_word"}]}];
+// 						testVue.list = [{"symbol":"ɪ'reɪzə","relative_id":0,"orals_id":15608,"integrity_score":0,"create_time":"2018-12-17 11:14:38","words":"eraser","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"橡皮","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/b179be8e19444d82a5bdbb6ab4a50494.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:fdxqDXdo09BDj8aV9B_hEdujB1g=","total_score":null,"id":15608,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'pensl","relative_id":0,"orals_id":15607,"integrity_score":0,"create_time":"2018-12-07 16:49:49","words":"pencil","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"铅笔","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/a02121e9e6234feea5341954295336bf.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:9dByQHYkSj4O-aSUaxujSjJIw80=","total_score":null,"id":15607,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"'ruːlə","relative_id":0,"orals_id":15606,"integrity_score":0,"create_time":"2018-12-07 16:31:50","words":"ruler","relative_type":0,"content":null,"time_len":3,"fluency_score":0,"record_url":null,"school_id":100102,"user_id":10006,"translations":"尺子","accuracy_score":0,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/617d511b40244892939ff102964b014a.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:-3iWp2PImbcH1rFTTuhmyu_ZWVI=","total_score":null,"id":15606,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"},{"symbol":"ˈkreɪən","relative_id":null,"orals_id":null,"integrity_score":null,"create_time":null,"words":"crayon","relative_type":null,"content":null,"time_len":3,"fluency_score":null,"record_url":null,"school_id":null,"user_id":null,"translations":"蜡笔","accuracy_score":null,"audio_url":"http://qn-edures.jiaobaowang.net/zypt/kouyupingce/e335bec0ab064f0da1d035167c17ebb3.mp3?e=1546832620&token=SDtQBeriWyCnNor8FnDFuRYWuvlsZ1xbPYQkLFT0:0cDN7YfyaLaJYOQWOn1shPIYbdo=","total_score":null,"id":15609,"orals_create_time":"2018-10-10 15:30:30","category":"read_word","book_catalog_id":29859,"key":"1082108973726826496"}];
+// 						testVue.index = 0;
 		</script>
 	</body>
 

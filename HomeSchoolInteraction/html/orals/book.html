@@ -8,6 +8,11 @@
 		<link href="../../css/mui.min.css" rel="stylesheet" />
 		<script src="../../js/orals/layout.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../css/orals/styles.css"/>
+		<style type="text/css">
+			p {
+				margin: 0;
+			}
+		</style>
 	</head>
 
 	<body style="background-color: #FFFFFF;">
@@ -23,13 +28,14 @@
 			<div id="bookSelect" class="book-select" v-cloak>
                 <p class="title">学段</p>
                 <div class="radio-group mui-row">
-                    <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4" v-if="item.enabled">
+                    <div v-for="(item, index) in items.per.list" :key="index" class="mui-col-xs-4">
                         <label class="radio-item">
 				    		<input type="radio" v-model="items.per.selected" name="book_per" :value="item.percode" 
 				    			@change="itemChange('per')" />
 				    		<span>{{item.pername}}</span>
 					    </label>
                     </div>
+					<p v-if="!items.per.list.length">暂无</p>
                 </div>
                 <p class="title">科目</p>
                 <div class="radio-group mui-row">
@@ -40,6 +46,7 @@
 				    		<span>{{item.subname}}</span>
 					    </label>
                     </div>
+					<p v-if="!items.sub.list.length">暂无</p>
                 </div>
                 <p class="title">教版</p>
                 <div class="radio-group mui-row">
@@ -50,6 +57,7 @@
 				    		<span>{{item.matername}}</span>
 					    </label>
                     </div>
+					<p v-if="!items.mater.list.length">暂无</p>
                 </div>
                 <p class="title">年级</p>
                 <div class="radio-group mui-row">
@@ -60,6 +68,7 @@
 				    		<span>{{item.fascname}}</span>
 					    </label>
                     </div>
+					<p v-if="!items.fasc.list.length">暂无</p>
                 </div>
                 <p class="title" v-if="items.ser">分册</p>
                 <div class="radio-group mui-row" v-if="items.ser">
@@ -70,6 +79,7 @@
 				    		<span>{{item.sername}}</span>
 					    </label>
                     </div>
+					<p v-if="!items.ser.list.length">暂无</p>
                 </div>
             </div>
 		</div>
@@ -118,21 +128,32 @@
                 		params[item+"code"] = this.items[item].selected;
 //              		console.log(JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
+                			var prdLimit = store.get(window.storageKeyName.PRDLIST)||[];
+                			console.log("限权："+JSON.stringify(prdLimit));
                 			var rd = res.data;
-//              			console.log(JSON.stringify(rd));
-							_this.items.per = rd.per;
+                			console.log("教材："+JSON.stringify(rd));
+                			// 学段限权
+                			// _this.items.per = rd.per;
+							_this.items.per.list = prdLimit;
+//                 			_this.items.per.list = rd.per.list.filter(function(v){
+//                 				return prdLimit.indexOf(v.percode)!=-1;
+//                 			});
+                			var per_selected = _this.items.per.list.filter(function(v){
+                				return v.percode == rd.per.selected;
+                			});
+                			_this.items.per.selected = per_selected[0]?per_selected[0].percode:"";
+                			if(!_this.items.per.selected) {
+                				_this.items.sub = {list:[]};
+                				_this.items.mater = {list:[]};
+                				_this.items.fasc = {list:[]};
+                				return false;
+                			}
+							
 							_this.items.sub = rd.sub;
 							_this.items.mater = rd.mater;
-//							var has_mater = rd.mater.list.some(function(v){return v.matercode==_this.items.mater.selected});
-//							if(!has_mater){
-//								_this.items.mater = rd.mater;
-//							}
-							var has_fasc = rd.fasc.list.some(function(v){return v.fasccode==_this.items.fasc.selected});
-							if(!has_fasc){
-								_this.items.fasc = rd.fasc;
-							}
-							
-							if(rd.per.selected&&rd.sub.selected&&rd.mater.selected&&rd.fasc.selected){
+							_this.items.fasc = rd.fasc;
+							console.log("限权后的教材："+JSON.stringify(_this.items));
+							if(rd.sub.selected&&rd.mater.selected&&_this.items.fasc.selected){
 								_this.fascChange();
 							}else{
 								_this.items.ser = {list:[]};
@@ -195,7 +216,12 @@
 				
 				//当前教材	
 				var s_items = store.get('book_items');
-				book.items = s_items;
+				console.log(JSON.stringify(s_items))
+				book.items.mater = s_items.mater||{list:[]};
+				book.items.sub = s_items.sub||{list:[]};
+				book.items.fasc = s_items.fasc||{list:[]};
+				book.items.per = s_items.per||{list:[]};
+				book.items.ser = s_items.ser||{list:[]};
 				book.itemChange("mater");
 				
 				//点击 完成
