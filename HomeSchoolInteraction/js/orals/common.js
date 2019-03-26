@@ -82,7 +82,7 @@ function goResult(extras) {
 //获取教材名
 function getBookNames() {
 	var book_items = store.get("book_items");
-	if(!book_items){
+	if(!book_items||!book_items.sub||!book_items.mater||!book_items.per||!book_items.fasc||!book_items.ser){
 		return "";
 	}else{
 		var book = {

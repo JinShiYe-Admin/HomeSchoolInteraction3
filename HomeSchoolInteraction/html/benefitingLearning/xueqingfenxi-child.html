@@ -233,7 +233,7 @@
 					var utp = userInfo.utp;
 					if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
 						if(userInfo.orderPerCode == analysis.serverids) {
-
+							
 						} else {
 							console.log('教师学生身份')
 							analysis.showFlag = 1;
@@ -306,9 +306,12 @@
 			}
 
 			//生成雷达图
+			var subRadar;
 			function getSubRadar() {
-				var subRadar = echarts.init(document.getElementById("subRadar"));
-				subRadar.resize();
+				console.log("生成雷达图");
+				if(subRadar) subRadar.clear();
+				subRadar = echarts.init(document.getElementById("subRadar"));
+				// subRadar.resize();
 				var indicator = [],
 					radar_value = [];
 				analysis.alsList.forEach(function(v) {
