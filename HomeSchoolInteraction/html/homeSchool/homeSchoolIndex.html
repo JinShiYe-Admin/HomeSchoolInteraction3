@@ -507,7 +507,7 @@
 													}
 												}
 											}
-											console.log('tempArray:'+JSON.stringify(tempArray));
+											console.log('tempArray:' + JSON.stringify(tempArray));
 											if(tempArray.length > 0) {
 												tempArray = tempArray.unique('percode');
 												tempArray = tempArray.sort(compare("percode"));
@@ -535,11 +535,25 @@
 											personal.packageCount = 0; //套餐是否绑定学生
 											personal.userbus = []; // 绑定的套餐
 											store.set(window.storageKeyName.PERSONALINFO, personal);
+											contentData.showFlag = -1;
 										}
 									} else {
 										mui.toast(data3.RspTxt);
 									}
 								});
+							} else {
+								var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+								personal1.isBdCount = 0; //套餐是否绑定学生
+								personal1.orderPerCode = 0; //绑定套餐的对应的学段id
+								//
+								console.log('personal1:' + JSON.stringify(personal1));
+								store.set(window.storageKeyName.PERSONALINFO, personal1);
+								if(personal1.userbus.length > 0 && personal1.isBdCount > 0) {
+									contentData.showFlag = 0;
+								} else {
+									console.log('00000000001');
+									contentData.showFlag = -1;
+								}
 							}
 						}
 					});
@@ -593,38 +607,38 @@
 					//					});
 				}
 				//按指定字段，对对象数组进行快速排序
-		function compare(property) {
-			return function(obj1, obj2) {
-				var value1 = obj1[property];
-				var value2 = obj2[property];
-				return value1 - value2; // 升序
-			}
-		}
+				function compare(property) {
+					return function(obj1, obj2) {
+						var value1 = obj1[property];
+						var value2 = obj2[property];
+						return value1 - value2; // 升序
+					}
+				}
 
-		//给数组去重
-		Array.prototype.unique = function(key) {
-			var arr = this;
-			var n = [arr[0]];
-			for(var i = 1; i < arr.length; i++) {
-				if(key === undefined) {
-					if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
-				} else {
-					inner: {
-						var has = false;
-						for(var j = 0; j < n.length; j++) {
-							if(arr[i][key] == n[j][key]) {
-								has = true;
-								break inner;
+				//给数组去重
+				Array.prototype.unique = function(key) {
+					var arr = this;
+					var n = [arr[0]];
+					for(var i = 1; i < arr.length; i++) {
+						if(key === undefined) {
+							if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
+						} else {
+							inner: {
+								var has = false;
+								for(var j = 0; j < n.length; j++) {
+									if(arr[i][key] == n[j][key]) {
+										has = true;
+										break inner;
+									}
+								}
+							}
+							if(!has) {
+								n.push(arr[i]);
 							}
 						}
 					}
-					if(!has) {
-						n.push(arr[i]);
-					}
+					return n;
 				}
-			}
-			return n;
-		}
 				//关闭侧滑
 				window.addEventListener('closeMinePage', function(data) {
 					closeMenu();
