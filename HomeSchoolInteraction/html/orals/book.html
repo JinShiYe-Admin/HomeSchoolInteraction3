@@ -86,7 +86,7 @@
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!--<script src='../../js/utils/vconsole.min.js'></script>-->
+		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
 		
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
@@ -106,6 +106,8 @@
 			
 			var catalog=[];
 			
+			var userInfo = store.get(window.storageKeyName.PERSONALINFO);
+			
 			var book = new Vue({
 				el: "#bookSelect",
 				data: {
@@ -121,23 +123,31 @@
 				methods: {
 					itemChange: function(item) {
 						var params = {}, _this = this;
-						if(item=="mater"){
-							params.subcode = this.items.sub.selected;
+						if(!item){
 							params.percode = this.items.per.selected;
+							params.subcode = this.items.sub.selected;
+							params.mater = this.items.mater.selected;
+							params.fasccode = this.items.fasc.selected;
+						}else{
+							if(item=="mater"){
+								params.subcode = this.items.sub.selected;
+								params.percode = this.items.per.selected;
+							}
+							params[item+"code"] = this.items[item].selected;
 						}
-                		params[item+"code"] = this.items[item].selected;
-//              		console.log(JSON.stringify(params));
+						console.log("获取教材："+JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
                 			var prdLimit = store.get(window.storageKeyName.PRDLIST)||[];
                 			console.log("限权："+JSON.stringify(prdLimit));
                 			var rd = res.data;
                 			console.log("教材："+JSON.stringify(rd));
                 			// 学段限权
-                			// _this.items.per = rd.per;
-							_this.items.per.list = prdLimit;
-//                 			_this.items.per.list = rd.per.list.filter(function(v){
-//                 				return prdLimit.indexOf(v.percode)!=-1;
-//                 			});
+							if(userInfo.utp==1){
+								_this.items.per.list = prdLimit;
+							}else{
+								_this.items.per = rd.per;
+							}
+
                 			var per_selected = _this.items.per.list.filter(function(v){
                 				return v.percode == rd.per.selected;
                 			});
@@ -222,7 +232,7 @@
 				book.items.fasc = s_items.fasc||{list:[]};
 				book.items.per = s_items.per||{list:[]};
 				book.items.ser = s_items.ser||{list:[]};
-				book.itemChange("mater");
+				book.itemChange();
 				
 				//点击 完成
 				document.getElementById("submitBook").addEventListener("tap", function(){

@@ -96,6 +96,21 @@ function getBookNames() {
 	}
 }
 
+// 检查确保教材的selected是否都在list中
+function bookCheck(book) {
+	for(var key  in book) {
+		var selected="";
+		for(var i=0; i<book[key].list.length; i++) {
+			if(book[key].list[i][key+"code"]==book[key].selected) {
+				selected = book[key].list[i][key+"code"];
+				break;
+			}
+		}
+		if(!selected) book[key].selected = book[key].list[0]?book[key].list[0][key+"code"]:"";
+	}
+	return book;
+}
+
 //获取目录名
 function getCatalogName(id) {
 	var catalog = store.get('orals_catalog');

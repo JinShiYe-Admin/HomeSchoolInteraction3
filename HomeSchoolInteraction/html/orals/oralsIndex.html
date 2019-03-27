@@ -95,7 +95,7 @@
 			
 			.action-box .overflow-cover {
 				    height: 0.15rem !important;
-				    top: -0.8rem !important;;
+				    /* top: -0.8rem !important;; */
 				}
 		</style>
 	</head>
@@ -357,7 +357,7 @@
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<script src='../../js/utils/vconsole.min.js'></script>
+		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
 
@@ -446,6 +446,7 @@
 
 				function getInitData() {
 					var book_items = store.get('book_items');
+					console.log("book_items: " + JSON.stringify(book_items));
 					var book_code = {};
 					//保存了上一次记录时
 					if(isGetLast && book_items && book_items.per.list.length) {
@@ -461,43 +462,44 @@
 				var persubmatTime = 0;
 
 				function getBook(data, ser) {
+					console.log("教材参数:" + JSON.stringify(data));
 					oralsAjax('/persubmat', data, function(res) {
 						//教材
 						var auto_book = res.data || {};
 						console.log("教材:" + JSON.stringify(auto_book));
+						
 						// 学段限权
-						var prdLimit = store.get(window.storageKeyName.PRDLIST)||[];
-						console.log("学段限权: "+JSON.stringify(prdLimit));
-						auto_book.per.list = prdLimit;
-						var per_selected;
-// 						auto_book.per.list = auto_book.per.list.filter(function(v){
-// 							return prdLimit.indexOf(v.percode)!=-1;
-// 						});
-						auto_book.per.list.forEach(function(v){
-							if(v.percode==auto_book.per.selected) per_selected=v.percode;
-						});
-						if(!per_selected) {
-							auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
-							if(auto_book.per.selected) {
-								getBook({
-									percode: auto_book.per.selected,
-									subcode: auto_book.sub.selected,
-									matercode: auto_book.mater.selected,
-									fasccode: auto_book.fasc.selected
-								}, ser);
-							}else{
-								auto_book.sub = {list: [], selected: null};
-								auto_book.mater = {list: [], selected: null};
-								auto_book.fasc = {list: [], selected: null};
+						if(userInfo.utp==1){
+							var prdLimit = store.get(window.storageKeyName.PRDLIST)||[];
+							console.log("学段限权: "+JSON.stringify(prdLimit));
+							auto_book.per.list = prdLimit;
+							var per_selected;
+							auto_book.per.list.forEach(function(v){
+								if(v.percode==auto_book.per.selected) per_selected=v.percode;
+							});
+							if(!per_selected) {
+								auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
+								if(auto_book.per.selected) {
+									getBook({
+										percode: auto_book.per.selected,
+										subcode: auto_book.sub.selected,
+										matercode: auto_book.mater.selected,
+										fasccode: auto_book.fasc.selected
+									}, ser);
+								}else{
+									auto_book.sub = {list: [], selected: null};
+									auto_book.mater = {list: [], selected: null};
+									auto_book.fasc = {list: [], selected: null};
+								}
 							}
+							console.log("限权后的教材："+JSON.stringify(auto_book));
 						}
-						console.log("限权后的教材："+JSON.stringify(auto_book));
 						
 						//获取目录
 						if(ser) {
-							getCatalog(auto_book, ser);
+							getCatalog(bookCheck(auto_book), ser);
 						} else {
-							getCatalog(auto_book);
+							getCatalog(bookCheck(auto_book));
 						}
 					}, function(res) {
 						persubmatTime++;
@@ -522,6 +524,7 @@
 						matercode: auto_book.mater.selected,
 						fasccode: auto_book.fasc.selected
 					};
+					console.log("获取目录: "+JSON.stringify(auto_book));
 					oralsAjax('/catalog', data, function(res) {
 						persubmatTime = 0;
 						//保存教材
@@ -555,7 +558,7 @@
 							if(book_items.per.list[i].percode==book_items.per.selected) per_index = i;
 						}
 						per_index++;
-						if(per_index<book_items.per.list.length-1){
+						if(per_index<book_items.per.list.length){
 							book_items.per.selected = book_items.per.list[per_index].percode;
 							store.set('book_items', book_items);
 							getInitData();
