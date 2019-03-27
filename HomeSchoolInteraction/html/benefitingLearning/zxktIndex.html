@@ -138,6 +138,7 @@
 		<script>
 			mui.init();
 			var group;
+			var id='ziyuan-child.html';
 			mui.plusReady(function() {
 				var _self = plus.webview.currentWebview();
 				group = new webviewGroup(_self.id, {
@@ -168,11 +169,14 @@
 						//滑动切换模块时，回调子页方法，如不需要，可以屏蔽
 						var href=''+target.toString().split('#')[1];
 						if(href=='item1mobile'){//课堂资源 
-							sendData('ziyuan-child.html','课堂资源')
+							id='ziyuan-child.html';
+							sendData('课堂资源')
 						}else if(href=='item2mobile'){//组卷测试
-							sendData('zujuanceshi-child.html','组卷测试')
+							id='zujuanceshi-child.html';
+							sendData('组卷测试')
 						}else if(href=='item3mobile'){//学情分析
-							sendData('xueqingfenxi-child.html','学情分析')
+							id='xueqingfenxi-child.html';
+							sendData('学情分析')
 						}
 					}
 				});
@@ -184,8 +188,9 @@
 			});
 			
 			//向子页传值
-			function sendData(id,value){
+			function sendData(value){
 				var child=plus.webview.getWebviewById(id);
+				console.log('ceshiChild:'+child.getURL());
 				if(child!=''||child!=null||child!=undefined){
 					child.evalJS('toChildPage("'+value+'")')
 				}
@@ -194,7 +199,7 @@
 			//父——>子页传值方法
 			function toChildPage(text){
 				console.log("ceshiChild:"+text)
-				sendData('ziyuan-child.html','课堂资源666')
+				sendData('课堂资源666')
 			}
 		</script>
 	</body>
