@@ -573,36 +573,51 @@
 //						console.log("value_nj========="+value_nj);
 						var itemcode=fextModel.itemcode;
 						if(itemcode=='prd'){
-							if(max==0&&value.length>1){
-								mui.toast('学段最多选1个');
-								return;
-							}else if(max>0&&value.length > max) {
-								mui.toast('学段最多选' + max + '个');
-								return;
-							}else if(value.length==0){
+							if(value.length==0){
 								mui.toast('请选择学段');
-								return;
+								return 0;
 							}
-							
-							for(var z=0;z<value.length;z++){
-								var pid=value[z];
-								var pname=name[z];
-								var sz=[];
-								for(var i=0;i<value_nj.length;i++){
-									var gid=value_nj[i];
-									if(gid.startWith(pid)){
-										sz.push(gid);
+							if(value_nj.length==0){
+								mui.toast('请选择学段对应的年级');
+								return 0;
+							}
+							//判断学段最多选几个
+							for(var i=0;i<fext.length;i++){
+								var item =fext[i];
+								if(item.itemcode=='prd'){
+									var maxCheck=item.itemsonsc;
+									if(value.length>maxCheck){
+										mui.toast(item.itemname+'最多选'+maxCheck+'个');
+										return 0;
 									}
 								}
-								if(max2==0&&sz.length>1){
-									mui.toast(pname+'年级最多选1个');
-									return;
-								}else if(max2>0&&sz.length > max2) {
-									mui.toast(pname+'年级最多选' + max2 + '个');
-									return;
-								}else if(sz.length==0){
-									mui.toast('请选择'+pname+'年级');
-									return;
+							}
+							//判断学段下的年级最多可选几个
+							for(var x=0;x<value.length;x++){
+								var xd_item =value[x];
+								var grdList=[];
+								for(var i=0;i<value_nj.length;i++){
+									var nj_item =value_nj[i];
+									if(nj_item.toString().startWith(xd_item.toString())){
+										grdList.push(nj_item);
+									}
+								}
+								for(var i=0;i<grdList.length;i++){
+									var nj_item =grdList[i];
+									var nj_gid=nj_item.substring(0,1);
+									for(var z=0;z<fext.length;z++){
+										var item =fext[z];
+										if(item.itemcode=='grd' && item.gid==nj_gid){
+											var maxCheck=item.itemsonsc;
+											if(maxCheck>0&&grdList.length>maxCheck){
+												mui.toast(name[x]+item.itemname+'最多选'+maxCheck+'个');
+												return 0;
+											}else if(maxCheck==0&&grdList.length>1){
+												mui.toast(name[x]+item.itemname+'最多选1个');
+												return 0;
+											}
+										}
+									 }
 								}
 							}
 						}else{
