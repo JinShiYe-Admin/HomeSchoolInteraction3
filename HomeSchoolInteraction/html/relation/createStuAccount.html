@@ -392,6 +392,7 @@
 											mui.toast('账号创建成功');
 											stuObj.lgname=formobj.account;
 											stuObj.upw=formobj.password;
+											stuObj.isNewStu=false;
 											parent.$set(parent.stuList, stuIndex, stuObj);
 											parent.$options.methods.cancel(ev,stuIndex,'createSuccess');
 											console.log(JSON.stringify(parent.stuList))
