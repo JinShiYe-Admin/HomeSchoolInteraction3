@@ -181,6 +181,10 @@
 					postDataEncry('Login', enData1, comData1, 0, function(data1) {
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
+							if (data1.RspData.utp == 2) {
+								mui.toast('学生账号，暂不可使用');
+								return;
+							}
 							if(data1.RspData.dpts == null) {
 								data1.RspData.dpts = [];
 							}
