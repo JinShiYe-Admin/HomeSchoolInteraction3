@@ -343,6 +343,13 @@
 							//重新查询目录
 							if(lx=='xd'){
 								catalogObj.percode=item.percode;
+								catalogPage.subFlag=item.subFlag;
+								catalogPage.subList=item.subList;
+								if(item.subList.length>0){
+									catalogObj.subcode=item.subList[0].subcode
+								}
+								catalogObj.matercode ='';
+								catalogObj.fasccode ='';
 							}else if(lx=='km'){
 								catalogObj.subcode=item.subcode;
 							}else if(lx=='jb'){
@@ -351,7 +358,6 @@
 								catalogObj.fasccode=item.fasccode;
 							}
 							console.log(JSON.stringify(catalogObj));
-							store.set(window.storageKeyName.CATALOGOBJ,catalogObj);
 							getZiYuanTextbookFunc();
 						}
 					},
@@ -360,6 +366,8 @@
 						var btnArray = ['否', '是'];
 						mui.confirm('确定切换到当前章节？', '提醒', btnArray, function(e) {
 							if (e.index == 1) {
+								store.set(window.storageKeyName.CATALOGOBJ,catalogObj);
+								store.set(window.storageKeyName.CATALOG,catalogPage);
 								var newObj=[];
 								newObj.push(model);
 								newObj.push(catalog.category);
@@ -521,6 +529,15 @@
 							catalog.kemuStr='科目：';
 							catalog.jiaobanStr='教版：';
 							catalog.fenceStr='分册：';
+							
+							setTimeout(function(){
+								var swiper = new Swiper('.swiper-container', {
+									slidesPerView: 5, //菜单可见个数
+									spaceBetween: 10, //间隔
+									freeMode: true, //自由滑动模式
+									noSwiping: true, //禁止滑动
+								});
+							},1000);
 						}
 					} else {
 						mui.toast(data.RspTxt);
