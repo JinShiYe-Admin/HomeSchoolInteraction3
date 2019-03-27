@@ -285,6 +285,7 @@
 					if(userInfo.orderPerCode == header.serverids) {
 
 					} else {
+						$('#testMenu').show();
 						console.log('教师学生身份')
 						header.showFlag = 1;
 						header.setMenu();
@@ -297,12 +298,15 @@
 						if(userInfo.orderPerCode == header.serverids) {
 
 						} else {
+							$('#testMenu').show();
 							header.setMenu();
 							header.serverids = userInfo.orderPerCode;
 						}
 					} else {
-						console.log('00000000001');
+						console.log('00000000001'+JSON.stringify(userInfo));
+						$('#testMenu').hide();
 						header.showFlag = 0;
+						testMenu.menu =[];
 					}
 				}
 			}
