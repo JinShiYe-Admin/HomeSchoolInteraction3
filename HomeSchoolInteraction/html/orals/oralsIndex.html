@@ -480,8 +480,7 @@
 							if(!per_selected) {
 								auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
 								if(auto_book.per.selected) {
-									var new_data = {};
-									getBook(getBookCodes(auto_book), ser);
+									getBook({percode: auto_book.per.selected}, ser);
 									return false;
 								}else{
 									auto_book.sub = {list: [], selected: null};
