@@ -293,7 +293,7 @@
 				console.log('analysis.percode:'+analysis.percode);
 				plus.nativeUI.showWaiting();
 				commonAjax("/Ycyx/Analysis/index", {
-					data:{percode:analysis.percode},
+					data:{percode:analysis.percode||""},
 					success: function(res) {
 						console.log("分析：" + res.data);
 						var res_data = JSON.parse(res.data);
