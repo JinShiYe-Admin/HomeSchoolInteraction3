@@ -357,7 +357,7 @@
 		</div>
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.min.js"></script>
-		<!-- <script src='../../js/utils/vconsole.min.js'></script> -->
+		<script src='../../js/utils/vconsole.min.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
 		<script src="../../js/layer/layer.js"></script>
 
@@ -434,10 +434,9 @@
 					}
 				});
 
+				var userInfo = store.get(window.storageKeyName.PERSONALINFO);	
 				//判断登录者是否有上一次记录
-				var userInfo = store.get(window.storageKeyName.PERSONALINFO);
 				var auth = getAuth();
-				// var auth = {};
 				var isGetLast = false;
 				if(store.get('orals_auth')) {
 					isGetLast = auth.utid == store.get('orals_auth').utid;
@@ -447,13 +446,14 @@
 				function getInitData() {
 					var book_items = store.get('book_items');
 					console.log("book_items: " + JSON.stringify(book_items));
-					var book_code = {};
+					var book_code = getBookCodes(book_items);
 					//保存了上一次记录时
 					if(isGetLast && book_items && book_items.per.list.length) {
 						book_code.percode = book_items.per.selected || book_items.per.list[0].percode;
-						book_code.subcode = book_items.sub.selected;
-						book_code.matercode = book_items.mater.selected;
-						book_code.fasccode = book_items.fasc.selected;
+// 						console.log(typeof book_items.mater.selected)
+// 						if(book_items.sub.selected) book_code.subcode = book_items.sub.selected;
+// 						if(book_items.mater.selected) book_code.matercode = book_items.mater.selected;
+// 						if(book_items.fasc.selected) book_code.fasccode = book_items.fasc.selected;
 					}
 					getBook(book_code, book_items && book_items.ser ? book_items.ser.selected : 0);
 				}
@@ -480,12 +480,9 @@
 							if(!per_selected) {
 								auto_book.per.selected = auto_book.per.list[0]?auto_book.per.list[0].percode:"";
 								if(auto_book.per.selected) {
-									getBook({
-										percode: auto_book.per.selected,
-										subcode: auto_book.sub.selected,
-										matercode: auto_book.mater.selected,
-										fasccode: auto_book.fasc.selected
-									}, ser);
+									var new_data = {};
+									getBook(getBookCodes(auto_book), ser);
+									return false;
 								}else{
 									auto_book.sub = {list: [], selected: null};
 									auto_book.mater = {list: [], selected: null};
@@ -518,13 +515,8 @@
 
 				//获取目录
 				function getCatalog(auto_book, ser) {
-					var data = {
-						percode: auto_book.per.selected,
-						subcode: auto_book.sub.selected,
-						matercode: auto_book.mater.selected,
-						fasccode: auto_book.fasc.selected
-					};
-					console.log("获取目录: "+JSON.stringify(auto_book));
+					var data = getBookCodes(auto_book);
+					console.log("获取目录: "+JSON.stringify(data));
 					oralsAjax('/catalog', data, function(res) {
 						persubmatTime = 0;
 						//保存教材
@@ -552,6 +544,7 @@
 
 					}, function(res) {
 						//获取不到 目录和教材 时
+						console.log("获取不到目录和教材: "+JSON.stringify(res));
 						var book_items = store.get('book_items');
 						var per_index=0;
 						for(var i=0; i<book_items.per.list.length; i++) {
@@ -562,11 +555,13 @@
 							book_items.per.selected = book_items.per.list[per_index].percode;
 							store.set('book_items', book_items);
 							getInitData();
+							return "noToast";
 						}else{
 							store.set("book_items", auto_book);
 							store.set("orals_menu", []);
 							store.set("orals_catalog", []);
 							plus.nativeUI.closeWaiting();
+							setBaseData(); //设置数据
 						}
 					}, function() {
 						plus.nativeUI.closeWaiting();
@@ -579,6 +574,8 @@
 					var auto_node = testVue.menu[0];
 					if(auto_node) {
 						testVue.catalogId = auto_node.id;
+					}else{
+						testVue.catalogId = 0;
 					}
 				}
 
@@ -714,7 +711,7 @@
 					oralsBody.style.display = "block";
 					oralsBodyNoBuy.style.display = "none";
 					if(personal.orderPerCode == serverids) {
-
+						
 					} else {
 						//重新请求界面数据
 						//获取数据
@@ -731,7 +728,7 @@
 						oralsBody.style.display = "block";
 						oralsBodyNoBuy.style.display = "none";
 						if(personal.orderPerCode == serverids) {
-
+							
 						} else {
 							//重新请求界面数据
 							//获取数据
@@ -961,6 +958,10 @@
 						!audioEle.ended && audioEle.pause();
 						var _this = this;
 						if(!_this.catalogId) {
+							_this.list = [];
+							_this.index = 0;
+							_this.state = 3;
+							secondTitle.contentTitle = "...";
 							plus.nativeUI.closeWaiting();
 							return false;
 						}

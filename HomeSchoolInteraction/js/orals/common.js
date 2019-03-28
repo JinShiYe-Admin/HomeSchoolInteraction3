@@ -110,6 +110,15 @@ function bookCheck(book) {
 	}
 	return book;
 }
+// 获取教材code
+function getBookCodes(book) {
+	var codes = {};
+	if(book.per.selected) codes.percode = book.per.selected;
+	if(book.sub.selected) codes.subcode = book.sub.selected;
+	if(book.mater.selected) codes.matercode = book.mater.selected;
+	if(book.fasc.selected) codes.fasccode = book.fasc.selected;
+	return codes;
+}
 
 //获取目录名
 function getCatalogName(id) {
