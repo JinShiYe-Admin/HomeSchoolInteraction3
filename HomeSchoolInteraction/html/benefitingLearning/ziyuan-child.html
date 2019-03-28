@@ -188,11 +188,6 @@
 			console.log('personal:' + JSON.stringify(personal));
 			var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 			
-			//重置学段、年级、科目对象
-			store.set(window.storageKeyName.CATALOG, null);
-			//重置学段、年级、科目选择值对象
-			store.set(window.storageKeyName.CATALOGOBJ, null);
-			
 			mui.init({
 				statusBarBackground: '#00CFBD',
 				swipeBack: false,
@@ -590,6 +585,11 @@
 					if(personal.userbus.length > 0 && personal.isBdCount > 0) {
 						if (personal.orderPerCode == contentData.serverids) {
 						} else{
+							//重置学段、年级、科目对象
+							store.set(window.storageKeyName.CATALOG, null);
+							//重置学段、年级、科目选择值对象
+							store.set(window.storageKeyName.CATALOGOBJ, null);
+							
 							contentData.serverids = personal.orderPerCode;
 							contentData.pageIndex=1;
 							getUserBusFunc();
