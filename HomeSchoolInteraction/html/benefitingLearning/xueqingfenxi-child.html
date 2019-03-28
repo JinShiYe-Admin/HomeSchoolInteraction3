@@ -229,27 +229,28 @@
 
 			function toChildPage(text) {
 					console.log("xueqingfenxi-child:" + text)
-					var zj_percode=store.get(window.storageKeyName.ZJPERCODE);
 					userInfo = store.get(window.storageKeyName.PERSONALINFO);
+					console.log('userInfo:'+JSON.stringify(userInfo));
 					var utp = userInfo.utp;
 					if(utp == 0 || utp == 2) { //如果是教师、学生2身份，显示英语听测
-						if(userInfo.orderPerCode == analysis.serverids&&zj_percode == analysis.percode) {
+						if(userInfo.orderPerCode == analysis.serverids&&userInfo.orderPerCode == analysis.percode) {
 							
 						} else {
 							console.log('教师学生身份')
 							analysis.showFlag = 1;
-							getAnalysisData();
 							analysis.serverids = userInfo.orderPerCode;
-							analysis.percode = zj_percode;
+							analysis.percode = userInfo.orderPerCode;
+							getAnalysisData();
 						}
 					} else if(utp == 1) { //如果是家长1身份，根据是否订购套餐和绑定学生显示英语听测
 						if(userInfo.userbus.length > 0 && userInfo.isBdCount > 0) {
 							analysis.showFlag = 1;
-							if(userInfo.orderPerCode == analysis.serverids) {
+							if(userInfo.orderPerCode == analysis.serverids&&userInfo.orderPerCode == analysis.percode) {
 
 							} else {
-								getAnalysisData();
 								analysis.serverids = userInfo.orderPerCode;
+								analysis.percode = userInfo.orderPerCode;
+								getAnalysisData();
 							}
 						} else {
 							analysis.showFlag = 0;
@@ -289,6 +290,7 @@
 
 			//获取分析数据
 			function getAnalysisData() {
+				console.log('analysis.percode:'+analysis.percode);
 				plus.nativeUI.showWaiting();
 				commonAjax("/Ycyx/Analysis/index", {
 					data:{percode:analysis.percode},
