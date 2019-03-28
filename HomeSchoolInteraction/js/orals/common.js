@@ -113,10 +113,11 @@ function bookCheck(book) {
 // 获取教材code
 function getBookCodes(book) {
 	var codes = {};
-	if(book.per.selected) codes.percode = book.per.selected;
-	if(book.sub.selected) codes.subcode = book.sub.selected;
-	if(book.mater.selected) codes.matercode = book.mater.selected;
-	if(book.fasc.selected) codes.fasccode = book.fasc.selected;
+	for(var key  in book) {
+		if(key=="per"||key=="sub"||key=="mater"||key=="fasc") {
+			if(book[key].selected) codes[key+"code"] = book[key].selected;
+		}
+	}
 	return codes;
 }
 
