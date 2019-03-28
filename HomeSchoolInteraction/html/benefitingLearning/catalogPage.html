@@ -340,6 +340,7 @@
 							}
 							item.ischeck=1;
 							console.log("选择的是这个:"+JSON.stringify(item)+',lx:'+lx);
+							console.log("选择的是这个parent:"+JSON.stringify(parent)+',lx:'+lx);
 							//重新查询目录
 							if(lx=='xd'){
 								catalogObj.percode=item.percode;
@@ -443,7 +444,9 @@
 	                                }
 	                            }
 							}
-							
+							if(xueduan.length>0 && JSON.stringify(xueduan).indexOf('"ischeck":1')==-1){
+								xueduan[0].ischeck=1;
+							}
 							//分册列表
 							var fence=data.RspData.fasc.list;
 							var fcselected= data.RspData.fasc.selected;
@@ -455,6 +458,9 @@
                                     temp.ischeck = 0;
                                 } 
                             }
+							if(fence.length>0 && JSON.stringify(fence).indexOf('"ischeck":1')==-1){
+								fence[0].ischeck=1;
+							}
 							//教材列表
                             var jiaoban= data.RspData.mater.list;
                             var jbselected= data.RspData.mater.selected;
@@ -466,6 +472,9 @@
                                     temp.ischeck = 0;
                                 }
                             }
+                            if(jiaoban.length>0 && JSON.stringify(jiaoban).indexOf('"ischeck":1')==-1){
+								jiaoban[0].ischeck=1;
+							}
 							//科目列表
 							var kemu = data.RspData.sub.list;
 							var kmselected= data.RspData.sub.selected;
@@ -477,7 +486,9 @@
                                     temp.ischeck = 0;
                                 }
                             }
-							
+							if(kemu.length>0 && JSON.stringify(kemu).indexOf('"ischeck":1')==-1){
+								kemu[0].ischeck=1;
+							}
 							if(catalogPage.prdList.length>0){
 								catalog.xueduan=xueduan;
 							}else{

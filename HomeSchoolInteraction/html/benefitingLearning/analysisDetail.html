@@ -209,7 +209,7 @@
 				commonAjax("/Ycyx/Analysis/subDetail", {
 					data: {
 						subcode: self.subcode,
-						percode: store.get(window.storageKeyName.ZJPERCODE)
+						percode: store.get(window.storageKeyName.PERSONALINFO).orderPerCode
 					},
 					success: function(res) {
 						var data = JSON.parse(res.data);
