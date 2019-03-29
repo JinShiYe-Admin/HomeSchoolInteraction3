@@ -170,6 +170,14 @@
 				methods: {
 					toMealDetails: function(model) {
 						console.log('toMealDetails:'+JSON.stringify(model));
+						var deadline=getQueryString(model.openFileUrl).e;//得到当前文件过期时间 时间戳
+						var timestamp = Math.round(new Date().getTime()/1000).toString();//得到当前时间戳
+						if(timestamp-deadline>0){//过期
+							mui.toast('当前文件已过期，请刷新列表重试！')
+							return 0;
+							//TODO 重新获取token
+//							DownloadUrl = 'https://developer.qiniu.com/kodo/manual/1202/download-token'
+						}
 						if(plus.networkinfo.getCurrentType() == plus.networkinfo.CONNECTION_NONE) {
 							mui.toast('网络异常，请检查网络设置！');
 							return;
@@ -242,6 +250,26 @@
 						mui.toast(data.RspTxt);
 					}
 				});
+			}
+			
+			function getQueryString(url) {
+				try{
+				    var theRequest = new Object();
+				    if (url.indexOf("?") != -1) {
+				        var str = url.split('?')[1];
+				        strs = str.split("&");
+				        for(var i = 0; i < strs.length; i ++) {
+				           theRequest[strs[i].split("=")[0]]=(strs[i].split("=")[1]);
+				        }
+				    }
+				    return theRequest;
+				}catch(e){
+					console.error('对userbus字段进行学段去重时发生异常,'+e);
+					console.error('====================')
+					console.error(e.stack); 
+					console.error('====================')
+					return {};
+				}
 			}
 		</script>
 	</body>
