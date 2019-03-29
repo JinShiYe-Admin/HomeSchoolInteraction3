@@ -89,7 +89,7 @@ var storageKeyName = (function(mod) {
 			mod.YCYXHOST = "https://gxcs.jiaobaowang.net/yiceyixue";
 			//学生管理
 //			mod.INTERFACESIGNINKONG = 'https://zyja.zhuxue101.net/SchoolAttendanceService/'; //孔工接口IMG
-			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
+			mod.STUDENTMANAGE = 'https://gxcs.jiaobaowang.net/StudentManager/app/'; //学生管理
 			//作业管理
 //			mod.HOMEWORK = 'http://139.129.252.49:8080/hm/app/'; //作业管理
 			//资源
