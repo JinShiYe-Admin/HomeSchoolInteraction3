@@ -124,10 +124,10 @@
 				appUpdate.updateApp(personal.schid);
 				initListener();
 				initData();
-//				if(personal.utp == 1) { //0老师，2学生，1家长
-//					//4.1.用户已订购套餐及功能扩展栏目
-//					getUserBusFunc();
-//				}
+				//				if(personal.utp == 1) { //0老师，2学生，1家长
+				//					//4.1.用户已订购套餐及功能扩展栏目
+				//					getUserBusFunc();
+				//				}
 			});
 
 			//4.1.用户已订购套餐及功能扩展栏目
@@ -152,10 +152,12 @@
 							var tempArray = []; //判断是否有智学课堂套餐
 							for(var i = 0; i < data1.RspData.userbus.length; i++) {
 								var tempM = data1.RspData.userbus[i];
-								for(var a = 0; a < tempM.funcs.length; a++) {
-									var tempFuncs = tempM.funcs[a];
-									if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
-										tempArray.push(tempM.servid);
+								if(tempM.funcs) {
+									for(var a = 0; a < tempM.funcs.length; a++) {
+										var tempFuncs = tempM.funcs[a];
+										if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+											tempArray.push(tempM.servid);
+										}
 									}
 								}
 							}

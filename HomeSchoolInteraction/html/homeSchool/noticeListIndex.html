@@ -506,11 +506,12 @@
 								if(personal.userbus) {
 									for(var i = 0; i < personal.userbus.length; i++) {
 										var tempModel = personal.userbus[i];
-										for(var a = 0; a < tempModel.funcs.length; a++) {
-											var tempM = tempModel.funcs[a];
-											if(tempM.ftype == 'jxht') {
-												//if(tempM.ftype == 'jxht' && tempModel.serstat == 1) {
-												tempArr++;
+										if(tempModel.funcs) {
+											for(var a = 0; a < tempModel.funcs.length; a++) {
+												var tempM = tempModel.funcs[a];
+												if(tempM.ftype == 'jxht') {
+													tempArr++;
+												}
 											}
 										}
 									}
@@ -735,7 +736,7 @@
 						showFlag: 9, //如果是家长身份，判断有没有订购套餐、套餐有没有关联学生，进行显示九宫格，0显示九宫格，1显示家长的订购提醒
 						NoReadCnt: 0, //未读通知数
 						personal: personal,
-						showNoDataFlag:-1,//是否显示无数据图片
+						showNoDataFlag: -1, //是否显示无数据图片
 						//						showFlag: 0, //1有数据，0无数据
 						flag: 0, //0刷新，1加载更多
 						noticeArray: [], //通知列表数组
@@ -822,7 +823,7 @@
 								model.SendTime = modifyTimeFormat(model.SendTime);
 							}
 							if(contentData.flag == 0) { //刷新
-//								contentData.noticeArray = data.RspData.Data;
+								//								contentData.noticeArray = data.RspData.Data;
 								contentData.noticeArray = [].concat(data.RspData.Data);
 								if(data.RspData.Data.length == 0) {
 									//									mui.toast('数据为空');
