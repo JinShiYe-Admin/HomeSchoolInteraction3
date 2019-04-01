@@ -124,16 +124,17 @@
 					itemChange: function(item) {
 						var params = {}, _this = this;
 						if(!item){
-							params.percode = this.items.per.selected;
-							params.subcode = this.items.sub.selected;
-							params.mater = this.items.mater.selected;
-							params.fasccode = this.items.fasc.selected;
+							params = getBookCodes(_this.items);
 						}else{
-							if(item=="mater"){
-								params.subcode = this.items.sub.selected;
-								params.percode = this.items.per.selected;
+							params[item+"code"] = _this.items[item].selected;
+							if(item=="sub"){
+								params.percode = _this.items.per.selected;
 							}
-							params[item+"code"] = this.items[item].selected;
+							if(item=="mater"){
+								params.subcode = _this.items.sub.selected;
+								params.percode = _this.items.per.selected;
+								// params.fasccode = _this.items.fasc.selected;
+							}
 						}
 						console.log("获取教材："+JSON.stringify(params));
                 		oralsAjax('/persubmat', params, function(res){
@@ -215,8 +216,10 @@
 						if(menu_tree&&menu_tree.length){
 							//获取最终目录，并存储目录
 							catalog = getFinalCatalog(menu_tree[_this.items.ser.selected].childList);
-							_this.isChange = true;
+						}else{
+							catalog = [];
 						}
+						_this.isChange = true;
 					}
 				}
 			});
