@@ -239,20 +239,22 @@
 															var tempArray0 = []; //判断是否有智学课堂套餐
 															for(var i = 0; i < data3.RspData.userbus.length; i++) {
 																var tempM = data3.RspData.userbus[i];
-																for(var a = 0; a < tempM.funcs.length; a++) {
-																	var tempFuncs = tempM.funcs[a];
-																	if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
-																		tempArray0.push(tempM.servid);
-																		//再循环绑定的学生，对应forid，同一个套餐
-																		for(var m = 0; m < data2.RspData.stus.length; m++) {
-																			var tempM2 = data2.RspData.stus[m];
-																			if(tempM2.forid == tempM.forid) {
-																				var tempM1 = {
-																					percode: tempM2.grdpercode,
-																					pername: tempM2.grdpername,
-																					ischeck: 0
+																if(tempM.funcs) {
+																	for(var a = 0; a < tempM.funcs.length; a++) {
+																		var tempFuncs = tempM.funcs[a];
+																		if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+																			tempArray0.push(tempM.servid);
+																			//再循环绑定的学生，对应forid，同一个套餐
+																			for(var m = 0; m < data2.RspData.stus.length; m++) {
+																				var tempM2 = data2.RspData.stus[m];
+																				if(tempM2.forid == tempM.forid) {
+																					var tempM1 = {
+																						percode: tempM2.grdpercode,
+																						pername: tempM2.grdpername,
+																						ischeck: 0
+																					}
+																					tempArray.push(tempM1);
 																				}
-																				tempArray.push(tempM1);
 																			}
 																		}
 																	}
