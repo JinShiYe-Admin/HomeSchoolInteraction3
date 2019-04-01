@@ -359,38 +359,40 @@
 				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
-						classListData.flag = 1;
-						console.log('data:' + JSON.stringify(data));
-						//去重
-						//						data.RspData.classuserustus = data.RspData.classuserustus.unique('utid');
-						for(var i = 0; i < data.RspData.classuserustus.length; i++) {
-							var stuModel = data.RspData.classuserustus[i];
-							//0屏蔽，1有效，2删除
-							if(stuModel.stustat == 1) {
-								//判断上个界面，是否选择
-								var tempClassFlag = 0;
-								for(var m = 0; m < parentsArray.length; m++) {
-									var tempParentModel = parentsArray[m];
-									if(tempParentModel.stuid == stuModel.stuid && tempParentModel.utid == stuModel.utid && tempParentModel.forid == stuModel.forid) {
-										tempClassFlag++;
+						if(data.RspData) {
+							classListData.flag = 1;
+							console.log('data:' + JSON.stringify(data));
+							//去重
+							//						data.RspData.classuserustus = data.RspData.classuserustus.unique('utid');
+							for(var i = 0; i < data.RspData.classuserustus.length; i++) {
+								var stuModel = data.RspData.classuserustus[i];
+								//0屏蔽，1有效，2删除
+								if(stuModel.stustat == 1) {
+									//判断上个界面，是否选择
+									var tempClassFlag = 0;
+									for(var m = 0; m < parentsArray.length; m++) {
+										var tempParentModel = parentsArray[m];
+										if(tempParentModel.stuid == stuModel.stuid && tempParentModel.utid == stuModel.utid && tempParentModel.forid == stuModel.forid) {
+											tempClassFlag++;
+										}
 									}
-								}
-								if(tempClassFlag == 0) {
-									stuModel.flag = 0; //默认未选择
-								} else {
-									stuModel.flag = 1; //选择
-								}
-								for(var a = 0; a < classListData.classListArray.length; a++) {
-									var classModel = classListData.classListArray[a];
-									if(classModel.clsid == stuModel.clsid) {
-										classModel.grdname = stuModel.grdname;
-										classModel.stuArray.push(stuModel);
+									if(tempClassFlag == 0) {
+										stuModel.flag = 0; //默认未选择
+									} else {
+										stuModel.flag = 1; //选择
+									}
+									for(var a = 0; a < classListData.classListArray.length; a++) {
+										var classModel = classListData.classListArray[a];
+										if(classModel.clsid == stuModel.clsid) {
+											classModel.grdname = stuModel.grdname;
+											classModel.stuArray.push(stuModel);
+										}
 									}
 								}
 							}
+							//刚进入页面得到数据时，判断全部的勾选状态
+							allDataSelect();
 						}
-						//刚进入页面得到数据时，判断全部的勾选状态
-						allDataSelect();
 					} else {
 						mui.toast(data.RspTxt, "cancel");
 					}
