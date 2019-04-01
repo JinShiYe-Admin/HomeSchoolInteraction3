@@ -656,7 +656,15 @@
 
 				window.addEventListener('hideMenu', function(data) {
 					console.log('侧滑执行方法')
-					closeMenu();
+					mask.close(); 
+					menu.hide();
+					showMenu = false;
+					var wvs = plus.webview.getDisplayWebview();
+					for(var i = 0; i < wvs.length; i++) {
+						wvs[i].setStyle({
+							mask: "none"
+						});
+					}
 				});
 
 				/**
