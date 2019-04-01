@@ -586,8 +586,11 @@
 								var item =fext[i];
 								if(item.itemcode=='prd'){
 									var maxCheck=item.itemsonsc;
-									if(value.length>maxCheck){
+									if(maxCheck>0&&value.length>maxCheck){
 										mui.toast(item.itemname+'最多选'+maxCheck+'个');
+										return 0;
+									}else if(maxCheck==0&&value.length>1){
+										mui.toast(item.itemname+'最多选1个');
 										return 0;
 									}
 								}
