@@ -181,7 +181,7 @@
 					postDataEncry('Login', enData1, comData1, 0, function(data1) {
 						events.closeWaiting();
 						if(data1.RspCode == 0) {
-							if (data1.RspData.utp == 2) {
+							if(data1.RspData.utp == 2) {
 								mui.toast('学生账号，暂不可使用');
 								return;
 							}
@@ -281,20 +281,22 @@
 															var tempArray0 = []; //判断是否有智学课堂套餐
 															for(var i = 0; i < data3.RspData.userbus.length; i++) {
 																var tempM = data3.RspData.userbus[i];
-																for(var a = 0; a < tempM.funcs.length; a++) {
-																	var tempFuncs = tempM.funcs[a];
-																	if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
-																		tempArray0.push(tempM.servid);
-																		//再循环绑定的学生，对应forid，同一个套餐
-																		for(var m = 0; m < data2.RspData.stus.length; m++) {
-																			var tempM2 = data2.RspData.stus[m];
-																			if(tempM2.forid == tempM.forid) {
-																				var tempM1 = {
-																					percode: tempM2.grdpercode,
-																					pername: tempM2.grdpername,
-																					ischeck: 0
+																if(tempM.funcs) {
+																	for(var a = 0; a < tempM.funcs.length; a++) {
+																		var tempFuncs = tempM.funcs[a];
+																		if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+																			tempArray0.push(tempM.servid);
+																			//再循环绑定的学生，对应forid，同一个套餐
+																			for(var m = 0; m < data2.RspData.stus.length; m++) {
+																				var tempM2 = data2.RspData.stus[m];
+																				if(tempM2.forid == tempM.forid) {
+																					var tempM1 = {
+																						percode: tempM2.grdpercode,
+																						pername: tempM2.grdpername,
+																						ischeck: 0
+																					}
+																					tempArray.push(tempM1);
 																				}
-																				tempArray.push(tempM1);
 																			}
 																		}
 																	}
@@ -306,16 +308,16 @@
 																tempArray[0].ischeck = 1;
 															}
 															store.set(window.storageKeyName.PRDLIST, tempArray);
-															console.log('tempArray:'+JSON.stringify(tempArray));
+															console.log('tempArray:' + JSON.stringify(tempArray));
 															var personal1 = store.get(window.storageKeyName.PERSONALINFO);
 															personal1.isBdCount = tempArray.length; //套餐是否绑定学生
 															personal1.orderPerCode = 0; //绑定套餐的对应的学段id
-															if (tempArray.length>0) {
+															if(tempArray.length > 0) {
 																personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
 															}
-//															
+															//															
 															personal1.userbus = tempArray0.join('|'); // 绑定的套餐
-															console.log('personal1:'+JSON.stringify(personal1));
+															console.log('personal1:' + JSON.stringify(personal1));
 															store.set(window.storageKeyName.PERSONALINFO, personal1);
 															//再判断，是否是在平台上第一次登陆
 															var tempData = {
@@ -369,41 +371,41 @@
 			});
 
 		}
-		
+
 		//对象数组按指定字段进行排序
-		function compare(property){
-	         return function(obj1,obj2){
-	             var value1 = obj1[property];
-	             var value2 = obj2[property];
-	             return value1 - value2;     // 升序
-	         }
-	    }
-		
+		function compare(property) {
+			return function(obj1, obj2) {
+				var value1 = obj1[property];
+				var value2 = obj2[property];
+				return value1 - value2; // 升序
+			}
+		}
+
 		//给数组去重
-Array.prototype.unique = function(key) {
-	var arr = this;
-	var n = [arr[0]];
-	for(var i = 1; i < arr.length; i++) {
-		if(key === undefined) {
-			if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
-		} else {
-			inner: {
-				var has = false;
-				for(var j = 0; j < n.length; j++) {
-					if(arr[i][key] == n[j][key]) {
-						has = true;
-						break inner;
+		Array.prototype.unique = function(key) {
+			var arr = this;
+			var n = [arr[0]];
+			for(var i = 1; i < arr.length; i++) {
+				if(key === undefined) {
+					if(n.indexOf(arr[i]) == -1) n.push(arr[i]);
+				} else {
+					inner: {
+						var has = false;
+						for(var j = 0; j < n.length; j++) {
+							if(arr[i][key] == n[j][key]) {
+								has = true;
+								break inner;
+							}
+						}
+					}
+					if(!has) {
+						n.push(arr[i]);
 					}
 				}
 			}
-			if(!has) {
-				n.push(arr[i]);
-			}
+			return n;
 		}
-	}
-	return n;
-}
-		
+
 		var gotoIndex = function() {
 			plus.webview.open('../../html/login/index.html');
 			var wvs = plus.webview.all();
