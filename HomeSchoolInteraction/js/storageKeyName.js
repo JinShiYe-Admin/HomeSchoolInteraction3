@@ -2,11 +2,11 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 2; //0,开发;1,测试云；2外网
+	mod.key = 1; //0,开发;1,测试云；2外网
 	mod.pay = 0; //0,单个商家接口;1,多商家接口
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 0) {
+		if(mod.key === 1) {
 			var argus = hint;
 			if(typeof(object)!=='undefined') {
 				argus = hint + JSON.stringify(object);
