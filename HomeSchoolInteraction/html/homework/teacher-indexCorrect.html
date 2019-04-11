@@ -130,7 +130,7 @@
 				</div>
 				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 38px;">
 				<!--<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top: 8px;">-->
-					<div class="mui-scroll main" style="margin-top: -9px;">
+					<div id="mainScroll" class="mui-scroll main" style="margin-top: -9px;">
 						<div id="homeworkListArray" class="" style="background: #F2F2F2;">
 							<div class="mui-card" @tap="clickHomeworkModel($event,homeworkModel)" v-for="homeworkModel in homeworkArray">
 								<div class="mui-card-header">
@@ -311,7 +311,18 @@
 									console.log('data=='+JSON.stringify(data));
 									if(data.RspCode == 0) {
 										mui.toast(data.msg);
-										$(_event).parent().parent().remove();//后台撤销成功，删除该条div
+//										$(_event).parent().parent().remove();//后台撤销成功，删除该条div
+										for(var i=0;i<homeworkListArray.homeworkArray.length;i++){
+											var hmListItem=homeworkListArray.homeworkArray[i];
+											if(item===hmListItem){
+												homeworkListArray.homeworkArray.splice(i,1);
+											}
+										}
+										if(homeworkListArray.homeworkArray.length==0){
+											$('#mainScroll').css("height", "80%")
+										}else{
+											$('#mainScroll').css("height", "auto")
+										}
 									} else {
 										mui.toast(data.msg);
 									}
@@ -564,6 +575,11 @@
 							}
 							homeworkListArray.homeworkArray=homeworkListArray.homeworkArray.concat(hmList);	
 						} 
+						if(homeworkListArray.homeworkArray.length==0){
+							$('#mainScroll').css("height", "80%")
+						}else{
+							$('#mainScroll').css("height", "auto")
+						}
 						console.log('作业列表:' + JSON.stringify(homeworkListArray.homeworkArray));
 					} else {
 						if(flagRef == 0) { //刷新
