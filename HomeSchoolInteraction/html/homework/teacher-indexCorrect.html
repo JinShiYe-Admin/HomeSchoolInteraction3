@@ -205,7 +205,10 @@
 //						if(homeworkListArray.homeworkArray.length>0) {
 							pageIndex = 1;
 							flagRef = 0;
-							getTeacheromeworkList(pageIndex, this)
+							getTeacheromeworkList(pageIndex, this);
+							if(mui(".mui-table-view-cell").length < 10) {
+								mui(".mui-pull-loading")[0].innerHTML = "上拉加载更多";
+							}
 //						} else {
 //							self.endPullDownToRefresh();
 //						}
@@ -221,7 +224,7 @@
 							//结束下拉刷新
 							//self.endPullUpToRefresh();
 							if(mui(".mui-table-view-cell").length < 10) {
-								mui(".mui-pull-loading")[0].innerHTML = "";
+								mui(".mui-pull-loading")[0].innerHTML = "上拉加载更多";
 							}
 						} else {
 							//结束下拉刷新
