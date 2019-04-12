@@ -98,7 +98,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
-			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<a onclick="backBtn()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">作业点评</h1>
 			<a v-if="headFlag ==0" class="mui-pull-right" style="color: white;font-size: 15px;margin-top: 10px;" onclick="submit()">提交</a>
 		</header>
@@ -165,6 +165,8 @@
 		<script src="../../js/utils/vue.min.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src="../../js/utils/events.js"></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/studentManage/studentManagePermission.js"></script>
 		<script src="../../js/libs/jquery.js"></script>
 		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/vconsole.min.js"></script>
@@ -176,38 +178,78 @@
 			mui.init({
 				swipeBack: false
 			});
+			
+			var detailVue;
 			mui.plusReady(function() {
 				curPage = utils.getDataFromUrl(window.location.href);
 				console.log(JSON.stringify(curPage[0]))
 				console.log(JSON.stringify(curPage[1]))
 				console.log(JSON.stringify(curPage[2]))
 				
-				var detail = new Vue({
+				detailVue = new Vue({
 					el: "#detail",
 					data: {
 						homeworkList:curPage[0],//已批未批作业数组
 						homeworkItem:curPage[1],//已批未批作业单项，点击列表进来的列表项
 						submitArray:curPage[2],//上交登记数组
-						score:'',//分数
-						comment:'',//评价
-						submitStatus:0//登记状态
+						scoreBack:'',//该条作业点评的原始分数，用于切换学生作业时比对当前作业是否发生过评分修改
+						score:'',//当前作业如果发生修改的分数
+						commentBack:'',//该条作业点评的原始评价，用于切换学生作业时比对当前作业是否发生过评价修改
+						comment:'',//当前作业如果发生修改的评价
 					},
 					methods: {
 						previous:function(){
-							console.log("123")
-							//TODO 判断当前作业是否有修改,有修改提示，无修改再切换
+							for(var i=0;i<this.homeworkList.length;i++){
+								var item=this.homeworkList[i];
+								if(item.id==this.homeworkItem.id){
+									if(i>0){
+										if(isChange()){
+											mui.toast('该条作业点评已发生修改，请先提交，再切换上一个学生');
+										}else{
+											this.homeworkItem=this.homeworkList[i-1];
+											this.scoreBack=this.homeworkItem.score;
+											this.score=this.homeworkItem.score;
+											this.commentBack=this.homeworkItem.comment;
+											this.comment=this.homeworkItem.comment;
+										}
+										break;
+									}else{
+										mui.toast('没有上一个啦！');
+									}
+								}
+							}
 						},
 						next:function(){
-							console.log("456")
-							//TODO 判断当前作业是否有修改,有修改提示，无修改再切换
+							for(var i=0;i<this.homeworkList.length;i++){
+								var item=this.homeworkList[i];
+								if(item.id==this.homeworkItem.id){
+									if(i==this.homeworkList.length-1){
+										mui.toast('没有下一个啦！');
+									}else{
+										if(isChange()){
+											mui.toast('该条作业点评已发生修改，请先提交，再切换下一个学生');
+										}else{
+											this.homeworkItem=this.homeworkList[i+1];
+											this.scoreBack=this.homeworkItem.score;
+											this.score=this.homeworkItem.score;
+											this.commentBack=this.homeworkItem.comment;
+											this.comment=this.homeworkItem.comment;
+										}
+										break;
+									}
+								}
+							}
 						},
 						changeStates:function(){//修改状态
 							//普通示例
 							var statePicker = new mui.PopPicker();
 							statePicker.setData(this.submitArray);
+							statePicker.pickers[0].setSelectedValue(detailVue.homeworkItem.submitStatus);
 							statePicker.show(function(items) {
-								detail.submitStatus=items[0].value;
-								console.log(JSON.stringify(items));
+								detailVue.homeworkItem.submitStatus=items[0].value;
+								detailVue.homeworkItem.submitStatusTxt=items[0].text;
+								console.log(JSON.stringify(items)+',submitStatus:'+detailVue.homeworkItem.submitStatus);
+								submitZT(detailVue.homeworkItem.id,detailVue.homeworkItem.submitStatus);
 							});
 						}
 					}
@@ -215,49 +257,24 @@
 				
 				var homeworkItem=curPage[1];
 				if(homeworkItem.score!=''){
-					detail.score=homeworkItem.score;
+					detailVue.scoreBack=homeworkItem.score;
+					detailVue.score=homeworkItem.score;
 				}
 				if(homeworkItem.comment!=''){
-					detail.comment=homeworkItem.comment;
+					detailVue.commentBack=homeworkItem.comment;
+					detailVue.comment=homeworkItem.comment;
 				}
-				detail.submitStatus=homeworkItem.submitStatus;
 			});
 			
-			//提交作业点评
-			function submit(){
-				if(detail.submitStatus==0){
-					mui.toast('请先登记状态');
-					return 0;
-				}
-				//TODO 判断当前作业是否有修改,有修改在提交
-//				var comData ={
-//					id:homeworkDetail.id,//作业id
-//					score:detail.score,//分数
-//					comment:detail.comment//评价
-//				};
-//				console.log('comData=='+JSON.stringify(comData));
-//				var wd = events.showWaiting();
-//				hwTeacherorrectHomework(comData, function(data) {
-//					wd.close();
-//					if(data.RspCode == 0) {
-//						mui.toast(data.msg);
-//					} else {
-//						mui.toast(data.msg);
-//					}
-//				});
-			}
-			
-			
-			function submitZT(){//修改状态提交
-				var students=detail.submitStatus;
+			//修改状态提交
+			function submitZT(id,status){
 				var comData ={
-					homeworkId:homeworkDetail.id,//作业id
-					ids:homeworkDetail.studentId,//学生ID
+					id:id,//学生作业id
 					submitStatus:status//提交状态
 				};
 				console.log('comData=='+JSON.stringify(comData));
 				var wd = events.showWaiting();
-				hwTeacheratchCheckIn(comData, function(data) {
+				hwTeacherditSubmitStatus(comData, function(data) {
 					wd.close();
 					if(data.RspCode == 0) {
 						mui.toast(data.msg);
@@ -265,6 +282,69 @@
 						mui.toast(data.msg);
 					}
 				});
+			}
+			
+			//提交作业点评
+			function submit(){
+				if(detailVue.homeworkItem.submitStatus==0){
+					mui.toast('请先登记状态');
+					return 0;
+				}
+				//判断当前作业是否有修改,有修改在提交
+				if(isChange()){
+					var comData ={
+						id:detailVue.homeworkItem.id,//作业id
+						score:detailVue.score,//分数
+						comment:detailVue.comment//评价
+					};
+					console.log('comData=='+JSON.stringify(comData));
+					var wd = events.showWaiting();
+					hwTeacherorrectHomework(comData, function(data) {
+						wd.close();
+						if(data.RspCode == 0) {
+							mui.toast(data.msg);
+							//如果当前作业点评提交成功，那么需要将1、原始分数修改为已经变动的分数2、原始评价内容修改为已经变动的评价内容3、该条作业的批改状态改为已批改，防止切换上一条下一条时出现判断内容未提交的错误
+							detailVue.scoreBack=detailVue.score;
+							detailVue.commentBack=detailVue.comment;
+							for(var i=0;i<detailVue.homeworkList.length;i++){
+								var item=detailVue.homeworkList[i];
+								if(item.id==detailVue.homeworkItem.id){
+									detailVue.homeworkItem.score=detailVue.score;
+									detailVue.homeworkItem.comment=detailVue.comment;
+									detailVue.homeworkList.splice(i, 1);
+									detailVue.homeworkList.splice(i, 0, detailVue.homeworkItem);
+								}
+							}
+						} else {
+							mui.toast(data.msg);
+						}
+					});
+				}else{
+					mui.toast("当前作业点评内容未发生修改")
+				}
+			}
+			
+			//查看当前学生作业是否修改了
+			function isChange(){
+				var itemStr=JSON.stringify(detailVue.homeworkItem);
+				var listStr=JSON.stringify(detailVue.homeworkList);
+				console.log(itemStr);
+				console.log(listStr);
+				console.log(listStr.indexOf(itemStr)!=-1);
+				console.log(detailVue.scoreBack==detailVue.score);
+				console.log(detailVue.commentBack==detailVue.comment);
+				if(listStr.indexOf(itemStr)!=-1 && detailVue.scoreBack==detailVue.score && detailVue.commentBack==detailVue.comment){//递交状态未发生修改&&分数未发生修改&&评价内容未发生修改
+					return false;
+				}else{
+					return true;
+				}
+				
+			}
+			
+			//返回刷新父级页面
+			function backBtn(){
+				mui.fire(plus.webview.currentWebview().opener(), 'refresh_correctDetail', {});
+				mui.back();
 			}
 			
 			//只保留小数点后一位
