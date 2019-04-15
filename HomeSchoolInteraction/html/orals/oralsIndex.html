@@ -535,7 +535,7 @@
 
 						//保存目录
 						store.set("orals_menu", res.data);
-						var catalog = getFinalCatalog(res.data[book_ser.selected].childList);
+						var catalog = getFinalCatalog(res.data[book_ser.selected]?res.data[book_ser.selected].childList:[]);
 						//保存分册目录
 						store.set("orals_catalog", catalog);
 
@@ -796,13 +796,18 @@
 						catalog.forEach(function(v, i) {
 							if(v.id == testVue.catalogId) c_index = i;
 						});
-						if(c_index + d >= 0 && c_index + d <= catalog.length) {
-							if(testVue.state == 4) {
-								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function() {
-									testVue.catalogId = catalog[c_index + d].id;
+						var new_index = c_index+d;
+						if(new_index<0) {
+							mui.toast("当前已是第一单元", {type: 'div'});
+						}else if(new_index>=catalog.length) {
+							mui.toast("已到达最后一个单元！", {type: 'div'});
+						}else {
+							if(testVue.state==4){
+								layerBeforeLeave("您还没有提交，离开将不保存成绩！", ["残忍离开", "我再想想"], function(){
+									testVue.catalogId = catalog[c_index+d].id;
 								});
-							} else {
-								testVue.catalogId = catalog[c_index + d].id;
+							}else{
+								testVue.catalogId = catalog[c_index+d].id;
 							}
 						}
 					},
