@@ -2,11 +2,11 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 2; //0,开发;1,测试云；2外网
+	mod.key = 1; //0,开发;1,测试云；2外网
 	mod.pay = 0; //0,单个商家接口;1,多商家接口
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 0) {
+		if(mod.key === 1) {
 			var argus = hint;
 			if(typeof(object)!=='undefined') {
 				argus = hint + JSON.stringify(object);
@@ -91,7 +91,7 @@ var storageKeyName = (function(mod) {
 //			mod.INTERFACESIGNINKONG = 'https://zyja.zhuxue101.net/SchoolAttendanceService/'; //孔工接口IMG
 			mod.STUDENTMANAGE = 'https://gxcs.jiaobaowang.net/StudentManager/app/'; //学生管理
 			//作业管理
-//			mod.HOMEWORK = 'http://139.129.252.49:8080/hm/app/'; //作业管理
+			mod.HOMEWORK = 'http://139.129.252.49:8080/hm/app/'; //作业管理
 			//资源
 			mod.ZIYUANURL = "https://gxcs.jiaobaowang.net/zxzyapi/api/";
 			break;

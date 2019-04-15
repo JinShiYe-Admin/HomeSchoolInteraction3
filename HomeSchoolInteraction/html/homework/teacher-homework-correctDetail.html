@@ -347,11 +347,11 @@
 											<a class="mui-navigate-right">
 												<img class="li-img" :src=item.studentImg  />
 												<span class="li-name">{{item.studentName}}</span>
-												<template v-if="item.correctStatus==0 || item.correctStatus==1"><!--既不是1未提交也不是0未登记 就显示提交时间  已交2 补交3-->
-													<span class="li-time" style="text-align: center;">{{item.correctStatusTxt}}</span>
+												<template v-if="item.submitStatus==0 || item.submitStatus==1"><!--既不是1未提交也不是0未登记 就显示提交时间  已交2 补交3-->
+													<span class="li-time" style="text-align: center;">{{item.submitStatusTxt}}</span>
 												</template> 
 												<template v-else>
-													<span class="li-time">{{item.correctStatusTxt}}({{getSubTime(item.submitTime)}})</span>
+													<span class="li-time">{{item.submitStatusTxt}}({{getSubTime(item.submitTime)}})</span>
 												</template>
 											</a>
 										</li>
@@ -372,7 +372,7 @@
 											<a class="mui-navigate-right">
 												<img class="li-img" :src=item.studentImg />
 												<span class="li-name">{{item.studentName}}</span>
-												<span class="li-time">{{item.correctStatusTxt}}({{getSubTime(item.submitTime)}})</span>
+												<span class="li-time">{{item.comment}}</span>
 											</a>
 										</li>
 									</template>
@@ -457,6 +457,11 @@
 			});
 			
 			detail.homeworkDetail=homeworkDetail;
+			
+			window.addEventListener('refresh_correctDetail', function(data) {
+				getHomeworkDetail();
+			});
+			
 			//已批未批列表
 			var slider =new Vue({
 				el:'#slider',
