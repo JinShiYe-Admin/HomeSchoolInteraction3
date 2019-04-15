@@ -150,14 +150,14 @@
 				<div class="mui-row">
 					<template v-if="shArray.length>0">
 						<template v-if="shArray.length>3"><!--选择项多于3个的时候，使用密集排列的样式-->
-							<div class="mui-input-row mui-checkbox mui-left">
+							<div class="mui-input-row mui-checkbox mui-left" style="margin-left: 20px;">
 						    	<div class="mui-col mui-col-xs-3" style="float: left;" @tap="shZT(1)">
 									<label for="全选" class="check-label">全选</label>
 						   			<input name="全选" value="" type="checkbox" style="left: 0px;" :checked="allCheck">
 								</div>
 							</div>
-							<div class="mui-input-row mui-checkbox mui-left">
-						    	<div class="mui-col mui-col-xs-3" style="float: left;" v-for="item in shArray" @tap="shZT(2,item)">
+							<div class="mui-input-row mui-checkbox mui-left" style="margin-left: 20px;">
+						    	<div class="mui-col mui-col-xs-4" style="float: left;" v-for="item in shArray" @tap="shZT(2,item)">
 									<label :for="item.studentName" class="check-label">{{item.studentName}}</label>
 						   			<input :name="item.studentName" :value=item.id type="checkbox" style="left: 0px;" :checked="item.isCheck==1">
 								</div>
@@ -185,7 +185,7 @@
 					</template>
 				</div>
 				<div class="title-last">
-					*只有未登记的学生才可以只用“批量登记”
+					*只有已交的学生才可以使用“批量批改”
 				</div>
 			</div>
 		</div>
