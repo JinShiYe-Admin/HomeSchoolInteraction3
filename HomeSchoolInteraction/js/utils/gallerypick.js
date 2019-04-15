@@ -227,7 +227,7 @@ var Gallery = (function(mod) {
 										//console.log("删除文件失败" + JSON.stringify(remErrorCB));
 									});
 									//console.log("视频时长不得超出" + mod.pickVideoTime + "秒");
-									wd.close();
+//									wd.close();
 									mui.toast("视频时长不得超出" + mod.pickVideoTime + "秒");
 									callBack({
 										flag: 0, //失败
@@ -243,7 +243,7 @@ var Gallery = (function(mod) {
 							}, function(remErrorCB) {
 								//console.log("删除文件失败" + JSON.stringify(remErrorCB));
 							});
-							wd.close();
+//							wd.close();
 							mui.toast("视频加载失败");
 							callBack({
 								flag: 0,
@@ -254,7 +254,7 @@ var Gallery = (function(mod) {
 						//console.log("mVideo.src " + mVideo.src);
 					}, function(entryErrorCB) {
 						//console.log("拷贝视频失败 " + JSON.stringify(entryErrorCB));
-						wd.close();
+//						wd.close();
 						mui.toast("视频处理失败 " + entryErrorCB.message);
 						callBack({
 							flag: 0,
@@ -263,7 +263,7 @@ var Gallery = (function(mod) {
 					});
 				}, function(parentEntryErrorCB) {
 					//console.log("获取_documents目录对象失败 " + JSON.stringify(parentEntryErrorCB));
-					wd.close();
+//					wd.close();
 					mui.toast("视频处理失败 " + entryErrorCB.message);
 					callBack({
 						flag: 0,
@@ -272,7 +272,7 @@ var Gallery = (function(mod) {
 				});
 			}, function(metadataErrorCB) {
 				//console.log("获取视频信息失败 " + JSON.stringify(metadataErrorCB));
-				wd.close();
+//				wd.close();
 				mui.toast("获取视频信息失败 " + metadataErrorCB.message);
 				callBack({
 					flag: 0,
@@ -281,7 +281,7 @@ var Gallery = (function(mod) {
 			});
 		}, function(fileErrorCB) {
 			//console.log("获取相册的视频文件对象失败 " + JSON.stringify(fileErrorCB));
-			wd.close();
+//			wd.close();
 			mui.toast("获取视频失败 " + fileErrorCB.message);
 			callBack({
 				flag: 0,

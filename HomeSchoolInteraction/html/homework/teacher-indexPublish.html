@@ -222,7 +222,7 @@
 					if(addHomeworkContent.gradeIDsArray.length > 0) {
 						console.log('111111111');
 						var tempID = addHomeworkContent.gradeIDsArray[0];
-						console.log('111111111333:'+tempM.grdid+','+temoCls.grdid);
+						console.log('111111111333:' + tempM.grdid + ',' + temoCls.grdid);
 						if(tempID == temoCls.grdid) {
 							console.log('1111111112222222');
 							addHomeworkContent.classIDsArray.push(temoCls.clsid);
@@ -468,6 +468,9 @@
 					document.getElementById("finish").disabled = false;
 					if(data.RspCode == 0) {
 						addHomeworkContent.content = '';
+						//清空
+												multiMedia.imageRefresh();
+												multiMedia.videoRefresh();
 						//						if(temp4.length > 0 && addHomeworkContent.msgFlag == 1) {
 						//							var tempMobiles = temp4.join(',').toString();
 						//							events.SendSmsForMobiles(tempMobiles, addHomeworkContent.content);
