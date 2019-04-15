@@ -402,25 +402,25 @@
 						var self = this;
 						flagRef = 0;
 						if(homeworkListArray.formFlag == 0) { //学生作业
-//							if(homeworkListArray.homeworkArrayStu.length > 0) {
-								homeworkListArray.pageIndexStu = 1;
-								getTeacheromeworkList(homeworkListArray.pageIndexStu, this);
-								if(mui(".mui-table-view-cell").length < 10) {
-									mui(".mui-pull-loading")[0].innerHTML = "";
-								}
-//							} else {
-//								self.endPullDownToRefresh();
-//							}
+							//							if(homeworkListArray.homeworkArrayStu.length > 0) {
+							homeworkListArray.pageIndexStu = 1;
+							getTeacheromeworkList(homeworkListArray.pageIndexStu, this);
+							if(mui(".mui-table-view-cell").length < 10) {
+								mui(".mui-pull-loading")[0].innerHTML = "";
+							}
+							//							} else {
+							//								self.endPullDownToRefresh();
+							//							}
 						} else { //班级作业
-//							if(homeworkListArray.homeworkArrayCls.length > 0) {
-								homeworkListArray.pageIndexCls = 1;
-								getTeacheromeworkList(homeworkListArray.pageIndexCls, this);
-								if(mui(".mui-table-view-cell").length < 10) {
-									mui(".mui-pull-loading")[0].innerHTML = "";
-								}
-//							} else {
-//								self.endPullDownToRefresh();
-//							}
+							//							if(homeworkListArray.homeworkArrayCls.length > 0) {
+							homeworkListArray.pageIndexCls = 1;
+							getTeacheromeworkList(homeworkListArray.pageIndexCls, this);
+							if(mui(".mui-table-view-cell").length < 10) {
+								mui(".mui-pull-loading")[0].innerHTML = "";
+							}
+							//							} else {
+							//								self.endPullDownToRefresh();
+							//							}
 						}
 					}
 				},
@@ -806,6 +806,20 @@
 					wd = events.showWaiting();
 				}
 				if(homeworkListArray.formFlag == 0) {
+					if(comData0.stuName.length == 0) {
+						mui.toast('请先输入学生姓名');
+						wd.close();
+						if(flagRef == 0) { //刷新
+							if(self) {
+								self.endPullDownToRefresh();
+							}
+						} else { //加载更多 
+							if(self) {
+								self.endPullUpToRefresh();
+							}
+						}
+						return;
+					}
 					comData.pageNumber = homeworkListArray.pageIndexStu;
 					hwTeachertatisticsStudentHomework(comData, function(data) {
 						console.log('作业列表:' + JSON.stringify(data));
