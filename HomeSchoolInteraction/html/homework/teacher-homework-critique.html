@@ -145,7 +145,7 @@
 						分数
 				</div>
 				<div class="mui-row">
-					<input name="score" v-model=score type="text" placeholder="请输入分数（0-100）"  onkeyup="clearNoNum(this)">
+					<input name="score" v-model=score type="text" placeholder="请输入分数（0-100）"  onkeyup="clearNoNum(this)" onpropertychange="clearNoNum(this)" oninput="clearNoNum(this)">
 				</div>
 				<div class="title">
 						输入评价
