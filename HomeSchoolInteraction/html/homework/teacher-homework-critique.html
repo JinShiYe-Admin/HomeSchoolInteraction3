@@ -145,7 +145,7 @@
 						分数
 				</div>
 				<div class="mui-row">
-					<input name="score" v-model=score type="text" placeholder="请输入分数（0-100）"  onkeyup="clearNoNum(this)" onpropertychange="clearNoNum(this)" oninput="clearNoNum(this)">
+					<input name="score" v-model=score type="text" placeholder="请输入分数（0-999）"  onkeyup="clearNoNum(this)" onpropertychange="clearNoNum(this)" oninput="clearNoNum(this)">
 				</div>
 				<div class="title">
 						输入评价
@@ -356,7 +356,7 @@
 			    if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
 			        
 			        var parse=parseFloat(obj.value);
-			        if(parse>=0&&parse<=100){
+			        if(parse>=0&&parse<=999){
 			        	scoreNum=parse;
 			        }
 			        obj.value=scoreNum;
