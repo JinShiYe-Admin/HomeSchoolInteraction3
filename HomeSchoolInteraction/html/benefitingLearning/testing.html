@@ -85,6 +85,9 @@
 			#testing {
 				height: 100%;
 			}
+			.mui-scroll-wrapper {
+				top: 44px;
+			}
 		</style>
 	</head>
 
@@ -98,32 +101,39 @@
 			</header>
 			
 			<div class="mui-content">
-				<div class="question-header">
-					<span class="p-title mui-ellipsis">{{paperName}}</span>
-					<span class="progress">{{progress}}</span>
-				</div>
-				
-				<div class="question-box" v-if="questions[index]">
-					<div class="question">{{ (index+1)+".(单选题) " }}<span v-html="questions[index].content"></span></div>
-					<div class="option-box">
-						<div class="option-item" v-for="(item, k) in transOption" :key="k" @tap="selectOption(k)">
-							<span class="option-label" v-if="!isTested" :class="{selected: questions[index].stu_answer==k}">{{k}}</span>
-							<span class="option-label" v-else :class="answerJudge(k)">{{k}}</span>
-							<span v-html="item"></span>
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						
+						<div class="question-header">
+							<span class="p-title mui-ellipsis">{{paperName}}</span>
+							<span class="progress">{{progress}}</span>
 						</div>
+						
+						<div class="question-box" v-if="questions[index]">
+							<div class="question">{{ (index+1)+".(单选题) " }}<span v-html="questions[index].content"></span></div>
+							<div class="option-box">
+								<div class="option-item" v-for="(item, k) in transOption" :key="k" @tap="selectOption(k)">
+									<span class="option-label" v-if="!isTested" :class="{selected: questions[index].stu_answer==k}">{{k}}</span>
+									<span class="option-label" v-else :class="answerJudge(k)">{{k}}</span>
+									<span v-html="item"></span>
+								</div>
+							</div>
+						</div>
+						
+						<div class="answer-box" v-if="isTested">
+							<div class="answer-key">
+								正确答案：<span style="color: #2CA97F; margin-right: 0.35rem;"> {{getAnswerName(questions[index].answer)}}</span> 
+								你选的：<span style="color: #FF7C6F;"> {{getAnswerName(questions[index].stu_answer)}}</span>
+							</div>
+							<div class="answer-detail">
+								答案解析：<br /> 
+								<div v-html="questions[index].solve"></div>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 				
-				<div class="answer-box" v-if="isTested">
-					<div class="answer-key">
-						正确答案：<span style="color: #2CA97F; margin-right: 0.35rem;"> {{getAnswerName(questions[index].answer)}}</span> 
-						你选的：<span style="color: #FF7C6F;"> {{getAnswerName(questions[index].stu_answer)}}</span>
-					</div>
-					<div class="answer-detail">
-						答案解析：<br /> 
-						<div v-html="questions[index].solve"></div>
-					</div>
-				</div>
 			</div>
 			
 		</div>
@@ -226,6 +236,11 @@
 						plus.nativeUI.toast("题目异常，请重新做题或换个知识点");
 					}
 				}
+				
+				// 滚动区域
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: false
+				});
 				
 			});
 			
@@ -356,6 +371,7 @@
 							return false;
 						}else{
 							this.index = des;
+							mui('.mui-scroll-wrapper').scroll().scrollTo(0,0);//滚动到顶
 						}
 					},
 					//选择
