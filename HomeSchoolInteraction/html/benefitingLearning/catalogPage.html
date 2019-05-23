@@ -341,14 +341,16 @@
 							item.ischeck=1;
 							console.log("选择的是这个:"+JSON.stringify(item)+',lx:'+lx);
 							console.log("选择的是这个parent:"+JSON.stringify(parent)+',lx:'+lx);
+							console.log("catalogObj:"+JSON.stringify(catalogObj)+',lx:'+lx);
+							console.log("catalogPage:"+JSON.stringify(catalogPage)+',lx:'+lx);
 							//重新查询目录
 							if(lx=='xd'){
 								catalogObj.percode=item.percode;
-								catalogPage.subFlag=item.subFlag;
-								catalogPage.subList=item.subList;
-								if(item.subList.length>0){
-									catalogObj.subcode=item.subList[0].subcode
-								}
+//								catalogPage.subFlag=item.subFlag;
+//								catalogPage.subList=item.subList;
+//								if(item.subList.length>0){
+//									catalogObj.subcode=item.subList[0].subcode
+//								}
 								catalogObj.matercode ='';
 								catalogObj.fasccode ='';
 							}else if(lx=='km'){
