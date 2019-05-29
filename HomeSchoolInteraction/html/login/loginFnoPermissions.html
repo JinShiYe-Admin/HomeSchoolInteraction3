@@ -115,7 +115,7 @@
 			if(checkInput(tempName)) {
 				if(checkInput(tempPW)) {
 					//login登录
-					loginPro(tempName, tempPW);
+					getEncryptKeyLogin(tempName, tempPW);
 				} else {
 
 				}
@@ -148,228 +148,232 @@
 			outLine("appkey: " + info.appkey);
 		}
 
-		//login登录
-		var loginPro = function(tempName, tempPW) {
-			var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+		//注册按钮
+		document.getElementById('zhuce').addEventListener('tap', function() {
+			utils.mOpenWithData("../../html/index/register.html", tempModel);
+		})
+
+		//获取秘钥
+		var getEncryptKeyLogin = function(tempName, tempPW) {
 			//握手
 			var enData0 = {};
 			//不需要加密的数据
 			var comData0 = {
-				uuid: publicPar.uuid, //用户设备号
-				shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
-				appid: publicPar.appid //系统所分配的应用ID
+				platform_code: window.storageKeyName.PLATFORMCODE //平台代码
 			};
-			events.showWaiting();
+			$.showLoading();
 			//发送网络请求，data为网络返回值
-			postDataEncry('ShakeHand', enData0, comData0, 0, function(data) {
-				console.log('2121212');
+			postDataEncry(0, 'api/login/getEncryptKey', enData0, comData0, 0, function(data) {
+				console.log('2121212data:' + JSON.stringify(data));
 				if(data.RspCode == 0) {
-					store.set(window.storageKeyName.SHAKEHAND, data.RspData);
-					var enData1 = {
-						uid: tempName, //用户账号
-						pw: tempPW //用户密码
-					};
-					//不需要加密的数据
-					var comData1 = {
-						uuid: publicPar.uuid, //用户设备号
-						shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
-						appid: publicPar.appid, //系统所分配的应用ID
-						schid: storageKeyName.SCHOOLID, //学校ID
-						utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
-					};
-					//登录
-					postDataEncry('Login', enData1, comData1, 0, function(data1) {
-						events.closeWaiting();
-						if(data1.RspCode == 0) {
-							if(data1.RspData.utp == 2) {
-								mui.toast('学生账号，暂不可使用');
-								return;
-							}
-							if(data1.RspData.dpts == null) {
-								data1.RspData.dpts = [];
-							}
-							if(data1.RspData.grds == null) {
-								data1.RspData.grds = [];
-							}
-							if(data1.RspData.clss == null) {
-								data1.RspData.clss = [];
-							}
-							if(data1.RspData.subs == null) {
-								data1.RspData.subs = [];
-							}
-							//									if (data1.RspData.clss.length>0) {
-							//										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
-							//									}
-							if(data1.RspData.urolestr == null) {
-								data1.RspData.urolestr = '00000000000000000000000000000';
-							}
-							//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
-							//								data1.RspData.imgurl = '../../img/login/headImg.png';
-							//							}
-							data1.RspData.userName0 = tempName;
-							data1.RspData.password0 = tempPW;
-							data1.RspData.isBdCount = 0; //套餐是否绑定学生
-							data1.RspData.userbus = 0; //套餐是否绑定
-							var model_area = {
-								procode: '00', //省份code，自己添加的参数
-								proname: '全国', //省份名称，自己添加的参数
-								acode: '000000', //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
-								aname: '全国', //节点名称--城市名称
-								atype: '' //节点类型,0省1城市2区县
-							}
-							data1.RspData.uarea = model_area; //用户区域,省代码 市代码|省名称 市名称
-							store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
-							var personal = store.get(window.storageKeyName.PERSONALINFO);
-							console.log('personal000:' + JSON.stringify(personal));
+					store.set(window.storageKeyName.SHAKEHAND, data.RspData.encryptKey);
+					loginPro(tempName, tempPW, data.RspData.encryptKey);
+				} else {
+					$.hideLoading();
+					mui.toast(data.RspTxt);
+				}
+			});
+		}
 
-							var info = plus.push.getClientInfo();
-							var tempBindData = {
-								appId: info.appid,
-								alias: data1.RspData.utid,
-								cid: info.clientid
-							}
-							bindPro(tempBindData, function function_name(data) {
-								//									events.closeWaiting();
-								if(data.RspCode == 0) {
-									//										utils.mOpenWithData("../../index.html", {});
-								} else {
-									//											mui.toast(data.RspTxt);
-								}
-							});
+		//login登录
+		var loginPro = function(tempName, tempPW, key) {
+			var enData1 = {};
+			//不需要加密的数据
+			var comData1 = {
+				password: hex_md5(key + tempPW), //秘钥+密码再MD5加密
+				platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+				app_code: window.storageKeyName.APPCODE, //应用系统代码
+				unit_code:'-1',//单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+				login_name: tempName //登录名
+			};
+			//登录
+			postDataEncry(0, 'api/login', enData1, comData1, 0, function(data1) {
+				events.closeWaiting();
+				if(data1.RspCode == 0) {
+					if(data1.RspData.utp == 2) {
+						mui.toast('学生账号，暂不可使用');
+						return;
+					}
+					if(data1.RspData.dpts == null) {
+						data1.RspData.dpts = [];
+					}
+					if(data1.RspData.grds == null) {
+						data1.RspData.grds = [];
+					}
+					if(data1.RspData.clss == null) {
+						data1.RspData.clss = [];
+					}
+					if(data1.RspData.subs == null) {
+						data1.RspData.subs = [];
+					}
+					//									if (data1.RspData.clss.length>0) {
+					//										data1.RspData.grds = data1.RspData.grds.concat(data1.RspData.clss);
+					//									}
+					if(data1.RspData.urolestr == null) {
+						data1.RspData.urolestr = '00000000000000000000000000000';
+					}
+					//							if (data1.RspData.imgurl==null||data1.RspData.imgurl.length==0) {
+					//								data1.RspData.imgurl = '../../img/login/headImg.png';
+					//							}
+					data1.RspData.userName0 = tempName;
+					data1.RspData.password0 = tempPW;
+					data1.RspData.isBdCount = 0; //套餐是否绑定学生
+					data1.RspData.userbus = 0; //套餐是否绑定
+					var model_area = {
+						procode: '00', //省份code，自己添加的参数
+						proname: '全国', //省份名称，自己添加的参数
+						acode: '000000', //节点代码,通用6位,前两位为省份编码,中间两位为城市编码,后两位为区县编码--城市代码
+						aname: '全国', //节点名称--城市名称
+						atype: '' //节点类型,0省1城市2区县
+					}
+					data1.RspData.uarea = model_area; //用户区域,省代码 市代码|省名称 市名称
+					store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
+					var personal = store.get(window.storageKeyName.PERSONALINFO);
+					console.log('personal000:' + JSON.stringify(personal));
 
-							//如果密码为1--6，让修改密码后，进入主界面
-							if(personal.password0 == '123456') {
-								var tempModel = {
-									flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
-								}
-								utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
-							} else {
-								if(personal.utp == 1) { //0老师，2学生，1家长
-									var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-									//4.5.获取用户关联的学生列表
-									var enData2 = {};
-									//不需要加密的数据
-									var comData2 = {
-										uuid: publicParameter.uuid, //用户设备号
-										utid: personal.utid, //用户ID
-										utoken: personal.utoken, //用户令牌
-										appid: publicParameter.appid //系统所分配的应用ID
-									}
-									events.showWaiting();
-									//发送网络请求，data为网络返回值
-									postDataEncry('UserUstu', enData2, comData2, 0, function(data2) {
-										console.log('4.5.UserUstu:' + JSON.stringify(data2));
-										events.closeWaiting();
-										if(data2.RspCode == 0) {
-											if(data2.RspData) {
-												var tempArray = [];
-												//获取已经订购的套餐，订购的套餐和绑定人员对应
-												//不需要加密的数据
-												var comData3 = {
-													uuid: publicParameter.uuid, //用户设备号
-													uid: personal.uid, //用户账号
-													utoken: personal.utoken, //用户令牌
-													appid: publicParameter.appid //系统所分配的应用ID
-												};
-												events.showWaiting();
-												//发送网络请求，data为网络返回值
-												postDataEncry('GetUserBusFunc', {}, comData3, 0, function(data3) {
-													console.log('4.1.GetUserBusFunc:' + JSON.stringify(data3));
-													events.closeWaiting();
-													if(data3.RspCode == 0) {
-														if(data3.RspData) {
-															var tempArray0 = []; //判断是否有智学课堂套餐
-															for(var i = 0; i < data3.RspData.userbus.length; i++) {
-																var tempM = data3.RspData.userbus[i];
-																if(tempM.funcs) {
-																	for(var a = 0; a < tempM.funcs.length; a++) {
-																		var tempFuncs = tempM.funcs[a];
-																		if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
-																			tempArray0.push(tempM.servid);
-																			//再循环绑定的学生，对应forid，同一个套餐
-																			for(var m = 0; m < data2.RspData.stus.length; m++) {
-																				var tempM2 = data2.RspData.stus[m];
-																				if(tempM2.forid == tempM.forid) {
-																					var tempM1 = {
-																						percode: tempM2.grdpercode,
-																						pername: tempM2.grdpername,
-																						ischeck: 0
-																					}
-																					tempArray.push(tempM1);
-																				}
+					var info = plus.push.getClientInfo();
+					var tempBindData = {
+						appId: info.appid,
+						alias: data1.RspData.utid,
+						cid: info.clientid
+					}
+					bindPro(tempBindData, function function_name(data) {
+						//									events.closeWaiting();
+						if(data.RspCode == 0) {
+							//										utils.mOpenWithData("../../index.html", {});
+						} else {
+							//											mui.toast(data.RspTxt);
+						}
+					});
+
+					//如果密码为1--6，让修改密码后，进入主界面
+					if(personal.password0 == '123456') {
+						var tempModel = {
+							flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
+						}
+						utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+					} else {
+						if(personal.utp == 1) { //0老师，2学生，1家长
+							var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
+							//4.5.获取用户关联的学生列表
+							var enData2 = {};
+							//不需要加密的数据
+							var comData2 = {
+								uuid: publicParameter.uuid, //用户设备号
+								utid: personal.utid, //用户ID
+								utoken: personal.utoken, //用户令牌
+								appid: publicParameter.appid //系统所分配的应用ID
+							}
+							events.showWaiting();
+							//发送网络请求，data为网络返回值
+							postDataEncry('UserUstu', enData2, comData2, 0, function(data2) {
+								console.log('4.5.UserUstu:' + JSON.stringify(data2));
+								events.closeWaiting();
+								if(data2.RspCode == 0) {
+									if(data2.RspData) {
+										var tempArray = [];
+										//获取已经订购的套餐，订购的套餐和绑定人员对应
+										//不需要加密的数据
+										var comData3 = {
+											uuid: publicParameter.uuid, //用户设备号
+											uid: personal.uid, //用户账号
+											utoken: personal.utoken, //用户令牌
+											appid: publicParameter.appid //系统所分配的应用ID
+										};
+										events.showWaiting();
+										//发送网络请求，data为网络返回值
+										postDataEncry('GetUserBusFunc', {}, comData3, 0, function(data3) {
+											console.log('4.1.GetUserBusFunc:' + JSON.stringify(data3));
+											events.closeWaiting();
+											if(data3.RspCode == 0) {
+												if(data3.RspData) {
+													var tempArray0 = []; //判断是否有智学课堂套餐
+													for(var i = 0; i < data3.RspData.userbus.length; i++) {
+														var tempM = data3.RspData.userbus[i];
+														if(tempM.funcs) {
+															for(var a = 0; a < tempM.funcs.length; a++) {
+																var tempFuncs = tempM.funcs[a];
+																if(tempFuncs.ftype == 'jxht' && tempM.serstat == 1) {
+																	tempArray0.push(tempM.servid);
+																	//再循环绑定的学生，对应forid，同一个套餐
+																	for(var m = 0; m < data2.RspData.stus.length; m++) {
+																		var tempM2 = data2.RspData.stus[m];
+																		if(tempM2.forid == tempM.forid) {
+																			var tempM1 = {
+																				percode: tempM2.grdpercode,
+																				pername: tempM2.grdpername,
+																				ischeck: 0
 																			}
+																			tempArray.push(tempM1);
 																		}
 																	}
 																}
 															}
-															if(tempArray.length > 0) {
-																tempArray = tempArray.unique('percode');
-																tempArray = tempArray.sort(compare("percode"));
-																tempArray[0].ischeck = 1;
-															}
-															store.set(window.storageKeyName.PRDLIST, tempArray);
-															console.log('tempArray:' + JSON.stringify(tempArray));
-															var personal1 = store.get(window.storageKeyName.PERSONALINFO);
-															personal1.isBdCount = tempArray.length; //套餐是否绑定学生
-															personal1.orderPerCode = 0; //绑定套餐的对应的学段id
-															if(tempArray.length > 0) {
-																personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
-															}
-															//															
-															personal1.userbus = tempArray0.join('|'); // 绑定的套餐
-															console.log('personal1:' + JSON.stringify(personal1));
-															store.set(window.storageKeyName.PERSONALINFO, personal1);
-															//再判断，是否是在平台上第一次登陆
-															var tempData = {
-																userId: personal1.utid //登录人ID
-															}
-															getNoticesPro(tempData, function function_name(data) {
-																if(data.RspCode == 0) {
-																	var tempModel = {
-																		returnFlag: 1,
-																		flag: 1 //
-																	}
-																	utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
-																} else {
-																	gotoIndex();
-																}
-															});
-														} else {
-															personal.packageCount = 0; //套餐是否绑定学生
-															personal.userbus = []; // 绑定的套餐
-															store.set(window.storageKeyName.PERSONALINFO, personal);
 														}
-													} else {
-														mui.toast(data3.RspTxt);
 													}
-
-												});
-
-											} else {
-												var tempModel = {
-													returnFlag: 1,
-													flag: 1 //
+													if(tempArray.length > 0) {
+														tempArray = tempArray.unique('percode');
+														tempArray = tempArray.sort(compare("percode"));
+														tempArray[0].ischeck = 1;
+													}
+													store.set(window.storageKeyName.PRDLIST, tempArray);
+													console.log('tempArray:' + JSON.stringify(tempArray));
+													var personal1 = store.get(window.storageKeyName.PERSONALINFO);
+													personal1.isBdCount = tempArray.length; //套餐是否绑定学生
+													personal1.orderPerCode = 0; //绑定套餐的对应的学段id
+													if(tempArray.length > 0) {
+														personal1.orderPerCode = tempArray[0].percode; //绑定套餐的对应的学段id
+													}
+													//															
+													personal1.userbus = tempArray0.join('|'); // 绑定的套餐
+													console.log('personal1:' + JSON.stringify(personal1));
+													store.set(window.storageKeyName.PERSONALINFO, personal1);
+													//再判断，是否是在平台上第一次登陆
+													var tempData = {
+														userId: personal1.utid //登录人ID
+													}
+													getNoticesPro(tempData, function function_name(data) {
+														if(data.RspCode == 0) {
+															var tempModel = {
+																returnFlag: 1,
+																flag: 1 //
+															}
+															utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+														} else {
+															gotoIndex();
+														}
+													});
+												} else {
+													personal.packageCount = 0; //套餐是否绑定学生
+													personal.userbus = []; // 绑定的套餐
+													store.set(window.storageKeyName.PERSONALINFO, personal);
 												}
-												utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+											} else {
+												mui.toast(data3.RspTxt);
 											}
-										} else {
-											gotoIndex();
-										}
-									});
 
+										});
+
+									} else {
+										var tempModel = {
+											returnFlag: 1,
+											flag: 1 //
+										}
+										utils.mOpenWithData("../../html/relation/relationStu.html", tempModel);
+									}
 								} else {
 									gotoIndex();
 								}
-							}
+							});
+
 						} else {
-							mui.toast(data1.RspTxt);
+							gotoIndex();
 						}
-					});
+					}
 				} else {
-					mui.toast(data.RspTxt);
+					mui.toast(data1.RspTxt);
 				}
 			});
-
 		}
 
 		//对象数组按指定字段进行排序

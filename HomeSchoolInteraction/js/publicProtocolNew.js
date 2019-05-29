@@ -55,11 +55,16 @@ var modifyTimeFormat = function(str) {
 //commonData,不需要加密的对象
 //flag,0表示不需要合并共用数据，1为添加uuid、utid、token、appid普通参数，2为uuid、appid、token
 //callback,返回值
-var postDataEncry = function(url, encryData, commonData, flag, callback) {
+var postDataEncry = function(urlFlag,url, encryData, commonData, flag, callback) {
 	checkNewWork(callback);
-	var tempUrl = window.storageKeyName.INTERFACEGU;
-	url = tempUrl + url;
-	console.log('url:', url);
+	var tempUrl = window.storageKeyName.INTERFACEZENG;
+	if(urlFlag == 1) {
+		tempUrl = window.storageKeyName.INTERFACEMENG;
+	}else if(urlFlag == 2){
+		tempUrl = window.storageKeyName.INTERFACEGU;
+	}
+	var url1 = tempUrl + url;
+	console.log('url1:', url1);
 	//拼接登录需要的签名
 	var signTemp = postDataEncry1(encryData, commonData, flag);
 	console.log('signTemp000:' + signTemp);
@@ -70,18 +75,23 @@ var postDataEncry = function(url, encryData, commonData, flag, callback) {
 		var tempData = $.extend(encryData, commonData);
 		//添加签名
 		tempData.sign = sign;
-		// 等待的对话框
-		var urlArr = url.split('/');
-		console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', tempData);
-		jQAjaxPost(url, JSON.stringify(tempData), callback);
+		console.log('传递的参数' + url + ':', JSON.stringify(tempData));
+		var tempStr = JSON.stringify(tempData).replace(/\\/g, "");
+		console.log('tempStr:' + tempStr);
+		jQAjaxPost(urlFlag, url, tempStr, callback);
 	});
 }
 
-var postDataEncry2 = function(url, encryData, commonData, flag, callback) {
+var postDataEncry2 = function(urlFlag,url, encryData, commonData, flag, callback) {
 	checkNewWork(callback);
-	var tempUrl = window.storageKeyName.INTERFACEGU;
-	url = tempUrl + url;
-	console.log('url:', url);
+	var tempUrl = window.storageKeyName.INTERFACEZENG;
+	if(urlFlag == 1) {
+		tempUrl = window.storageKeyName.INTERFACEMENG;
+	}else if(urlFlag == 2){
+		tempUrl = window.storageKeyName.INTERFACEGU;
+	}
+	var url1 = tempUrl + url;
+	console.log('url1:', url1);
 	//拼接登录需要的签名
 	var signTemp = postDataEncry1(encryData, commonData, flag);
 	console.log('signTemp000:' + signTemp);
@@ -92,12 +102,10 @@ var postDataEncry2 = function(url, encryData, commonData, flag, callback) {
 		var tempData = $.extend(encryData, commonData);
 		//添加签名
 		tempData.sign = sign;
-		// 等待的对话框
-		var urlArr = url.split('/');
-		console.log('传递的参数' + urlArr[urlArr.length - 1] + ':', tempData);
+		console.log('传递的参数' + url + ':', JSON.stringify(tempData));
 		var tempStr = JSON.stringify(tempData).replace(/\\/g, "");
 		console.log('tempStr:' + tempStr);
-		jQAjaxPost(url, tempStr, callback);
+		jQAjaxPost(urlFlag, url, tempStr, callback);
 	});
 }
 //修改数组，改变格式
@@ -203,20 +211,13 @@ var xhrPost = function(url, commonData, callback, flag) {
 				console.log('XHRP-Success:', JSON.stringify(success_data));
 				if(success_data.RspCode == 10) { //令牌过期
 					//续订令牌
-					var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 					var personal = store.get(window.storageKeyName.PERSONALINFO);
 					//需要参数
 					var comData = {
-						uuid: publicParameter.uuid,
-						utid: personal.utid,
-						utoken: personal.utoken,
-						appid: publicParameter.appid,
-						schid: personal.schid,
-						utp: personal.utp,
-						utname: personal.utname
+						access_token: personal.utoken
 					};
 					//令牌续订
-					postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+					postDataEncry(0, 'api/token/refresh', {}, comData, 0, function(data1) {
 						if(data1.RspCode == 0) {
 							var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 							tempInfo00.utoken = data1.RspData;
@@ -224,11 +225,13 @@ var xhrPost = function(url, commonData, callback, flag) {
 							commonData.token = data1.RspData;
 							delete commonData.sign;
 							xhrPost(url, commonData, function(data2) {
+								data2 = modifyParameter(url, data2);
 								callback(data2);
 							});
 						}
 					});
 				} else {
+					success_data = modifyParameter(url, success_data);
 					callback(success_data);
 				}
 			} else {
@@ -273,12 +276,19 @@ var checkNewWork = function(callback) {
 	}
 }
 
-var jQAjaxPost = function(url, data, callback) {
+var jQAjaxPost = function(urlFlag,url, data, callback) {
 	checkNewWork(callback);
+	var tempUrl = window.storageKeyName.INTERFACEZENG;
+	if(urlFlag == 1) {
+		tempUrl = window.storageKeyName.INTERFACEMENG;
+	}else if(urlFlag == 2){
+		tempUrl = window.storageKeyName.INTERFACEGU;
+	}
+	var url1 = tempUrl + url;
 	console.log('jQAP-Url:', url);
 	console.log('jQAP-Data:' + data);
 	jQuery.ajax({
-		url: url,
+		url: url1,
 		type: "POST",
 		data: data,
 		timeout: 10000,
@@ -289,20 +299,13 @@ var jQAjaxPost = function(url, data, callback) {
 			console.log('jQAP-Success:', success_data);
 			if(success_data.RspCode == 6) { //令牌过期
 				//续订令牌
-				var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
 				//需要参数
 				var comData = {
-					uuid: publicParameter.uuid,
-					utid: personal.utid,
-					utoken: personal.utoken,
-					appid: publicParameter.appid,
-					schid: personal.schid,
-					utp: personal.utp,
-					utname: personal.utname
+					access_token: personal.utoken
 				};
 				//令牌续订
-				postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+				postDataEncry(0, 'api/token/refresh', {}, comData, 0, function(data1) {
 					if(data1.RspCode == 0) {
 						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 						tempInfo00.utoken = data1.RspData;
@@ -313,12 +316,14 @@ var jQAjaxPost = function(url, data, callback) {
 						delete tempData.sign;
 						console.log('urlArr:' + urlArr[urlArr.length - 1]);
 						console.log('data:' + JSON.stringify(tempData));
-						postDataEncry(urlArr[urlArr.length - 1], {}, tempData, 0, function(data2) {
+						postDataEncry(urlFlag,url, {}, tempData, 0, function(data2) {
+							data2 = modifyParameter(url, data2);
 							callback(data2);
 						});
 					}
 				});
 			} else {
+				success_data = modifyParameter(url, success_data);
 				callback(success_data);
 			}
 		},
@@ -356,16 +361,10 @@ var tempPro = function(url, data0, callback) {
 				var personal = store.get(window.storageKeyName.PERSONALINFO);
 				//需要参数
 				var comData = {
-					uuid: publicParameter.uuid,
-					utid: personal.utid,
-					utoken: personal.utoken,
-					appid: publicParameter.appid,
-					schid: personal.schid,
-					utp: personal.utp,
-					utname: personal.utname
+					access_token: personal.utoken
 				};
 				//令牌续订
-				postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+				postDataEncry(0, 'api/token/refresh', {}, comData, 0, function(data1) {
 					if(data1.RspCode == 0) {
 						var tempInfo00 = store.get(window.storageKeyName.PERSONALINFO);
 						tempInfo00.utoken = data1.RspData;
@@ -373,11 +372,12 @@ var tempPro = function(url, data0, callback) {
 						//						data0.utoken = data1.RspData;
 						delete data0.sign;
 						tempPro(url, data0, function(data2) {
-							callback(data2);
+							data2 = modifyParameter(url, data2);
 						});
 					}
 				});
 			} else {
+				success_data = modifyParameter(url, success_data);
 				callback(success_data);
 			}
 		} else {
@@ -406,6 +406,53 @@ var tempPro = function(url, data0, callback) {
 	};
 	xhr.send(JSON.stringify(data0));
 }
+
+var modifyParameter = function(url, model) {
+	if(model.msg) {
+		repalceKey(model, 'code', 'RspCode');
+		repalceKey(model, 'data', 'RspData');
+		repalceKey(model, 'msg', 'RspTxt');
+	}
+
+	if(url == 'api/user/dptUser') { //学校部门用户
+		//		model.RspData = model.RspData.users;
+	} else if(url == 'api/org/list') { //学校部门
+		//		model.RspData = model.RspData.dpts;
+	} else if(url == 'api/cls/list') { //学校班级
+		//		model.RspData = model.RspData.clss;
+		repalceKey(model, 'finish', 'isfinish');
+	} else if(url == 'api/tec/list') { //学校班级任课老师
+		//		model.RspData = model.RspData.clssusers;
+		repalceKey(model, 'master', 'isms');
+	} else if(url == 'api/user/dptUser') { //
+
+	} else if(url == 'api/user/dptUser') { //
+
+	} else if(url == 'api/user/dptUser') { //
+
+	} else if(url == 'api/user/dptUser') { //
+
+	} else if(url == 'api/user/dptUser') { //
+
+	} else if(url == 'api/user/dptUser') { //
+
+	}
+	return model;
+}
+
+//更换personal 对象的key 值
+var repalceKey = function(obj, oldKey, newKey) {
+	if(obj instanceof Array) {
+		for(var i in obj) {
+			obj[i][newKey] = obj[i][oldKey];
+			delete obj[i][oldKey];
+		}
+	} else {
+		obj[newKey] = obj[oldKey];
+		delete obj[oldKey];
+	}
+}
+
 //1.绑定
 var bindPro = function(data0, callback) {
 	var url = 'http://jbyj.jiaobaowang.net/GeTuiPushServer/bind';

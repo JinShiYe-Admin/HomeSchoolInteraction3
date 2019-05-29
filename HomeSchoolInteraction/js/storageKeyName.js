@@ -2,11 +2,11 @@
 
 var storageKeyName = (function(mod) {
 
-	mod.key = 1; //0,开发;1,测试云；2外网
+	mod.key = 0; //0,开发;1,测试云；2外网
 	mod.pay = 0; //0,单个商家接口;1,多商家接口
 	var exLog = console.log;
 	console.log = function(hint, object) {
-		if(mod.key === 1) {
+		if(mod.key === 0) {
 			var argus = hint;
 			if(typeof(object)!=='undefined') {
 				argus = hint + JSON.stringify(object);
@@ -18,8 +18,10 @@ var storageKeyName = (function(mod) {
 		case 0: //开发
 			mod.SCHOOLID = 100005;//学校ID
 			mod.USERTYPE = 0;//用户类型，0老师,1家长,2学生
-			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/';//顾工接口
-			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/';//孔工接口
+			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/'; //顾工接口
+			mod.INTERFACEZENG = 'http://139.129.252.49:8080/sup/'; //系统接口
+			mod.INTERFACEMENG = 'http://139.129.252.49:8080/sys/'; //系统接口
+			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolOAServiceNew/'; //孔工接口
 			mod.TEACHERIMG = 'http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';//安卓升级地址
 			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
@@ -50,6 +52,8 @@ var storageKeyName = (function(mod) {
 			//学生管理
 			mod.INTERFACESIGNINKONG = 'https://jbyj.jiaobaowang.net/SchoolAttendanceService/'; //孔工接口IMG
 			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
+			mod.PLATFORMCODE = 'PT0001'; //平台代码
+			mod.APPCODE = 'smartSchAPP'; //应用系统代码
 			break;
 		case 1: //云测试
 			mod.SCHOOLID = 0;//学校ID
@@ -142,6 +146,17 @@ var storageKeyName = (function(mod) {
 		default:
 			break;
 	}
+	
+	//模块权限
+	mod.NOTICEAPPROVE_ADD='#OA:NoticeApprove:add'//通知公告、事物审批发布权限
+	mod.NOTICE_INDEX='#OA:Notice:index'//通知公告
+	mod.APPROVE_INDEX='#OA:Approve:index'//事务审批
+	mod.ATTENDANCE_INDEX='#OA:Attendance:index'//签到考勤
+	mod.STUMANAGE_INDEX='#OA:StuManage:index'//学生管理
+	mod.NOTICEAPPROVE_ALLDPT='#OA:NoticeApprove:allDpt'//全部老师
+	mod.NOTICEAPPROVE_UPDPT='#OA:NoticeApprove:upDpt'//上级部门老师
+	mod.NOTICEAPPROVE_TEACLS='#OA:NoticeApprove:teaCls'//本年级老师
+	mod.NOTICEAPPROVE_DOWNDPT='#OA:NoticeApprove:downDpt'//本部门及下级部门老师
 	
 	mod.CATALOG = 'catalog';//滑动菜单对象
 	mod.PRDLIST = 'prdlist';//滑动菜单对象
