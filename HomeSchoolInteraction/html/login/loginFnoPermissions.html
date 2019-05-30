@@ -21,6 +21,7 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
 			<!--<a  class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>-->
 			<h1 class="mui-title" style="color: white;">登录</h1>
+			<a id="zhuce" class="mui-icon  mui-pull-right" style="color: white;font-size: 16px;padding-top: 20px;">注册</a>
 		</header>
 		<div class="mui-content">
 			<div style="height: 200px;font-size: 18px;color: #00cfbd;;padding: 100px 0px;text-align: center;">欢迎登录</div>
@@ -63,6 +64,7 @@
 	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
 	<script src="../../js/utils/events.js"></script>
+	<script src='../../js/md5.js'></script>
 	<script type="text/javascript">
 		//		$(function() {
 		//			
@@ -161,15 +163,15 @@
 			var comData0 = {
 				platform_code: window.storageKeyName.PLATFORMCODE //平台代码
 			};
-			$.showLoading();
 			//发送网络请求，data为网络返回值
 			postDataEncry(0, 'api/login/getEncryptKey', enData0, comData0, 0, function(data) {
 				console.log('2121212data:' + JSON.stringify(data));
 				if(data.RspCode == 0) {
 					store.set(window.storageKeyName.SHAKEHAND, data.RspData.encryptKey);
+					tempModel.key = data.RspData.encryptKey;
 					loginPro(tempName, tempPW, data.RspData.encryptKey);
 				} else {
-					$.hideLoading();
+					events.closeWaiting();
 					mui.toast(data.RspTxt);
 				}
 			});
@@ -183,7 +185,101 @@
 				password: hex_md5(key + tempPW), //秘钥+密码再MD5加密
 				platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
 				app_code: window.storageKeyName.APPCODE, //应用系统代码
-				unit_code:'-1',//单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+				unit_code: '-1', //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
+				login_name: tempName //登录名
+			};
+			//登录
+			postDataEncry(0, 'api/login', enData1, comData1, 0, function(data1) {
+				console.log('data1:' + JSON.stringify(data1));
+				events.closeWaiting();
+				if(data1.RspCode == 0) {
+					loginFlag = 1;
+					data1.RspData.userName0 = tempName;
+					data1.RspData.passWord0 = tempPW;
+					store.set(window.storageKeyName.PERSONALINFO, data1.RspData);
+					var tempFlag = 0;
+					//获取权限
+					var enData2 = {};
+					//不需要加密的数据
+					var comData2 = {
+						platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+						app_code: window.storageKeyName.APPCODE, //应用系统代码
+						grd_id: 0, //年级id，全部年级则传-1,不需要判断年级则传0
+						cls_id: 0, //班级id，年级下全部班级则传-1，不需要判断班级则传0
+						stu_id: 0, //学生id，全部学生则传-1，不需要判断学生则传0
+						sub_code: 0, //科目代码，全部科目则传“-1”，不需要判断年级则传“0”
+						access: data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_ADD + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.APPROVE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.ATTENDANCE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.STUMANAGE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_ALLDPT + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_UPDPT + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_TEACLS + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_DOWNDPT, //权限符，需要判断权限的权限符，多个则用逗号拼接
+						access_token: data1.RspData.access_token //用户令牌
+					};
+					//获取权限
+					postDataEncry(0, 'api/acl/permissionByPosition', enData2, comData2, 0, function(data2) {
+						console.log('权限permissionByPosition:' + JSON.stringify(data2));
+						events.closeWaiting();
+						if(data2.RspCode == 0) {
+							var tempPerInfo = store.get(window.storageKeyName.PERSONALINFO);
+							//合并对象
+							var tempArray = data2.RspData.split(',');
+							//权限
+							tempPerInfo.noticeApproveAdd = tempArray[0]; //通知公告、事物审批，是否能添加
+							tempPerInfo.noticeIndex = tempArray[1]; //是否有通知公告功能
+							tempPerInfo.approveIndex = tempArray[2]; //是否有事物审批功能
+							tempPerInfo.attendanceIndex = tempArray[3]; //是否有签到考勤功能
+							tempPerInfo.stuManageIndex = tempArray[4]; //是否有学生管理功能
+							tempPerInfo.noticeApproveAllDpt = tempArray[5]; //通知公告、事物审批，是否能选全部老师
+							tempPerInfo.noticeApproveUpDpt = tempArray[6]; //通知公告、事物审批，是否能选上级部门老师
+							tempPerInfo.noticeApproveTeaCls = tempArray[7]; //通知公告、事物审批，是否能选本年级老师
+							tempPerInfo.noticeApproveDownDpt = '1'; //通知公告、事物审批，是否能选本部门及下级部门老师，默认能选
+							store.set(window.storageKeyName.PERSONALINFO, tempPerInfo);
+							tempFlag++;
+							console.log('tempFlag00:' + tempFlag);
+							if(tempFlag == 2) {
+								//跳转界面
+								gotoPage(tempPW);
+							}
+						} else {
+							mui.toast(data2.RspTxt);
+						}
+					});
+					//登录用户岗位信息
+					//不需要加密的数据
+					var comData3 = {
+						access_token: data1.RspData.access_token //用户令牌
+					};
+					//登录用户岗位信息
+					postDataEncry(1, 'api/user/userInfo', {}, comData3, 0, function(data3) {
+						console.log('data3:' + JSON.stringify(data3));
+						events.closeWaiting();
+						if(data3.RspCode == 0) {
+							var tempPerInfo = store.get(window.storageKeyName.PERSONALINFO);
+							//合并对象
+							var tempData = $.extend(tempPerInfo, data3.RspData);
+
+							store.set(window.storageKeyName.PERSONALINFO, tempData);
+							tempFlag++;
+							console.log('tempFlag01:' + tempFlag);
+							if(tempFlag == 2) {
+								//跳转界面
+								gotoPage(tempPW);
+							}
+						} else {
+							mui.toast(data3.RspTxt);
+						}
+					});
+				} else {
+					mui.toast(data1.RspTxt);
+				}
+			});
+		}
+
+		//login登录
+		var loginPro1 = function(tempName, tempPW, key) {
+			var enData1 = {};
+			//不需要加密的数据
+			var comData1 = {
+				password: hex_md5(key + tempPW), //秘钥+密码再MD5加密
+				platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+				app_code: window.storageKeyName.APPCODE, //应用系统代码
+				unit_code: '-1', //单位代码，如应用系统需限制本单位用户才允许登录，则传入单位代码，否则传“-1”
 				login_name: tempName //登录名
 			};
 			//登录
@@ -411,18 +507,68 @@
 		}
 
 		var gotoIndex = function() {
-			plus.webview.open('../../html/login/index.html');
-			var wvs = plus.webview.all();
-			for(var i = 0, len = wvs.length; i < len; i++) {
-				if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
-					wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
-					wvs[i].getURL().indexOf('courseIndex.html') != -1) {
-					continue;
-				}
-				plus.webview.close(wvs[i]);
+			var tempData = store.get(window.storageKeyName.PERSONALINFO);
+			//将personal 中的key更改为指定的值
+			repalceKey(tempData, 'access_token', 'utoken');
+			tempData.utp = tempData.user.user_type;
+			tempData.schid = tempData.user.school_code;
+			tempData.schname = tempData.user.school_name;
+			tempData.imgurl = tempData.user.img_url;
+			tempData.utname = tempData.user.name;
+			tempData.utid = tempData.user.id;
+			tempData.uid = tempData.user.login_name;
+			tempData.app_code = tempData.user.app_code;
+			if(tempData.masterclss == null) {
+				tempData.masterclss = [];
 			}
-			var curr = plus.webview.currentWebview();
-			curr.close();
+			if(tempData.dpts == null) {
+				tempData.dpts = [];
+			}
+			if(tempData.subs == null) {
+				tempData.subs = [];
+			}
+			if(tempData.clss == null) {
+				tempData.clss = [];
+			}
+			if(tempData.grds == null) {
+				tempData.grds = [];
+			}
+			tempData.clss = tempData.clss.concat(tempData.masterclss);
+			delete tempData['user'];
+			console.log('new tempData:' + JSON.stringify(tempData));
+			store.set(window.storageKeyName.PERSONALINFO, tempData);
+			if(tempPW == '123456') {
+				var tempModel = {
+					flag: 1 //0是主动修改密码，1是判断是默认密码，自动让修改
+				}
+				utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
+			} else {
+				plus.webview.open('../../html/login/index.html');
+				var wvs = plus.webview.all();
+				for(var i = 0, len = wvs.length; i < len; i++) {
+					if(wvs[i].getURL().indexOf('homeSchoolIndex.html') != -1 ||
+						wvs[i].getURL().indexOf('sciedu_home.html') != -1 ||
+						wvs[i].getURL().indexOf('courseIndex.html') != -1) {
+						continue;
+					}
+					plus.webview.close(wvs[i]);
+				}
+				var curr = plus.webview.currentWebview();
+				curr.close();
+			}
+		}
+
+		//更换personal 对象的key 值
+		var repalceKey = function(obj, oldKey, newKey) {
+			if(obj instanceof Array) {
+				for(var i in obj) {
+					obj[i][newKey] = obj[i][oldKey];
+					delete obj[i][oldKey];
+				}
+			} else {
+				obj[newKey] = obj[oldKey];
+				delete obj[oldKey];
+			}
 		}
 
 		//从ios原生得到信息
