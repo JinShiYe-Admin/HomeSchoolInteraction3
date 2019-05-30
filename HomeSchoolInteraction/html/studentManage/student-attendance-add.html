@@ -381,7 +381,7 @@
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
 				//登录
-				postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
+				postDataEncry(1,'api/sub/list', enData1, comData1, 0, function(data1) {
 					if(data1.RspCode == 0) {
 						console.log("data1:" + data1.RspTxt);
 						if(data1.RspData) {

@@ -191,7 +191,7 @@
 					utoken: personal.utoken, //用户令牌
 					appid: publicParameter.appid //系统所分配的应用ID
 				};
-				postDataEncry('SysTerm', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','SysTerm', enData1, comData1, 0, function(data1) {
 					if(data1.RspCode == 0) {
 						console.log("3.4 系统学期:" + JSON.stringify(data1));
 						if(data1.RspData) {

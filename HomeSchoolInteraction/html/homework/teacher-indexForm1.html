@@ -634,7 +634,7 @@
 					}
 					events.showWaiting();
 					//发送网络请求，data为网络返回值
-					postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+					postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
 						console.log('3.学校年级下班级:' + JSON.stringify(data));
 						events.closeWaiting();
 						if(data.RspCode == 0) {
@@ -721,7 +721,7 @@
 						utoken: personal.utoken, //用户令牌
 						appid: publicParameter.appid //系统所分配的应用ID
 					};
-					postDataEncry('SchSub', enData1, comData1, 0, function(data1) {
+					postDataEncry(1,'api/sub/list', enData1, comData1, 0, function(data1) {
 						if(data1.RspCode == 0) {
 							console.log("data1:" + JSON.stringify(data1));
 							if(data1.RspData) {

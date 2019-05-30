@@ -239,7 +239,7 @@
 				events.showWaiting();
 				//获取验证码
 				//发送网络请求，data为网络返回值
-				postDataEncry('SysBus', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','SysBus', enData1, comData1, 0, function(data1) {
 					console.log('SysBus:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
@@ -285,7 +285,7 @@
 				events.showWaiting();
 				//获取验证码
 				//发送网络请求，data为网络返回值
-				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','GetUserBusFunc', enData1, comData1, 0, function(data1) {
 					console.log('GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {

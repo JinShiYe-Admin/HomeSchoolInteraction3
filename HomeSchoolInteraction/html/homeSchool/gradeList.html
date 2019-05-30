@@ -317,7 +317,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('SchGrade', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'grd/list', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//						data.RspData.grds.sort(compare("grdname"));
@@ -404,7 +404,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+				postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
 					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					events.closeWaiting();
 					if(data.RspCode == 0) {
@@ -495,7 +495,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+				postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
 					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					if(data.RspCode == 0) {
 						//班级
@@ -516,7 +516,7 @@
 						}
 						events.showWaiting();
 						//发送网络请求，data为网络返回值
-						postDataEncry('ClassUserUStu', enData1, comData1, 0, function(data1) {
+						postDataEncry('未替换','ClassUserUStu', enData1, comData1, 0, function(data1) {
 							events.closeWaiting();
 							if(data1.RspCode == 0) {
 								schoolStuCountArray = data1.RspData.classuserustus;

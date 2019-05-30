@@ -57,7 +57,7 @@ function sendAjax(url, ops, times) {
 						utname: personal.utname
 					};
 					//令牌续订
-					postDataEncry('TokenReset', {}, comData, 0, function(data1) {
+					postDataEncry(0,'api/token/refresh', {}, comData, 0, function(data1) {
 						if(data1.RspCode == 0) {
 							personal.utoken = data1.RspData;
 							store.set(window.storageKeyName.PERSONALINFO, personal);

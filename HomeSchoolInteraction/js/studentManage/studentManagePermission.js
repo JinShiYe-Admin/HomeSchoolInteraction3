@@ -21,7 +21,7 @@ var studentMP = (function(mod) {
 			appid: publicParameter.appid //系统所分配的应用ID
 		}
 		//2.1 学校年级
-		postDataEncry('SchGrade', enData0, comData0, 0, function(data) {
+		postDataEncry(1,'grd/list', enData0, comData0, 0, function(data) {
 			console.log('2.1 学校年级:' + JSON.stringify(data));
 			if(data.RspCode == 0) {
 				if(data.RspData) {
@@ -273,7 +273,7 @@ var studentMP = (function(mod) {
 			}
 			//			events.showWaiting();
 			//2.3 学校年级下班级
-			postDataEncry('GradeClass', enData0, comData0, 0, function(data) {
+			postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
 				console.log('2.3 学校年级下班级:' + JSON.stringify(data));
 				//				events.closeWaiting();
 				if(data.RspCode == 0) {
@@ -324,7 +324,7 @@ var studentMP = (function(mod) {
 			}
 			//		events.showWaiting();
 			//2.6 学校班级学生
-			postDataEncry('ClassStu', enData0, comData0, 0, function(data) {
+			postDataEncry(1,'api/stu/list', enData0, comData0, 0, function(data) {
 				//			events.closeWaiting();
 				console.log('2.6 学校班级学生:' + JSON.stringify(data));
 				if(data.RspCode == 0) {

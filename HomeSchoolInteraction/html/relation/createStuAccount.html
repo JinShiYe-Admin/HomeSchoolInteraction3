@@ -446,7 +446,7 @@
 				events.showWaiting();
 				//获取验证码
 				//发送网络请求，data为网络返回值
-				postDataEncry('UpStuInfo', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','UpStuInfo', enData1, comData1, 0, function(data1) {
 					console.log('UpStuInfo:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
@@ -476,7 +476,7 @@
 				events.showWaiting();
 				//获取验证码
 				//发送网络请求，data为网络返回值
-				postDataEncry('UserUstu', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','UserUstu', enData1, comData1, 0, function(data1) {
 					console.log('UserUstu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {

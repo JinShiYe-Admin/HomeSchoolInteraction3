@@ -392,7 +392,7 @@
 				};
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('GetUserBusFunc', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','GetUserBusFunc', enData1, comData1, 0, function(data1) {
 					console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
 					userBusData.orderList = [];
 					events.closeWaiting();
@@ -437,7 +437,7 @@
 				};
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('UserMstu', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','UserMstu', enData1, comData1, 0, function(data1) {
 					console.log('4.6.UserMstu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
@@ -477,7 +477,7 @@
 				};
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('UnUserStu', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','UnUserStu', enData1, comData1, 0, function(data1) {
 					console.log('4.7.UnUserStu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {
@@ -506,7 +506,7 @@
 				};
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('UserUstu', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','UserUstu', enData1, comData1, 0, function(data1) {
 					console.log('4.5.UserUstu:' + JSON.stringify(data1));
 					events.closeWaiting();
 					var tempArray = [];

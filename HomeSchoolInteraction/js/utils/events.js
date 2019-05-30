@@ -89,7 +89,7 @@ var events = (function(mod) {
 			appid: publicParameter.appid //系统所分配的应用ID
 		}
 		//发送网络请求，data为网络返回值
-		postDataEncry('SendSms', enData0, comData0, 0, function(data) {
+		postDataEncry('未替换','SendSms', enData0, comData0, 0, function(data) {
 			
 		});
 	}
@@ -121,7 +121,7 @@ var events = (function(mod) {
 			appid: publicParameter.appid //系统所分配的应用ID
 		}
 		//发送网络请求，data为网络返回值
-		postDataEncry('SendSmsT', enData0, comData0, 0, function(data) {
+		postDataEncry('未替换','SendSmsT', enData0, comData0, 0, function(data) {
 			
 		});
 	}

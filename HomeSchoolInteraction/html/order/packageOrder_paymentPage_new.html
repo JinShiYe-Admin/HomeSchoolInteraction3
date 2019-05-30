@@ -806,7 +806,7 @@
 				events.showWaiting();
 				//获取验证码
 				//发送网络请求，data为网络返回值
-				postDataEncry('SysBusFunc', enData1, comData1, 0, function(data1) {
+				postDataEncry('未替换','SysBusFunc', enData1, comData1, 0, function(data1) {
 					console.log('SysBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {

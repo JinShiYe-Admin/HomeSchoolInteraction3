@@ -464,7 +464,7 @@
 					}
 					events.showWaiting();
 					//发送网络请求，data为网络返回值
-					postDataEncry('UserUstu', enData2, comData2, 0, function(data2) {
+					postDataEncry('未替换','UserUstu', enData2, comData2, 0, function(data2) {
 						console.log('4.5.UserUstu:' + JSON.stringify(data2));
 						events.closeWaiting();
 						if(data2.RspCode == 0) {
@@ -479,7 +479,7 @@
 								};
 								events.showWaiting();
 								//发送网络请求，data为网络返回值
-								postDataEncry('GetUserBusFunc', {}, comData3, 0, function(data3) {
+								postDataEncry('未替换','GetUserBusFunc', {}, comData3, 0, function(data3) {
 									console.log('4.1.GetUserBusFunc:' + JSON.stringify(data3));
 									events.closeWaiting();
 									if(data3.RspCode == 0) {

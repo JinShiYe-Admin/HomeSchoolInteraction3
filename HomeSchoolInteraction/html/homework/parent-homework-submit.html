@@ -240,7 +240,7 @@
 					}
 					events.showWaiting();
 					//发送网络请求，data为网络返回值
-					postDataEncry('SchGrade', enData0, comData0, 0, function(data) {
+					postDataEncry(1,'grd/list',, enData0, comData0, 0, function(data) {
 						events.closeWaiting();
 						if(data.RspCode == 0) {
 							tempGradeList = [].concat(data.RspData.grds);
@@ -390,7 +390,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('ClassUserUStu', enData0, comData0, 0, function(data) {
+				postDataEncry('未替换','ClassUserUStu', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//						console.log('data:' + JSON.stringify(data));

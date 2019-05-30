@@ -527,7 +527,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('SysArea', enData0, comData0, 0, function(data) {
+				postDataEncry('未替换','SysArea', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					cityArray = data.RspData.sysarea;
 					//console.log('所有子区域或查询城市:' + JSON.stringify(data));
