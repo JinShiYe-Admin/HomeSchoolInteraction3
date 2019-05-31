@@ -6,317 +6,447 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<!--<link rel="stylesheet" href="../../css/utils/common.css" />-->
+		<link rel="stylesheet" href="../../fonts/iconfont1.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.min.css" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+
 		<style type="text/css">
-			body {
-				width: 100%;
-				height: 100%;
-				background: #EEEEEE url(../../img/register/bgimg.png) no-repeat fixed top;
+			[v-cloak] {
+				visibility: hidden;
 			}
 			
-			.mui-content {
-				background-color: transparent;
+			.mui-table-view-cell>a:not(.mui-btn) {
+				position: relative;
+				display: block;
+				overflow: hidden;
+				margin: -11px -15px;
+				padding: inherit;
+				white-space: normal;
+				text-overflow: ellipsis;
+				color: inherit;
+			}
+			
+			body {
+				background: #F2F2F2;
 			}
 			
 			.mui-bar-nav {
-				top: 0;
-				-webkit-box-shadow: 0 1px 6px #ccc;
-				box-shadow: 0 0 #ccc;
+				background-color: #63BBFF !important;
 			}
 			
-			.register-form {
-				margin-top: 70px;
+			.mui-content {
+				background: #f2f3f5;
+				/*line-height: 0px;*/
 			}
 			
-			.mui-input-row {
-				padding: 2px 8%;
+			.mui-popover {
+				width: 100%;
+				height: 0px;
+				border-radius: initial;
+				background-color: transparent;
+				border: none;
+				box-shadow: none;
 			}
 			
-			.mui-input-row label {
-				font-family: 'Helvetica Neue', Helvetica, sans-serif;
-				line-height: 1.1;
-				float: left;
-				width: 20%;
-				padding: 11px 15px;
+			.aCss {
+				font-size: 15px;
+				color: #333;
+				width: 110px;
 			}
 			
-			.mui-input-row label~input {
+			.icon-right {
+				position: fixed;
 				float: right;
-				width: 80%;
-				margin-bottom: 0;
-				padding-left: 0;
-				border: 0;
+				font-size: 14px;
+				margin-top: 11px;
+				right: 10px;
+			}
+			
+			.code-btn {
+				background: #63BBFF !important;
+				border: none;
+				border-radius: 25px;
+				height: 25px;
+				width: 90px;
+				font-size: 10px;
+				padding: 4px 15px;
+				margin-top: -33px;
+				right: 5%;
+				float: right;
+			}
+			
+			.rCss {
+				font-size: 13px;
+				color: #666666;
+				float: left;
+				margin: 0px 27px 0 16px;
+			}
+			
+			.mui-table-view-cell {
+				min-height: 44px;
+			}
+			
+			.mui-checkbox input[type=checkbox]:checked:before {
+				color: #00cfbd;
+			}
+			
+			.mui-input-row label~input,
+			input::-webkit-input-placeholder {
+				color: #999;
+				/* placeholder字体大小  */
+				font-size: 14px;
+			}
+			
+			.mui-navigate-right.rCss.no-icon:after {
+				content: ' ';
+			}
+			
+			.mui-popover-arrow {
+				display: none;
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn).mui-active {
+				background-color: #fff;
+			}
+			
+			.mui-table-view:after {
+				height: 0px;
 			}
 			
 			.mui-input-row:after {
 				position: absolute;
-				right: 12%;
+				right: 0;
 				bottom: 0;
-				top: 35px;
-				left: 21%;
+				left: 0;
 				height: 1px;
 				content: '';
 				-webkit-transform: scaleY(.5);
 				transform: scaleY(.5);
-				background-color: #c8c7cc;
-			}
-			
-			.mui-title {
-				color: white;
-				font-size: 20px;
-				font-weight: 600;
-			}
-			
-			.check {
-				text-align: right;
-				margin-right: 12%;
-				font-size: 12px;
-			}
-			
-			.regbtnbox {
-				margin-top: 40px;
-				padding: 0px 12%;
-			}
-			
-			.regbtn {
-				background: #00cfba;
-				border: none;
-				border-radius: 25px;
-				height: 40px;
-				padding-top: 8px;
+				background-color: #e4e4e4;
 			}
 		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
-			<h1 class="mui-title">注册</h1>
+		<header class="mui-bar mui-bar-nav">
+			<a onclick="mui.back()" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
+			<h1 class="mui-title" style="color: white;">注 册</h1>
 		</header>
-		<div id="register" class="mui-content">
-			<form id="registerForm" class="register-form">
-				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/phone.png" style="width: 30px;height: 30px;" /></label>
-					<input id='phoneNumber' maxlength="11" name='phoneNumber' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
-				</div>
-
-				<div class="mui-input-row ">
-					<label style="margin-top: -6px;"><image src="../../img/register/idencode.png" style="width: 30px;height: 30px;" /></label>
-					<input id='idenCode' maxlength="6" name="idenCode" type="number" class="mui-input-clear mui-input " placeholder="请输入验证码">
-					<button id='idenCodebtn' @click="getPhoneCode" type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfba; border:none;border-radius: 25px;height: 25px;width: 90px;font-size: 12px;padding: 7px 15px;margin-top: -35px;right: 5%;">发送验证码</button>
-				</div>
-
-				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/username.png" style="width: 30px;height: 30px;" /></label>
-					<input id='userName' maxlength="10" name="userName" type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
-				</div>
-
-				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
-					<input id='password' maxlength="18" name="password" type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
-				</div>
-				<div class="mui-input-row">
-					<label style="margin-top: -6px;"><image src="../../img/register/password.png" style="width: 30px;height: 30px;" /></label>
-					<input id='confirmPassword' maxlength="18" name="confirmPassword" type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码">
-				</div>
-			</form>
-			<div class="check">
-				<input @click="checked" id="checkBox" type="checkbox" style="vertical-align:middle;" /><label for="checkBox" style="vertical-align:middle;">我已阅读并接受</label>
-				<a href="javascript:;;">《注册协议》</a>
+		<div id="register-body" class="mui-content" style="background: white;">
+			<div style="background-color: #F2F2F2;height: 10px;"></div>
+			<div class="mui-input-row">
+				<label class="aCss" @tap="selectUType()">用户类型</label>
+				<input type="text" @tap="selectUType()" placeholder="请选择" v-model="utype" readonly>
+				<span class="mui-icon mui-icon-arrowdown icon-right"></span>
 			</div>
-			<div class="regbtnbox">
-				<button id='regbtn' @click="zhuce" :disabled="isDisabled" type="button" class="mui-btn mui-btn-block mui-btn-primary regbtn">立即注册</button>
+			<div class="mui-input-row">
+				<label class="aCss">用户姓名</label>
+				<input type="text" placeholder="请输入姓名" @blur="getUserInfo()" v-model="uname">
+			</div>
+			<div class="mui-input-row">
+				<label class="aCss">用户电话</label>
+				<input type="number" maxlength="11" placeholder="请输入电话" @blur="getUserInfo()" onkeyup="clearNoNum(this)" v-model="uphone">
+			</div>
+			<div style="background-color: #F2F2F2;height: 10px;"></div>
+			<div class="mui-input-row">
+				<label class="aCss" @tap="selectSchool()">所属学校</label>
+				<input type="text" @tap="selectSchool()" placeholder="请选择" v-model="uschool" readonly>
+				<span class="mui-icon mui-icon-arrowdown icon-right"></span>
+			</div>
+			<div style="background-color: #F2F2F2;height: 10px;"></div>
+			<div class="mui-input-row">
+				<label class="aCss">用户账号</label>
+				<input type="text" placeholder="请输入账号" v-model="uaccount">
+			</div>
+			<div class="mui-input-row">
+				<label class="aCss">请输入密码</label>
+				<input type="password" placeholder="请输入密码" v-model="upassword">
+			</div>
+			<div class="mui-input-row">
+				<label class="aCss">确认密码</label>
+				<input type="password" placeholder="确认密码" v-model="confirmpassword">
+			</div>
+			<!--<div class="mui-input-row">
+				<label class="aCss">验证码</label>
+				<input type="number" placeholder="请输入验证码" v-model="code">
+			</div>
+			<div>
+				<button id='idenCodebtn' @click="getPhoneCode" type="button" class="mui-btn mui-btn-block mui-btn-primary code-btn">发送验证码</button>
+			</div>-->
+			<div style="bottom: 0;position: fixed;width: 95%;margin: 0 2.5%;">
+				<button id='idenCodebtn' @click="submit" type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #63BBFF;border: 0;height: 36px;font-size: 15px;line-height: 0;">确 定</button>
 			</div>
 		</div>
-	</body>
-	<script type="text/javascript" src="../../js/mui.min.js"></script>
-	<script type="text/javascript" src="../../js/utils/vue.js"></script>
-	<!--加密-->
-	<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-	<!---->
-	<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-	<script src='../../js/libs/crypto-js/require.js'></script>
-	<script src='../../js/utils/signHmacSHA1.js'></script>
-	<script src='../../js/libs/jquery.js'></script>
-	<script src="../../js/publicProtocolNew.js"></script>
-	<script src='../../js/utils/sortSign.js'></script>
-	<script src="../../js/storageKeyName.js"></script>
-	<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/utils/events.js"></script>
-	<script type="text/javascript">
-		mui.init();
-		var personal;
-		var publicParameter;
-		mui.plusReady(function() {
-			//获取个人信息
-			personal = store.get(window.storageKeyName.PERSONALINFO);
-			console.log('personal:' + JSON.stringify(personal));
-			publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-		});
-
-		var register = new Vue({
-			el: '#register',
-			data: {
-				isDisabled: true
-			},
-			methods: {
-				checked: function() {
-					this.isDisabled = !this.isDisabled
-				},
-				getPhoneCode: function() { //获取验证码
-					var params = $('#registerForm').serializeObject();
-					console.log('****************' + JSON.stringify(params));
-					if(params.phoneNumber == '') {
-						mui.toast('请输入手机号');
-					} else if(!isPhone(params.phoneNumber)) {
-						mui.toast('请输入正确的手机号');
+		
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/utils/vue.js"></script>
+		<!--加密-->
+		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
+		<!---->
+		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
+		<script src='../../js/libs/jquery.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
+		<script src='../../js/utils/sortSign.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/utils/events.js"></script>
+		<!--<script src="../../js/jquery-weui.min.js"></script>-->
+		<script src="../../js/utils/mui.picker.js"></script>
+		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script type="text/javascript">
+			var $M = mui.init();
+			var userTypePicker = new $M.PopPicker();
+			var schoolPicker = new $M.PopPicker();
+			var tempType = '';
+			var tempName = '';
+			var tempPhone = '';
+			mui.plusReady(function() {
+				//用户注册获取可选用户类型列表
+				getUserType();
+			});
+			//14.用户注册获取可选用户类型列表
+			var getUserType = function() {
+				//握手
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+					app_code: window.storageKeyName.APPCODE //应用系统代码
+				};
+				var wd = events.showWaiting();
+				//发送网络请求，data为网络返回值
+				postDataEncry(0, 'api/login/getRegUserTypeList', enData0, comData0, 0, function(data) {
+					wd.close();
+					console.log('getRegUserTypeList:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						var tempA = [];
+						for(var i = 0; i < data.RspData.length; i++) {
+							var tempM = data.RspData[i];
+							var tempM1 = {
+								text: tempM.name,
+								value: tempM.code,
+								id: tempM.id
+							}
+							if(i == 0) {
+								register.utype = tempM.name;
+								register.utype_value = tempM.code;
+							}
+							tempA.push(tempM1);
+						}
+						userTypePicker.setData(tempA);
+						setTimeout(function() {
+							userTypePicker.pickers[0].setSelectedValue(register.utype_value);
+						}, 100);
 					} else {
-						//握手
-						var enData0 = {};
-						//不需要加密的数据
-						var comData0 = {
-							uuid: publicParameter.uuid, //用户设备号
-							shaketype: 'reg', //注册(reg),登录(login),修改密码(repw)
-							appid: publicParameter.appid //系统所分配的应用ID
-						};
-						events.showWaiting();
-						//发送网络请求，data为网络返回值
-						postDataEncry('ShakeHand', enData0, comData0, 0, function(data) {
-							console.log('2121212');
-							if(data.RspCode == 0) {
-								store.set(window.storageKeyName.SHAKEHAND, data.RspData);
-								var enData1 = {
-									uid: params.phoneNumber //用户账号
-								};
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
+
+			var register = new Vue({
+				el: '#register-body',
+				data: {
+					utype: '请选择', //用户类型
+					utype_value: '', //用户类型 选择值
+					uname: '', //用户姓名
+					uphone: '', //用户电话
+					uschool: '请选择', //所属学校
+					uschool_value: '', //所属学校 选择值
+					userid: 0, //所属学校 用户id
+					uaccount: '', //用户账号
+					upassword: '', //用户密码
+					confirmpassword: '', //确认密码
+					code: '' //验证码
+				},
+				methods: {
+					selectUType: function() { //选择身份
+						document.activeElement.blur();
+						userTypePicker.show(function(items) {
+							register.utype = items[0].text;
+							register.utype_value = items[0].value;
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					},
+					getUserInfo: function() {
+						if(register.utype_value == '') {} else if(register.uname == '') {} else if(register.uphone == '') {
+
+						} else if(!isPhone(register.uphone)) {
+							mui.toast('请输入正确的用户电话');
+						} else {
+							var tempFlag = 0;
+							if(register.utype_value != tempType) {
+								tempType = register.utype_value;
+								tempFlag++;
+							}
+							if(register.uname != tempName) {
+								tempName = register.uname;
+								tempFlag++;
+							}
+							if(register.uphone != tempPhone) {
+								tempPhone = register.uphone;
+								tempFlag++;
+							}
+							if(tempFlag > 0) {
+								//获取所属学校
+								var enData0 = {};
 								//不需要加密的数据
-								var comData1 = {
-									uuid: publicParameter.uuid, //用户设备号
-									shaketype: 'reg', //握手类型，注册(reg),登录(login),修改密码(repw)
-									appid: publicParameter.appid //系统所分配的应用ID
+								var comData0 = {
+									user_type: register.utype_value, //用户类型
+									name: register.uname, //姓名，注册老师的时候输入老师的姓名，注册学生和家长时输入学生姓名
+									phone: register.uphone //电话，注册老师的时候输入老师的姓名，注册学生和家长时输入家长电话
 								};
-								console.log('enData1:' + JSON.stringify(enData1));
-								console.log('comData1:' + JSON.stringify(comData1));
-								events.showWaiting();
-								//获取验证码
+								var wd = events.showWaiting();
 								//发送网络请求，data为网络返回值
-								postDataEncry('GetCode', enData1, comData1, 0, function(data1) {
-									console.log('GetCode:' + JSON.stringify(data1));
-									events.closeWaiting();
-									if(data1.RspCode == 0) {
-										mui.toast('验证码已发送');
+								postDataEncry(1, 'api/register/userInfo', enData0, comData0, 0, function(data) {
+									console.log('register/userInfo:' + JSON.stringify(data));
+									wd.close();
+									if(data.RspCode == 0) {
+										var tempA = [];
+										for(var i = 0; i < data.RspData.length; i++) {
+											var tempM = data.RspData[i];
+											tempM.text = tempM.schname;
+											tempM.value = tempM.schid;
+											if(i == 0) {
+												register.uschool = tempM.schname;
+												register.uschool_value = tempM.schid;
+												register.userid = tempM.userid;
+											}
+											tempA.push(tempM);
+										}
+										schoolPicker.setData(tempA);
+										setTimeout(function() {
+											schoolPicker.pickers[0].setSelectedValue(register.uschool_value);
+										}, 100);
 									} else {
-										mui.toast(data1.RspTxt);
+										mui.toast(data.RspTxt);
 									}
 								});
-							} else {
-								mui.toast(data.RspTxt);
 							}
-						});
-					}
-				},
-				zhuce: function() {
-					var params = $('#registerForm').serializeObject();
-					console.log('****************' + JSON.stringify(params));
-					if(params.phoneNumber == '') {
-						mui.toast('请输入手机号');
-					} else if(!isPhone(params.phoneNumber)) {
-						mui.toast('请输入正确的手机号');
-					} else if(params.idenCode == '' || params.idenCode.length != 6) {
-						mui.toast('请输入正确的验证码');
-					} else if(params.userName == '') {
-						mui.toast('请输入昵称');
-					} else if(escape(params.userName).indexOf("%u") !=-1 && params.userName.length>8){
-						mui.toast('中文长度不能超过8位');
-					}else if(params.userName.length>18){
-						mui.toast('字符长度不能超过18位');
-					} else if(params.password == '') {
-						mui.toast('请输入密码');
-					} else if(params.confirmPassword == '') {
-						mui.toast('请输入确认密码');
-					} else if(!(params.password === params.confirmPassword)) {
-						mui.toast('两次输入的密码不一致');
-					} else if(!checkPass(params.confirmPassword)) {
-						mui.toast('密码需为数字和字母的组合');
-					} else if(params.confirmPassword.length > 18 || params.confirmPassword.length < 6) {
-						mui.toast('密码长度需为6到18个字符');
-					} else {
-						//握手
-						var enData0 = {
-							uid: params.phoneNumber, //用户账号
-							code: params.idenCode, //验证码
-							pw: params.confirmPassword //密码
-						};
-						//不需要加密的数据
-						var comData0 = {
-							uuid: publicParameter.uuid, //用户设备号
-							shaketype: 'reg', //握手类型，注册(reg),登录(login),修改密码(repw)
-							utn: params.userName, //昵称或姓名
-							usex: 1, //性别
-							appid: publicParameter.appid //系统所分配的应用ID
-						};
-						events.showWaiting();
-						//普通用户注册
-						//发送网络请求，data为网络返回值
-						postDataEncry('UserReg', enData0, comData0, 0, function(data) {
-							console.log('UserReg:' + JSON.stringify(data));
-							events.closeWaiting();
-							if(data.RspCode == 0) {
-								mui.toast('注册成功');
-								params.phoneNumber = '';
-								params.idenCode = '';
-								params.confirmPassword = '';
-								params.userName = '';
-								params.password = '';
-								mui.back();
+						}
+					},
+					selectSchool: function() { //选择所属学校
+						document.activeElement.blur();
+						if(register.utype_value == '') {
+							mui.toast('请选择用户类型');
+						} else if(register.uname == '') {
+							mui.toast('请输入用户姓名');
+						} else if(register.uphone == '') {
+							mui.toast('请输入用户电话');
+						} else if(!isPhone(register.uphone)) {
+							mui.toast('请输入正确的用户电话');
+						} else {
+							if(register.userid > 0) {
+								schoolPicker.show(function(items) {
+									console.log('items:' + JSON.stringify(items[0]));
+									register.uschool = items[0].text;
+									register.uschool_value = items[0].value;
+									register.userid = items[0].userid;
+								});
 							} else {
-								mui.toast(data.RspTxt);
+								mui.toast('没有可供选择的学校');
 							}
-						});
+						}
+					},
+					getPhoneCode: function() { //点击按钮获取验证码
+						console.log('发送验证码按钮')
+					},
+					submit: function() { //提交数据
+						console.log(register.utype_value)
+						if(register.utype_value == '') {
+							mui.toast('请选择用户类型');
+						} else if(register.uname == '') {
+							mui.toast('请输入用户姓名');
+						} else if(register.uphone == '') {
+							mui.toast('请输入用户电话');
+						} else if(!isPhone(register.uphone)) {
+							mui.toast('请输入正确的用户电话');
+						} else if(register.uschool_value == '') {
+							mui.toast('请选择所属学校');
+						} else if(register.uaccount == '') {
+							mui.toast('请输入用户账号');
+						} else if(escape(register.uaccount).indexOf("%u") != -1 && register.uaccount.length > 8) {
+							mui.toast('中文长度不能超过8位');
+						} else if(register.uaccount.length > 18) {
+							mui.toast('字符长度不能超过18位');
+						} else if(register.upassword == '') {
+							mui.toast('请输入用户密码');
+						} else if(register.confirmpassword == '') {
+							mui.toast('请确认密码');
+						} else if(!(register.upassword === register.confirmpassword)) {
+							mui.toast('两次输入的密码不一致');
+						} else if(!checkPass(register.confirmpassword)) {
+							mui.toast('密码需为数字和字母的组合');
+						} else if(register.confirmpassword.length > 18 || register.confirmpassword.length < 6) {
+							mui.toast('密码长度需为6到18个字符');
+						} 
+//						else if(register.code == '' || register.code.length != 6) {
+//							mui.toast('请输入正确的验证码');
+//						} 
+						else {
+							console.log('验证通过');
+							//2.13.用户注册
+							var enData0 = {};
+							//不需要加密的数据
+							var comData0 = {
+								app_code: window.storageKeyName.APPCODE, //应用系统代码
+								user_id: register.userid, //用户id
+								user_type: register.utype_value, //用户类型
+								name: register.uname, //姓名
+								phone: register.uphone, //电话
+								login_name: register.uaccount, //登录名
+								password: register.confirmpassword, //密码,秘钥+密码再MD5加密
+							};
+							var wd = events.showWaiting();
+							//发送网络请求，data为网络返回值
+							postDataEncry(1, 'api/register', enData0, comData0, 0, function(data) {
+								console.log('register:' + JSON.stringify(data));
+								wd.close();
+								if(data.RspCode == 0) {
+									mui.toast(data.RspTxt);
+									mui.back();
+								} else {
+									mui.toast(data.RspTxt);
+								}
+							});
+						}
 					}
-				}
-			}
-		});
-
-		// 判断是否为手机号  
-		function isPhone(phone) {
-			var phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/;
-			if(phoneReg.test(phone)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		//判断字符串是否为数字和字母组合
-		function checkPass(password) {
-			var re = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/g;
-			if(!re.test(password)) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-
-		//将输入表单中的内容，转为obj
-		$.fn.serializeObject = function() {
-			var o = {};
-			var a = this.serializeArray();
-			$.each(a, function() {
-				if(o[this.name] !== undefined) {
-					if(!o[this.name].push) {
-						o[this.name] = [o[this.name]];
-					}
-					o[this.name].push(this.value || '');
-				} else {
-					o[this.name] = this.value || '';
 				}
 			});
-			return o;
-		};
-	</script>
+
+			// 判断是否为手机号  
+			function isPhone(phone) {
+				var phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/;
+				if(phoneReg.test(phone)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			//判断字符串是否为数字和字母组合
+			function checkPass(password) {
+				var re = /^(?!([a-zA-Z]+|\d+)$)[a-zA-Z\d]{6,20}$/g;
+				if(!re.test(password)) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			//只保留小数点后一位
+			function clearNoNum(obj) {
+				obj.value = obj.value.replace(/[^\d]/g, ""); //清除“数字”和“.”以外的字符  
+			}
+		</script>
+	</body>
 
 </html>

@@ -148,15 +148,23 @@ var storageKeyName = (function(mod) {
 	}
 	
 	//模块权限
-	mod.NOTICEAPPROVE_ADD='#OA:NoticeApprove:add'//通知公告、事物审批发布权限
-	mod.NOTICE_INDEX='#OA:Notice:index'//通知公告
-	mod.APPROVE_INDEX='#OA:Approve:index'//事务审批
-	mod.ATTENDANCE_INDEX='#OA:Attendance:index'//签到考勤
-	mod.STUMANAGE_INDEX='#OA:StuManage:index'//学生管理
-	mod.NOTICEAPPROVE_ALLDPT='#OA:NoticeApprove:allDpt'//全部老师
-	mod.NOTICEAPPROVE_UPDPT='#OA:NoticeApprove:upDpt'//上级部门老师
-	mod.NOTICEAPPROVE_TEACLS='#OA:NoticeApprove:teaCls'//本年级老师
-	mod.NOTICEAPPROVE_DOWNDPT='#OA:NoticeApprove:downDpt'//本部门及下级部门老师
+	
+	mod.SCHNOTICECLS_ADD='#OA:SchNoticeCls:add'//学校通知班级发布权限
+	mod.SCHNOTICEGRD_ADD='#OA:SchNoticeGrd:add'//学校通知年级发布权限
+	mod.STUNOTICESHC_ADD='#OA:SchNoticeSch:add'//学校通知全校发布权限
+	mod.STUNOTICE='#OA:SchNotice:index'//学校通知
+	mod.STUACTION='#OA:StuAction:index'//学生行为
+	mod.STUATTENDANCE='#OA:StuAttendance:index'//学生考勤
+	mod.STUTALKRECORD='#OA:StuTalkRecord:index'//谈话记录
+	mod.STUREVIEW='#OA:StuReview:index'//量化考评
+	mod.STUCOMMENT='#OA:StuComment:index'//评语
+	
+	mod.HOMEWORKMANAGE='#OA:HomeworkManage:index'//作业管理
+	
+	mod.ENGORALS='#OA:EngOrals:index'//英语听测
+	mod.BENEFITINGLEARNING='#OA:BenefitingLearning:index'//智学课堂
+	mod.SCIEDU='#OA:SciEdu:index'//科教活动
+	
 	
 	mod.CATALOG = 'catalog';//滑动菜单对象
 	mod.PRDLIST = 'prdlist';//滑动菜单对象
