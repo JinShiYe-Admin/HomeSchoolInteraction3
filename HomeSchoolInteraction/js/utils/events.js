@@ -71,14 +71,14 @@ var events = (function(mod) {
 		var re = new RegExp(regu);
 		return re.test(str);
 	}
-	
-		//短信群发
-	mod.SendSmsForMobiles = function(mobiles,content) {
-		console.log('mobiles:'+mobiles);
-		console.log('content:'+content);
+
+	//短信群发
+	mod.SendSmsForMobiles = function(mobiles, content) {
+		console.log('mobiles:' + mobiles);
+		console.log('content:' + content);
 		var personal = store.get(window.storageKeyName.PERSONALINFO);
 		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-		content = content + '[' +personal.utname+']';
+		content = content + '[' + personal.utname + ']';
 		var enData0 = {};
 		//不需要加密的数据
 		var comData0 = {
@@ -89,41 +89,78 @@ var events = (function(mod) {
 			appid: publicParameter.appid //系统所分配的应用ID
 		}
 		//发送网络请求，data为网络返回值
-		postDataEncry('未替换','SendSms', enData0, comData0, 0, function(data) {
-			
+		postDataEncry('未替换', 'SendSms', enData0, comData0, 0, function(data) {
+
 		});
 	}
-	
+
 	//4.15 短信群发(订购用户)
-	mod.SendSmsTForClsStu = function(gradeid,classid,stustrs,genstrs,msgtype,grouptype,content) {
-		var personal = store.get(window.storageKeyName.PERSONALINFO);
-		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-		content = content + '[' +personal.utname+']';
+	mod.SendSmsTForClsStu = function(gradeid, classid, stustrs, genstrs, msgtype, grouptype, content) {
+		var tempModel = {
+			uuid: plus.device.uuid,
+			appid: plus.runtime.appid
+		}
+		//握手
 		var enData0 = {};
 		//不需要加密的数据
 		var comData0 = {
-			uuid: publicParameter.uuid, //用户设备号
-			utoken: personal.utoken, //用户令牌
-			schid: personal.schid, //学校ID，发送对象的学校ID
-			gradeid: gradeid*1, //年级ID，发送对象的年级ID,学校群发或者选择对象填写0,班级和年级群发必填
-			classid: classid*1, //班级ID，发送对象的班级ID,学校群发,年级群发或者选择对象填写0,班级和年级群发必填
-			stustrs: stustrs, //发送对象姓名串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
-			genstrs: genstrs, //发送对象的订购ID串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
-			msgtype: msgtype, //信息类型，学校通知,年级通知,班级通知,作业,在校表现,OA通知等
-			msglv: 1, //信息级别，1-9的数字,数字越小,紧急度越高,排队越靠前
-			senduser: personal.uid, //信息发送者，发送人的账号
-			sendschid: personal.schid, //信息发送者学校ID，发送人所在的SCHID
-			frmsys: '校讯通APP', //来自平台，填写来自平台,如校讯通PC,校讯通APP,智慧校园APP
-			isdelay: 0, //是否为延时短信，0为正常短信,1为延时短信
-			delaytime: '', //延时时间，Isdelay为0时,可不填写,1时填写延时发送的时间
-			grouptype: grouptype, //群发类型，0:选择人员发送,1:整个学校群发,2:年级群发,3:班级群发
-			content: content, //发送的内容，不超过300汉字
-			appid: publicParameter.appid //系统所分配的应用ID
-		}
+			uuid: tempModel.uuid, //用户设备号
+			shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+			appid: tempModel.appid //系统所分配的应用ID
+		};
 		//发送网络请求，data为网络返回值
-		postDataEncry('未替换','SendSmsT', enData0, comData0, 0, function(data) {
-			
+		postDataEncry(2, 'ShakeHand', enData0, comData0, 0, function(data) {
+			if(data.RspCode == 0) {
+				store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+				var enData1 = {
+					uid: '00000000000', //用户账号
+					pw: '0000' //用户密码
+				};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: tempModel.uuid, //用户设备号
+					shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+					appid: tempModel.appid, //系统所分配的应用ID
+					schid: storageKeyName.SCHOOLID, //学校ID
+					utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+				};
+				//登录
+				postDataEncry(2, 'Login', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						var personal = store.get(window.storageKeyName.PERSONALINFO);
+						content = content + '[' + personal.utname + ']';
+						var enData0 = {};
+						//不需要加密的数据
+						var comData0 = {
+							uuid: tempModel.uuid, //用户设备号
+							utoken: data1.RspData.utoken, //用户令牌
+							schid: personal.schid, //学校ID，发送对象的学校ID
+							gradeid: gradeid * 1, //年级ID，发送对象的年级ID,学校群发或者选择对象填写0,班级和年级群发必填
+							classid: classid * 1, //班级ID，发送对象的班级ID,学校群发,年级群发或者选择对象填写0,班级和年级群发必填
+							stustrs: stustrs, //发送对象姓名串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
+							genstrs: genstrs, //发送对象的订购ID串，群发时留空,选择人员发送时必填,中间用英文逗号分隔
+							msgtype: msgtype, //信息类型，学校通知,年级通知,班级通知,作业,在校表现,OA通知等
+							msglv: 1, //信息级别，1-9的数字,数字越小,紧急度越高,排队越靠前
+							senduser: personal.uid, //信息发送者，发送人的账号
+							sendschid: personal.schid, //信息发送者学校ID，发送人所在的SCHID
+							frmsys: '校讯通APP', //来自平台，填写来自平台,如校讯通PC,校讯通APP,智慧校园APP
+							isdelay: 0, //是否为延时短信，0为正常短信,1为延时短信
+							delaytime: '', //延时时间，Isdelay为0时,可不填写,1时填写延时发送的时间
+							grouptype: grouptype, //群发类型，0:选择人员发送,1:整个学校群发,2:年级群发,3:班级群发
+							content: content, //发送的内容，不超过300汉字
+							appid: tempModel.appid //系统所分配的应用ID
+						}
+						//发送网络请求，data为网络返回值
+						postDataEncry(2, 'SendSmsT', enData0, comData0, 0, function(data) {
+
+						});
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			} else {}
 		});
+
 	}
 
 	/**

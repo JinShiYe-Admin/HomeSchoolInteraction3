@@ -306,18 +306,17 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					isfinish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
+					grade_ids: '', //需要查询的年级ID，多个ID用英文逗号隔开
+					access_token: personal.utoken, //用户令牌
+					is_finish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
 				postDataEncry(1,'api/cls/list', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
-						for(var i = 0; i < data.RspData.clss.length; i++) {
-							var tempClassModel = data.RspData.clss[i];
+						for(var i = 0; i < data.RspData.length; i++) {
+							var tempClassModel = data.RspData[i];
 							//如果当前的班级，是班主任身份的，显示，否则不显示
 							tempClassModel.showFlag = 0;
 							for(var m = 0; m < tempArr.length; m++) {
@@ -326,11 +325,11 @@
 									tempClassModel.stuArray = [];
 
 									//循环个人信息中，班主任身份的班级，这个界面，只显示选择的班级，并且是班主任身份
-									for(var n = 0; n < personal.clss.length; n++) {
-										var classModel = personal.clss[n];
-										if(classModel.isms == 1 && classModel.clsid == tempArr[m]) {
+									for(var n = 0; n < personal.clsGrdArray.length; n++) {
+										var classModel = personal.clsGrdArray[n];
+//										if(classModel.isms == 1 && classModel.clsid == tempArr[m]) {
 											tempClassModel.showFlag++;
-										}
+//										}
 									}
 									classListData.classListArray.push(tempClassModel);
 								}
@@ -348,26 +347,23 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					functypes: 'jxht', //功能类型(见附表2),多个之间用英文逗号隔开,全部留空
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					classids: classids //需要查询的班级ID,多个代码用英文逗号隔开
+					access_token: personal.utoken, //用户令牌
+					cls_ids: classids //需要查询的班级ID,多个代码用英文逗号隔开
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('未替换',ClassUserUStu', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'api/classUserUStu', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						if(data.RspData) {
 							classListData.flag = 1;
 							console.log('data:' + JSON.stringify(data));
 							//去重
-							//						data.RspData.classuserustus = data.RspData.classuserustus.unique('utid');
-							for(var i = 0; i < data.RspData.classuserustus.length; i++) {
-								var stuModel = data.RspData.classuserustus[i];
+							//						data.RspData = data.RspData.unique('utid');
+							for(var i = 0; i < data.RspData.length; i++) {
+								var stuModel = data.RspData[i];
 								//0屏蔽，1有效，2删除
-								if(stuModel.stustat == 1) {
+//								if(stuModel.stustat == 1) {
 									//判断上个界面，是否选择
 									var tempClassFlag = 0;
 									for(var m = 0; m < parentsArray.length; m++) {
@@ -388,7 +384,7 @@
 											classModel.stuArray.push(stuModel);
 										}
 									}
-								}
+//								}
 							}
 							//刚进入页面得到数据时，判断全部的勾选状态
 							allDataSelect();

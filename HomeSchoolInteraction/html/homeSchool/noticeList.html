@@ -53,7 +53,7 @@
 		<header class="mui-bar mui-bar-nav" style="background-color:#00CFBD;" id="tempVue">
 			<a @click="muiback" class="mui-icon mui-icon-left-nav mui-pull-left" style="color: white;"></a>
 			<h1 class="mui-title" style="color: white;">学校通知</h1>
-			<a v-if="personal.appxxtservstat>0 && personal.utp==0" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
+			<a v-if="personal.schNoticeAdd>0" @click="revoke()" class="mui-pull-right" style="color: white;font-size: 25px;margin-top: 10px;">+</a>
 		</header>
 		<div v-show="showFlag>0" class="mui-content mui-scroll-wrapper mui-fullscreen" id="noticelistData" style="display: none;">
 			<div class="mui-scroll">
@@ -233,11 +233,16 @@
 					mui('#noticelistData').pullRefresh().endPulldownToRefresh();
 					console.log('data:' + JSON.stringify(data));
 					if(data.RspCode == 0) {
-
+//						if (data.RspData.Data==null) {
+//							mui.toast('数据为空');
+//						}
 						noticelistData.pageIndex++;
 						for(var i = 0; i < data.RspData.Data.length; i++) {
 							var model = data.RspData.Data[i];
-							model.SendTime = modifyTimeFormat(model.SendTime);
+//							console.log('model.SendTime00:'+model.SendTime);
+//							model.SendTime = modifyTimeFormat(model.SendTime);
+							model.SendTime = model.SendTime.replace('T',' ');
+//							console.log('model.SendTime01:'+model.SendTime);
 						}
 						if(noticelistData.flag == 0) { //刷新
 							noticelistData.noticeArray = data.RspData.Data;

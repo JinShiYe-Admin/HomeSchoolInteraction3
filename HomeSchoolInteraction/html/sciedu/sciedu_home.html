@@ -144,7 +144,7 @@
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('未替换','GetUserBusFunc', enData1, comData1, 0, function(data1) {
+				postDataEncry(2,'GetUserBusFunc', enData1, comData1, 0, function(data1) {
 					console.log('4.1.GetUserBusFunc:' + JSON.stringify(data1));
 					events.closeWaiting();
 					if(data1.RspCode == 0) {

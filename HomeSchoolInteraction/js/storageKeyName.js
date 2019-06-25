@@ -21,7 +21,8 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/'; //顾工接口
 			mod.INTERFACEZENG = 'http://139.129.252.49:8080/sup/'; //系统接口
 			mod.INTERFACEMENG = 'http://139.129.252.49:8080/sys/'; //系统接口
-			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolOAServiceNew/'; //孔工接口
+			mod.INTERFACEKONG = 'http://188.131.243.133:8081/api/';//孔工接口
+			mod.INTERFACEKONGG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/'; //孔
 			mod.TEACHERIMG = 'http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';//安卓升级地址
 			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址
@@ -34,7 +35,7 @@ var storageKeyName = (function(mod) {
 			}
 			//---开发---start---
 			mod.MAINEDU = 'https://jbyc.jiaobaowang.net:8442/'; //科教图片url
-			mod.MAINURL = 'https://jbyc.jiaobaowang.net:8442/api/CloudApi/'; //主url
+			mod.MAINURL = 'https://jsypay.jiaobaowang.net/jbcloudapi/api/CloudApi/'; //主url
 			mod.MAINJIAOXIAOURL = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //家校圈url
 			mod.MAINHOMEWORKURL = 'http://192.168.1.44:8513/'; //作业主url
 			mod.MAINQIUZHI = 'http://192.168.1.113:8081/JiaoBaoCloudService/'; //求知主url
@@ -53,7 +54,7 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACESIGNINKONG = 'https://jbyj.jiaobaowang.net/SchoolAttendanceService/'; //孔工接口IMG
 			mod.STUDENTMANAGE = 'https://gxkf.jiaobaowang.net:9443/sm/app/'; //学生管理
 			mod.PLATFORMCODE = 'PT0001'; //平台代码
-			mod.APPCODE = 'smartSchAPP'; //应用系统代码
+			mod.APPCODE = 'schInfoApp'; //应用系统代码
 			break;
 		case 1: //云测试
 			mod.SCHOOLID = 0;//学校ID
@@ -148,22 +149,36 @@ var storageKeyName = (function(mod) {
 	}
 	
 	//模块权限
-	
-	mod.SCHNOTICECLS_ADD='#OA:SchNoticeCls:add'//学校通知班级发布权限
-	mod.SCHNOTICEGRD_ADD='#OA:SchNoticeGrd:add'//学校通知年级发布权限
-	mod.STUNOTICESHC_ADD='#OA:SchNoticeSch:add'//学校通知全校发布权限
-	mod.STUNOTICE='#OA:SchNotice:index'//学校通知
-	mod.STUACTION='#OA:StuAction:index'//学生行为
-	mod.STUATTENDANCE='#OA:StuAttendance:index'//学生考勤
-	mod.STUTALKRECORD='#OA:StuTalkRecord:index'//谈话记录
-	mod.STUREVIEW='#OA:StuReview:index'//量化考评
-	mod.STUCOMMENT='#OA:StuComment:index'//评语
-	
-	mod.HOMEWORKMANAGE='#OA:HomeworkManage:index'//作业管理
-	
-	mod.ENGORALS='#OA:EngOrals:index'//英语听测
-	mod.BENEFITINGLEARNING='#OA:BenefitingLearning:index'//智学课堂
-	mod.SCIEDU='#OA:SciEdu:index'//科教活动
+	mod.SCHNOTICEADD='#schInfo:schNotice:index:add'//学校通--新建
+	mod.SCHNOTICESCH='#schInfo:schNotice:index:sch'//学校通知--可发全校
+	mod.SCHNOTICEGRD='#schInfo:schNotice:index:allGrd'//学校通知--可发年级
+	mod.SCHNOTICECLS='#schInfo:schNotice:index:allCls'//学校通知可发班级
+	mod.SCHNOTICEPARENT='#schInfo:schNotice:index:singleParent'//学校通知--可发家长	
+	mod.SCHNOTICEINDEX='#schInfo:schNotice:index'//学校通知权限
+	mod.SMADD='#schInfo:stnManage:index:add'//学生管理--添加
+	mod.SMMODIFY='#schInfo:stnManage:index:modify'//学生管理--编辑
+	mod.SMDEL='#schInfo:stnManage:index:del'//学生管理--删除
+	mod.SMATTENDLIST='#schInfo:stnManage:index:attendList'//学生管理--查考勤记录
+	mod.SMATTENDFORM='#schInfo:stnManage:index:attendForm'//学生管理--查考勤报表
+	mod.SMACTIONLIST='#schInfo:stnManage:index:actionList'//学生管理--查行为记录
+	mod.SMACTIONFORM='#schInfo:stnManage:index:actionForm'//学生管理--查行为报表
+	mod.SMTALKLIST='#schInfo:stnManage:index:talkList'//学生管理--查谈话记录
+	mod.SMREVIEWLIST='#schInfo:stnManage:index:reviewList'//学生管理--查学生量化考评
+	mod.SMCOMMENTLIST='#schInfo:stnManage:index:commentList'//学生管理--查学生评语
+	mod.SMACTION='#schInfo:stnManage:actionIndex'//学生行为权限
+	mod.SMATTEND='#schInfo:stnManage:attendIndex'//学生考勤权限
+	mod.SMTALK='#schInfo:stnManage:talkIndex'//谈话记录权限
+	mod.SMREVIEW='#schInfo:stnManage:reviewIndex'//量化考评权限
+	mod.SMCOMMENT='#schInfo:stnManage:commentIndex'//评语权限
+	mod.HMADD='#schInfo:homework:index:add'//作业管理--布置作业
+	mod.HMMODIFY='#schInfo:homework:index:modify'//作业管理--批改作业
+	mod.HMSUBMIT='#schInfo:homework:index:submit'//作业管理--提交作业
+	mod.HMSTUFORM='#schInfo:homework:index:stuhwForm'//作业管理--学生报表
+	mod.HMCLSFORM='#schInfo:homework:index:clshwForm'//作业管理--班级报表
+	mod.HOMEWORKINDEX='#schInfo:homework:index'//作业管理权限
+	mod.LISTENTEXTINDEX='#schInfo:listenTest:index'//英语听测权限
+	mod.INTELCLSINDEX='#schInfo:intelCls:index'//智学课堂权限
+	mod.SCIEDUINDEX='#schInfo:sciedu:index'//科教活动权限
 	
 	
 	mod.CATALOG = 'catalog';//滑动菜单对象

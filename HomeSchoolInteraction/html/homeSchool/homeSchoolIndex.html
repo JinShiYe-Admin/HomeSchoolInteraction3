@@ -464,7 +464,7 @@
 					}
 					events.showWaiting();
 					//发送网络请求，data为网络返回值
-					postDataEncry('未替换','UserUstu', enData2, comData2, 0, function(data2) {
+					postDataEncry('未替换', 'UserUstu', enData2, comData2, 0, function(data2) {
 						console.log('4.5.UserUstu:' + JSON.stringify(data2));
 						events.closeWaiting();
 						if(data2.RspCode == 0) {
@@ -479,7 +479,7 @@
 								};
 								events.showWaiting();
 								//发送网络请求，data为网络返回值
-								postDataEncry('未替换','GetUserBusFunc', {}, comData3, 0, function(data3) {
+								postDataEncry('未替换', 'GetUserBusFunc', {}, comData3, 0, function(data3) {
 									console.log('4.1.GetUserBusFunc:' + JSON.stringify(data3));
 									events.closeWaiting();
 									if(data3.RspCode == 0) {
@@ -886,147 +886,62 @@
 					},
 					methods: {
 						clickFunction: function(index) {
+							var personal0 = store.get(window.storageKeyName.PERSONALINFO);
 							console.log('index:', index);
-							if(personal.utp == 2) {
-								mui.toast('无权限');
-								return;
-							}
 							if(index == 0) { //学校通知
-								//判断权限,学生、家长
-								if(personal.utp == 1) {
-									//									var personal0 = store.get(window.storageKeyName.PERSONALINFO);
-									//									console.log('personal0.userbus:'+JSON.stringify(personal0.userbus));
-									//判断是否订购家校互通功能，并且状态开启
-									//									var tempArr = 0;
-									//									for(var i = 0; i < personal0.userbus.length; i++) {
-									//										var tempModel = personal0.userbus[i];
-									//										if(tempModel.busext != null && tempModel.serstat == 1) {
-									//											for(var a = 0; a < tempModel.funcs.length; a++) {
-									//												var tempM = tempModel.funcs[a];
-									//												if(tempM.ftype == 'jxht') {
-									//													tempArr++;
-									//												}
-									//											}
-									//										}
-									//									}
-									//									if(tempArr > 0) {
-									utils.mOpenWithData("noticeList.html", {
-										index: 1
-									});
-									//									} else {
-									//										mui.toast('请关联家校互通套餐');
-									//									}
-								} else if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
-									if(personal.grds.length > 0) { //年级领导
-										utils.mOpenWithData("noticeList.html", {
-											index: 1
-										});
-									} else {
-										//判断是不是班主任
-										var tempFlag = 0;
-										for(var i = 0; i < personal.clss.length; i++) {
-											var classModel = personal.clss[i];
-											if(classModel.isms == 1) {
-												tempFlag++;
-											}
-										}
-										//如果是班主任
-										if(tempFlag > 0) {
-											utils.mOpenWithData("noticeList.html", {
-												index: 1
-											});
-										} else {
-											mui.toast('无权限');
-										}
-									}
-								} else if(personal.urolestrxxt > 1) { //授权用户
-									utils.mOpenWithData("noticeList.html", {
-										index: 1
-									});
+								if(personal0.schNoticeIndex == 0) {
+									mui.toast('无权限');
+									return;
 								}
+								utils.mOpenWithData("noticeList.html", {
+									index: 1
+								});
 							} else if(index == 5) { //作业管理
-								console.log('personal.utp====' + personal.utp)
 								//身份 0老师，2学生，1家长
-								if(personal.utp == 0) { //老师
-									utils.mOpenWithData("../../html/homework/teacher-index.html", {});
-								} else if(personal.utp == 1) { //家长
-									utils.mOpenWithData("../../html/homework/parent-homework-index.html", {});
-								} else {
-									mui.toast('此功能暂未开放');
-								}
+//								if(personal.utp == 0) { //老师
+//									utils.mOpenWithData("../../html/homework/teacher-index.html", {});
+//								} else if(personal.utp == 1) { //家长
+//									utils.mOpenWithData("../../html/homework/parent-homework-index.html", {});
+//								} else {
+//									mui.toast('此功能暂未开放');
+//								}
+								mui.toast('无权限');
 							} else if(index == 6) { //学生行为
-								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian(1) == 0) {
+								if(personal0.smAction == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-action.html", {});
 							} else if(index == 7) { //学生考勤
-								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian(1) == 0) {
+								if(personal0.smAttend == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-attendance.html", {});
 							} else if(index == 8) { //谈话记录
-								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian(0) == 0) {
+								if(personal0.smTalk == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-talkRecord.html", {});
 							} else if(index == 9) { //量化考评
-								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian(0) == 0) {
+								if(personal0.smReview == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-review.html", {});
 							} else if(index == 10) { //评语
-								console.log('personal.utp====' + personal.utp)
-								if(studentQuanxian(0) == 0) {
+								if(personal0.amComment == 0) {
 									mui.toast('无权限');
 									return;
 								}
 								utils.mOpenWithData("../../html/studentManage/student-comment.html", {});
 							} else {
-								mui.toast('此功能暂未开放');
+								mui.toast('无权限');
 							}
 						}
 					}
 				});
-
-				var studentQuanxian = function(flag) {
-					var personal = store.get(window.storageKeyName.PERSONALINFO);
-					var tempFlag = 0;
-					for(var i = 0; i < personal.clss.length; i++) {
-						var tempModel = personal.clss[i];
-						if(flag == 0) {
-							if(tempModel.isms == 1 && tempModel.isfinish == 0) {
-								tempFlag++;
-							}
-						} else {
-							if(tempModel.isfinish == 0) {
-								tempFlag++;
-							}
-						}
-
-					}
-					if(personal.grds.length > 0) {
-						tempFlag++;
-					}
-					//判断个人信息的urolestr参数，第16位，学生管理授权用户
-					var tempStr = personal.urolestr.substr(16, 1);
-					if(tempStr == 1) {
-						return 1;
-					} else {
-						if(tempFlag > 0) {
-							return 1;
-						} else {
-							return 0;
-						}
-					}
-				}
 
 				var slider = mui("#slider");
 				//轮播开始

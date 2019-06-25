@@ -92,7 +92,8 @@
 			<div class="mui-row btns">
 				<ul class="mui-table-view" style="margin-bottom: 61px;">
 					<template v-for="setting in settings" >
-						<li v-show="setting.qx.indexOf(utp)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
+						<!--<li v-show="setting.qx.indexOf(utp)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >-->
+						<li v-show="setting.qx.indexOf(0)!=-1" class="mui-table-view-cell" v-on:click="jumpToDetail(setting)" >
 							<a class="mui-navigate-right">
 								<span :class="setting.cls" :style="setting.name=='关联学生'||setting.name=='学生账号'?'font-size: 24px;margin:0 -2px 0 -3px;':'font-size: 20px'"></span> {{setting.name}}
 							</a>
@@ -107,9 +108,6 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/utils/vue.js"></script>
 		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/publicProtocolNew.js"></script>
-		<script src="../../js/storageKeyName.js"></script>
 		<script src="../../js/utils/store.js"></script>
 		<script src="../../js/utils/utils.js"></script>
 		<script src='../../js/utils/sortSign.js'></script>
@@ -146,7 +144,7 @@
 
 			var mine = new Vue({
 				el: "#mine",
-				data: {
+				data: { 
 					userName: personal.utname,
 					userImg: setImg(personal.imgurl),
 					settings: [{
@@ -155,14 +153,14 @@
 						href: "",
 						tempID: 0,
 						cls: 'mui-icon mui-icon-locked',
-						qx:"0,1,2"
+						qx:"0"
 					}, {
 						name: "关联学生",
 						icon: "",
 						href: "",
 						tempID: 3,
 						cls: 'mui-icon mui-icon-paperclip',
-						qx:"1"
+						qx:"0"
 					}, {
 						name: "学生账号",
 						icon: "",
@@ -249,12 +247,12 @@
 				//获取所有已打开的webview 实例————重新打开login.html————循环关闭页面
 				store.remove(window.storageKeyName.PERSONALINFO);
 				//				plus.webview.open('../../html/login/loginIndex.html');
-				plus.webview.open('../../html/login/firstPage1.html');
+				plus.webview.open('../../html/login/loginFnoPermissions.html');
 				var curr = plus.webview.currentWebview();
 				var wvs = plus.webview.all();
 				for(var i = 0, len = wvs.length; i < len; i++) {
 					//关闭除login页面外的其他页面
-					if(wvs[i].getURL().indexOf('firstPage1.html') != -1) {
+					if(wvs[i].getURL().indexOf('loginFnoPermissions.html') != -1) {
 						//					if(wvs[i].getURL().indexOf('loginIndex.html') != -1) {
 						continue;
 					}

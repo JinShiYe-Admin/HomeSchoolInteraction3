@@ -173,7 +173,7 @@
 						cls_id: 0, //班级id，年级下全部班级则传-1，不需要判断班级则传0
 						stu_id: 0, //学生id，全部学生则传-1，不需要判断学生则传0
 						sub_code: 0, //科目代码，全部科目则传“-1”，不需要判断年级则传“0”
-						access: data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_ADD + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.APPROVE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.ATTENDANCE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.STUMANAGE_INDEX + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_ALLDPT + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_UPDPT + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_TEACLS + ',' + data1.RspData.user.app_code + window.storageKeyName.NOTICEAPPROVE_DOWNDPT, //权限符，需要判断权限的权限符，多个则用逗号拼接
+						access: data1.RspData.user.app_code + window.storageKeyName.SCHNOTICEADD + ',' +data1.RspData.user.app_code + window.storageKeyName.SCHNOTICESCH + ',' +data1.RspData.user.app_code + window.storageKeyName.SCHNOTICEGRD + ',' +data1.RspData.user.app_code + window.storageKeyName.SCHNOTICECLS + ',' +data1.RspData.user.app_code + window.storageKeyName.SCHNOTICEPARENT + ',' +data1.RspData.user.app_code + window.storageKeyName.SCHNOTICEINDEX + ',' +data1.RspData.user.app_code + window.storageKeyName.SMADD + ',' +data1.RspData.user.app_code + window.storageKeyName.SMMODIFY + ',' +data1.RspData.user.app_code + window.storageKeyName.SMDEL + ',' +data1.RspData.user.app_code + window.storageKeyName.SMATTENDLIST + ',' +data1.RspData.user.app_code + window.storageKeyName.SMATTENDFORM + ',' +data1.RspData.user.app_code + window.storageKeyName.SMACTIONLIST + ',' +data1.RspData.user.app_code + window.storageKeyName.SMACTIONFORM + ',' +data1.RspData.user.app_code + window.storageKeyName.SMTALKLIST + ',' +data1.RspData.user.app_code + window.storageKeyName.SMREVIEWLIST + ',' +data1.RspData.user.app_code + window.storageKeyName.SMCOMMENTLIST + ',' +data1.RspData.user.app_code + window.storageKeyName.SMACTION + ',' +data1.RspData.user.app_code + window.storageKeyName.SMATTEND + ',' +data1.RspData.user.app_code + window.storageKeyName.SMTALK + ',' +data1.RspData.user.app_code + window.storageKeyName.SMREVIEW + ',' +data1.RspData.user.app_code + window.storageKeyName.SMCOMMENT + ',' +data1.RspData.user.app_code + window.storageKeyName.HMADD + ',' +data1.RspData.user.app_code + window.storageKeyName.HMMODIFY + ',' +data1.RspData.user.app_code + window.storageKeyName.HMSUBMIT + ',' +data1.RspData.user.app_code + window.storageKeyName.HMSTUFORM + ',' +data1.RspData.user.app_code + window.storageKeyName.HMCLSFORM + ',' +data1.RspData.user.app_code + window.storageKeyName.HOMEWORKINDEX + ',' +data1.RspData.user.app_code + window.storageKeyName.LISTENTEXTINDEX + ',' +data1.RspData.user.app_code + window.storageKeyName.INTELCLSINDEX + ',' +data1.RspData.user.app_code + window.storageKeyName.SCIEDUINDEX, //权限符，需要判断权限的权限符，多个则用逗号拼接
 						access_token: data1.RspData.access_token //用户令牌
 					};
 					//获取权限
@@ -185,15 +185,36 @@
 							//合并对象
 							var tempArray = data2.RspData.split(',');
 							//权限
-							tempPerInfo.noticeApproveAdd = tempArray[0]; //通知公告、事物审批，是否能添加
-							tempPerInfo.noticeIndex = tempArray[1]; //是否有通知公告功能
-							tempPerInfo.approveIndex = tempArray[2]; //是否有事物审批功能
-							tempPerInfo.attendanceIndex = tempArray[3]; //是否有签到考勤功能
-							tempPerInfo.stuManageIndex = tempArray[4]; //是否有学生管理功能
-							tempPerInfo.noticeApproveAllDpt = tempArray[5]; //通知公告、事物审批，是否能选全部老师
-							tempPerInfo.noticeApproveUpDpt = tempArray[6]; //通知公告、事物审批，是否能选上级部门老师
-							tempPerInfo.noticeApproveTeaCls = tempArray[7]; //通知公告、事物审批，是否能选本年级老师
-							tempPerInfo.noticeApproveDownDpt = '1'; //通知公告、事物审批，是否能选本部门及下级部门老师，默认能选
+							tempPerInfo.schNoticeAdd = tempArray[0]; //学校通知--新建
+							tempPerInfo.schNoticeSch = tempArray[1]; //学校通知--可发全校
+							tempPerInfo.schNoticeGrd = tempArray[2]; //学校通知--可发年级
+							tempPerInfo.schNoticeCls = tempArray[3]; //学校通知--可发班级
+							tempPerInfo.schNoticeParent = tempArray[4]; //学校通知--可发家长	
+							tempPerInfo.schNoticeIndex = tempArray[5]; //学校通知权限
+							tempPerInfo.smAdd = tempArray[6]; //学生管理--添加
+							tempPerInfo.smModify = tempArray[7]; //学生管理--编辑
+							tempPerInfo.smDel = tempArray[8]; //学生管理--删除
+							tempPerInfo.smAttendList = tempArray[9]; //学生管理--查考勤记录
+							tempPerInfo.smAttendForm = tempArray[10]; //学生管理--查考勤报表
+							tempPerInfo.smActionList = tempArray[11]; //学生管理--查行为记录
+							tempPerInfo.smActionForm = tempArray[12]; //学生管理--查行为报表
+							tempPerInfo.smTalkList = tempArray[13]; //学生管理--查谈话记录
+							tempPerInfo.smReviewList = tempArray[14]; //学生管理--查学生量化考评
+							tempPerInfo.smCommentList = tempArray[15]; //学生管理--查学生评语
+							tempPerInfo.smAction = tempArray[16]; //学生行为权限
+							tempPerInfo.smAttend = tempArray[17]; //学生考勤权限
+							tempPerInfo.smTalk = tempArray[18]; //谈话记录权限
+							tempPerInfo.smReview = tempArray[19]; //量化考评权限
+							tempPerInfo.amComment = tempArray[20]; //评语权限
+							tempPerInfo.hmAdd = tempArray[21]; //作业管理--布置作业
+							tempPerInfo.hmModify = tempArray[22]; //作业管理--批改作业
+							tempPerInfo.hmSubmit = tempArray[23]; //作业管理--提交作业
+							tempPerInfo.hmStuForm = tempArray[24]; //作业管理--学生报表
+							tempPerInfo.hmClsForm = tempArray[25]; //作业管理--班级报表
+							tempPerInfo.homeworkIndex = tempArray[26]; //作业管理权限
+							tempPerInfo.listenTestIndex = tempArray[27]; //英语听测权限
+							tempPerInfo.intelClsIndex = tempArray[28]; //智学课堂权限
+							tempPerInfo.scieduIndex = tempArray[29]; //科教活动权限
 							store.set(window.storageKeyName.PERSONALINFO, tempPerInfo);
 							tempFlag++;
 							console.log('tempFlag00:' + tempFlag);
@@ -342,17 +363,17 @@
 			if(personal) {
 				if(personal.utid == 'undefined' || personal.utid == null || personal.userName0 == null) {
 					//login登录
-					getEncryptKeyLogin('wuli02bzr', '1234');
+					getEncryptKeyLogin('000000', '111111');
 				} else {
 					if(personal.userName0) {
 						//login登录
 						getEncryptKeyLogin(personal.userName0, personal.password0);
 					} else {
-						getEncryptKeyLogin('wuli02bzr', '1234');
+						getEncryptKeyLogin('000000', '111111');
 					}
 				}
 			} else {
-				getEncryptKeyLogin('wuli02bzr', '1234');
+				getEncryptKeyLogin('000000', '111111');
 			}
 			//			} else {
 			//

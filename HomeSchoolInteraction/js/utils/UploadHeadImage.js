@@ -336,27 +336,17 @@ var UploadHeadImage = (function($, mod) {
 		var enData0 = {};
 		//不需要加密的数据
 		var comData0 = {
-			uuid: publicParameter.uuid, //用户设备号
-			type: 'uico', //修改类型，upw:密码, uico:头像
+			platform_code: window.storageKeyName.PLATFORMCODE, //平台代码
+			app_code: window.storageKeyName.APPCODE, //应用系统代码
+			type: 'uico', //修改类型，uico:头像
 			val: domain, //对应类型的值
-			utoken: personal.utoken, //用户令牌
-			appid: publicParameter.appid //系统所分配的应用ID
-		}
-		var tempUrl = '';
-		if (personal.utp == 1) { //0老师，2学生，1家长
-			comData0.utid = personal.utid;
-			tempUrl = 'UpUserInfo';
-		} else{
-			comData0.stuid = personal.utid;
-			tempUrl = 'UpStuInfo';
-		}
+			access_token: personal.utoken //用户令牌
+		};
 		events.showWaiting();
-		//发送网络请求，data为网络返回值
-		postDataEncry(tempUrl, enData0, comData0, 0, function(data) {
-			console.log(tempUrl + JSON.stringify(data));
-			events.closeWaiting();
-			if(data.RspCode == 0) {
-				//成功的回调
+		postDataEncry(0, 'api/user/upUserInfo', {}, comData0, 0, function(data3) {
+			console.log('UpUserInfo:' + JSON.stringify(data3));
+			events.showWaiting();
+			if(data3.RspCode == 0) {
 				successCallBack(imgeURL);
 			} else {
 				errorCallBack(data);

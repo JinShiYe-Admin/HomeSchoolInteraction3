@@ -202,12 +202,48 @@
 				init();
 
 				initListener(); //初始化监听
+				var tempPersonal = store.get(window.storageKeyName.PERSONALINFO);
+				//先判断是否为年级领导，如果是，获取班级，然后和cls合并，这样和之前的思路一致
+				if (tempPersonal.grds.length>0) {
+					var tempG= [];
+					for (var i = 0; i < tempPersonal.grds.length; i++) {
+						tempG.push(tempPersonal.grds[i].grdid);
+					}
+					//获取所有年级
+					var enData0 = {};
+					//不需要加密的数据
+					var comData0 = {
+						grade_ids: tempG.join(','), //需要查询的年级ID，多个ID用英文逗号隔开
+						access_token: tempPersonal.utoken, //用户令牌
+						is_finish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
+					}
+					events.showWaiting();
+					//发送网络请求，data为网络返回值
+					postDataEncry(1,'api/cls/list', enData0, comData0, 0, function(data) {
+						events.closeWaiting();
+						console.log('api/cls/list:'+JSON.stringify(data));
+						if(data.RspCode == 0) {
+							tempPersonal.clss = arrayUnique2(tempPersonal.clss.concat(data.RspData),'clsid');
+							var tempPersonal1111 = store.get(window.storageKeyName.PERSONALINFO);
+							tempPersonal1111.clsGrdArray = tempPersonal.clss;
+							store.set(window.storageKeyName.PERSONALINFO,tempPersonal1111);
+							morenData(tempPersonal.clss);
+						} else {
+							mui.toast(data.RspTxt, "cancel");
+						}
+					});
+				} else{
+					morenData(tempPersonal.clss);
+				}
+			});
+			
+			//默认数据
+			function morenData(tempData){
 				//判断是否包含班主任身份
-				for(var i = 0; i < personal.clss.length; i++) {
-					var classModel = personal.clss[i];
-					if(classModel.isms == 1&&classModel.isfinish == 0) {
+				for(var i = 0; i < tempData.length; i++) {
+					var classModel = tempData[i];
+//					if(classModel.isms == 1&&classModel.isfinish == 0) {
 						addNoticeContent.teacherFlag = 1;
-						addNoticeContent.flag = 1;
 						addNoticeContent.gradeArray.push(classModel.grdid);
 						addNoticeContent.classIDsArray.push(classModel.clsid);
 						addNoticeContent.gradeIDsArray.push(classModel.grdid);
@@ -215,7 +251,7 @@
 						addNoticeContent.classStr = addNoticeContent.classStr + ',' + classModel.clsname;
 						addNoticeContent.parentsStr = addNoticeContent.parentsStr + ';' + classModel.clsname + '全部家长';
 						addNoticeContent.grdClsArray.push(classModel.grdid+'|'+classModel.clsid);
-					}
+//					}
 				}
 				//去重
 				addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
@@ -231,20 +267,18 @@
 					var enData0 = {};
 					//不需要加密的数据
 					var comData0 = {
-						uuid: publicParameter.uuid, //用户设备号
-						utoken: personal.utoken, //用户令牌
-						appid: publicParameter.appid, //系统所分配的应用ID
-						isfinish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
+						access_token: personal.utoken, //用户令牌
+						is_finish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
 					}
 					events.showWaiting();
 					//发送网络请求，data为网络返回值
-					postDataEncry(1,'grd/list', enData0, comData0, 0, function(data) {
+					postDataEncry(1,'api/grd/list', enData0, comData0, 0, function(data) {
 						events.closeWaiting();
 						if(data.RspCode == 0) {
-							tempGradeList = [].concat(data.RspData.grds);
-							console.log('tempGradeList:' + tempGradeList.length + ',data.RspData.grds:' + data.RspData.grds.length);
-							for(var i = 0; i < data.RspData.grds.length; i++) {
-								var model = data.RspData.grds[i];
+							tempGradeList = [].concat(data.RspData);
+							console.log('tempGradeList:' + tempGradeList.length + ',data.RspData:' + data.RspData.length);
+							for(var i = 0; i < data.RspData.length; i++) {
+								var model = data.RspData[i];
 								for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
 									var tempGrade0 = addNoticeContent.gradeArray[a];
 									if(model.grdid == tempGrade0) {
@@ -262,14 +296,24 @@
 				} else {
 					addNoticeContent.gradeStr = '请选择';
 					addNoticeContent.classStr = '请选择';
+					addNoticeContent.parentsStr = '请选择';
 				}
-			});
+			}
+			
+			//数组去重
+			function arrayUnique2(arr, name) {
+				var hash = {};
+				return arr.reduce(function(item, next) {
+					hash[next[name]] ? '' : hash[next[name]] = true && item.push(next);
+					return item;
+				}, []);
+			}
 
 			var addNoticeContent = new Vue({
 				el: "#addNoticeContent",
 				data: {
 					pageFlag: 0, //页面是否加载完成
-					flag: 0, //0没有选择含班主任的班级、1选择
+					flag: personal.schNoticeParent, //0没有选择含班主任的班级、1选择
 					teacherFlag: 0, //当前账号，是否有班主任身份
 					gradeArray: [], //班主任身份时，执教年级列表
 					noticeArray: [], //通知列表数组
@@ -338,27 +382,12 @@
 					addNoticeContent.parentsStr = tempData.classShow.replace(/;/g, '全部家长;');
 					addNoticeContent.parentsStr = addNoticeContent.parentsStr.replace(/全部班级/g, '');
 					addNoticeContent.parentsStr = addNoticeContent.parentsStr + '全部家长';
-					addNoticeContent.flag = 0;
-					//判断选择的班级，是否有当前身份是班主任的
-					if(addNoticeContent.teacherFlag > 0) {
-						for(var i = 0; i < addNoticeContent.classIDsArray.length; i++) {
-							var temp = addNoticeContent.classIDsArray[i];
-							//判断是否是班主任
-							for(var a = 0; a < personal.clss.length; a++) {
-								var classModel = personal.clss[a];
-								if(classModel.isms == 1 && temp == classModel.clsid) {
-									addNoticeContent.flag = 1;
-								}
-							}
-						}
-					}
 				} else {
 					addNoticeContent.classIDsArray = [];
 					addNoticeContent.gradeIDsArray = [];
 					addNoticeContent.gradeStr = '请选择';
 					addNoticeContent.classStr = '请选择';
 					addNoticeContent.parentsStr = '请选择';
-					addNoticeContent.flag = 0;
 					addNoticeContent.parentArray = [];
 				}
 			});
@@ -378,15 +407,13 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					functypes:'jxht',//功能类型(见附表2),多个之间用英文逗号隔开,全部留空
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					classids: classids //需要查询的班级ID,多个代码用英文逗号隔开
+					access_token: personal.utoken, //用户令牌
+					cls_ids: classids //需要查询的班级ID,多个代码用英文逗号隔开
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('未替换','ClassUserUStu', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'api/classUserUStu', enData0, comData0, 0, function(data) {
+					console.log('api/classUserUStu:'+JSON.stringify(data));
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//						console.log('data:' + JSON.stringify(data));
@@ -395,7 +422,7 @@
 							addNoticeContent.parentsStr = '所在班级没有学生';
 						} else {
 							//							console.log('qqqqqqqqw');
-							addNoticeContent.parentArray = [].concat(data.RspData.classuserustus);
+							addNoticeContent.parentArray = [].concat(data.RspData);
 							//默认的班主任数据
 							if(flag == 0) {
 								//将班级ID字符串，分割为数组
@@ -440,7 +467,6 @@
 								//判断是否包含班主任身份
 								if(classidArr.length > 0) {
 									addNoticeContent.teacherFlag = 0;
-									addNoticeContent.flag = 0;
 									//									addNoticeContent.gradeArray = [];
 									addNoticeContent.classIDsArray = [];
 									addNoticeContent.gradeIDsArray = [];
@@ -451,7 +477,6 @@
 									for(var i = 0; i < classidArr.length; i++) {
 										var classModel = classidArr[i];
 										addNoticeContent.teacherFlag = 1;
-										addNoticeContent.flag = 1;
 										//										addNoticeContent.gradeArray.push(classModel.parents[0].grdid);
 										addNoticeContent.classIDsArray.push(classModel.parents[0].clsid);
 										addNoticeContent.gradeIDsArray.push(classModel.parents[0].grdid);
@@ -467,26 +492,12 @@
 										addNoticeContent.classStr = addNoticeContent.classStr.substr(1);
 										addNoticeContent.parentsStr = addNoticeContent.parentsStr.substr(1);
 									}
-									//									for(var i = 0; i < tempGradeList.length; i++) {
-									//										var model = tempGradeList[i];
-									//										console.log('model.grdid:'+model.grdid);
-									//										for(var a = 0; a < addNoticeContent.gradeArray.length; a++) {
-									//											var tempGrade0 = addNoticeContent.gradeArray[a];
-									//											console.log('model.grdid:'+model.grdid+',tempGrade0:'+tempGrade0);
-									//											if(model.grdid == tempGrade0) {
-									//												console.log('5555555555555555555555555555');
-									//												addNoticeContent.gradeStr = addNoticeContent.gradeStr + ',' + model.grdname;
-									//											}
-									//										}
-									//									}
-									//									addNoticeContent.gradeStr = addNoticeContent.gradeStr.substr(1);
 								} else {
 									addNoticeContent.classIDsArray = [];
 									addNoticeContent.gradeIDsArray = [];
 									addNoticeContent.gradeStr = '请选择';
 									addNoticeContent.classStr = '请选择';
 									addNoticeContent.parentsStr = '请选择';
-									addNoticeContent.flag = 0;
 									addNoticeContent.parentArray = [];
 								}
 							}
@@ -598,18 +609,27 @@
 			 */
 			function addNote(wd, encType, encAddr, encImg, encLen) {
 				console.log('encImg:' + encImg);
-				var temp0 = [];
-				var temp1 = [];
-				var temp2 = [];
-				var temp3 = [];
+//				var temp0 = [];
+//				var temp1 = [];
+//				var temp2 = [];
+//				var temp3 = [];
+				var tempModelArray = [];
 				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 					var stuModel = addNoticeContent.parentArray[i];
-					temp0.push(stuModel.utid);
-					temp1.push(stuModel.mobile);
-					temp2.push(stuModel.utname+'|'+stuModel.stuname);
-					temp3.push(stuModel.uimg);
+//					temp0.push(stuModel.utid);
+//					temp1.push(stuModel.mobile);
+//					temp2.push(stuModel.utname+'|'+stuModel.stuname);
+//					temp3.push(stuModel.uimg);
+					var tempM = {
+						id:stuModel.utid,
+						code:stuModel.mobile,
+						img:stuModel.imgurl,
+						ParentName:stuModel.utname,
+						StudentName:stuModel.stuname
+					}
+					tempModelArray.push(tempM);
 				}
-				if(temp0.length == 0) {
+				if(tempModelArray.length == 0) {
 					mui.toast('选择的接收人为空');
 					events.closeWaiting();
 					document.getElementById("finish").disabled = false;
@@ -646,10 +666,11 @@
 					sendManCode: personal.uid, //发布人账号
 					sendManName: personal.utname, //发布人姓名
 					sendManImg: personal.imgurl, //发布人头像
-					receiveManIds: arrayToStr(temp0), //接收人人ID，例如：[“1”,”2”,”3”]
-					receiveManCodes: arrayToStr(temp1), //接收人账号，例如：[“1”,”2”,”3”]
-					receiveManNames: arrayToStr(temp2), //接收人姓名，例如：[“1”,”2”,”3”]
-					receiveManImgs: arrayToStr(temp3) //接收人头像
+					receiveManModel:tempModelArray,
+//					receiveManIds: arrayToStr(temp0), //接收人人ID，例如：[“1”,”2”,”3”]
+//					receiveManCodes: arrayToStr(temp1), //接收人账号，例如：[“1”,”2”,”3”]
+//					receiveManNames: arrayToStr(temp2), //接收人姓名，例如：[“1”,”2”,”3”]
+//					receiveManImgs: arrayToStr(temp3) //接收人头像
 				}
 				events.showWaiting();
 				//1.新增学校通知（同时增加通知未读）
@@ -657,9 +678,9 @@
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 //						addNoticeContent.content = '';
-						console.log('temp1.length:'+temp1.length+',addNoticeContent.msgFlag:'+addNoticeContent.msgFlag);
-						console.log('temp1:'+JSON.stringify(temp1));
-						if(temp1.length > 0&&addNoticeContent.msgFlag == 1) {
+//						console.log('temp1.length:'+temp1.length+',addNoticeContent.msgFlag:'+addNoticeContent.msgFlag);
+//						console.log('temp1:'+JSON.stringify(temp1));
+						if(tempModelArray.length > 0&&addNoticeContent.msgFlag == 1) {
 							console.log('111111111');
 							//有班级群发
 							for (var i = 0; i < addNoticeContent.grdClsArray.length; i++) {

@@ -122,25 +122,10 @@
 				classIDsArray = curPage.classIDsArray;
 				gradeIDsArray = curPage.gradeIDsArray;
 				//判断权限
-				if(personal.urolestrxxt == null || personal.urolestrxxt == 0) { //不是授权用户
-					if(personal.grds.length > 0) { //年级领导
-						personalFlag = 2;
-					} else {
-						//判断是不是班主任
-						var tempFlag = 0;
-						for(var i = 0; i < personal.clss.length; i++) {
-							var classModel = personal.clss[i];
-							if(classModel.isms == 1) {
-								tempFlag++;
-							}
-						}
-						//如果是班主任
-						if(tempFlag > 0) {
-							personalFlag = 3;
-						}
-					}
-				} else if(personal.urolestrxxt > 1) { //授权用户
+				if(personal.schNoticeGrd == 1 || personal.schNoticeCls == 1) { //授权用户
 					personalFlag = 1;
+				} else if(personal.clsGrdArray.length > 0) { //
+					personalFlag = 2;
 				}
 				console.log('personalFlag:' + personalFlag);
 				//1.学校年级
@@ -255,9 +240,6 @@
 
 								tempGradeIDsArray.push(gradeModel.grdid);
 							}
-							//							console.log('gradeModel.flag:'+gradeModel.flag);
-							//							console.log('personalFlag:'+personalFlag);
-							//							console.log('gradeModel.tempGradeIsms:'+gradeModel.tempGradeIsms);
 							for(var a = 0; a < gradeModel.classArray.length; a++) {
 								var classModel = gradeModel.classArray[a];
 								if(classModel.flag == 1) {
@@ -310,20 +292,18 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					isfinish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
+					access_token: personal.utoken, //用户令牌
+					is_finish: 0 //是否已毕业，0未毕业,1已毕业,-1全部
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry(1,'grd/list', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'api/grd/list', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					if(data.RspCode == 0) {
-						//						data.RspData.grds.sort(compare("grdname"));
+						//						data.RspData.sort(compare("grdname"));
 						var gradeStr = ''; //要获取班级的年级id
-						for(var i = 0; i < data.RspData.grds.length; i++) {
-							var model = data.RspData.grds[i];
+						for(var i = 0; i < data.RspData.length; i++) {
+							var model = data.RspData[i];
 							if(model.pcode == '0') {} else {
 								model.tempFlag = 0; //年级领导时，同时是班主任，班主任的班级，不在年级领导的数组中
 								model.tempGradeIsms = 0; //判断是否既是年级领导，又是班主任，add年级用
@@ -346,32 +326,9 @@
 								if(personalFlag == 1) { //1授权用户
 									gradeStr = gradeStr + ',' + model.grdid;
 									gradeListData.gradeListArray.push(model);
-								} else if(personalFlag == 2) { //2年级领导
-									//个人信息中的管理年级
-									for(var a = 0; a < personal.grds.length; a++) {
-										var grdModel = personal.grds[a];
-										if(model.grdid == grdModel.grdid) { //获取到的年级id，和个人所在年级列表id一样
-											gradeStr = gradeStr + ',' + model.grdid;
-											model.tempGradeIsms++;
-											gradeListData.gradeListArray.push(model);
-										}
-									}
-									if(model.tempGradeIsms == 0) {
-										//如果同时是班主任，并且这些年级、班级，不在个人信息的管理年级中
-										for(var a = 0; a < personal.clss.length; a++) { //个人信息中的班级列表
-											var grdModel = personal.clss[a];
-											if(grdModel.isms == 1) { //班主任
-												if(model.grdid == grdModel.grdid) {
-													gradeStr = gradeStr + ',' + model.grdid;
-													gradeListData.gradeListArray.push(model);
-													break;
-												}
-											}
-										}
-									}
-								} else if(personalFlag == 3) { //3班主任
-									for(var a = 0; a < personal.clss.length; a++) {
-										var grdModel = personal.clss[a];
+								}  else if(personalFlag == 2) {
+									for(var a = 0; a < personal.clsGrdArray.length; a++) {
+										var grdModel = personal.clsGrdArray[a];
 										if(model.grdid == grdModel.grdid && grdModel.isms == 1) { //获取到的年级id，和个人所在年级列表id一样
 											gradeStr = gradeStr + ',' + model.grdid;
 											gradeListData.gradeListArray.push(model);
@@ -397,20 +354,19 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					gradeids: str //需要查询的年级ID,多个ID用英文逗号隔开
+					access_token: personal.utoken, //用户令牌
+					is_finish: 0, //是否已毕业，0未毕业,1已毕业,-1全部
+					grade_ids: str //需要查询的年级ID,多个ID用英文逗号隔开
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'api/cls/list', enData0, comData0, 0, function(data) {
 					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					events.closeWaiting();
 					if(data.RspCode == 0) {
 						//判断获取到的班级，有没有人，将没有人的去掉
-						for(var q = data.RspData.clss.length - 1; q >= 0; q--) {
-							var tempclass = data.RspData.clss[q];
+						for(var q = data.RspData.length - 1; q >= 0; q--) {
+							var tempclass = data.RspData[q];
 							var tempAAA = 0;
 							for(var w = 0; w < schoolStuCountArray.length; w++) {
 								var tempclass1 = schoolStuCountArray[w];
@@ -419,16 +375,16 @@
 								}
 							}
 							if(tempAAA == 0) {
-								data.RspData.clss.splice(q, 1);
+								data.RspData.splice(q, 1);
 							}
 						}
-						data.RspData.clss.sort(compare("clsname"));
+						data.RspData.sort(compare("clsname"));
 						//循环年级
 						for(var i = 0; i < gradeListData.gradeListArray.length; i++) {
 							var gradeModel = gradeListData.gradeListArray[i];
 							//循环得到的班级列表
-							for(var a = 0; a < data.RspData.clss.length; a++) {
-								var classModel = data.RspData.clss[a];
+							for(var a = 0; a < data.RspData.length; a++) {
+								var classModel = data.RspData[a];
 								//判断上个界面，是否选择
 								var tempClassFlag = 0;
 								for(var m = 0; m < classIDsArray.length; m++) {
@@ -448,26 +404,9 @@
 									if(gradeModel.grdid == classModel.grdid) {
 										gradeModel.classArray.push(classModel);
 									}
-								} else if(personalFlag == 2) { //2年级领导
-									if(gradeModel.tempGradeIsms == 0) {
-										//如果同时是班主任，并且这些年级、班级，不在个人信息的管理年级中
-										for(var m = 0; m < personal.clss.length; m++) { //个人信息中的班级列表
-											var grdModel = personal.clss[m];
-											if(grdModel.isms == 1) { //班主任
-												if(gradeModel.grdid == classModel.grdid && classModel.clsid == grdModel.clsid) {
-													gradeModel.classArray.push(classModel);
-												}
-											}
-										}
-									} else {
-										//判断年级id是否一致
-										if(gradeModel.grdid == classModel.grdid) {
-											gradeModel.classArray.push(classModel);
-										}
-									}
-								} else if(personalFlag == 3) { //3班主任
-									for(var b = 0; b < personal.clss.length; b++) {
-										var grdModel = personal.clss[b];
+								} else if(personalFlag == 2) {
+									for(var b = 0; b < personal.clsGrdArray.length; b++) {
+										var grdModel = personal.clsGrdArray[b];
 										if(classModel.clsid == grdModel.clsid && gradeModel.grdid == classModel.grdid) { //获取到的年级id，和个人所在年级列表id一样
 											gradeModel.classArray.push(classModel);
 										}
@@ -488,65 +427,40 @@
 				var enData0 = {};
 				//不需要加密的数据
 				var comData0 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					gradeids: gradeStr //需要查询的年级ID,多个ID用英文逗号隔开
+					access_token: personal.utoken, //用户令牌
+					is_finish: 0, //是否已毕业，0未毕业,1已毕业,-1全部
+					grade_ids: gradeStr //需要查询的年级ID,多个ID用英文逗号隔开
 				}
 				events.showWaiting();
 				//发送网络请求，data为网络返回值
-				postDataEncry('未替换','GradeClass', enData0, comData0, 0, function(data) {
+				postDataEncry(1,'api/cls/list', enData0, comData0, 0, function(data) {
 					console.log('3.学校年级下班级:' + JSON.stringify(data));
 					if(data.RspCode == 0) {
 						//班级
 						var tempArray = [];
-						for (var i = 0; i < data.RspData.clss.length; i++) {
-							var tempModel = data.RspData.clss[i];
+						for (var i = 0; i < data.RspData.length; i++) {
+							var tempModel = data.RspData[i];
 							tempArray.push(tempModel.clsid);
 						}
 						var tempClass = tempArray.join(',');
 						var enData1 = {};
 						//不需要加密的数据
 						var comData1 = {
-							functypes:'jxht',//功能类型(见附表2),多个之间用英文逗号隔开,全部留空
-							uuid: publicParameter.uuid, //用户设备号
-							utoken: personal.utoken, //用户令牌
-							appid: publicParameter.appid, //系统所分配的应用ID
-							classids: tempClass //需要查询的班级ID,多个代码用英文逗号隔开
+							access_token: personal.utoken, //用户令牌
+							cls_ids: tempClass //需要查询的班级ID,多个代码用英文逗号隔开
 						}
 						events.showWaiting();
 						//发送网络请求，data为网络返回值
-						postDataEncry('未替换','ClassUserUStu', enData1, comData1, 0, function(data1) {
+						postDataEncry(1,'api/classUserUStu', enData1, comData1, 0, function(data1) {
 							events.closeWaiting();
 							if(data1.RspCode == 0) {
-								schoolStuCountArray = data1.RspData.classuserustus;
+								schoolStuCountArray = data1.RspData;
 								//3.学校年级下班级
 								getClassList(gradeStr);
 							}
 						});
 					}
-
 				});
-				//				var enData0 = {};
-				//				//不需要加密的数据
-				//				var comData0 = {
-				//					uuid: publicParameter.uuid, //用户设备号
-				//					utoken: personal.utoken, //用户令牌
-				//					appid: publicParameter.appid //系统所分配的应用ID
-				//				}
-				//				events.showWaiting();
-				//				//发送网络请求，data为网络返回值
-				//				postDataEncry('SchStuC', enData0, comData0, 0, function(data) {
-				//					events.closeWaiting();
-				//					console.log('学校班级学生统计:' + JSON.stringify(data));
-				//					if(data.RspCode == 0) {
-				//						schoolStuCountArray = data.RspData.schstuc;
-				//						//3.学校年级下班级
-				//						getClassList(gradeStr);
-				//					} else {
-				//						mui.toast(data.RspTxt, "cancel");
-				//					}
-				//				});
 			}
 
 			//刚进入页面得到数据时，判断全部的勾选状态

@@ -515,19 +515,51 @@
 				//					}
 				//					wd.close();
 				//				});
-
-				var enData0 = {};
+				
+				var tempModel = {
+			uuid: plus.device.uuid,
+			appid: plus.runtime.appid
+		}
+		//握手
+		var enData0 = {};
+		//不需要加密的数据
+		var comData0 = {
+			uuid: tempModel.uuid, //用户设备号
+			shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+			appid: tempModel.appid //系统所分配的应用ID
+		};
+		//发送网络请求，data为网络返回值
+		postDataEncry(2, 'ShakeHand', enData0, comData0, 0, function(data) {
+			console.log('2121212');
+			if(data.RspCode == 0) {
+				store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+				var enData1 = {
+					uid: '00000000000', //用户账号
+					pw: '0000' //用户密码
+				};
 				//不需要加密的数据
-				var comData0 = {
-					uuid: publicParameter.uuid, //用户设备号
-					utoken: personal.utoken, //用户令牌
-					appid: publicParameter.appid, //系统所分配的应用ID
-					type: 3, //类型,0获取省份,1获取城市,2获取区县,3获取所有城市,4获取某个城市信息
-					areano: '' //区域代码,获取type:1,2,4时必填(填写相关区域代码),其他留空
-				}
-				events.showWaiting();
-				//发送网络请求，data为网络返回值
-				postDataEncry('未替换','SysArea', enData0, comData0, 0, function(data) {
+				var comData1 = {
+					uuid: tempModel.uuid, //用户设备号
+					shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+					appid: tempModel.appid, //系统所分配的应用ID
+					schid: storageKeyName.SCHOOLID, //学校ID
+					utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+				};
+				//登录
+				postDataEncry(2, 'Login', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						var personal = store.get(window.storageKeyName.PERSONALINFO);
+						var enData0 = {};
+						//不需要加密的数据
+						var comData0 = {
+							uuid: tempModel.uuid, //用户设备号
+							utoken: data1.RspData.utoken, //用户令牌
+							type: 3, //类型,0获取省份,1获取城市,2获取区县,3获取所有城市,4获取某个城市信息
+							areano: '', //区域代码,获取type:1,2,4时必填(填写相关区域代码),其他留空
+							appid: tempModel.appid //系统所分配的应用ID
+						}
+						//发送网络请求，data为网络返回值
+						postDataEncry(2,'SysArea', enData0, comData0, 0, function(data) {
 					events.closeWaiting();
 					cityArray = data.RspData.sysarea;
 					//console.log('所有子区域或查询城市:' + JSON.stringify(data));
@@ -566,8 +598,13 @@
 						mui.toast(data.RspTxt);
 					}
 					wd.close();
-
 				});
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			} else {}
+		});
 			}
 
 			//9.新增定制城市
