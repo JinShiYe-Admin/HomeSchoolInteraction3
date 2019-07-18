@@ -323,14 +323,15 @@
 								if(tempClassModel.clsid == tempArr[m]) {
 									tempClassModel.flag = 0;
 									tempClassModel.stuArray = [];
+									tempClassModel.showFlag++;
 
 									//循环个人信息中，班主任身份的班级，这个界面，只显示选择的班级，并且是班主任身份
-									for(var n = 0; n < personal.clsGrdArray.length; n++) {
-										var classModel = personal.clsGrdArray[n];
-//										if(classModel.isms == 1 && classModel.clsid == tempArr[m]) {
-											tempClassModel.showFlag++;
-//										}
-									}
+//									for(var n = 0; n < personal.clsGrdArray.length; n++) {
+//										var classModel = personal.clsGrdArray[n];
+////										if(classModel.isms == 1 && classModel.clsid == tempArr[m]) {
+//											tempClassModel.showFlag++;
+////										}
+//									}
 									classListData.classListArray.push(tempClassModel);
 								}
 							}

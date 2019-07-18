@@ -74,23 +74,58 @@ var events = (function(mod) {
 
 	//短信群发
 	mod.SendSmsForMobiles = function(mobiles, content) {
-		console.log('mobiles:' + mobiles);
-		console.log('content:' + content);
-		var personal = store.get(window.storageKeyName.PERSONALINFO);
-		var publicParameter = store.get(window.storageKeyName.PUBLICPARAMETER);
-		content = content + '[' + personal.utname + ']';
+
+		var tempModel = {
+			uuid: plus.device.uuid,
+			appid: plus.runtime.appid
+		}
+		//握手
 		var enData0 = {};
 		//不需要加密的数据
 		var comData0 = {
-			uuid: publicParameter.uuid, //用户设备号
-			utoken: personal.utoken, //用户令牌
-			content: content, //发送的内容,不超过300汉字
-			mobiles: mobiles, //手机号码组,多个用逗号隔开
-			appid: publicParameter.appid //系统所分配的应用ID
-		}
+			uuid: tempModel.uuid, //用户设备号
+			shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+			appid: tempModel.appid //系统所分配的应用ID
+		};
 		//发送网络请求，data为网络返回值
-		postDataEncry('未替换', 'SendSms', enData0, comData0, 0, function(data) {
+		postDataEncry(2, 'ShakeHand', enData0, comData0, 0, function(data) {
+			if(data.RspCode == 0) {
+				store.set(window.storageKeyName.SHAKEHAND, data.RspData);
+				var enData1 = {
+					uid: '00000000000', //用户账号
+					pw: '0000' //用户密码
+				};
+				//不需要加密的数据
+				var comData1 = {
+					uuid: tempModel.uuid, //用户设备号
+					shaketype: 'login', //注册(reg),登录(login),修改密码(repw)
+					appid: tempModel.appid, //系统所分配的应用ID
+					schid: storageKeyName.SCHOOLID, //学校ID
+					utp: storageKeyName.USERTYPE //用户类型，0老师,1家长,2学生
+				};
+				//登录
+				postDataEncry(2, 'Login', enData1, comData1, 0, function(data1) {
+					if(data1.RspCode == 0) {
+						var personal = store.get(window.storageKeyName.PERSONALINFO);
+						content = content + '[' + personal.utname + ']';
+						var enData0 = {};
+						//不需要加密的数据
+						var comData0 = {
+							uuid: tempModel.uuid, //用户设备号
+							utoken: data1.RspData.utoken, //用户令牌
+							content: content, //发送的内容,不超过300汉字
+							mobiles: mobiles, //手机号码组,多个用逗号隔开
+							appid: tempModel.appid //系统所分配的应用ID
+						}
+						//发送网络请求，data为网络返回值
+						postDataEncry(2, 'SendSms', enData0, comData0, 0, function(data) {
 
+						});
+					} else {
+						mui.toast(data1.RspTxt);
+					}
+				});
+			} else {}
 		});
 	}
 

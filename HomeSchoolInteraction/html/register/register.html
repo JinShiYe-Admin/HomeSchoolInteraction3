@@ -32,7 +32,7 @@
 			}
 			
 			.mui-bar-nav {
-				background-color: #63BBFF !important;
+				background-color: #00CFBD !important;
 			}
 			
 			.mui-content {
@@ -175,32 +175,30 @@
 				<button id='idenCodebtn' @click="getPhoneCode" type="button" class="mui-btn mui-btn-block mui-btn-primary code-btn">发送验证码</button>
 			</div>-->
 			<div style="bottom: 0;position: fixed;width: 95%;margin: 0 2.5%;">
-				<button id='idenCodebtn' @click="submit" type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #63BBFF;border: 0;height: 36px;font-size: 15px;line-height: 0;">确 定</button>
+				<button id='idenCodebtn' @click="submit" type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00CFBD;border: 0;height: 36px;font-size: 15px;line-height: 0;">确 定</button>
 			</div>
 		</div>
-		
 		<script src="../../js/mui.js"></script>
 		<script src="../../js/utils/vue.js"></script>
-		<!--加密-->
-		<script src="../../js/libs/RSA/Barrett.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/BigInt.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/libs/RSA/RSA.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/RSAEncrypt.js" type="text/javascript" charset="utf-8"></script>
-		<!---->
-		<script type="text/javascript" src="../../js/utils/vconsole.min.js"></script>
-		<script src='../../js/libs/crypto-js/require.js'></script>
-		<script src='../../js/utils/signHmacSHA1.js'></script>
 		<script src='../../js/libs/jquery.js'></script>
-		<script src="../../js/publicProtocolNew.js"></script>
-		<script src='../../js/utils/sortSign.js'></script>
-		<script src="../../js/storageKeyName.js"></script>
-		<script src="../../js/utils/store.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/utils.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/storageutil.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../js/utils/events.js"></script>
+		
 		<!--<script src="../../js/jquery-weui.min.js"></script>-->
+		<script src='../../js/utils/vconsole.min.js'></script>
+		<script src="../../js/storageKeyName.js"></script>
+		<script src="../../js/utils/store.js"></script>
+		<script src="../../js/utils/utils.js"></script>
+		<script src="../../js/utils/storageutil.js"></script>
+		<script src='../../js/utils/events.js'></script>
+		<script src="../../js/publicProtocolNew.js"></script>
 		<script src="../../js/utils/mui.picker.js"></script>
 		<script src="../../js/utils/mui.poppicker.js"></script>
+		<script src='../../js/md5.js'></script>
+		<script src='../../js/libs/RSA/Barrett.js'></script>
+		<script src='../../js/libs/RSA/BigInt.js'></script>
+		<script src='../../js/libs/RSA/RSA.js'></script>
+		<script src='../../js/utils/RSAEncrypt.js'></script>
+		<script src='../../js/libs/crypto-js/require.js'></script>
+		<script src='../../js/utils/signHmacSHA1.js'></script>
 		<script type="text/javascript">
 			var $M = mui.init();
 			var userTypePicker = new $M.PopPicker();
@@ -208,10 +206,31 @@
 			var tempType = '';
 			var tempName = '';
 			var tempPhone = '';
+			var curPageKey = '';
 			mui.plusReady(function() {
+				//获取秘钥
+				getEncryptKeyLogin();
 				//用户注册获取可选用户类型列表
 				getUserType();
 			});
+			//获取秘钥
+			var getEncryptKeyLogin = function() {
+				//握手
+				var enData0 = {};
+				//不需要加密的数据
+				var comData0 = {
+					platform_code: window.storageKeyName.PLATFORMCODE //平台代码
+				};
+				//发送网络请求，data为网络返回值
+				postDataEncry(0, 'api/login/getEncryptKey', enData0, comData0, 0, function(data) {
+					console.log('2121212data:' + JSON.stringify(data));
+					if(data.RspCode == 0) {
+						curPageKey = data.RspData.encryptKey;
+					} else {
+						mui.toast(data.RspTxt);
+					}
+				});
+			}
 			//14.用户注册获取可选用户类型列表
 			var getUserType = function() {
 				//握手
@@ -373,8 +392,8 @@
 							mui.toast('请选择所属学校');
 						} else if(register.uaccount == '') {
 							mui.toast('请输入用户账号');
-						} else if(escape(register.uaccount).indexOf("%u") != -1 && register.uaccount.length > 8) {
-							mui.toast('中文长度不能超过8位');
+						} else if(escape(register.uaccount).indexOf("%u") >= 0) {
+							mui.toast('用户账号不能输入汉字');
 						} else if(register.uaccount.length > 18) {
 							mui.toast('字符长度不能超过18位');
 						} else if(register.upassword == '') {
@@ -387,14 +406,15 @@
 							mui.toast('密码需为数字和字母的组合');
 						} else if(register.confirmpassword.length > 18 || register.confirmpassword.length < 6) {
 							mui.toast('密码长度需为6到18个字符');
-						} 
-//						else if(register.code == '' || register.code.length != 6) {
-//							mui.toast('请输入正确的验证码');
-//						} 
+						}
+						//						else if(register.code == '' || register.code.length != 6) {
+						//							mui.toast('请输入正确的验证码');
+						//						} 
 						else {
 							console.log('验证通过');
 							//2.13.用户注册
 							var enData0 = {};
+							console.log('curPageKey:' + curPageKey + ',register.confirmpassword:' + register.confirmpassword);
 							//不需要加密的数据
 							var comData0 = {
 								app_code: window.storageKeyName.APPCODE, //应用系统代码
@@ -403,8 +423,9 @@
 								name: register.uname, //姓名
 								phone: register.uphone, //电话
 								login_name: register.uaccount, //登录名
-								password: register.confirmpassword, //密码,秘钥+密码再MD5加密
+								password: hex_md5(curPageKey + register.confirmpassword), //密码,秘钥+密码再MD5加密
 							};
+							console.log('comData0:' + JSON.stringify(comData0));
 							var wd = events.showWaiting();
 							//发送网络请求，data为网络返回值
 							postDataEncry(1, 'api/register', enData0, comData0, 0, function(data) {

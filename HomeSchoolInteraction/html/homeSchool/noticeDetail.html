@@ -409,8 +409,8 @@
 					},
 					methods: {
 						playVideo: function() {
-							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr);
-							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr[0]);
+//							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr);
+//							console.log('playVideo:' + noticeDetailData.noticesDetail.NoticeEncAddr[0]);
 							ShowVideoUtil.showVideo(document.getElementById("video"), 'videoPopover', noticeDetailData.noticesDetail.NoticeEncAddr[0], noticeDetailData.noticesDetail.NoticeEncImgAddr);
 						}
 					},
@@ -437,35 +437,53 @@
 						console.log('data:' + JSON.stringify(data));
 						if(data.RspCode == 0) {
 							noticeDetailData.flag = 1;
+							if (data.RspData.ReadArray == null) {
+								data.RspData.ReadArray = [];
+							}
+							if (data.RspData.NoReadArray == null) {
+								data.RspData.NoReadArray = [];
+							}
+							if (data.RspData.ReplyArray == null) {
+								data.RspData.ReplyArray = [];
+							}
 							//修改未读、已读名字显示
 							for(var i = 0; i < data.RspData.ReadArray.length; i++) {
 								var tempModel = data.RspData.ReadArray[i];
-								var tempArray = tempModel.ReceiveManName.split('|');
-								if(tempArray.length == 2) {
-									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
-								} else if(tempArray.length == 1) {
-									tempModel.ReceiveManName = tempArray[0] + '()';
-								}
+								tempModel.ReceiveManName = tempModel.ReceiveManParentName+ '(' + tempModel.ReceiveManStudentName + ')';
+//								var tempArray = tempModel.ReceiveManName.split('|');
+//								if(tempArray.length == 2) {
+//									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
+//								} else if(tempArray.length == 1) {
+//									tempModel.ReceiveManName = tempArray[0] + '()';
+//								}
 							}
 							for(var i = 0; i < data.RspData.NoReadArray.length; i++) {
 								var tempModel = data.RspData.NoReadArray[i];
-								var tempArray = tempModel.ReceiveManName.split('|');
-								if(tempArray.length == 2) {
-									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
-								} else if(tempArray.length == 1) {
-									tempModel.ReceiveManName = tempArray[0] + '()';
-								}
+								tempModel.ReceiveManName = tempModel.ReceiveManParentName+ '(' + tempModel.ReceiveManStudentName + ')';
+//								var tempArray = tempModel.ReceiveManName.split('|');
+//								if(tempArray.length == 2) {
+//									tempModel.ReceiveManName = tempArray[1] + '(' + tempArray[0] + ')';
+//								} else if(tempArray.length == 1) {
+//									tempModel.ReceiveManName = tempArray[0] + '()';
+//								}
 							}
 							for(var i = 0; i < data.RspData.ReplyArray.length; i++) {
 								var tempModel = data.RspData.ReplyArray[i];
-								var tempArray = tempModel.ReplyManName.split('|');
-								if(tempArray.length == 2) {
-									tempModel.ReplyManName = tempArray[1] + '(' + tempArray[0] + ')';
-								} else if(tempArray.length == 1) {
-									tempModel.ReplyManName = tempArray[0];
+								if (tempModel.ReplyManStudentName.length>0) {
+									tempModel.ReplyManName = tempModel.ReplyManParentName+ '(' + tempModel.ReplyManStudentName + ')';
+								} else{
+									tempModel.ReplyManName = tempModel.ReplyManParentName;
 								}
+								
+//								var tempArray = tempModel.ReplyManName.split('|');
+//								if(tempArray.length == 2) {
+//									tempModel.ReplyManName = tempArray[1] + '(' + tempArray[0] + ')';
+//								} else if(tempArray.length == 1) {
+//									tempModel.ReplyManName = tempArray[0];
+//								}
 							}
 							data.RspData.SendTime = modifyTimeFormat(data.RspData.SendTime);
+//							data.RspData.SendTime = data.RspData.SendTime.replace('T',' ');
 							if(data.RspData.NoticeEncAddr.length > 0) {
 								data.RspData.NoticeEncAddr = data.RspData.NoticeEncAddr.split('|');
 								//判断附件的格式,1图片，2视频
@@ -514,12 +532,19 @@
 								noticeId: curPage.NoticeId, //通知ID
 								replyManId: personal.utid, //回复人ID
 								replyManCode: personal.uid, //回复人账号
-								replyManName: curPage.ReceiveManName, //回复人姓名
+//								replyManName: curPage.ReceiveManName, //回复人姓名
 								replyManImg: personal.imgurl, //回复人头像
 								replyContent: noticeReplyContent.content //回复内容
 							}
-							if(personal.utp == 0) { //0老师，2学生，1家长
-								tempData1.replyManName = personal.utname;
+//							if(personal.utp == 0) { //0老师，2学生，1家长
+//								tempData1.replyManName = personal.utname;
+//							}
+							if (curPage.ReceiveManStudentName.length>0) {
+								tempData1.replyManParentName = curPage.ReceiveManParentName;
+								tempData1.replyManStudentName = curPage.ReceiveManStudentName;
+							} else{
+								tempData1.replyManParentName = personal.utname;
+								tempData1.replyManStudentName = '';
 							}
 							events.showWaiting();
 							//3.回复学校通知(同时增加回复未读)

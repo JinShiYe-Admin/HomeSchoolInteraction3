@@ -222,7 +222,7 @@
 				var tempData = {
 					schoolId: personal.schid, //学校ID,统一部署的时候，学校ID传000000
 					manId: personal.utid, //登录人ID
-					status: 1, //状态,0 全部,1 有效,2 无效
+					status: '1', //状态,0 全部,1 有效,2 无效
 					pageIndex: noticelistData.pageIndex, //当前页数
 					pageSize: 10 //每页记录数,0为全部
 				}
@@ -240,8 +240,8 @@
 						for(var i = 0; i < data.RspData.Data.length; i++) {
 							var model = data.RspData.Data[i];
 //							console.log('model.SendTime00:'+model.SendTime);
-//							model.SendTime = modifyTimeFormat(model.SendTime);
-							model.SendTime = model.SendTime.replace('T',' ');
+							model.SendTime = modifyTimeFormat(model.SendTime);
+//							model.SendTime = model.SendTime.replace('T',' ');
 //							console.log('model.SendTime01:'+model.SendTime);
 						}
 						if(noticelistData.flag == 0) { //刷新

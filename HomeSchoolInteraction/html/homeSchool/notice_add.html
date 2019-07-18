@@ -239,9 +239,12 @@
 			
 			//默认数据
 			function morenData(tempData){
+				var tempPersonal1111 = store.get(window.storageKeyName.PERSONALINFO);
+				tempPersonal1111.clsGrdArray = [];
 				//判断是否包含班主任身份
 				for(var i = 0; i < tempData.length; i++) {
 					var classModel = tempData[i];
+					tempPersonal1111.clsGrdArray.push(classModel);
 //					if(classModel.isms == 1&&classModel.isfinish == 0) {
 						addNoticeContent.teacherFlag = 1;
 						addNoticeContent.gradeArray.push(classModel.grdid);
@@ -255,6 +258,7 @@
 				}
 				//去重
 				addNoticeContent.gradeArray = unique(addNoticeContent.gradeArray);
+				store.set(window.storageKeyName.PERSONALINFO,tempPersonal1111);
 				//去掉首个，
 				if(addNoticeContent.classIDs.length > 0) {
 					addNoticeContent.classIDs = addNoticeContent.classIDs.substr(1);
@@ -614,12 +618,14 @@
 //				var temp2 = [];
 //				var temp3 = [];
 				var tempModelArray = [];
+				var tempArrayMobile = [];
 				for(var i = 0; i < addNoticeContent.parentArray.length; i++) {
 					var stuModel = addNoticeContent.parentArray[i];
 //					temp0.push(stuModel.utid);
 //					temp1.push(stuModel.mobile);
 //					temp2.push(stuModel.utname+'|'+stuModel.stuname);
 //					temp3.push(stuModel.uimg);
+					tempArrayMobile.push(stuModel.mobile);
 					var tempM = {
 						id:stuModel.utid,
 						code:stuModel.mobile,
@@ -653,6 +659,8 @@
 					encName = tempArray.join('|');
 				}
 				//				console.log('encName:'+encName);
+				//去重
+				tempArrayMobile = unique(tempArrayMobile);
 				
 				//1.新增学校通知（同时增加通知未读）
 				var tempData1 = {
@@ -680,18 +688,20 @@
 //						addNoticeContent.content = '';
 //						console.log('temp1.length:'+temp1.length+',addNoticeContent.msgFlag:'+addNoticeContent.msgFlag);
 //						console.log('temp1:'+JSON.stringify(temp1));
-						if(tempModelArray.length > 0&&addNoticeContent.msgFlag == 1) {
-							console.log('111111111');
-							//有班级群发
-							for (var i = 0; i < addNoticeContent.grdClsArray.length; i++) {
-								var tempStr = addNoticeContent.grdClsArray[i];
-								var tempID = tempStr.split('|');
-//								gradeid,classid,stustrs,genstrs,msgtype,grouptype,content
-								events.SendSmsTForClsStu(tempID[0], tempID[1],'','','班级通知',3,addNoticeContent.content);
-							}
-							if (addNoticeContent.stuNamesArray.length>0) {
-								events.SendSmsTForClsStu(0, 0,addNoticeContent.stuNamesArray.join(','),addNoticeContent.forIdArray.join(','),'班级通知',0,addNoticeContent.content);
-							}
+//						if(tempModelArray.length > 0&&addNoticeContent.msgFlag == 1) {
+//							console.log('111111111');
+//							//有班级群发
+//							for (var i = 0; i < addNoticeContent.grdClsArray.length; i++) {
+//								var tempStr = addNoticeContent.grdClsArray[i];
+//								var tempID = tempStr.split('|');
+//								events.SendSmsTForClsStu(tempID[0], tempID[1],'','','班级通知',3,addNoticeContent.content);
+//							}
+//							if (addNoticeContent.stuNamesArray.length>0) {
+//								events.SendSmsTForClsStu(0, 0,addNoticeContent.stuNamesArray.join(','),addNoticeContent.forIdArray.join(','),'班级通知',0,addNoticeContent.content);
+//							}
+//						}
+						if(tempArrayMobile.length > 0&&addNoticeContent.msgFlag == 1) {
+							events.SendSmsForMobiles(tempArrayMobile.join(','),addNoticeContent.content);
 						}
 						mui.toast('成功');
 						setTimeout(function() {

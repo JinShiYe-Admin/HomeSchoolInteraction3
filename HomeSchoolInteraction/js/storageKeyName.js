@@ -21,8 +21,8 @@ var storageKeyName = (function(mod) {
 			mod.INTERFACEGU = 'https://jsypay.jiaobaowang.net/useradminwebapi/api/data/'; //顾工接口
 			mod.INTERFACEZENG = 'http://139.129.252.49:8080/sup/'; //系统接口
 			mod.INTERFACEMENG = 'http://139.129.252.49:8080/sys/'; //系统接口
-			mod.INTERFACEKONG = 'http://188.131.243.133:8081/api/';//孔工接口
-			mod.INTERFACEKONGG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationService/'; //孔
+			mod.INTERFACEKONG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationServiceNew/';//孔工接口
+			mod.INTERFACEKONGG = 'https://jbyj.jiaobaowang.net/SchoolCommunicationServiceNew/'; //孔
 			mod.TEACHERIMG = 'http://jsypay.jiaobaowang.net/jsyadmin/upuserimg.ashx?userid='; //老师上传头像
 			mod.ANDROIDUPDATEURL='http://192.168.1.121:8081/app/versionCode.xml';//安卓升级地址
 			mod.ALIPAYSERVER='http://192.168.1.121:8081/app/versionCode.xml';//支付宝支付地址

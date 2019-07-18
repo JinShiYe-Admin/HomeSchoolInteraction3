@@ -43,7 +43,7 @@
 
 			<div style="padding: 0px 20px;">
 				<button id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #00cfbd; border:none; margin-top: 30px;height: 40px;padding-top: 8px;border-radius: 20px;">登录</button>
-				<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-outlined regisgerColo" style=" margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>
+				<!--<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-outlined regisgerColo" style=" margin-top: 30px;height: 40px;padding-top: 8px;">注册</button>-->
 			</div>
 		</div>
 	</body>
@@ -129,10 +129,10 @@
 			}
 		});
 
-		document.getElementById("register").addEventListener('tap', function(event) {
-			console.log("注册");
-			plus.webview.open('../register/register.html');
-		});
+//		document.getElementById("register").addEventListener('tap', function(event) {
+//			console.log("注册");
+//			plus.webview.open('../register/register.html');
+//		});
 
 		window.addEventListener('quit', function(data) {
 			console.log("data" + JSON.stringify(data.detail));
@@ -155,7 +155,8 @@
 
 		//注册按钮
 		document.getElementById('zhuce').addEventListener('tap', function() {
-			utils.mOpenWithData("../../html/index/register.html", tempModel);
+			utils.mOpenWithData("../../html/register/register.html", {});
+//			utils.mOpenWithData("../../html/mine/modifyPassword.html", tempModel);
 		})
 
 		//获取秘钥

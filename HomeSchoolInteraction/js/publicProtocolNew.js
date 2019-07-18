@@ -355,6 +355,7 @@ var jQAjaxPost = function(urlFlag, url, data, callback) {
 							console.log('data9.RspData:' + data9.RspData.length);
 							for(var i = 0; i < success_data.data.length; i++) {
 								var tempM = success_data.data[i];
+								tempM.imgurl = '';
 								for(var a = 0; a < data9.RspData.length; a++) {
 									var tempM1 = data9.RspData[a];
 									if(tempM.utid == tempM1.id) {
