@@ -79,6 +79,14 @@
 				uuid: plus.device.uuid,
 				appid: plus.runtime.appid
 			}
+			if(tempModel.uuid == '') {
+				var publicPar = store.get(window.storageKeyName.PUBLICPARAMETER);
+				tempModel.uuid = publicPar.uuid;
+				tempModel.appid = publicPar.appid;
+			}
+			console.log('plus.device.uuid:' + tempModel.uuid);
+			console.log('plus.runtime.appid:' + tempModel.appid);
+			store.set(window.storageKeyName.PUBLICPARAMETER, tempModel);
 
 			var backButtonPress = 0;
 			setUUID();
